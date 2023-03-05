@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/factly/x v0.0.91
 	github.com/go-chi/chi v4.1.2+incompatible
+	github.com/go-chi/cors v1.2.1
 	github.com/sashabaranov/go-gpt3 v0.0.0-20230106202239-cf013d3eb56a
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.8.1
