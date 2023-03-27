@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Card from "../components/card";
+import Layout from "../components/layout/layout";
 import { Sidebar } from "../components/Sidebar";
 import { useSidebarContext } from "../components/SidebarContext";
 
@@ -33,11 +34,5 @@ export default function Home() {
 }
 
 Home.getLayout = function getLayout(page) {
-  return (
-    <>
-      <Sidebar>
-        {page}
-      </Sidebar>
-    </>
-  )
-}
+  return <Layout>{page}</Layout>;
+};

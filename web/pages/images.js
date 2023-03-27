@@ -6,9 +6,7 @@ export default function Images() {
 Images.getLayout = function getLayout(page) {
   return (
     <>
-      <Sidebar>
-        {page}
-      </Sidebar>
+      <Sidebar>{page}</Sidebar>
     </>
-  )
-}
+  );
+};

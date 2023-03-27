@@ -7,13 +7,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary": "#F0F1F4",
+        primary: "#F0F1F4",
         "light-white": "rgba(255, 255, 255, 0.17)",
         "hover-primary": "#101827",
         "background-sidebar": "#F9FAFB",
         "button-primary": "#F0F1F4",
-        "form-label": "#344054"
-
+        "border-primary": "#EAECF0",
+        "form-label": "#344054",
+        "border-secondary": "#ececf1",
       },
     },
   },

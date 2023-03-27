@@ -5,7 +5,7 @@ import { SidebarContext } from "../components/SidebarContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }) {
-  const getLayout = Component.getLayout || ((page) => page)
+  const getLayout = Component.getLayout || ((page) => page);
 
   return (
     <SidebarContext>
@@ -14,9 +14,7 @@ export default function App({ Component, pageProps }) {
     ${inter.className}
     `}
       >
-        { 
-          getLayout(<Component {...pageProps} />) 
-        }
+        {getLayout(<Component {...pageProps} />)}
       </div>
     </SidebarContext>
   );

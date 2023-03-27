@@ -6,9 +6,9 @@ require (
 	github.com/factly/x v0.0.92
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/jinzhu/gorm v1.9.16
-	github.com/sashabaranov/go-openai v1.5.3
+	github.com/sashabaranov/go-openai v1.5.6
 	github.com/spf13/viper v1.15.0
-	golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0
+	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
 )
