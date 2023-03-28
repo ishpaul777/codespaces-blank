@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import arrowIcon from "../../public/icons/arrow-left.svg";
 import infoIcon from "../../public/icons/info-icon.svg";
 import arrow from "../../public/icons/arrow.svg";
 import Button from "../../components/buttons/SearchButton";
-// import { ScooterCore } from "@factly/scooter-core";
 
+import { IoShareSocialOutline } from "react-icons/io5";
+import { MdDeleteOutline } from "react-icons/md";
 export default function Document() {
   const [prompt, setPrompt] = useState("");
 
@@ -14,6 +15,8 @@ export default function Document() {
   // isSubmitVisible is a boolean variable that determines whether the submit button is visible or not
   const [isSubmitVisible, setIsSubmitVisible] = useState(true);
 
+
+  // documentData holds the state of prompts, document data, finish reason, etc.
   const styles = {
     input: {
       borderColor: "#D0D5DD",
@@ -45,6 +48,22 @@ export default function Document() {
     setDocumentName(value);
   };
 
+  const actionList = [
+    {
+      icon: IoShareSocialOutline,
+      onClick: () => {},
+      name: 'share'
+    },
+    {
+      icon: MdDeleteOutline,
+      onClick: () => {},
+      name: 'delete'
+    },
+  ];
+
+  useEffect(() => {
+    // fetch('')
+  }, []);
   return (
     // container for new/edit document page
     <div className="h-screen w-full flex">
@@ -124,10 +143,14 @@ export default function Document() {
           <div className="flex flex-col gap-2`"></div>
         </div>
       </div>
-      <div className={`w-3/4`}>
+      <div className={`w-3/4 grid  grid-rows-[1fr_14fr_1fr]`}>
         {/* this is the header section in create document page. It has mainly 2 elements - 1. File Name input box and 2. actions - [share, delete, save]*/}
         <div className="w-full py-3 px-6 flex justify-between border-b border-border-secondary">
-          <div className={`w-3/5 flex flex-row items-center ${!isSubmitVisible && "gap-4"}`}>
+          <div
+            className={`w-3/5 flex flex-row items-center ${
+              !isSubmitVisible && "gap-4"
+            }`}
+          >
             {isSubmitVisible ? (
               <>
                 <input
@@ -139,22 +162,37 @@ export default function Document() {
                 <Button text="Submit" onClick={onNameSubmit}></Button>
               </>
             ) : (
-                <>
-                  <h3 className="text-lg font-semibold">{documentName}</h3>
-                  <Button text="Edit" onClick={onNameEdit}/>
-                </>
-              )
-          }
+              <>
+                <h3 className="text-lg font-semibold">{documentName}</h3>
+                <Button text="Edit" onClick={onNameEdit} />
+              </>
+            )}
           </div>
           {/* action div */}
-          <div className="">
-
+          <div className="flex flex-row items-center gap-4">
+            {actionList.map((actionIcon) => {
+              return (
+                // action icon container
+                <div className={`bg-background-secondary p-1 rounded-md cursor-pointer hover:bg-white`}>
+                  <actionIcon.icon className={`text-2xl text-black ${actionIcon.name === 'delete' ? "hover:text-[#FF4136]" : "hover:text-[#0074D9]"}`} onClick={actionIcon.onClick}/>
+                </div>
+              );
+            })}
           </div>
         </div>
-        <div className="w-full h-full">
-          {/* <ScooterCore
-            
-          /> */}
+        <div className="w-full p-3">
+          <textarea className="w-full h-full border border-[#ececf1] rounded-lg outline-none resize-none px-4 py-2" placeholder="write something here">
+
+          </textarea>
+          
+        </div>
+        {/* document actions buttons - 
+            1.compose - it will create a request to tagore-server to get the details 
+            2.reset - it will reset the document to the initial state    
+        */}
+        <div className='flex flex-row items-center justify-center gap-2'>
+          <Button text="Compose" onClick={() => {}}/>
+          <Button text="Reset" onClick={() => {}} background={'button-secondary'} textColor={'black'}/>
         </div>
       </div>
     </div>

@@ -36,7 +36,7 @@ func (o *OpenAIAdapter) LoadConfig() error {
 	return nil
 }
 
-func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}, error) {
+func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}, string, error) {
 	req := openai.CompletionRequest{
 		Prompt:    prompt,
 		MaxTokens: int(maxTokens),
@@ -45,11 +45,10 @@ func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}
 	ctx := context.Background()
 	resp, err := o.Client.CreateCompletion(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return resp.Choices[0].Text, nil
-
+	return resp.Choices[0].Text, resp.Choices[0].FinishReason, nil
 }
 
 func (o *OpenAIAdapter) EditText(input string, instruction string) (interface{}, error) {

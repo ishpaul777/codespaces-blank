@@ -52,9 +52,9 @@ func (p *promptService) GenerateText(userID uint, input, generateFor string, max
 
 	prompt := constructPrompt(input, generateFor)
 
-	output, err := generativeModel.GenerateText(prompt, maxTokens)
+	output, finishReason, err := generativeModel.GenerateText(prompt, maxTokens)
 	if err != nil {
 		return nil, err
 	}
-	return p.promptRepository.CreatePrompt(userID, input, output.(string))
+	return p.promptRepository.CreatePrompt(userID, input, output.(string), finishReason)
 }

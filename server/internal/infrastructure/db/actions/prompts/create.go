@@ -18,13 +18,14 @@ func NewPGPromptRepository(database db.IDatabaseService) (*PGPromptRepository, e
 	return &PGPromptRepository{client: dbClient}, nil
 }
 
-func (p *PGPromptRepository) CreatePrompt(userID uint, input, output string) (*models.Prompt, error) {
+func (p *PGPromptRepository) CreatePrompt(userID uint, input, output, finishReason string) (*models.Prompt, error) {
 	newPrompt := &models.Prompt{
 		Base: models.Base{
 			CreatedByID: userID,
 		},
-		Input:  input,
-		Output: output,
+		Input:        input,
+		Output:       output,
+		FinishReason: finishReason,
 	}
 
 	err := p.client.Model(&models.Prompt{}).Create(&newPrompt).Error

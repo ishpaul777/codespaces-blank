@@ -16,6 +16,7 @@ type generateRequest struct {
 }
 
 func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
+
 	userID := r.Header.Get("X-User")
 	uID, err := strconv.Atoi(userID)
 	if err != nil {
@@ -33,5 +34,11 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 
 	prompt, err := h.promptService.GenerateText(uint(uID), requestBody.InputPrompt, requestBody.GenerateFor, requestBody.MaxTokens)
 
+	if err != nil {
+		h.logger.Error("error generating text", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		return
+	}
+	
 	renderx.JSON(w, http.StatusOK, prompt)
 }

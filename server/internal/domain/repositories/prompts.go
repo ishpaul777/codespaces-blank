@@ -8,7 +8,7 @@ import (
 
 type PromptRepository interface {
 	// GetPromptsByUserID(userID uint) ([]models.Prompt, error)
-	CreatePrompt(userID uint, input, output string) (*models.Prompt, error)
+	CreatePrompt(userID uint, input, output, finishReason string) (*models.Prompt, error)
 	// DeletePromptByID(id uint) error
 	// GetPromptByID(promptID uint) (models.Prompt, error)
 }
