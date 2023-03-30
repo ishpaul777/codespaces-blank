@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import arrowIcon from "../../public/icons/arrow-left.svg";
-import infoIcon from "../../public/icons/info-icon.svg";
-import arrow from "../../public/icons/arrow.svg";
+import { useState } from "react";
+import ArrowIcon from "../../assets/icons/arrow.svg";
+import InfoIcon from "../../assets/icons/info-icon.svg";
+import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import Button from "../../components/buttons/SearchButton";
+import { ScooterCore } from "@factly/scooter-core";
 
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
@@ -61,9 +62,6 @@ export default function Document() {
     },
   ];
 
-  useEffect(() => {
-    // fetch('')
-  }, []);
   return (
     // container for new/edit document page
     <div className="h-screen w-full flex">
@@ -74,7 +72,7 @@ export default function Document() {
           {/* image container */}
           <div>
             {/* backbutton icon */}
-            <img src={arrowIcon.src} onClick={handleGoBack}></img>
+            <img src={ArrowLeft} onClick={handleGoBack}></img>
           </div>
           {/* input division - each input division will have label, a form input type and input-length counter */}
           {/* prompt section */}
@@ -87,7 +85,7 @@ export default function Document() {
               >
                 Content description / brief
               </label>
-              <img src={infoIcon.src} />
+              <img src={InfoIcon} />
             </div>
             <textarea
               className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg resize-none h-32 placeholder:[${styles.input.placeholderColor}]`}
@@ -111,7 +109,7 @@ export default function Document() {
                 {" "}
                 Keywords{" "}
               </label>
-              <img src={infoIcon.src} />
+              <img src={InfoIcon} />
             </div>
             <input
               className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg placeholder:[${styles.input.placeholderColor}]`}
@@ -127,7 +125,7 @@ export default function Document() {
               >
                 Select language
               </label>
-              <img src={infoIcon.src} />
+              <img src={InfoIcon} />
             </div>
             <div className="flex w-full pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg bg-white">
               <select
@@ -137,7 +135,7 @@ export default function Document() {
                 <option value="spanish">Hindi</option>
                 <option value="french">Telugu</option>
               </select>
-              <img src={arrow.src} />
+              <img src={ArrowIcon} />
             </div>
           </div>
           <div className="flex flex-col gap-2`"></div>
@@ -181,9 +179,10 @@ export default function Document() {
           </div>
         </div>
         <div className="w-full p-3">
-          <textarea className="w-full h-full border border-[#ececf1] rounded-lg outline-none resize-none px-4 py-2" placeholder="write something here">
+          <ScooterCore/>
+          {/* <textarea className="w-full h-full border border-[#ececf1] rounded-lg outline-none resize-none px-4 py-2" placeholder="write something here">
 
-          </textarea>
+          </textarea> */}
           
         </div>
         {/* document actions buttons - 

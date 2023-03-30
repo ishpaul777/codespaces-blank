@@ -54,12 +54,25 @@ services:
       - type: bind
         source: ./web
         target: /app
-      - /app/node_modules
-      - /app/.next
+      - type: bind
+        source: ./web/node_modules
+        target: /app/node_modules
     restart: unless-stopped
     stdin_open: true
     networks:
       - tagore
 
+  migrate:
+    image: migrate/migrate
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tagore
+      - POSTGRES_HOST=postgres
+    depends_on:
+      - postgres
+    volumes:
+      - './server/internal/infrastructure/db:/database'
+    command: [ "-path", "./database/migrations", "-database",  "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:5432/$POSTGRES_DB?sslmode=disable", "up"]                                    #######
 networks:
   tagore:
