@@ -64,15 +64,18 @@ services:
 
   migrate:
     image: migrate/migrate
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=tagore
-      - POSTGRES_HOST=postgres
+    env_file:
+      - ./server/config.env
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - './server/internal/infrastructure/db:/database'
-    command: [ "-path", "./database/migrations", "-database",  "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:5432/$POSTGRES_DB?sslmode=disable", "up"]                                    #######
+    # command: [ "-path", "./database/migrations", "-database",  "postgres://$DATABASE_USERNAME:$DATABASE_PASSWORD@$DATABASE_HOST:5432/$DATABASE_NAME?sslmode=disable", "up"] 
+    command: [ "-path", "./database/migrations", "-database",  "postgres://postgres:postgres@postgres:5432/tagore?sslmode=disable", "up"] 
+
+    networks:
+      - tagore
+                                   
 networks:
   tagore:

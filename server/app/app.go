@@ -44,7 +44,6 @@ func (a *App) GetLogger() logger.ILogger {
 	return a.logger
 }
 
-
 func (a *App) SetDB(database db.IDatabaseService) {
 	a.database = database
 }
