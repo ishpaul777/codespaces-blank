@@ -3,8 +3,8 @@ package prompts
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
+	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
 )
@@ -16,9 +16,7 @@ type generateRequest struct {
 }
 
 func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
-
-	userID := r.Header.Get("X-User")
-	uID, err := strconv.Atoi(userID)
+	uID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error converting user id to int", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
@@ -39,6 +37,6 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
 		return
 	}
-	
+
 	renderx.JSON(w, http.StatusOK, prompt)
 }

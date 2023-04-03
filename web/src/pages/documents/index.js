@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom"
-import { CreateButton } from "../../components/buttons/CreateButton"
-import Search from "../../components/search"
+import { Link } from "react-router-dom";
+import { CreateButton } from "../../components/buttons/CreateButton";
+import Search from "../../components/search";
 
-export default function DocumentPage(){
+export default function DocumentPage() {
   return (
-      // this is the main page container
-      <div className="my-16 mx-10">
+    // this is the main page container
+    <div className="my-16 mx-10">
       {/* This is the page header */}
       <div className="flex flex-row justify-between items-center">
         <h2 className="text-3xl font-medium">Documents</h2>
@@ -19,5 +19,5 @@ export default function DocumentPage(){
         </div>
       </div>
     </div>
-  )
+  );
 }

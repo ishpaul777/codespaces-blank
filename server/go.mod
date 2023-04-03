@@ -3,7 +3,7 @@ module github.com/factly/tagore/server
 go 1.19
 
 require (
-	github.com/factly/x v0.0.92
+	github.com/factly/x v0.0.93
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/cors v1.2.1
 	github.com/jinzhu/gorm v1.9.16

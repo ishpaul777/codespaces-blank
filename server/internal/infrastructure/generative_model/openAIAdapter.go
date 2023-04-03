@@ -40,7 +40,7 @@ func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}
 	req := openai.CompletionRequest{
 		Prompt:    prompt,
 		MaxTokens: int(maxTokens),
-		Model:     openai.GPT3TextDavinci001,
+		Model:     openai.GPT3TextDavinci003,
 	}
 	ctx := context.Background()
 	resp, err := o.Client.CreateCompletion(ctx, req)

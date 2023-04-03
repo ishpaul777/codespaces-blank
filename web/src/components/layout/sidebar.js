@@ -1,28 +1,26 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import ArrowLeft from '../../assets/icons/arrow-left.svg';
-import ArrowWithTail from '../../assets/icons/arrow-with-tail.svg';
-import Arrow from '../../assets/icons/arrow.svg';
-import Bookmark from '../../assets/icons/bookmark.svg';
-import Chat from '../../assets/icons/chat.svg';
-import Documents from '../../assets/icons/documents.svg';
-import Home from '../../assets/icons/home.svg';
-import History from '../../assets/icons/history.svg';
-import Images from '../../assets/icons/images.svg';
-import InfoIcon from '../../assets/icons/info-icon.svg';
-import LogoutHover from '../../assets/icons/logout-hover.svg';
-import Logout from '../../assets/icons/logout.svg';
-import Profile from '../../assets/icons/profile.svg';
-import Templates from '../../assets/icons/templates.svg';
-import Usage from '../../assets/icons/usage.svg';
+import ArrowLeft from "../../assets/icons/arrow-left.svg";
+import ArrowWithTail from "../../assets/icons/arrow-with-tail.svg";
+import Arrow from "../../assets/icons/arrow.svg";
+import Bookmark from "../../assets/icons/bookmark.svg";
+import Chat from "../../assets/icons/chat.svg";
+import Documents from "../../assets/icons/documents.svg";
+import Home from "../../assets/icons/home.svg";
+import History from "../../assets/icons/history.svg";
+import Images from "../../assets/icons/images.svg";
+import InfoIcon from "../../assets/icons/info-icon.svg";
+import LogoutHover from "../../assets/icons/logout-hover.svg";
+import Logout from "../../assets/icons/logout.svg";
+import Profile from "../../assets/icons/profile.svg";
+import Templates from "../../assets/icons/templates.svg";
+import Usage from "../../assets/icons/usage.svg";
 
 // import FactlyLogo from '../../assets/factly-logo.svg';
 
-
-export function Sidebar(){
+export function Sidebar() {
   const [openMenu, setOpenMenu] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-
 
   const menuOptions = [
     {
@@ -88,13 +86,11 @@ export function Sidebar(){
     }
     return name;
   };
-  return(
+  return (
     <div
       className={`p-5 pt-8 w-1/6 bg-background-sidebar h-screen flex flex-col`}
     >
-     <div
-        className={`flex gap-x-2 items-center justify-center ml-2`}
-      >
+      <div className={`flex gap-x-2 items-center justify-center ml-2`}>
         <img
           src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
           className="cursor-pointer w-3/4"
@@ -107,16 +103,14 @@ export function Sidebar(){
             <li
               key={index}
               className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg 
-                ${
-                  activeTab !== index && "hover:bg-button-primary"
-                } 
+                ${activeTab !== index && "hover:bg-button-primary"} 
                 ${activeTab === index && "bg-button-primary"} 
                 mt-2`}
               onClick={() => setActiveTab(index)}
             >
               <div className="flex gap-x-4">
                 <img src={menu.icon} />
-                <h3>{menu.name}</h3> 
+                <h3>{menu.name}</h3>
               </div>
             </li>
           </Link>
@@ -162,12 +156,11 @@ export function Sidebar(){
         </button>
       </div>
     </div>
-  )
-};
+  );
+}
 // export function Sidebar({ children }) {
 
 //   const [openMenu, setOpenMenu] = useState(false);
-
 
 //   const menuOptions = [
 //     {
@@ -255,11 +248,11 @@ export function Sidebar(){
 //           <Link to={menu.linkTo}>
 //             <li
 //               key={index}
-//               className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg 
+//               className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
 //                 ${
 //                   sidebarData?.activeTab !== index && "hover:bg-button-primary"
-//                 } 
-//                 ${sidebarData?.activeTab === index && "bg-button-primary"} 
+//                 }
+//                 ${sidebarData?.activeTab === index && "bg-button-primary"}
 //                 mt-2`}
 //               onClick={() => handleSidebarClick(index)}
 //             >

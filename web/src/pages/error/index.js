@@ -1,3 +1,3 @@
-export function ErrorElement(){
-  return <>not found</>
+export function ErrorElement() {
+  return <>not found</>;
 }

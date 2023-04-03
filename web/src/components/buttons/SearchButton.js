@@ -1,4 +1,9 @@
-export default function SearchButton({ text = "Search", onClick, background = "black", textColor = "white" }) {
+export default function SearchButton({
+  text = "Search",
+  onClick,
+  background = "black",
+  textColor = "white",
+}) {
   return (
     <button
       type="button"

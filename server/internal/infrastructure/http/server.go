@@ -7,6 +7,7 @@ import (
 	application "github.com/factly/tagore/server/app"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/domain/services"
+	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/documents"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompts"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -40,9 +41,17 @@ func RunHTTPServer(app *application.App) {
 	if err != nil {
 		logger.Fatal("error creating prompt repository")
 	}
+
+	documentRepository, err := repositories.NewDocumentRepository(db)
+	if err != nil {
+		logger.Fatal("error creating document repository")
+	}
+
 	promptService := services.NewPromptService(promptRepository)
+	documentService := services.NewDocumentService(documentRepository)
 
 	prompts.InitRoutes(router, promptService, logger)
+	documents.InitRoutes(router, documentService, logger)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Server.Port), router)
 	if err != nil {
