@@ -14,12 +14,12 @@ type httpHandler struct {
 func (h *httpHandler) routes() chi.Router {
 	router := chi.NewRouter()
 	router.Post("/", h.createNewDocument)
-	// router.Get("/", h.getDocuments)
-	// router.Route("/{document_id}", func(r chi.Router) {
-	// 	r.Get("/", h.getDocument)
-	// 	r.Put("/", h.updateDocument)
-	// 	r.Delete("/", h.deleteDocument)
-	// })
+	router.Get("/", h.getAllDocuments)
+	router.Route("/{document_id}", func(r chi.Router) {
+		r.Get("/", h.getDocumentByID)
+		r.Put("/", h.updateDocumentByID)
+		r.Delete("/", h.deleteDocumentByID)
+	})
 	return router
 }
 

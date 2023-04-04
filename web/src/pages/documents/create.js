@@ -130,11 +130,6 @@ export default function Document() {
       .then((data) => {
         let clean_html_string = data?.output.replace(/\s+/g, " ");
         setPromptData(clean_html_string);
-        // if(!editorData){
-        //   setEditorData(clean_html_string)
-        // } else {
-        //   setEditorData(editorData + `<br/>` + clean_html_string)
-        // }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -144,10 +139,6 @@ export default function Document() {
       });
   };
 
-  // useEffect(() => {
-  //   // update the content in the editor when the editorData state variable would change
-  //   editor?.commands.setContent(editorData);
-  // }, [editorData])
 
   useEffect(() => {
     // inserting the prompt data in the editor when the promptData state variable would change

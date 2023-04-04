@@ -7,6 +7,9 @@ import (
 
 func (p *PGDocumentRepository) CreateDocument(userID uint, title, description string) (*models.Document, error) {
 	slug := slugx.Make(title)
+
+	users := []models.User{}
+	users = append(users, models.User{ID: userID})
 	newDocument := &models.Document{
 		Base: models.Base{
 			CreatedByID: userID,
@@ -14,6 +17,7 @@ func (p *PGDocumentRepository) CreateDocument(userID uint, title, description st
 		Title:       title,
 		Description: description,
 		Slug:        slug,
+		Authors:     users,
 	}
 
 	err := p.client.Model(&models.Document{}).Create(&newDocument).Error

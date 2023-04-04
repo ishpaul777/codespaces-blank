@@ -18,7 +18,7 @@ func (h *httpHandler) createNewDocument(w http.ResponseWriter, r *http.Request) 
 	userID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
 		return
 	}
 
@@ -33,7 +33,7 @@ func (h *httpHandler) createNewDocument(w http.ResponseWriter, r *http.Request) 
 	document, err := h.documentService.CreateNewDocument(userID, requestBody.Title, requestBody.Description)
 	if err != nil {
 		h.logger.Error("error creating new document", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}
 
