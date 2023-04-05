@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 
+	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -53,4 +54,27 @@ func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}
 
 func (o *OpenAIAdapter) EditText(input string, instruction string) (interface{}, error) {
 	return nil, nil
+}
+
+func (o *OpenAIAdapter) GenerateImage(nOfImages int32, prompt string) ([]models.GeneratedImage, error) {
+	req := openai.ImageRequest{
+		N:      int(nOfImages),
+		Prompt: prompt,
+		Size:   "512x512",
+	}
+
+	ctx := context.Background()
+	resp, err := o.Client.CreateImage(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	generatedImages := make([]models.GeneratedImage, 0)
+	for _, image := range resp.Data {
+		generatedImages = append(generatedImages, models.GeneratedImage{
+			URL: image.URL,
+		})
+	}
+
+	return generatedImages, nil
 }

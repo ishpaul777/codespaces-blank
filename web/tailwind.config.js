@@ -14,6 +14,10 @@ module.exports = {
         "button-secondary": "#DDE2E9",
         "form-label": "#344054",
         "border-secondary": "#ececf1",
+        "table-text": "#475467",
+      },
+      boxShadow: {
+        primary: "0px 1px 2px rgba(16, 24, 40, 0.05)",
       },
     },
   },

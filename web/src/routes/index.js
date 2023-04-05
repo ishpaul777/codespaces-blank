@@ -2,6 +2,7 @@ import Layout from "../components/layout/layout";
 import { HomePage } from "../pages";
 import DocumentPage from "../pages/documents";
 import Document from "../pages/documents/create";
+import ImagePage from "../pages/images";
 
 export const routes = [
   {
@@ -19,6 +20,10 @@ export const routes = [
       {
         path: "*",
         element: <>error</>,
+      },
+      {
+        path: "/images",
+        element: <ImagePage />,
       },
     ],
   },

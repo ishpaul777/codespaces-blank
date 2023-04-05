@@ -29,6 +29,11 @@ export default function Document() {
   // loading is a boolean variable which determines whether the backend is composing something or not
   const [loading, setLoading] = useState(false);
 
+  // continueButtonState is a boolean variable which determines different attributes of the continue button
+  const [continueButtonState, setContinueButtonState] = useState({
+    visibility: false,
+  });
+
   // documentData holds the state of prompts, document data, finish reason, etc.
   const styles = {
     input: {
@@ -115,7 +120,7 @@ export default function Document() {
   const handleCompose = () => {
     const prompt = generatePrompt();
     setLoading(true);
-    fetch("http://localhost:8080/prompts/generate", {
+    fetch(`${process.env.REACT_APP_TAGORE_API_URL}/prompts/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -138,7 +143,6 @@ export default function Document() {
         setLoading(false);
       });
   };
-
 
   useEffect(() => {
     // inserting the prompt data in the editor when the promptData state variable would change
@@ -183,8 +187,12 @@ export default function Document() {
 
   // handleCustomLengthChange is a handler for custom length input
   const handleCustomLengthChange = (value) => {
-    setCustomLength(value);
-    setSelectedOutputLength({ length: value, name: "Custom" });
+    let valueInInt = parseInt(value);
+    if (isNaN(valueInInt)) {
+      valueInInt = 0;
+    }
+    setCustomLength(valueInInt);
+    setSelectedOutputLength({ length: valueInInt, name: "Custom" });
   };
 
   return (
@@ -288,7 +296,7 @@ export default function Document() {
                         ? customLength === selectedOutputLength.length
                         : item.maxLength === selectedOutputLength.length
                     }
-                    maxSize={item.maxLength}
+                    maxSize={isCustom ? customLength : item.maxLength}
                     isCustom={isCustom}
                   />
                 );
@@ -300,6 +308,7 @@ export default function Document() {
                 type="number"
                 placeholder="enter custom output length"
                 onChange={(e) => handleCustomLengthChange(e.target.value)}
+                defaultValue={customLength}
               />
             )}
           </div>
@@ -314,6 +323,14 @@ export default function Document() {
               clickAction={() => handleCompose()}
               isPrimary={true}
             ></DocActionButton>
+            {continueButtonState.visibility && (
+              <DocActionButton
+                isLoading={false}
+                text={"Continue Generating"}
+                clickAction={() => handleCompose()}
+                isPrimary={true}
+              ></DocActionButton>
+            )}
             <DocActionButton
               text={"Reset"}
               clickAction={() => editor?.commands.setContent("")}
