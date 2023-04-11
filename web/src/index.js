@@ -4,7 +4,7 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
-
+import "react-toastify/dist/ReactToastify.css";
 const router = createBrowserRouter(routes);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

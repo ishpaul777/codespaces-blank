@@ -14,6 +14,7 @@ type httpHandler struct {
 func (h *httpHandler) routes() chi.Router {
 	router := chi.NewRouter()
 	router.Post("/", h.generateImages)
+	router.Post("/variation", h.generateVarationsofImage)
 	return router
 }
 

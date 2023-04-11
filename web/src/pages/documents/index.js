@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { getDocuments } from "../../actions/text";
 import moment from "moment";
 export default function DocumentPage() {
-
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
     data: [],
@@ -38,12 +37,11 @@ export default function DocumentPage() {
           count: response.count,
           data: response.documents,
         });
-      }
-      )
+      })
       .catch((error) => {
         console.log(error.message);
       });
-  }, [])
+  }, []);
 
   let values = [
     {
@@ -88,7 +86,7 @@ export default function DocumentPage() {
           })}
           <tbody className={`w-full`}>
             {documentPageData.data.map((value, index) => {
-              console.log(value)
+              console.log(value);
               return (
                 <tr
                   className="w-full border-y border-border-primary"
@@ -102,13 +100,12 @@ export default function DocumentPage() {
                   <td
                     className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
                   >
-                    {value?.createdBy || 'John Doe'}
+                    {value?.createdBy || "John Doe"}
                   </td>
                   <td
                     className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
                   >
-
-                    {moment(value.updated_at).format('MMMM Do YYYY, h:mm:ss a')}
+                    {moment(value.updated_at).format("MMMM Do YYYY, h:mm:ss a")}
                   </td>
                   <td
                     className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black flex items-center gap-2`}

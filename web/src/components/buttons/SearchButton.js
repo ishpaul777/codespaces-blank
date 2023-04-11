@@ -11,7 +11,9 @@ export default function SearchButton({
   return (
     <button
       type="button"
-      className={`py-2 px-4 rounded-lg bg-${background} text-${textColor} flex items-center gap-2 ${disabled && "cursor-not-allowed opacity-50"}`}
+      className={`py-2 px-4 rounded-lg bg-${background} text-${textColor} flex items-center gap-2 ${
+        disabled && "cursor-not-allowed opacity-50"
+      }`}
       onClick={onClick}
       disabled={disabled}
     >

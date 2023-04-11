@@ -17,7 +17,7 @@ export function ImageSearch({
       <div>
         <SearchButton
           isLoading={isLoading}
-          text={isLoading ? "Generating": "Generate" }
+          text={isLoading ? "Generating" : "Generate"}
           onClick={() => handleSearch()}
           disabled={disabled}
         ></SearchButton>

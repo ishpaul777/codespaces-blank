@@ -11,10 +11,12 @@ import (
 type generateRequest struct {
 	//Prompt is the prompt that we sent to the generative model for generating images
 	Prompt string `json:"prompt"`
-	//Model is the name of the generative model that we are using
-	Model string `json:"model"`
+	//Provider is the name of the generative model that we are using
+	Provider string `json:"provider"`
 	//NofImages is the number of images that we want to generate
 	NofImages int32 `json:"n"`
+	// Model is the name of the model that we want to use
+	Model string `json:"model"`
 }
 
 func (h *httpHandler) generateImages(w http.ResponseWriter, r *http.Request) {
@@ -27,11 +29,11 @@ func (h *httpHandler) generateImages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if requestBody.Model == "" {
-		requestBody.Model = "openai"
+	if requestBody.Provider == "" {
+		requestBody.Provider = "openai"
 	}
 
-	images, err := h.imageService.GenerateImage(requestBody.Model, requestBody.NofImages, requestBody.Prompt)
+	images, err := h.imageService.GenerateImage(requestBody.Provider, requestBody.Model, requestBody.NofImages, requestBody.Prompt)
 	if err != nil {
 		h.logger.Error("error generating images", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))

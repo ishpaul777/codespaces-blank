@@ -7,7 +7,7 @@ import (
 )
 
 type PromptService interface {
-	GenerateText(model string, userID uint, input, generateFor string, maxTokens uint) (*models.Prompt, error)
+	GenerateText(provider string, userID uint, input, generateFor string, maxTokens uint) (*models.Prompt, error)
 }
 
 type promptService struct {
@@ -42,8 +42,8 @@ func constructPrompt(input, generateFor string) string {
 	return GetPromptPrefix(generateFor) + input
 }
 
-func (p *promptService) GenerateText(model string, userID uint, input, generateFor string, maxTokens uint) (*models.Prompt, error) {
-	generativeModel := generative_model.New(model)
+func (p *promptService) GenerateText(provider string, userID uint, input, generateFor string, maxTokens uint) (*models.Prompt, error) {
+	generativeModel := generative_model.NewTextGenerativeModel(provider)
 
 	err := generativeModel.LoadConfig()
 	if err != nil {

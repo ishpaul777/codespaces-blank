@@ -13,7 +13,7 @@ type generateRequest struct {
 	GenerateFor string `json:"generate_for"`
 	InputPrompt string `json:"input"`
 	MaxTokens   uint   `json:"max_tokens"`
-	Model       string `json:"model"`
+	Provider    string `json:"provider"`
 }
 
 func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
@@ -31,11 +31,11 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if requestBody.Model == "" {
-		requestBody.Model = "openai"
+	if requestBody.Provider == "" {
+		requestBody.Provider = "openai"
 	}
 
-	prompt, err := h.promptService.GenerateText(requestBody.Model, uint(uID), requestBody.InputPrompt, requestBody.GenerateFor, requestBody.MaxTokens)
+	prompt, err := h.promptService.GenerateText(requestBody.Provider, uint(uID), requestBody.InputPrompt, requestBody.GenerateFor, requestBody.MaxTokens)
 
 	if err != nil {
 		h.logger.Error("error generating text", "error", err.Error())
