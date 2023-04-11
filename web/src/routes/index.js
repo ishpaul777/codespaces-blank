@@ -4,7 +4,7 @@ import  ChatPage  from "../pages/chats/dashboard";
 import DocumentPage from "../pages/documents";
 import Document from "../pages/documents/create";
 import ImagePage from "../pages/images";
-
+import History from "../pages/history/history";
 export const routes = [
   {
     path: "/",
@@ -25,6 +25,10 @@ export const routes = [
       {
         path: "/images",
         element: <ImagePage />,
+      },
+      {
+        path: "/history",
+        element: <History />,
       },
     ],
   },
