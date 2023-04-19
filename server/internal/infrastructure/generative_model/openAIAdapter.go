@@ -106,3 +106,36 @@ func (o *OpenAIAdapter) GenerateVariation(model string, image *os.File, nOfImage
 	return generatedImages, nil
 }
 
+func (o *OpenAIAdapter) GenerateResponse(model string, messages []models.Message) ([]models.Message, *models.Usage, error) {
+	requestMessages := make([]openai.ChatCompletionMessage, 0)
+	for _, message := range messages {
+		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
+			Role:    message.Role,
+			Content: message.Content,
+		})
+	}
+
+	req := openai.ChatCompletionRequest{
+		Model:    model,
+		Messages: requestMessages,
+	}
+
+	ctx := context.Background()
+	resp, err := o.Client.CreateChatCompletion(ctx, req)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	messages = append(messages, models.Message{
+		Role:    resp.Choices[0].Message.Role,
+		Content: resp.Choices[0].Message.Content,
+	})
+
+	usage := &models.Usage{
+		PromptTokens:     resp.Usage.PromptTokens,
+		CompletionTokens: resp.Usage.CompletionTokens,
+		TotalTokens:      resp.Usage.TotalTokens,
+	}
+
+	return messages, usage, nil
+}

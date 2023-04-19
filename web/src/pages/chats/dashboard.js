@@ -1,106 +1,209 @@
-import React from "react";
-import chat from "../../assets/icons/chat.svg";
-import home from "../../assets/icons/home.svg";
-import documents from "../../assets/icons/documents.svg";
-import templates from "../../assets/icons/templates.svg";
-import images from "../../assets/icons/images.svg";
+import React, { useEffect, useRef, useState } from "react";
+
+
+import {
+  MdOutlineClearAll,
+  MdOutlineCreateNewFolder,
+  MdKeyboardBackspace,
+} from "react-icons/md";
+import { HiPlus } from "react-icons/hi";
+import { FaRobot } from "react-icons/fa";
+import { AiOutlineUser } from "react-icons/ai";
+import sendButton from "../../assets/icons/send-button.svg";
+import { BeatLoader, ClipLoader } from "react-spinners";
+import ReactMarkdown, { Options } from "react-markdown";
+import rehypeMathjax from "rehype-mathjax";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import { getChatResponse } from "../../actions/chat";
+import { useNavigate } from "react-router-dom";
+
 
 export default function ChatPage() {
+  const navigate = useNavigate();
+
+  const initialPrompt =
+    "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown.";
+  const styles = {
+    fileIconSize: "24px",
+    iconSize: "20px",
+  };
+
+  const chatOptionsList = [
+    {
+      title: "Clear conversations",
+      icon: <MdOutlineClearAll size={styles.iconSize} />,
+      onClick: () => {
+        setChat([]);
+        setChatID(null);
+      },
+    },
+    {
+      title: "Back",
+      icon: <MdKeyboardBackspace size={styles.iconSize} />,
+      onClick: () => {
+        navigate('/chats')
+      },
+    },
+  ];
+
+  const [chat, setChat] = useState([]);
+
+  const [chatID, setChatID] = useState(null);
+
+  const [currentPrompt, setCurrentPrompt] = useState("");
+
+  // loading state for chat response
+  const [loading, setLoading] = useState(false);
+
+  const handlePromptChange = (e) => {
+    setCurrentPrompt(e.target.value);
+  };
+
+  const handleChatSubmit = () => {
+    setLoading(true);
+    let currentMessage = {};
+    currentMessage.role = "user";
+
+    if (!chatID) {
+      currentMessage.content = initialPrompt + currentPrompt;
+    } else {
+      currentMessage.content = currentPrompt;
+    }
+
+    const newMessages = [...chat, currentMessage];
+
+    setChat(newMessages);
+    setCurrentPrompt("");
+
+    getChatResponse(chatID, newMessages, "gpt-3.5-turbo", "openai")
+      .then((data) => {
+        if (!chatID) {
+          setChatID(data.id);
+        }
+        setChat(data?.messages);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const AlwaysScrollToBottom = () => {
+    const elementRef = useRef();
+    useEffect(() => elementRef.current.scrollIntoView({ behavior: "smooth" }));
+    return <div ref={elementRef} />;
+  };
+
+  const handleKeypress = (e) => {
+    console.log('on key down')
+    //it triggers by pressing the enter key
+    if (e.keyCode === 13) {
+      handleChatSubmit();
+    }
+  };
+
   return (
     // chat container, it has 2 sections
     // 1. chat list
     // 2. chat component
-    <div className={`grid grid-cols-[2fr_8fr] h-[100vh]`}>
-      <div className="bg-white h-full flex justify-center items-center p-[7px]">
-        <div className="w-[88%] h-[95%] flex flex-col justify-between items-start gap-2 p-0">
-          <div className="flex flex-row items-start gap-[10%] w-[101%] h-[6%] p-0">
-            <div className="  flex flex-row  items-center w-4/5 h-full not-italic font-normal text-sm leading-[22px] border rounded border-solid border-[#1E1E1E] cursor-pointer ">
-              <img className="ml-8 mr-2" src={chat} alt="chat" />
-              <div>New Chat</div>
-            </div>
-            <div className="flex justify-center items-center w-[30%] h-[100%] border rounded border-solid border-[#1E1E1E] cursor-pointer">
-              <img src={chat} alt="chat" />
-            </div>
-          </div>
-          <div className="flex flex-col items-start w-4/5 h-[35%]">
-            <div className="flex flex-row justify-center items-center gap-2 w-full h-[17%] rounded px-[12%] py-0 cursor-pointer">
-              <img src={home} alt="" />
-              <div className="h-[50%] w-[90%] flex items-center">
-                Clear Connversations
-              </div>
-            </div>
-            <div className="flex flex-row justify-center items-center gap-2 w-full h-[17%] rounded px-[12%] py-0 cursor-pointer">
-              <img src={documents} alt="" />
-              <div className="h-[50%] w-[90%] flex items-center">
-                Import Data
-              </div>
-            </div>
-            <div className=" flex flex-row justify-center items-center gap-2 w-full h-[17%] rounded px-[12%] py-0 cursor-pointer">
-              <img src={images} alt="" />
-              <div className="h-[50%] w-[90%] flex items-center">
-                Export Data
-              </div>
-            </div>
-            <div className=" flex flex-row justify-center items-center gap-2 w-full h-[17%] rounded px-[12%] py-0 cursor-pointer">
-              <img src={templates} alt="" />
-              <div className="h-[50%] w-[90%] flex items-center">
-                Light Mode
-              </div>
-            </div>
-            <div className="flex flex-row justify-center items-center gap-2 w-full h-[17%] rounded px-[12%] py-0 cursor-pointer">
-              <img src={templates} alt="" />
-              <div className="h-[50%] w-[90%] flex items-center">
-                OpenAI API Keys
-              </div>
-            </div>
-            <div className="flex flex-row justify-center items-center gap-2 w-full h-[17%] rounded px-[12%] py-0 cursor-pointer">
-              <img src={templates} alt="" />
-              <div className="h-[50%] w-[90%] flex items-center">
-                Plugin Keys
-              </div>
-            </div>
-          </div>
+    <div className={`grid grid-cols-[15fr_85fr] h-[100vh]`}>
+      <div className="bg-white h-full flex flex-col justify-between items-center p-7">
+        <div className="grid grid-cols-[4fr_1fr] gap-2">
+          <button className="py-2 px-3 border rounded-md flex items-center gap-2 cursor-pointer">
+            <HiPlus size={styles.iconSize} />
+            <span className="text-lg">New Chat</span>
+          </button>
+          <button className="py-2 px-3 border rounded-md cursor-pointer">
+            <MdOutlineCreateNewFolder size={styles.fileIconSize} />
+          </button>
+        </div>
+        {/* <div className="w-full text-center"> 
+          <button className="w-4/5 py-4 px-6 border rounded-md flex items-center gap-2 cursor-pointer">
+            <HiPlus size={styles.iconSize} /> 
+            <span className="text-lg">New Chat</span>
+          </button>
+        </div> */}
+        <div className="w-full">
+          <div className="w-[1px] bg-black"></div>
+          <ul className="w-full flex justify-center flex-col">
+            {chatOptionsList.map((item, index) => (
+              <li
+                key={index}
+                className="flex items-center gap-6 ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
+                onClick={item.onClick}
+              >
+                {item.icon}
+                <span className="text-base">{item.title}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-      <div className="bg-chat-background h-full">
-        <div className="box-border flex flex-col items-start absolute w-[70%] h-[60%] p-0 left-[22%] top-[6%] ">
-          <div className=" box-border bg-[#f3f4f6 flex flex-row items-center gap-2 w-full h-[8%] p-[3%] rounded-lg not-italic font-medium text-sm leading-5 text-[#1E1E1E]">
-            Help me create a short story about blogging
-          </div>
-          <div className=" bg-[#e4e7ed] flex flex-row items-center gap-2 w-full h-[92%] p-[2%] rounded-lg">
-            <div className=" w-[70%] h-full not-italic font-medium text-sm text-[#1E1E1E]">
-              Once upon a time there was a blogger who wanted to make their
-              voice heard. After months of hard work and dedication, they had
-              finally managed to create a blog that people could read and
-              appreciate.
-              <br />
-              <br />
-              The blog contained articles about various topics from health and
-              wellbeing to politics and current events. It began to grow in
-              popularity quickly as the blogger had something unique to share
-              with their readers. They were passionate about their work and
-              wanted to do whatever it took to make sure that the blog gained
-              more readership each day.
-              <br />
-              <br />
-              One day, while browsing online, the blogger came across an
-              opportunity that could make all their dreams come true - a chance
-              to write for one of the biggest online publications in the world!
-              Excited by this prospect, they applied straight away and waited
-              anxiously for a response.
-              <br />
-              <br />
-              Soon enough they got word back that they had been accepted! The
-              blogger was overjoyed and couldn't wait to start writing for this
-              amazing publication. However, despite being paid for their work,
-              the blogger continued running their own personal blog every week
-              just for fun - as it had started something special in them which
-              no amount of fame or money could ever replace.
+      <div className="h-full grid grid-rows-[9fr_1fr] bg-chat-background">
+        <div className="w-full overflow-y-auto flex h-[90vh] flex-col">
+          {chat.map((item, index) => (
+            <div
+              key={index}
+              className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${
+                item.role === "user" && "bg-[#E4E7ED]"
+              }`}
+            >
+              <div className={`w-3/5 grid grid-cols-[1fr_9fr] gap-4`}>
+                <div>
+                  {item.role === "user" ? (
+                    <AiOutlineUser size={styles.fileIconSize}></AiOutlineUser>
+                  ) : (
+                    <FaRobot size={styles.fileIconSize}></FaRobot>
+                  )}
+                </div>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeMathjax]}
+                  className="prose"
+                >
+                  {index === 0
+                    ? item.content.replace(initialPrompt, "")
+                    : item.content}
+                </ReactMarkdown>
+              </div>
+            </div>
+          ))}
+          <AlwaysScrollToBottom />
+          {loading && (
+            <div className="flex justify-center mt-4">
+              <BeatLoader size={styles.iconSize} color={"#CED0D4"} />
+            </div>
+          )}
+        </div>
+        {/* chat input container */}
+        <div className="px-8 py-4 w-full flex justify-center items-center">
+          {/* input division */}
+          <div
+            className={`w-4/5 shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr]`}
+          >
+            <input
+              value={currentPrompt}
+              className="outline-none text-base"
+              placeholder="Type a message"
+              onChange={handlePromptChange}
+              onKeyDown={handleKeypress}
+            ></input>
+            <div className="flex flex-row-reverse">
+              <button
+                className={`flex items-center justify-center`}
+                onClick={() => handleChatSubmit()}
+              >
+                {!loading ? (
+                  <img src={sendButton} />
+                ) : (
+                  <ClipLoader size={20} color={"#000"} />
+                )}
+              </button>
             </div>
           </div>
-        </div>
-        <div className="">
-          
         </div>
       </div>
     </div>

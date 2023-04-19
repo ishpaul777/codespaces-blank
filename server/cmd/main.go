@@ -32,7 +32,7 @@ func main() {
 		// now using custom logger to log infos, errors, warnings
 		logger.Fatal("error connecting to database")
 	}
-
+	// database.GetClient().(*gorm.DB).AutoMigrate(&models.Chat{})
 	app := app.NewApp()
 	app.SetLogger(logger)
 	app.SetConfig(config)

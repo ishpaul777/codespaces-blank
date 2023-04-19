@@ -15,12 +15,12 @@ module.exports = {
         "form-label": "#344054",
         "border-secondary": "#ececf1",
         "table-text": "#475467",
-        "chat-background": " #F3F4F6"
+        "chat-background": "#F3F4F6",
       },
       boxShadow: {
         primary: "0px 1px 2px rgba(16, 24, 40, 0.05)",
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };

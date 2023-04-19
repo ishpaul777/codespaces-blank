@@ -9,8 +9,6 @@ import Documents from "../../assets/icons/documents.svg";
 import Home from "../../assets/icons/home.svg";
 import History from "../../assets/icons/history.svg";
 import Images from "../../assets/icons/images.svg";
-import InfoIcon from "../../assets/icons/info-icon.svg";
-import LogoutHover from "../../assets/icons/logout-hover.svg";
 import Logout from "../../assets/icons/logout.svg";
 import Profile from "../../assets/icons/profile.svg";
 import Templates from "../../assets/icons/templates.svg";
