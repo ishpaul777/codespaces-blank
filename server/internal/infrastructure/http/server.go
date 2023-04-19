@@ -7,6 +7,7 @@ import (
 	application "github.com/factly/tagore/server/app"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/domain/services"
+	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/chat"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/documents"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/images"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompts"
@@ -53,14 +54,20 @@ func RunHTTPServer(app *application.App) {
 		logger.Fatal("error creating image repository")
 	}
 
+	chatRepository, err := repositories.NewChatRepository(db)
+	if err != nil {
+		logger.Fatal("error creating chat repository")
+	}
+
 	promptService := services.NewPromptService(promptRepository)
 	documentService := services.NewDocumentService(documentRepository)
 	imageService := services.NewImageService(imageRepository)
+	chatService := services.NewChatService(chatRepository)
 
 	prompts.InitRoutes(router, promptService, logger)
 	documents.InitRoutes(router, documentService, logger)
 	images.InitRoutes(router, imageService, logger)
-
+	chat.InitRoutes(router, chatService, logger)
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Server.Port), router)
 	if err != nil {
 		logger.Fatal(fmt.Sprintf("error starting HTTP server: %s", err.Error()))

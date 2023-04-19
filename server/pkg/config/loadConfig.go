@@ -16,8 +16,6 @@ type Config struct {
 	Logger   LoggerConfig
 }
 
-
-
 type ServerConfig struct {
 	Port string
 }

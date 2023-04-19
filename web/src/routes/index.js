@@ -1,6 +1,6 @@
 import Layout from "../components/layout/layout";
 import { HomePage } from "../pages";
-import  ChatPage  from "../pages/chats/dashboard";
+import ChatPage from "../pages/chats/dashboard";
 import DocumentPage from "../pages/documents";
 import Document from "../pages/documents/create";
 import ImagePage from "../pages/images";

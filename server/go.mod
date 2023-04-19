@@ -3,11 +3,12 @@ module github.com/factly/tagore/server
 go 1.19
 
 require (
+	github.com/factly/kavach-server v0.0.0-20210611204209-88cf978b065b
 	github.com/factly/x v0.0.93
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/cors v1.2.1
-	github.com/jinzhu/gorm v1.9.16
 	github.com/sashabaranov/go-openai v1.5.6
+	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.15.0
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
 	gorm.io/driver/postgres v1.5.0
@@ -17,12 +18,12 @@ require (
 require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.3.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/lib/pq v1.3.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect

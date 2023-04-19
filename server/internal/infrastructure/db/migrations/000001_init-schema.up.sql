@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS prompts (
   output TEXT NOT NULL,
   finish_reason TEXT NOT NULL
 );
-
 -- documents database schema
 CREATE TABLE IF NOT EXISTS documents (
   id SERIAL PRIMARY KEY,
@@ -24,11 +23,4 @@ CREATE TABLE IF NOT EXISTS documents (
   description TEXT NOT NULL
 )
 
-
--- user database schema
-CREATE TABLE IF NOT EXISTS users (
-  id SERIAL PRIMARY KEY
-);
-
-
--- CREATE TABLE "document_authors" ("user_id" bigint,"document_id" bigint,PRIMARY KEY ("user_id","document_id"),CONSTRAINT "fk_document_authors_document" FOREIGN KEY ("document_id") REFERENCES "documents"("id"),CONSTRAINT "fk_document_authors_user" FOREIGN KEY ("user_id") REFERENCES "users"("id"))
+-- CREATE TABLE "chats" ("id" bigserial,"created_at" timestamptz,"updated_at" timestamptz,"deleted_at" timestamptz,"created_by_id" bigint,"updated_by_id" bigint,"messages" jsonb,"usage" jsonb,"model" text,PRIMARY KEY ("id"))

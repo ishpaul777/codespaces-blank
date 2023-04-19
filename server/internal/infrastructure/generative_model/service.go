@@ -18,6 +18,10 @@ type ImageGenerativeModel interface {
 	GenerateVariation(model string, image *os.File, nOfImages int32) ([]models.GeneratedImage, error)
 }
 
+type ChatGenerativeModel interface {
+	LoadConfig() error
+	GenerateResponse(model string, messages []models.Message) ([]models.Message, *models.Usage, error)
+}
 
 func NewTextGenerativeModel(provider string) TextGenerativeModel {
 	switch provider {
@@ -34,6 +38,15 @@ func NewImageGenerativeModel(provider string) ImageGenerativeModel {
 		return NewOpenAIAdapter()
 	case "stableDiffusion":
 		return NewStableDiffusionAdapter()
+	default:
+		return NewOpenAIAdapter()
+	}
+}
+
+func NewChatGenerativeModel(provider string) ChatGenerativeModel {
+	switch provider {
+	case "openai":
+		return NewOpenAIAdapter()
 	default:
 		return NewOpenAIAdapter()
 	}

@@ -26,6 +26,21 @@ services:
   ###########################################################################
   #######                  APP SERVICES                               #######
   ###########################################################################
+  tagore-migrate:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.migrate
+    depends_on: 
+      postgres:
+        condition: service_healthy
+    environment:
+      - WAIT_HOSTS=postgres:5432, kratos:4434 , keto:4466
+    volumes:
+      - ./server:/app
+    networks:
+      - tagore
+
+
   tagore-server:
     build: 
       context: ./server
@@ -35,11 +50,11 @@ services:
     volumes:
       - ./server:/app
       - ./server/modelData:/app/modelData
-    depends_on:
-      postgres:
-        condition: service_healthy
+    depends_on: 
+      - tagore-migrate
     networks:
       - tagore
+
 
   tagore-web:
     build:
@@ -61,21 +76,6 @@ services:
     stdin_open: true
     networks:
       - tagore
-
-  migrate:
-    image: migrate/migrate
-    env_file:
-      - ./server/config.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - './server/internal/infrastructure/db:/database'
-    # command: [ "-path", "./database/migrations", "-database",  "postgres://$DATABASE_USERNAME:$DATABASE_PASSWORD@$DATABASE_HOST:5432/$DATABASE_NAME?sslmode=disable", "up"] 
-    command: [ "-path", "./database/migrations", "-database",  "postgres://postgres:postgres@postgres:5432/tagore?sslmode=disable", "up"] 
-
-    networks:
-      - tagore
-                                   
+               
 networks:
   tagore:
