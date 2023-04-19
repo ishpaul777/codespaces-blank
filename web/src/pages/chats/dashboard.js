@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-
 import {
   MdOutlineClearAll,
   MdOutlineCreateNewFolder,
@@ -17,7 +16,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { getChatResponse } from "../../actions/chat";
 import { useNavigate } from "react-router-dom";
-
+import { CodeBlock } from "../../components/codeblock";
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ export default function ChatPage() {
       title: "Back",
       icon: <MdKeyboardBackspace size={styles.iconSize} />,
       onClick: () => {
-        navigate('/chats')
+        navigate("/chats");
       },
     },
   ];
@@ -98,7 +97,6 @@ export default function ChatPage() {
   };
 
   const handleKeypress = (e) => {
-    console.log('on key down')
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
       handleChatSubmit();
@@ -109,7 +107,7 @@ export default function ChatPage() {
     // chat container, it has 2 sections
     // 1. chat list
     // 2. chat component
-    <div className={`grid grid-cols-[15fr_85fr] h-[100vh]`}>
+    <div className={`grid grid-cols-[2fr_8fr] h-[100vh]`}>
       <div className="bg-white h-full flex flex-col justify-between items-center p-7">
         <div className="grid grid-cols-[4fr_1fr] gap-2">
           <button className="py-2 px-3 border rounded-md flex items-center gap-2 cursor-pointer">
@@ -163,6 +161,24 @@ export default function ChatPage() {
                   remarkPlugins={[remarkGfm, remarkMath]}
                   rehypePlugins={[rehypeMathjax]}
                   className="prose"
+                  components={{
+                    code({ node, inline, className, children, ...props }) {
+                      const match = /language-(\w+)/.exec(className || "");
+
+                      return !inline ? (
+                        <CodeBlock
+                          key={Math.random()}
+                          language={(match && match[1]) || ""}
+                          value={String(children)?.replace(/\n$/, "")}
+                          {...props}
+                        />
+                      ) : (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
                 >
                   {index === 0
                     ? item.content.replace(initialPrompt, "")

@@ -1,9 +1,10 @@
-package main
+package cmd
 
 import (
 	"log"
 
 	"github.com/factly/tagore/server/app"
+	"github.com/spf13/cobra"
 
 	"github.com/factly/tagore/server/internal/infrastructure/db"
 	"github.com/factly/tagore/server/internal/infrastructure/http"
@@ -13,7 +14,19 @@ import (
 	loggerPackage "github.com/factly/tagore/server/pkg/logger"
 )
 
-func main() {
+func init() {
+	rootCmd.AddCommand(serveCmd)
+}
+
+var serveCmd = &cobra.Command{
+	Use:   "serve",
+	Short: "Starts server for tagore-server.",
+	Run: func(cmd *cobra.Command, args []string) {
+		serve()
+	},
+}
+
+func serve() {
 	// initially using log package to log errors because custom logger is not yet initialized
 	configService := config.New()
 	config, err := configService.LoadConfig()
