@@ -90,6 +90,69 @@ export default function ChatPage() {
       });
   };
 
+  const handleChatStream = () => {
+    setLoading(true);
+    let currentMessage = {};
+    currentMessage.role = "user";
+
+    if (!chatID) {
+      currentMessage.content = initialPrompt + currentPrompt;
+    } else {
+      currentMessage.content = currentPrompt;
+    }
+
+    const newMessages = [...chat, currentMessage];
+
+    setChat(newMessages);
+    setCurrentPrompt("");
+
+    var url = new URL(
+      process.env.REACT_APP_TAGORE_API_URL + "/chat/completions/stream"
+    );
+
+    var params = {
+      prompt: currentMessage.content,
+      chat_id: chatID,
+      model: "gpt-3.5-turbo",
+      provider: "openai",
+    };
+
+    url.search = new URLSearchParams(params).toString();
+
+    const source = new EventSource(url);
+
+    source.onmessage = (event) => {
+      if (event.data === "[DONE]") {
+        source.close();
+        setLoading(false);
+        return;
+      }
+
+      setChat((prevChat) => {
+        // add new message to the chat if the last chat was of the user or update the last chat if the last chat was of the bot
+        if (
+          prevChat.length === 0 ||
+          prevChat[prevChat.length - 1].role === "user"
+        ) {
+          return [...prevChat, { role: "bot", content: event.data }];
+        }
+        prevChat[prevChat.length - 1].content += `${event.data}`;
+        return [...prevChat];
+      });
+    };
+
+    source.onerror = (event) => {
+      source.close();
+      if (String(event.data).includes("[DONE]")) {
+        console.log("completed stream");
+        setLoading(false);
+        return;
+      }
+      setLoading(false);
+    };
+  };
+
+  // console.log(chat[chat.length - 1]);
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef();
     useEffect(() => elementRef.current.scrollIntoView({ behavior: "smooth" }));
@@ -99,31 +162,71 @@ export default function ChatPage() {
   const handleKeypress = (e) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
-      handleChatSubmit();
+      handleChatStream();
     }
   };
 
+  const [chatHistory, setChatHistory] = useState([]);
+  useEffect(() => {
+    fetch(
+      `${process.env.REACT_APP_TAGORE_API_URL}/chat/history?` +
+        new URLSearchParams({
+          limit: 20,
+          offset: 0,
+        }),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User": 1
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setChatHistory(data.chats);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const maxListChars = 25;
   return (
     // chat container, it has 2 sections
     // 1. chat list
     // 2. chat component
     <div className={`grid grid-cols-[2fr_8fr] h-[100vh]`}>
-      <div className="bg-white h-full flex flex-col justify-between items-center p-7">
-        <div className="grid grid-cols-[4fr_1fr] gap-2">
-          <button className="py-2 px-3 border rounded-md flex items-center gap-2 cursor-pointer">
-            <HiPlus size={styles.iconSize} />
-            <span className="text-lg">New Chat</span>
-          </button>
-          <button className="py-2 px-3 border rounded-md cursor-pointer">
-            <MdOutlineCreateNewFolder size={styles.fileIconSize} />
-          </button>
+      <div className="bg-white h-full flex flex-col justify-between items-center p-4">
+        <div className="w-full flex flex-col gap-4">
+          <div className="grid grid-cols-[4fr_1fr] gap-2 w-full">
+            <button className="p-2 hover:bg-light-gray  border rounded-md flex items-center gap-2 cursor-pointer">
+              <HiPlus size={styles.iconSize} />
+              <span className="text-lg">New Chat</span>
+            </button>
+            <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
+              <MdOutlineCreateNewFolder size={styles.fileIconSize} />
+            </button>
+          </div>
+          <input
+            className="w-full p-3 border border-gray-300 rounded-md"
+            placeholder="Search prompt"
+          ></input>
+          <hr class="h-px bg-gray-300 border-0"></hr>
+          <ul>
+          {
+            chatHistory.map((item, index) => {
+              return (
+                <li className="text-lg">
+                  <span>{(item?.messages[0].content?.replace(initialPrompt, ""))?.length < maxListChars ? item?.messages[0].content?.replace(initialPrompt, "") : `${item?.messages[0].content?.replace(initialPrompt, "")}`.slice(0, maxListChars) + '...' }</span>
+                  
+                </li>
+              )
+            })
+          }
+          </ul>
+          
         </div>
-        {/* <div className="w-full text-center"> 
-          <button className="w-4/5 py-4 px-6 border rounded-md flex items-center gap-2 cursor-pointer">
-            <HiPlus size={styles.iconSize} /> 
-            <span className="text-lg">New Chat</span>
-          </button>
-        </div> */}
         <div className="w-full">
           <div className="w-[1px] bg-black"></div>
           <ul className="w-full flex justify-center flex-col">
@@ -142,51 +245,55 @@ export default function ChatPage() {
       </div>
       <div className="h-full grid grid-rows-[9fr_1fr] bg-chat-background">
         <div className="w-full overflow-y-auto flex h-[90vh] flex-col">
-          {chat.map((item, index) => (
-            <div
-              key={index}
-              className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${
-                item.role === "user" && "bg-[#E4E7ED]"
-              }`}
-            >
-              <div className={`w-3/5 grid grid-cols-[1fr_9fr] gap-4`}>
-                <div>
-                  {item.role === "user" ? (
-                    <AiOutlineUser size={styles.fileIconSize}></AiOutlineUser>
-                  ) : (
-                    <FaRobot size={styles.fileIconSize}></FaRobot>
-                  )}
-                </div>
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeMathjax]}
-                  className="prose"
-                  components={{
-                    code({ node, inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || "");
+          {chat.map((item, index) => {
+            // console.log(item.content)
+            return (
+              <div
+                key={index}
+                className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${
+                  item.role === "user" && "bg-[#E4E7ED]"
+                }`}
+              >
+                <div className={`w-3/5 grid grid-cols-[1fr_9fr] gap-4`}>
+                  <div>
+                    {item.role === "user" ? (
+                      <AiOutlineUser size={styles.fileIconSize}></AiOutlineUser>
+                    ) : (
+                      <FaRobot size={styles.fileIconSize}></FaRobot>
+                    )}
+                  </div>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeMathjax]}
+                    className="prose"
+                    components={{
+                      code({ node, inline, className, children, ...props }) {
+                        const match = /language-(\w+)/.exec(className || "");
 
-                      return !inline ? (
-                        <CodeBlock
-                          key={Math.random()}
-                          language={(match && match[1]) || ""}
-                          value={String(children)?.replace(/\n$/, "")}
-                          {...props}
-                        />
-                      ) : (
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      );
-                    },
-                  }}
-                >
-                  {index === 0
-                    ? item.content.replace(initialPrompt, "")
-                    : item.content}
-                </ReactMarkdown>
+                        return !inline ? (
+                          <CodeBlock
+                            key={Math.random()}
+                            language={(match && match[1]) || ""}
+                            // value={String(children)}
+                            value={String(children)?.replace(/\n$/, "")}
+                            {...props}
+                          />
+                        ) : (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                    }}
+                  >
+                    {index === 0
+                      ? item.content.replace(initialPrompt, "")
+                      : item.content}
+                  </ReactMarkdown>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           <AlwaysScrollToBottom />
           {loading && (
             <div className="flex justify-center mt-4">
@@ -210,7 +317,7 @@ export default function ChatPage() {
             <div className="flex flex-row-reverse">
               <button
                 className={`flex items-center justify-center`}
-                onClick={() => handleChatSubmit()}
+                onClick={() => handleChatStream()}
               >
                 {!loading ? (
                   <img src={sendButton} />

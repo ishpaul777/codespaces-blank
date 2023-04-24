@@ -6,10 +6,15 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/infrastructure/generative_model"
+	"github.com/factly/tagore/server/pkg/helper"
 )
 
 type ChatService interface {
 	GenerateResponse(userID uint, chatID *uint, provider, model string, messages []models.Message) (*models.Chat, error)
+	// GenerateStreamingResponse generates response for a chat in a streaming fashion
+	GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, messages []models.Message, dataChan chan<- string, errChan chan<- error) error
+
+	GetChatHistoryByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error)
 }
 
 // chatService is a concrete implementation of ChatService interface
@@ -52,4 +57,12 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 
 	return chat, nil
 	// model := generative_model.New("openai")
+}
+
+func (c *chatService) GetChatHistoryByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error) {
+	return c.chatRepository.GetAllChatsByUser(userID, pagination)
+}
+
+func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, messages []models.Message, dataChan chan<- string, errChan chan<- error) error {
+	return nil
 }

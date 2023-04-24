@@ -17,7 +17,10 @@ function LogoutModal() {
               <div className="flex flex-col items-start gap-1 w-[352px] h-7 p-0 not-italic font-semibold text-lg leading-7">
                 Are you sure you want to log out?
               </div>
-              <button  onClick={() => setShowModal(false)} className="relative right-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="relative right-2"
+              >
                 <img src={XClose} alt="Close" />
               </button>
             </div>

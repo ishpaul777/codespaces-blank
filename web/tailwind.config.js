@@ -16,6 +16,7 @@ module.exports = {
         "border-secondary": "#ececf1",
         "table-text": "#475467",
         "chat-background": "#F3F4F6",
+        "light-gray": "#F2F2F2",
       },
       boxShadow: {
         primary: "0px 1px 2px rgba(16, 24, 40, 0.05)",
