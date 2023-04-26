@@ -1,6 +1,8 @@
 package chats
 
 import (
+	"errors"
+
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 )
@@ -17,7 +19,11 @@ func (p *PGChatsRepository) SaveChat(userID uint, chatID *uint, model string, me
 	}
 
 	// chat is the chat object that will be saved in the database
+	if len(messages) == 0 {
+		return nil, errors.New("messages cannot be empty")
+	}
 	chat := models.Chat{
+		Title:    messages[0].Content,
 		Messages: messageRaw,
 		Usage:    usageRaw,
 	}
@@ -34,7 +40,7 @@ func (p *PGChatsRepository) SaveChat(userID uint, chatID *uint, model string, me
 	} else {
 		chat.UpdatedByID = userID
 		// if chatID is not nil, it means that the chat already exists and needs to be updated
-		err = p.client.Model(&chat).Where("id = ?", chatID).Updates(&chat).Error
+		err = p.client.Model(&chat).Where("id = ?", *chatID).Updates(&chat).Error
 		if err != nil {
 			return nil, err
 		}

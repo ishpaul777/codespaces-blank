@@ -3,9 +3,13 @@ package generative_model
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"io"
 	"os"
 
 	"github.com/factly/tagore/server/internal/domain/models"
+	"github.com/factly/tagore/server/internal/domain/repositories"
+	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -138,4 +142,75 @@ func (o *OpenAIAdapter) GenerateResponse(model string, messages []models.Message
 	}
 
 	return messages, usage, nil
+}
+
+func (o *OpenAIAdapter) GenerateStreamingResponse(model string, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
+	messages := make([]models.Message, 0)
+
+	err := json.Unmarshal([]byte(chat.Messages), &messages)
+	if err != nil {
+		errChan <- err
+		return
+	}
+
+	requestMessages := make([]openai.ChatCompletionMessage, 0)
+	for _, message := range messages {
+		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
+			Role:    message.Role,
+			Content: message.Content,
+		})
+	}
+
+	// messages := make([]openai.ChatCompletionMessage, 0)
+
+	req := openai.ChatCompletionRequest{
+		Model:    model,
+		Messages: requestMessages,
+		Stream:   true,
+	}
+
+	ctx := context.Background()
+	stream, err := o.Client.CreateChatCompletionStream(ctx, req)
+	if err != nil {
+		errChan <- err
+		return
+	}
+
+	latestMessage := models.Message{}
+	latestMessage.Role = "assistant"
+
+	messages = append(messages, latestMessage)
+	for {
+		response, err := stream.Recv()
+		if errors.Is(err, io.EOF) {
+			_, dbErr := chatRepo.SaveChat(chat.CreatedByID, &chat.ID, model, messages, models.Usage{})
+			if dbErr != nil {
+				errChan <- dbErr
+				return
+			}
+		}
+
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		messages[len(messages)-1].Content += response.Choices[0].Delta.Content
+
+		msgStream, err := helper.ConvertToJSONB(messages)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		chat.Messages = msgStream
+
+		byteStream, err := json.Marshal(chat)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		dataChan <- string(byteStream)
+	}
 }

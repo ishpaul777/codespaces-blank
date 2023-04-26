@@ -17,6 +17,7 @@ func (h *httpHandler) routes() chi.Router {
 	router.Post("/completions", h.createChatResponse)
 	router.Get("/completions/stream", h.createChatResponseStream)
 	router.Get("/history", h.getAllChatsByUser)
+	router.Delete("/{chat_id}", h.deleteChat)
 	return router
 }
 

@@ -17,6 +17,7 @@ module.exports = {
         "table-text": "#475467",
         "chat-background": "#F3F4F6",
         "light-gray": "#F2F2F2",
+        "hover-on-white": "#E5E5E5",
       },
       boxShadow: {
         primary: "0px 1px 2px rgba(16, 24, 40, 0.05)",

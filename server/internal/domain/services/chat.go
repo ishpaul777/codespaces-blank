@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/factly/tagore/server/internal/domain/models"
@@ -12,9 +13,13 @@ import (
 type ChatService interface {
 	GenerateResponse(userID uint, chatID *uint, provider, model string, messages []models.Message) (*models.Chat, error)
 	// GenerateStreamingResponse generates response for a chat in a streaming fashion
-	GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, messages []models.Message, dataChan chan<- string, errChan chan<- error) error
+	GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, prompt string, dataChan chan<- string, errChan chan<- error)
 
+	// GetChatHistoryByUser returns all the chats for a user
 	GetChatHistoryByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error)
+
+	// DeleteChat deletes a chat by id and user id and returns the error if any
+	DeleteChat(userID, chatID uint) error
 }
 
 // chatService is a concrete implementation of ChatService interface
@@ -63,6 +68,75 @@ func (c *chatService) GetChatHistoryByUser(userID uint, pagination helper.Pagina
 	return c.chatRepository.GetAllChatsByUser(userID, pagination)
 }
 
-func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, messages []models.Message, dataChan chan<- string, errChan chan<- error) error {
-	return nil
+func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, prompt string, dataChan chan<- string, errChan chan<- error) {
+	// if chatID is nil, it means that the chat is new and needs to be created
+	// and if there are more than one messages, it means that the chat is not new
+	// and the chatID is required
+	// getting all the previous messages for the chat
+	var err error
+	chat := &models.Chat{}
+	if chatID != nil {
+
+		isOwner, err := c.chatRepository.IsUserChatOwner(userID, *chatID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		if !isOwner {
+			errChan <- errors.New("user is not the owner of the chat")
+			return
+		}
+
+		chat, err = c.chatRepository.GetChatByID(*chatID)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		newMessage := make([]models.Message, 0)
+
+		err = json.Unmarshal([]byte(chat.Messages), &newMessage)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		newMessage = append(newMessage, models.Message{
+			Content: prompt,
+			Role:    "user",
+		})
+
+		chat, err = c.chatRepository.SaveChat(userID, chatID, model, newMessage, models.Usage{})
+		if err != nil {
+			errChan <- err
+			return
+		}
+	} else {
+		newMessage := make([]models.Message, 0)
+
+		newMessage = append(newMessage, models.Message{
+			Content: prompt,
+			Role:    "user",
+		})
+
+		chat, err = c.chatRepository.SaveChat(userID, chatID, model, newMessage, models.Usage{})
+		if err != nil {
+			errChan <- err
+			return
+		}
+	}
+
+	generativeModel := generative_model.NewChatGenerativeModel(provider)
+	err = generativeModel.LoadConfig()
+	if err != nil {
+		errChan <- err
+		return
+	}
+
+	generativeModel.GenerateStreamingResponse(model, *chat, dataChan, errChan, c.chatRepository)
+}
+
+func (c *chatService) DeleteChat(userID, chatID uint) error {
+	return c.chatRepository.DeleteChat(userID, chatID)
 }

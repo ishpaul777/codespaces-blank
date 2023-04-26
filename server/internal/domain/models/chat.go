@@ -5,6 +5,8 @@ import "encoding/json"
 // Chat is a database model for type chat
 type Chat struct {
 	Base
+	// Title is the title of the chat
+	Title string `json:"title" gorm:"column:title;DEFAULT 'new title';not null;"`
 	// Messages stores the chat history in the json format
 	Messages json.RawMessage `json:"messages" gorm:"type:jsonb"`
 	// Usage stores the usage of the chatbot in the json format

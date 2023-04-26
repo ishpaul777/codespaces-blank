@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/factly/tagore/server/internal/domain/models"
+	"github.com/factly/tagore/server/internal/domain/repositories"
 )
 
 type TextGenerativeModel interface {
@@ -21,6 +22,7 @@ type ImageGenerativeModel interface {
 type ChatGenerativeModel interface {
 	LoadConfig() error
 	GenerateResponse(model string, messages []models.Message) ([]models.Message, *models.Usage, error)
+	GenerateStreamingResponse(model string, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 }
 
 func NewTextGenerativeModel(provider string) TextGenerativeModel {

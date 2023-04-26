@@ -17,7 +17,7 @@ func (p *PGChatsRepository) GetAllChatsByUser(userID uint, pagination helper.Pag
 	db := p.client.Model(&models.Chat{}).Where("created_by_id = ?", userID).Order("created_at DESC")
 
 	if pagination.SearchQuery != "" {
-		db = db.Where("messages ILIKE ?", "%"+pagination.SearchQuery+"%")
+		db = db.Where("title ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}
 
 	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Preload("ChatCollection").Find(&chats).Error
