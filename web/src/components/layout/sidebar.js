@@ -44,7 +44,7 @@ export function Sidebar() {
     {
       name: "Chat",
       icon: Chat,
-      linkTo: "/",
+      linkTo: "/chats/dashboard",
     },
   ];
 
