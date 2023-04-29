@@ -34,7 +34,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - WAIT_HOSTS=postgres:5432, kratos:4434 , keto:4466
+      - WAIT_HOSTS=postgres:5432
     volumes:
       - ./server:/app
     networks:
