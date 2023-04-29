@@ -383,11 +383,11 @@ export default function ChatPage() {
                         ?.replace(initialPrompt, "")
                         ?.replace(defaultPrompt, "")?.length < maxListChars
                         ? item?.title
-                            ?.replace(initialPrompt, "")
-                            ?.replace(defaultPrompt, "")
+                          ?.replace(initialPrompt, "")
+                          ?.replace(defaultPrompt, "")
                         : `${item?.title
-                            ?.replace(initialPrompt, "")
-                            .replace(defaultPrompt, "")}`.slice(
+                          ?.replace(initialPrompt, "")
+                          .replace(defaultPrompt, "")}`.slice(
                             0,
                             maxListChars
                           ) + "..."}
@@ -421,15 +421,13 @@ export default function ChatPage() {
               );
             })}
             <div
-              className={`flex ${
-                paginationChatHistory.page === 1
+              className={`flex ${paginationChatHistory.page === 1
                   ? "flex-row-reverse"
                   : "flex-row"
-              } ${
-                paginationChatHistory.offset !== 0 &&
+                } ${paginationChatHistory.offset !== 0 &&
                 chatCount > paginationChatHistory.limit &&
                 "justify-between"
-              } p-2 text-base cursor-pointer mt-4`}
+                } p-2 text-base cursor-pointer mt-4`}
             >
               {paginationChatHistory.page > 1 && (
                 <span
@@ -538,9 +536,8 @@ export default function ChatPage() {
             return (
               <div
                 key={index}
-                className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${
-                  item.role === "user" && "bg-[#E4E7ED]"
-                }`}
+                className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${item.role === "user" && "bg-[#E4E7ED]"
+                  }`}
               >
                 <div className={`w-3/5 grid grid-cols-[1fr_9fr] gap-4`}>
                   <div>
@@ -575,8 +572,8 @@ export default function ChatPage() {
                   >
                     {item.role === "user"
                       ? item.content
-                          .replace(initialPrompt, "")
-                          ?.replace(defaultPrompt, "")
+                        .replace(initialPrompt, "")
+                        ?.replace(defaultPrompt, "")
                       : item.content}
                   </ReactMarkdown>
                 </div>
