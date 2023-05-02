@@ -7,20 +7,24 @@ import (
 	"github.com/factly/tagore/server/internal/domain/repositories"
 )
 
-type TextGenerativeModel interface {
+type ConfigGenerativeModel interface {
 	LoadConfig() error
+}
+
+type TextGenerativeModel interface {
+	ConfigGenerativeModel
 	GenerateText(prompt string, maxTokens uint) (interface{}, string, error)
 	EditText(input string, instruction string) (interface{}, error)
 }
 
 type ImageGenerativeModel interface {
-	LoadConfig() error
+	ConfigGenerativeModel
 	GenerateImage(model string, nOfImages int32, prompt string) ([]models.GeneratedImage, error)
 	GenerateVariation(model string, image *os.File, nOfImages int32) ([]models.GeneratedImage, error)
 }
 
 type ChatGenerativeModel interface {
-	LoadConfig() error
+	ConfigGenerativeModel
 	GenerateResponse(model string, messages []models.Message) ([]models.Message, *models.Usage, error)
 	GenerateStreamingResponse(model string, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 }

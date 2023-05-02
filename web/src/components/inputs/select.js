@@ -14,3 +14,23 @@ export function Select({ label, onChange, initialValue, placeholder }) {
     </div>
   );
 }
+
+
+export function SelectTemperature({ label, description, onChange, initialValue, value }){
+  return (
+    <div placeholder="flex flex-col gap-2">
+      <label>{label}</label>
+      <p className="text-sm text-gray-500 mt-2">{description}</p>
+      <input
+        className="w-full p-2 border border-[#CED0D4] rounded-md bg-transparent"
+        onChange={onChange}
+        type="range"
+        min="0"
+        max="1"
+        step="0.1"
+        value={value}
+      >
+      </input>
+    </div>
+  )
+}

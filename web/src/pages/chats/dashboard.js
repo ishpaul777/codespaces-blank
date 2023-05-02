@@ -32,7 +32,7 @@ import { CodeBlock } from "../../components/codeblock";
 import { ToastContainer } from "react-toastify";
 import { errorToast, successToast } from "../../util/toasts";
 import { Input } from "../../components/inputs/Input";
-import { Select } from "../../components/inputs/select";
+import { Select, SelectTemperature } from "../../components/inputs/select";
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -107,6 +107,9 @@ export default function ChatPage() {
 
   // isSettingVisible is the state for the settings section
   const [isSettingVisible, setIsSettingVisible] = useState(false);
+
+  // temperature is the temperature of the generative model that the user wants to use
+  const [temperature, setTemperature] = useState(0.9);
 
   // handleNewChatClick is called when the user clicks on the new chat button
   // it resets the chat state and the chatID state
@@ -492,6 +495,21 @@ export default function ChatPage() {
                   }}
                   placeholder={"Enter your initial prompt"}
                 ></Input>
+                <SelectTemperature
+                  label={"Temperature"}
+                  onChange={(e) => {
+                    setTemperature(e.target.value);
+                  }}
+                  value={temperature}
+                  description={'Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic.'}
+                >
+
+                </SelectTemperature>
+                <div className="flex justify-between w-full">
+                  <span>Precise</span>
+                  <span>Neutral</span>
+                  <span>Creative</span>
+                </div>
               </div>
             </div>
           ) : (
@@ -532,7 +550,6 @@ export default function ChatPage() {
             </>
           )}
           {chat.map((item, index) => {
-            // console.log(item.content)
             return (
               <div
                 key={index}
