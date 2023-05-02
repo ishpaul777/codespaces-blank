@@ -69,9 +69,6 @@ services:
       - type: bind
         source: ./web
         target: /app
-      - type: bind
-        source: ./web/node_modules
-        target: /app/node_modules
     restart: unless-stopped
     stdin_open: true
     networks:
