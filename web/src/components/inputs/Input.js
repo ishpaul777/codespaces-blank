@@ -15,6 +15,7 @@ export function Input({ label, onChange, initialValue, placeholder, type }) {
           placeholder={placeholder}
           value={initialValue}
           onChange={onChange}
+          rows={4}
         ></textarea>
       )}
     </div>

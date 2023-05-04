@@ -11,6 +11,70 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.bg-body {
+  background-color: #f3f4f6;
+}
+
 .scooter-editor {
   height: 78vh !important;
 }
+
+.d-none {
+  display: none;
+}
+
+/* if  screen less than 640px */
+@media (max-width: 640px) {
+  .d-sm-none {
+    display: none;
+  }
+
+  .sm-fixed {
+    position: fixed;
+  }
+
+  .sm-left-0 {
+    left: 0;
+  }
+
+  .sm-right-0 {
+    right: 0;
+  }
+
+  .sm-top-0 {
+    top: 0;
+  }
+
+  .sm-w-100-screen {
+    width: 100vw;
+  }
+}
+
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  .scrollbar-custom {
+    scrollbar-width: none;
+    scrollbar-color: #000000 #b0b0b0;
+  }
+
+  /* Chrome, Edge, and Safari */
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: #b0b0b0;
+    border-radius: 8px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #696969;
+    border-radius: 8px;
+  }
+
+
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover{
+    background-color: #000;
+  }
+

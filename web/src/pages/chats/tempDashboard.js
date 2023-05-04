@@ -5,11 +5,6 @@ import {
   MdOutlineCreateNewFolder,
   MdKeyboardBackspace,
 } from "react-icons/md";
-
-import {
-  AiOutlineMenuUnfold
-} from 'react-icons/ai'
-
 import { HiPlus } from "react-icons/hi";
 import { FaRobot } from "react-icons/fa";
 import {
@@ -38,8 +33,6 @@ import { ToastContainer } from "react-toastify";
 import { errorToast, successToast } from "../../util/toasts";
 import { Input } from "../../components/inputs/Input";
 import { Select, SelectTemperature } from "../../components/inputs/select";
-import PromptBar from "./PromptBar";
-import PromptInput from "./PromptInput";
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -47,9 +40,6 @@ export default function ChatPage() {
   const defaultPrompt =
     "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown. ";
   const [initialPrompt, setIntialPrompt] = useState(defaultPrompt);
-  const [promptSiderCollapse, setPromptSiderCollapse] = useState(false)
-  const [chatSiderCollapse, setChatSiderCollapse] = useState(false)
-
 
   const modelIDToLabel = {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
@@ -97,7 +87,7 @@ export default function ChatPage() {
   const [currentPrompt, setCurrentPrompt] = useState("");
 
   // chatHistory stores the chat history of the current user
-  const [chatHistory, setChatHistory] = useState([])
+  const [chatHistory, setChatHistory] = useState([]);
 
   // chatCount stores the total number of chats of the current user
   const [chatCount, setChatCount] = useState(0);
@@ -145,8 +135,8 @@ export default function ChatPage() {
       });
   };
   // handlePromptChange is called when the user types in the prompt input
-  const handlePromptChange = (value) => {
-    setCurrentPrompt(value);
+  const handlePromptChange = (e) => {
+    setCurrentPrompt(e.target.value);
   };
 
   // handleChatSubmit is called when the user clicks on the send button
@@ -191,10 +181,6 @@ export default function ChatPage() {
   // it updates the chat state with the response from the server
   // uses the EventSource API to get the response from the server as it is a server side event
   const handleChatStream = () => {
-    if (window.event.shiftKey && window.event.keyCode === 13) {
-      setCurrentPrompt(currentPrompt + "\n")
-      return;
-    }
     setLoading(true);
     let currentMessage = {};
     currentMessage.role = "user";
@@ -353,27 +339,27 @@ export default function ChatPage() {
     // chat container, it has 2 sections
     // 1. chat list
     // 2. chat component
-    <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
-      {/* sidebar */}
-      <aside className={`sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-2/12 bg-black-100"} flex flex-row ease-in-out duration-300 gap-4`}>
-        <div className={`bg-white relative w-full shadow-md ${chatSiderCollapse || 'pt-4 pl-4'}`}>
-          <div className={`my-4 w-full text-center justify-between gap-2 ${chatSiderCollapse ? 'd-none' : 'flex pr-4'} `}>
-            <button
-              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? 'd-none' : 'flex'} `}
-              onClick={() => handleNewChatClick()}
-            >
-              <HiPlus size={styles.iconSize} />
-              <span className="text-lg">New Chat</span>
-            </button>
-            <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
-              <MdOutlineCreateNewFolder size={styles.fileIconSize} />
-              {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
-              <ToastContainer />
-            </button>
-          </div>
-          <div className={`${chatSiderCollapse || 'pr-4'}`}>
+    <div className={`grid grid-cols-[2fr_8fr] h-[100vh]`}>
+      {/* <div className="bg-white h-full flex flex-col justify-between items-center p-4"> */}
+      <div className="bg-white h-full grid grid-rows-[9fr_1fr] p-4">
+        <div className="w-full flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-[4fr_1fr] gap-2 w-full">
+              <button
+                className="p-2 hover:bg-light-gray  border rounded-md flex items-center gap-2 cursor-pointer"
+                onClick={() => handleNewChatClick()}
+              >
+                <HiPlus size={styles.iconSize} />
+                <span className="text-lg">New Chat</span>
+              </button>
+              <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
+                <MdOutlineCreateNewFolder size={styles.fileIconSize} />
+                {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
+                <ToastContainer />
+              </button>
+            </div>
             <input
-              className={`w-full p-3 border border-gray-300 rounded-md  ${chatSiderCollapse ? 'd-none' : 'flex'} `}
+              className="w-full p-3 border border-gray-300 rounded-md"
               placeholder="Search prompt"
               onChange={(e) =>
                 setPaginationChatHistory({
@@ -381,16 +367,16 @@ export default function ChatPage() {
                   search_query: e.target.value,
                 })
               }
-            />
-            <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
+            ></input>
+            <hr class="h-px bg-gray-300 border-0"></hr>
           </div>
-          <ul className={`overflow-y-auto  ${chatSiderCollapse && 'd-none'}  mt-3`} style={{ maxHeight: '67vh' }}>
+          <ul className="h-[72vh] overflow-y-auto">
             {chatHistory.map((item, index) => {
               return (
                 <li
                   draggable={true}
                   key={index}
-                  className="mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2"
+                  className="p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center"
                 >
                   <div className="flex items-center gap-3">
                     <BiMessageDetail size={styles.iconSize} />
@@ -439,8 +425,8 @@ export default function ChatPage() {
             })}
             <div
               className={`flex ${paginationChatHistory.page === 1
-                ? "flex-row-reverse"
-                : "flex-row"
+                  ? "flex-row-reverse"
+                  : "flex-row"
                 } ${paginationChatHistory.offset !== 0 &&
                 chatCount > paginationChatHistory.limit &&
                 "justify-between"
@@ -470,30 +456,29 @@ export default function ChatPage() {
               )}
             </div>
           </ul>
-          <div className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? 'd-none' : 'flex'} `}>
-            <ul className="flex justify-center flex-col">
-              {chatOptionsList.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
-                  onClick={item.onClick}
-                >
-                  {item.icon}
-                  <span className="text-base">{item.title}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
-      </aside >
-
-      {/* chat */}
-      <main className="main flex flex-grow flex-col py-4 transition-all duration-150 ease-in md:ml-0" >
-        <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col">
+        <div className="w-full flex flex-col-reverse gap-2">
+          <ul className="w-full flex justify-center flex-col">
+            {chatOptionsList.map((item, index) => (
+              <li
+                key={index}
+                className="flex items-center gap-6 ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
+                onClick={item.onClick}
+              >
+                {item.icon}
+                <span className="text-base">{item.title}</span>
+              </li>
+            ))}
+          </ul>
+          <hr class="h-px bg-gray-300 border-0"></hr>
+        </div>
+      </div>
+      <div className="h-full grid grid-rows-[9fr_1fr] bg-chat-background">
+        <div className="w-full overflow-y-auto flex h-[90vh] flex-col">
           {chat.length === 0 ? (
             <div className="border-b border-[#CED0D4] w-full flex flex-col items-center p-4 gap-4">
-              <h2 className="text-3xl font-semibold	">Tagore AI</h2>
-              <div className="md:w-3/5 sm:w-[90vw] top-0 sticky border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4" style={{ maxWidth: '600px' }}>
+              <h2 className="text-3xl ">Tagore AI</h2>
+              <div className="w-3/5 scrollbar-custom border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4">
                 <Select
                   label={"Model"}
                   onChange={(e) => {
@@ -528,53 +513,41 @@ export default function ChatPage() {
               </div>
             </div>
           ) : (
-            <div className="sticky top-0">
+            <>
               <div
-                className={`border-b bg-body border-[#CED0D4] w-full p-4 gap-4 flex justify-between`}
+                className={`border-b border-[#CED0D4] w-full p-4 gap-4 flex justify-center`}
               >
-                <button onClick={() => setChatSiderCollapse(!chatSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
-                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
-                </button>
-                <div>
-                  <span>Model: {modelIDToLabel[model]}</span>
-                  <IoMdSettings
-                    size={styles.iconSize}
-                    className="inline ml-4"
-                    onClick={() => setIsSettingVisible((prevState) => !prevState)}
-                    cursor={"pointer"}
-                  />
+                <span>Model: {modelIDToLabel[model]}</span>
+                <IoMdSettings
+                  size={styles.iconSize}
+                  onClick={() => setIsSettingVisible((prevState) => !prevState)}
+                  cursor={"pointer"}
+                />
+              </div>
+              {isSettingVisible && (
+                <div className="border-b border-[#CED0D4] w-full flex flex-col items-center p-4 gap-4">
+                  <h2 className="text-3xl ">Tagore AI</h2>
+                  <div className="w-3/5 border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4">
+                    <Select
+                      label={"Model"}
+                      onChange={(e) => {
+                        setModel(e.target.value);
+                      }}
+                      placeholder={"select model"}
+                      initialValue={model}
+                    ></Select>
+                    <Input
+                      initialValue={initialPrompt}
+                      label={"Initial Prompt"}
+                      onChange={(e) => {
+                        setIntialPrompt(e.target.value);
+                      }}
+                      placeholder={"Enter your initial prompt"}
+                    ></Input>
+                  </div>
                 </div>
-                <button onClick={() => setPromptSiderCollapse(!promptSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
-                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
-                </button>
-              </div>
-
-              <div className={`border-b bg-body border-[#CED0D4] ease-in-out duration-300 ${isSettingVisible ? 'h-80 p-4 w-full translate-y-100 flex flex-col items-center gap-4' : 'h-0 translate-y-0'}`}>
-                {isSettingVisible && (
-                  <>
-                    <h2 className="text-3xl ">Tagore AI</h2>
-                    <div className="md:w-3/5 sm:w-[90vw] border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4">
-                      <Select
-                        label={"Model"}
-                        onChange={(e) => {
-                          setModel(e.target.value);
-                        }}
-                        placeholder={"select model"}
-                        initialValue={model}
-                      ></Select>
-                      <Input
-                        initialValue={initialPrompt}
-                        label={"Initial Prompt"}
-                        onChange={(e) => {
-                          setIntialPrompt(e.target.value);
-                        }}
-                        placeholder={"Enter your initial prompt"}
-                      ></Input>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
+              )}
+            </>
           )}
           {chat.map((item, index) => {
             return (
@@ -594,7 +567,7 @@ export default function ChatPage() {
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[rehypeMathjax]}
-                    className={`prose ${(chatSiderCollapse && promptSiderCollapse) && 'max-w-3xl'}`}
+                    className="prose"
                     components={{
                       code({ node, inline, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || "");
@@ -632,18 +605,18 @@ export default function ChatPage() {
           )}
         </div>
         {/* chat input container */}
-        <div className="md:px-8 sm:px-2 py-4 w-full flex justify-center items-center">
+        <div className="px-8 py-4 w-full flex justify-center items-center">
           {/* input division */}
           <div
-            className={` ${(!promptSiderCollapse && !chatSiderCollapse) ? 'w-4/5' : 'w-3/5'} relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
+            className={`w-4/5 shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr]`}
           >
-            <PromptInput
+            <input
               value={currentPrompt}
               className="outline-none text-base border-none focus:ring-0"
               placeholder="Type a message"
               onChange={handlePromptChange}
-              onEnter={handleKeypressStream}
-            />
+              onKeyDown={handleKeypressStream}
+            ></input>
             <div className="flex flex-row-reverse">
               <button
                 className={`flex items-center justify-center`}
@@ -658,22 +631,7 @@ export default function ChatPage() {
             </div>
           </div>
         </div>
-      </ main>
-
-      {/* prompt bar */}
-      <aside className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${promptSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-2/12"} flex flex-row ease-in-out duration-300 gap-4`} >
-        <div className={`bg-white w-full relative shadow-md ${promptSiderCollapse || 'pt-4 pl-4'}`}>
-          <PromptBar open={!promptSiderCollapse} />
-        </div>
-      </ aside>
-    </div >
+      </div>
+    </div>
   );
 }
-
-
-
-
-
-
-
-
