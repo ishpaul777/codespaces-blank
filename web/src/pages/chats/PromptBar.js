@@ -11,11 +11,10 @@ import {
 } from "react-icons/md";
 import { AiOutlineCheck, AiOutlineClose, AiOutlineDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { createPrompt, deletePrompt } from "../../redux/actions/promptsActions";
+import { createPrompt, deletePrompt, updatePrompt } from "../../redux/actions/promptsActions";
 import { HiPlus } from "react-icons/hi";
 import { ToastContainer } from "react-toastify";
 import { BiBulb } from "react-icons/bi";
-import { render } from "react-dom";
 
 function PromptBar({ open }) {
 	const styles = {
@@ -61,6 +60,8 @@ function PromptBar({ open }) {
 		if (values.name == '') {
 			return setShowerror(true)
 		}
+
+		dispatch(updatePrompt({ ...values, id: updatePromptIndex }))
 		setShowUpdateModal(false)
 		setUpdatePromptIndex(null)
 		setPromptValues({ name: '', description: '', content: '' });

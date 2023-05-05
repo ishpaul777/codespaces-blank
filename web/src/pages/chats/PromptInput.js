@@ -151,7 +151,8 @@ function PromptInput(props) {
 									<textarea
 										id={key}
 										placeholder="Name of the prompt"
-										className="p-2 border border-[#CED0D4] h-full rounded-md bg-transparent "
+										rows={4}
+										className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
 										type="input" name={key} value={variable[key]}
 									/>
 								</div>
