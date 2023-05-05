@@ -491,41 +491,49 @@ export default function ChatPage() {
       <main className="main flex flex-grow flex-col py-4 transition-all duration-150 ease-in md:ml-0" >
         <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col">
           {chat.length === 0 ? (
-            <div className="border-b border-[#CED0D4] w-full flex flex-col items-center p-4 gap-4">
-              <h2 className="text-3xl font-semibold	">Tagore AI</h2>
-              <div className="md:w-3/5 sm:w-[90vw] top-0 sticky border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4" style={{ maxWidth: '600px' }}>
-                <Select
-                  label={"Model"}
-                  onChange={(e) => {
-                    setModel(e.target.value);
-                  }}
-                  placeholder={"select model"}
-                  initialValue={model}
-                ></Select>
-                <Input
-                  initialValue={initialPrompt}
-                  label={"Initial Prompt"}
-                  onChange={(e) => {
-                    setIntialPrompt(e.target.value);
-                  }}
-                  placeholder={"Enter your initial prompt"}
-                ></Input>
-                <SelectTemperature
-                  label={"Temperature"}
-                  onChange={(e) => {
-                    setTemperature(e.target.value);
-                  }}
-                  value={temperature}
-                  description={'Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic.'}
-                >
+            <div className="flex flex-row justify-between w-full px-3">
+              <button onClick={() => setChatSiderCollapse(!chatSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
+                <AiOutlineMenuUnfold size={styles.fileIconSize} />
+              </button>
+              <div className="border-b border-[#CED0D4] w-full flex flex-col items-center p-4 gap-4">
+                <h2 className="text-3xl font-semibold	">Tagore AI</h2>
+                <div className="md:w-3/5 sm:w-[90vw] top-0 sticky border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4" style={{ maxWidth: '600px' }}>
+                  <Select
+                    label={"Model"}
+                    onChange={(e) => {
+                      setModel(e.target.value);
+                    }}
+                    placeholder={"select model"}
+                    initialValue={model}
+                  ></Select>
+                  <Input
+                    initialValue={initialPrompt}
+                    label={"Initial Prompt"}
+                    onChange={(e) => {
+                      setIntialPrompt(e.target.value);
+                    }}
+                    placeholder={"Enter your initial prompt"}
+                  ></Input>
+                  <SelectTemperature
+                    label={"Temperature"}
+                    onChange={(e) => {
+                      setTemperature(e.target.value);
+                    }}
+                    value={temperature}
+                    description={'Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic.'}
+                  >
 
-                </SelectTemperature>
-                <div className="flex justify-between w-full">
-                  <span>Precise</span>
-                  <span>Neutral</span>
-                  <span>Creative</span>
+                  </SelectTemperature>
+                  <div className="flex justify-between w-full">
+                    <span>Precise</span>
+                    <span>Neutral</span>
+                    <span>Creative</span>
+                  </div>
                 </div>
               </div>
+              <button onClick={() => setPromptSiderCollapse(!promptSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
+                <AiOutlineMenuUnfold size={styles.fileIconSize} />
+              </button>
             </div>
           ) : (
             <div className="sticky top-0">
