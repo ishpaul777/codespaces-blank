@@ -1,7 +1,6 @@
 import Layout from "../components/layout/layout";
 import { HomePage } from "../pages";
 import ChatPage from "../pages/chats/dashboard";
-import TempChatPage from "../pages/chats/tempDashboard";
 import DocumentPage from "../pages/documents";
 import Document from "../pages/documents/create";
 import ImagePage from "../pages/images";
@@ -40,9 +39,5 @@ export const routes = [
   {
     path: "/chats/dashboard",
     element: <ChatPage />,
-  },
-  {
-    path: "/chats/temp",
-    element: <TempChatPage />,
   },
 ];
