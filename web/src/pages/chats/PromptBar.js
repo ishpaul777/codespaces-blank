@@ -56,7 +56,6 @@ function PromptBar({ open }) {
 	const [filteredPrompts, setFilteredPrompts] = useState(null)
 
 	const handleUpdateFormSubmit = (values) => {
-		console.log(values)
 		if (values.name == '') {
 			return setShowerror(true)
 		}
@@ -192,13 +191,14 @@ export default PromptBar;
 
 const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
 	return (
-		<form className="flex flex-col w-full gap-4" onChange={handleValueChange}>
+		<form className="flex flex-col w-full gap-4">
 			<div className="flex flex-col w-ful gap-2">
 				<label className="font-medium text-gray-700 text-base">Name</label>
 				<input
 					placeholder="Name of the prompt"
 					className="p-2 border border-[#CED0D4] rounded-md bg-transparent"
 					type="input" name="name" value={promptValues.name}
+					onChange={handleValueChange}
 				/>
 				<p className={`mt-1 ${showerror ? 'block' : 'd-none'} text-pink-600 text-sm`}>
 					Please provide a name for prompt.
@@ -212,6 +212,7 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
 					className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
 					value={promptValues.description}
 					rows={4}
+					onChange={handleValueChange}
 				/>
 			</div>
 			<div className="flex flex-col w-ful gap-2">
@@ -222,6 +223,7 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
 					className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
 					value={promptValues.content}
 					rows={10}
+					onChange={handleValueChange}
 				/>
 			</div>
 		</form>

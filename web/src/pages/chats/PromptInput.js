@@ -76,7 +76,7 @@ function PromptInput(props) {
 			return
 		}
 		if (!value || value.trim() == '') { return }
-		if (e.keyCode === 13) {
+		if (e.keyCode === 13 && !isPromptModalVisible) {
 			e.preventDefault()
 			return onEnter(e)
 		}
