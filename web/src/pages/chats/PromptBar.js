@@ -36,7 +36,7 @@ function PromptBar({ open }) {
 		}));
 	}
 	function handleFormSubmit(values) {
-		if (!values.name || values.name == '') {
+		if (!values.name || values.name === '') {
 			return setShowerror(true)
 		}
 
@@ -56,7 +56,7 @@ function PromptBar({ open }) {
 	const [filteredPrompts, setFilteredPrompts] = useState(null)
 
 	const handleUpdateFormSubmit = (values) => {
-		if (values.name == '') {
+		if (values.name === '') {
 			return setShowerror(true)
 		}
 

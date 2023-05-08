@@ -24,7 +24,6 @@ function PromptInput(props) {
 
 
 	const handlePromptSelect = (option, prefix) => {
-		const { value, label } = option;
 		const { value: oldValue } = props;
 
 		// Find the last occurrence of prefix in oldValue
@@ -75,7 +74,7 @@ function PromptInput(props) {
 		if (isSelectingPrompt) {
 			return
 		}
-		if (!value || value.trim() == '') { return }
+		if (!value || value.trim() === '') { return }
 		if (e.keyCode === 13 && !isPromptModalVisible) {
 			e.preventDefault()
 			return onEnter(e)
