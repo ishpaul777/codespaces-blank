@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import { SSE } from "sse.js";
 import {
   MdOutlineClearAll,
   MdOutlineCreateNewFolder,
@@ -37,9 +37,9 @@ import { Select, SelectTemperature } from "../../components/inputs/select";
 export default function ChatPage() {
   const navigate = useNavigate();
 
-  const defaultPrompt =
-    "You are ChatGPT, a large language model trained by OpenAI. Follow the user's instructions carefully. Respond using markdown. ";
-  const [initialPrompt, setIntialPrompt] = useState(defaultPrompt);
+  const [initialPrompt, setIntialPrompt] = useState("");
+
+  const [stream, setStream] = useState(true);
 
   const modelIDToLabel = {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
@@ -147,21 +147,31 @@ export default function ChatPage() {
   // also updates the loading state
   const handleChatSubmit = () => {
     setLoading(true);
-    let currentMessage = {};
-    currentMessage.role = "user";
-
-    if (!chatID) {
-      currentMessage.content = initialPrompt + currentPrompt;
-    } else {
-      currentMessage.content = currentPrompt;
-    }
+    let currentMessage = {
+      role: "user",
+      content: currentPrompt,
+    };
 
     const newMessages = [...chat, currentMessage];
+
+    var requestBody = {
+      prompt: currentMessage.content,
+      model: model,
+      provider: "openai",
+      userID: 1,
+      temperature: temperature,
+      additional_instructions: "Return the content in valid markdown format.",
+      stream: stream,
+    };
+
+    if (chatID) {
+      requestBody.id = chatID;
+    }
 
     setChat(newMessages);
     setCurrentPrompt("");
 
-    getChatResponse(chatID, newMessages, model, "openai")
+    getChatResponse(requestBody, 1)
       .then((data) => {
         if (!chatID) {
           setChatID(data.id);
@@ -182,70 +192,58 @@ export default function ChatPage() {
   // uses the EventSource API to get the response from the server as it is a server side event
   const handleChatStream = () => {
     setLoading(true);
-    let currentMessage = {};
-    currentMessage.role = "user";
-
-    if (!chatID) {
-      currentMessage.content = initialPrompt + currentPrompt;
-    } else {
-      currentMessage.content = currentPrompt;
-    }
+    let currentMessage = {
+      role: "user",
+      content: currentPrompt,
+    };
 
     const newMessages = [...chat, currentMessage];
 
     setChat(newMessages);
     setCurrentPrompt("");
 
-    var url = new URL(
-      process.env.REACT_APP_TAGORE_API_URL + "/chat/completions/stream"
-    );
-
-    var params = {
+    var requestBody = {
       prompt: currentMessage.content,
-      model: "gpt-3.5-turbo",
+      model: model,
       provider: "openai",
       userID: 1,
+      temperature: temperature,
+      additional_instructions: "Return the content in valid markdown format.",
+      stream: stream,
     };
+
     if (chatID) {
-      params.chat_id = chatID;
+      requestBody.id = chatID;
     }
 
-    url.search = new URLSearchParams(params).toString();
+    var source = new SSE(
+      process.env.REACT_APP_TAGORE_API_URL + "/chat/completions",
+      {
+        payload: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          "X-User": 1,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    const source = new EventSource(url);
-
-    source.onmessage = (event) => {
+    source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
+      console.log(chatObject)
       setChat(chatObject?.messages);
       setChatID(chatObject?.id);
+    });
 
-      // if (event.data === "[DONE]") {
-      //   source.close();
-      //   setLoading(false);
-      //   return;
-      // }
-
-      // setChat((prevChat) => {
-      //   // add new message to the chat if the last chat was of the user or update the last chat if the last chat was of the bot
-      //   if (
-      //     prevChat.length === 0 ||
-      //     prevChat[prevChat.length - 1].role === "user"
-      //   ) {
-      //     return [...prevChat, { role: "bot", content: chatObject.message }];
-      //   }
-      //   prevChat[prevChat.length - 1].content += `${chatObject.message}`;
-      //   return [...prevChat];
-      // });
-    };
-
-    source.onerror = (event) => {
+    source.addEventListener("error", (event) => {
       source.close();
       setLoading(false);
       if (!String(event.data).includes("[DONE]")) {
-        // TODO: show error message
         return;
       }
-    };
+    });
+
+    source.stream();
   };
 
   // AlwaysScrollToBottom is a component that is used to scroll to the bottom of the chat window
@@ -256,14 +254,6 @@ export default function ChatPage() {
     return <div ref={elementRef} />;
   };
 
-  // handleKeypressStream is called when the user presses the key in the prompt input
-  // it calls the handleChatStream function when the user presses the enter key
-  const handleKeypressStream = (e) => {
-    //it triggers by pressing the enter key
-    if (e.keyCode === 13) {
-      handleChatStream();
-    }
-  };
 
   // handleKeypress is called when the user presses key in the prompt input
   // it calls the handleChatSubmit function when the user presses the enter key
@@ -271,7 +261,11 @@ export default function ChatPage() {
   const handleKeypress = (e) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
-      handleChatSubmit();
+      if(stream) {
+        handleChatStream();
+      } else {
+        handleChatSubmit();
+      }
     }
   };
 
@@ -380,20 +374,14 @@ export default function ChatPage() {
                 >
                   <div className="flex items-center gap-3">
                     <BiMessageDetail size={styles.iconSize} />
-                    <span onClick={() => setChat(item?.messages)}>
-                      {item?.title
-                        // replacing the initial prompt and default prompt from the chat if present
-                        ?.replace(initialPrompt, "")
-                        ?.replace(defaultPrompt, "")?.length < maxListChars
+                    <span onClick={() => {
+                      setChat(item?.messages)
+                      setChatID(item?.id)
+                    }}>
+                      {item?.title < maxListChars
                         ? item?.title
-                          ?.replace(initialPrompt, "")
-                          ?.replace(defaultPrompt, "")
-                        : `${item?.title
-                          ?.replace(initialPrompt, "")
-                          .replace(defaultPrompt, "")}`.slice(
-                            0,
-                            maxListChars
-                          ) + "..."}
+                        : `${item?.title?.slice(0, maxListChars) + "..."}
+                        `}
                     </span>
                   </div>
 
@@ -424,13 +412,15 @@ export default function ChatPage() {
               );
             })}
             <div
-              className={`flex ${paginationChatHistory.page === 1
+              className={`flex ${
+                paginationChatHistory.page === 1
                   ? "flex-row-reverse"
                   : "flex-row"
-                } ${paginationChatHistory.offset !== 0 &&
+              } ${
+                paginationChatHistory.offset !== 0 &&
                 chatCount > paginationChatHistory.limit &&
                 "justify-between"
-                } p-2 text-base cursor-pointer mt-4`}
+              } p-2 text-base cursor-pointer mt-4`}
             >
               {paginationChatHistory.page > 1 && (
                 <span
@@ -489,11 +479,11 @@ export default function ChatPage() {
                 ></Select>
                 <Input
                   initialValue={initialPrompt}
-                  label={"Initial Prompt"}
+                  label={"System Prompt"}
                   onChange={(e) => {
                     setIntialPrompt(e.target.value);
                   }}
-                  placeholder={"Enter your initial prompt"}
+                  placeholder={"Enter your system prompt"}
                 ></Input>
                 <SelectTemperature
                   label={"Temperature"}
@@ -501,10 +491,10 @@ export default function ChatPage() {
                     setTemperature(e.target.value);
                   }}
                   value={temperature}
-                  description={'Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic.'}
-                >
-
-                </SelectTemperature>
+                  description={
+                    "Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic."
+                  }
+                ></SelectTemperature>
                 <div className="flex justify-between w-full">
                   <span>Precise</span>
                   <span>Neutral</span>
@@ -538,7 +528,7 @@ export default function ChatPage() {
                     ></Select>
                     <Input
                       initialValue={initialPrompt}
-                      label={"Initial Prompt"}
+                      label={"System Prompt"}
                       onChange={(e) => {
                         setIntialPrompt(e.target.value);
                       }}
@@ -549,54 +539,55 @@ export default function ChatPage() {
               )}
             </>
           )}
-          {chat.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${item.role === "user" && "bg-[#E4E7ED]"
+          {chat
+            .filter((message) => message.role !== "system")
+            .map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${
+                    item.role === "user" && "bg-[#E4E7ED]"
                   }`}
-              >
-                <div className={`w-3/5 grid grid-cols-[1fr_9fr] gap-4`}>
-                  <div>
-                    {item.role === "user" ? (
-                      <AiOutlineUser size={styles.fileIconSize}></AiOutlineUser>
-                    ) : (
-                      <FaRobot size={styles.fileIconSize}></FaRobot>
-                    )}
-                  </div>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeMathjax]}
-                    className="prose"
-                    components={{
-                      code({ node, inline, className, children, ...props }) {
-                        const match = /language-(\w+)/.exec(className || "");
+                >
+                  <div className={`w-3/5 grid grid-cols-[1fr_9fr] gap-4`}>
+                    <div>
+                      {item.role === "user" ? (
+                        <AiOutlineUser
+                          size={styles.fileIconSize}
+                        ></AiOutlineUser>
+                      ) : (
+                        <FaRobot size={styles.fileIconSize}></FaRobot>
+                      )}
+                    </div>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[rehypeMathjax]}
+                      className="prose"
+                      components={{
+                        code({ node, inline, className, children, ...props }) {
+                          const match = /language-(\w+)/.exec(className || "");
 
-                        return !inline ? (
-                          <CodeBlock
-                            key={index}
-                            language={(match && match[1]) || ""}
-                            value={String(children).replace(/\n$/, "")}
-                            {...props}
-                          />
-                        ) : (
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        );
-                      },
-                    }}
-                  >
-                    {item.role === "user"
-                      ? item.content
-                        .replace(initialPrompt, "")
-                        ?.replace(defaultPrompt, "")
-                      : item.content}
-                  </ReactMarkdown>
+                          return !inline ? (
+                            <CodeBlock
+                              key={index}
+                              language={(match && match[1]) || ""}
+                              value={String(children).replace(/\n$/, "")}
+                              {...props}
+                            />
+                          ) : (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          );
+                        },
+                      }}
+                    >
+                      {item.content}
+                    </ReactMarkdown>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
           <AlwaysScrollToBottom />
           {loading && (
             <div className="flex justify-center mt-4">
@@ -615,12 +606,12 @@ export default function ChatPage() {
               className="outline-none text-base border-none focus:ring-0"
               placeholder="Type a message"
               onChange={handlePromptChange}
-              onKeyDown={handleKeypressStream}
+              onKeyDown={handleKeypress}
             ></input>
             <div className="flex flex-row-reverse">
               <button
                 className={`flex items-center justify-center`}
-                onClick={() => handleChatStream()}
+                onClick={(stream) ? () => handleChatStream() : () => handleChatSubmit()}
               >
                 {!loading ? (
                   <img src={sendButton} />

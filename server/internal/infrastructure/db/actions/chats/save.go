@@ -23,7 +23,7 @@ func (p *PGChatsRepository) SaveChat(userID uint, chatID *uint, model string, me
 		return nil, errors.New("messages cannot be empty")
 	}
 	chat := models.Chat{
-		Title:    messages[0].Content,
+		Title:    messages[1].Content, // at 0 index there's always a system prompt so avoiding that
 		Messages: messageRaw,
 		Usage:    usageRaw,
 	}

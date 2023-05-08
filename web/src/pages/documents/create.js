@@ -4,7 +4,7 @@ import InfoIcon from "../../assets/icons/info-icon.svg";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import Button from "../../components/buttons/SearchButton";
 import { ScooterCore } from "@factly/scooter-core";
-
+import axios from "axios";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
 import { DocActionButton } from "../../components/buttons/DocActionButton";
@@ -394,6 +394,22 @@ export default function Document() {
             menuType="bubble"
             onChange={(change) => {
               setEditorData(change?.html);
+            }}
+            tagoreConfig={{
+              fetcher: async (input, options) => {
+                console.log(input);
+                const response = await axios.post(
+                  `http://localhost:8080/prompts/generate`,
+                  {
+                    input: `${input}\n Return the response as a valid HTML without html, head or body tags`,
+                    max_tokens: 200,
+                  },
+                  { headers: { "X-User": "20" } }
+                );
+                // ${systemPrompt}
+                const data = response.data;
+                return data;
+              },
             }}
           />
         </div>

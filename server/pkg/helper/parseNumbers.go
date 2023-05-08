@@ -8,3 +8,8 @@ import "strconv"
 func StringToInt(s string) (int, error) {
 	return strconv.Atoi(s)
 }
+
+func StringToFloat32(s string) (float32, error) {
+	f, err := strconv.ParseFloat(s, 32)
+	return float32(f), err
+}

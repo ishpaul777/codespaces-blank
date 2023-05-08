@@ -15,7 +15,6 @@ type httpHandler struct {
 func (h *httpHandler) routes() chi.Router {
 	router := chi.NewRouter()
 	router.Post("/completions", h.createChatResponse)
-	router.Get("/completions/stream", h.createChatResponseStream)
 	router.Get("/history", h.getAllChatsByUser)
 	router.Delete("/{chat_id}", h.deleteChat)
 	return router

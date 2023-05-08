@@ -25,8 +25,9 @@ type ImageGenerativeModel interface {
 
 type ChatGenerativeModel interface {
 	ConfigGenerativeModel
-	GenerateResponse(model string, messages []models.Message) ([]models.Message, *models.Usage, error)
-	GenerateStreamingResponse(model string, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
+	GenerateResponse(model string, temperature float32, chat models.Chat, chatRepo repositories.ChatRepository) (*models.Chat, error)
+	GenerateStreamingResponse(model string, temperature float32, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
+	GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 }
 
 func NewTextGenerativeModel(provider string) TextGenerativeModel {
