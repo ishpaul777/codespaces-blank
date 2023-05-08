@@ -13,7 +13,7 @@ export default function ImagePage() {
   const fileInputRef = useRef(null);
 
   const [imageRequest, setImageRequest] = useState({
-    prompt: "generate interesting images",
+    prompt: "",
     n: 8,
     provider: "stableDiffusion",
   });
@@ -41,6 +41,9 @@ export default function ImagePage() {
   // loading state variable to control the state of the loading button
   const [loading, setLoading] = useState(false);
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalPrompt, setModalPrompt] = useState(null);
+
   const [images, setImages] = useState([]);
 
   useEffect(() => {
@@ -54,7 +57,7 @@ export default function ImagePage() {
     });
   };
 
-  const handleSearch = () => {
+  const handleSearch = (imageRequest) => {
     setLoading(true);
     getGeneratedImages(imageRequest, 1)
       .then((response) => {
@@ -122,6 +125,45 @@ export default function ImagePage() {
     }
   };
 
+
+
+
+  const defaultImagePrompts = [
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "  A beautiful landscape of the golden fields of Punjab during sunset      "
+    },
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "A traditional Punjabi wedding with all the rituals and ceremonies"
+    },
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "The iconic Golden Temple in Amritsar, with reflections in the surrounding water."
+    },
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "A bustling market in Amritsar, Punjab, with vendors selling spices and textiles"
+    },
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "A vibrant Bhangra dance performance, with dancers wearing traditional Punjabi clothing"
+    },
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "The Jallianwala Bagh memorial in Amritsar, with a tribute to those who lost their lives in the tragic massacre."
+    },
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "A mouth - watering spread of Punjabi cuisine, including butter chicken, naan, and lassi      "
+    },
+    {
+      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      prompt: "A beautiful portrait of a woman wearing Phulkari, the traditional embroidery of Punjab.."
+    }
+  ];
+
+
   return (
     <div className={`my-16 mx-10`}>
       <h2 className="text-3xl font-medium">Generate Images</h2>
@@ -129,8 +171,9 @@ export default function ImagePage() {
         <ImageSearch
           placeholder={`Handmade Unique abstract painting made with charcoal..`}
           onChange={handlePromptChange}
-          handleSearch={handleSearch}
+          handleSearch={() => handleSearch(imageRequest)}
           isLoading={loading}
+          value={imageRequest.prompt}
           disabled={imageRequest.prompt.length < 1}
         />
       </div>
@@ -171,29 +214,91 @@ export default function ImagePage() {
           </div>
         ) : (
           <div className={`grid grid-cols-4 gap-4`}>
-            {images?.map((image, index) => {
-              return (
-                <div
-                  key={index}
-                  className={`w-full rounded-lg relative`}
-                  onMouseEnter={() => onMouseIn(index)}
-                  onMouseLeave={() => onMouseOut(index)}
-                >
-                  <img
-                    alt="generated logos"
-                    // onClick={() => downloadImage(image?.url, 'image.png')}
-                    className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
-                    src={getURL(image?.url)}
-                  ></img>
-                  {image.isHover && (
-                    <div className="absolute bg-black top-0 left-0 w-full h-full opacity-50 rounded-lg hover:block cursor-pointer"></div>
-                  )}
-                </div>
-              );
-            })}
+            {images && images.length > 0 ? (
+              images.map((image, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={`w-full rounded-lg relative`}
+                    onMouseEnter={() => onMouseIn(index)}
+                    onMouseLeave={() => onMouseOut(index)}
+                  // onClick={() => downloadImage(image?.url, 'image.png')}
+                  >
+                    <img
+                      alt="generated logos"
+                      className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
+                      src={getURL(image?.url)}
+                    ></img>
+                    {image.isHover && (
+                      <div className="absolute bg-black top-0 left-0 w-full h-full opacity-50 rounded-lg hover:block cursor-pointer"></div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              defaultImagePrompts.map((image, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={`w-full rounded-lg relative`}
+                    onMouseEnter={() => onMouseIn(index)}
+                    onMouseLeave={() => onMouseOut(index)}
+                    onClick={() => {
+                      setModalOpen(true);
+                      setModalPrompt(image);
+                    }}
+                  >
+                    <div className="relative">
+                      <img
+                        alt="generated logos"
+                        // onClick={() => downloadImage(image?.url, 'image.png')}
+                        className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
+                        src={getURL(image?.url)}
+                      ></img>
+                      <div className="absolute top-0 left-0 w-full h-full flex flex-col bg-white justify-between items-start opacity-0 hover:opacity-80 cursor-pointer transition duration-300 ease-in-out">
+                        <p className="text-black font-medium text-xl m-4 font-serif">{image.prompt}</p>
+                        <p style={{ color: "#777" }} className=" text-lg m-4">Click to try </p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </div>
         )}
+        <ExampleModal visible={modalOpen} setImageRequest={setImageRequest} imageRequest={imageRequest}
+          imageUrl={modalPrompt?.url} prompt={modalPrompt?.prompt} handleSearch={handleSearch} onClose={() => setModalOpen(false)} />
       </div>
     </div>
   );
+}
+
+const ExampleModal = ({ imageUrl, prompt, onClose, visible, handleSearch, setImageRequest, imageRequest }) => {
+  const overlayClasses = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
+  const modalClasses = 'fixed z-50 left-1/2 w-3/12 top-1/2 transform -translate-x-1/2 flex flex-col -translate-y-1/2 bg-white rounded-xl shadow-lg transition-alldocke duration-300 ease-in-out h-4/6';
+
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+  return (
+    <div className={visible ? overlayClasses : ' w-0 h-0'} onClick={handleOverlayClick}>
+      <div className={visible ? modalClasses : ' w-0 h-0'}>
+        <img src={imageUrl} alt="generated image" className="h-full rounded-t-xl" />
+        {visible && prompt && <div className="bg-white text-lg my-4 text-center font-medium rounded-b-xl border-b py-3 px-4 border-gray-300">
+          {prompt}
+          <button onClick={() => {
+            onClose()
+            setImageRequest((prevRequest) => ({
+              ...prevRequest,
+              prompt: prompt
+            }))
+            handleSearch({ ...imageRequest, prompt: prompt })
+          }} className="w-full bg-gray-200 py-2 px-4 my-4 rounded-md hover:opacity-75">Try this out</button>
+        </div>}
+      </div>
+    </div>
+  )
 }

@@ -6,6 +6,7 @@ export function ImageSearch({
   handleSearch,
   isLoading,
   disabled,
+  value,
 }) {
   return (
     <div className="flex flex-row justify-between shadow-primary py-3 px-4 border border-primary rounded-lg">
@@ -13,6 +14,7 @@ export function ImageSearch({
         className="w-[90%] outline-none text-base"
         placeholder={placeholder}
         onChange={onChange}
+        value={value}
       ></input>
       <div>
         <SearchButton
