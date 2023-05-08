@@ -129,39 +129,40 @@ export default function ImagePage() {
 
 
   const defaultImagePrompts = [
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "  A beautiful landscape of the golden fields of Punjab during sunset      "
-    },
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "A traditional Punjabi wedding with all the rituals and ceremonies"
-    },
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "The iconic Golden Temple in Amritsar, with reflections in the surrounding water."
-    },
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "A bustling market in Amritsar, Punjab, with vendors selling spices and textiles"
-    },
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "A vibrant Bhangra dance performance, with dancers wearing traditional Punjabi clothing"
-    },
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "The Jallianwala Bagh memorial in Amritsar, with a tribute to those who lost their lives in the tragic massacre."
-    },
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "A mouth - watering spread of Punjabi cuisine, including butter chicken, naan, and lassi      "
-    },
-    {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "A beautiful portrait of a woman wearing Phulkari, the traditional embroidery of Punjab.."
-    }
-  ];
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "A picturesque sunset over a calm ocean with palm trees on the beach."
+  },
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "A snowy winter landscape with a log cabin and smoke rising from the chimney."
+  },
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "A colorful hot air balloon festival over a mountainous horizon."
+  },
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "A misty morning in a dense forest with a river flowing through it."
+  },
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "A medieval castle on a hilltop surrounded by colorful fields of flowers."
+  },
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "A serene mountain lake at sunset with reflections of the surrounding landscape."
+  },
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "An urban cityscape at night with vibrant lights and reflections in a river."
+  },
+  {
+    url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+    prompt: "A field of sunflowers with a rainbow in the background on a sunny day."
+  }
+];
+
 
 
   return (
