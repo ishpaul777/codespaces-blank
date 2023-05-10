@@ -56,6 +56,56 @@ func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}
 	return resp.Choices[0].Text, resp.Choices[0].FinishReason, nil
 }
 
+// GenerateTextStream generates text stream using OpenAI's API
+// it takes :
+// 		prompt: the prompt to be used for generating the text
+// 		maxTokens: the maximum number of tokens to be generated
+// 		dataChan: a channel to send the generated text
+// 		errChan: a channel to send the error
+
+func (o *OpenAIAdapter) GenerateTextStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error) {
+	if model == "" {
+		model = openai.GPT3TextDavinci003
+	}
+
+	req := openai.CompletionRequest{
+		Prompt:    prompt,
+		MaxTokens: int(maxTokens),
+		Model:     model,
+	}
+
+	ctx := context.Background()
+
+	stream, err := o.Client.CreateCompletionStream(ctx, req)
+	if err != nil {
+		errChan <- err
+		return
+	}
+	responseMap := models.GenerateTextResponse{
+		Output:       "",
+		FinishReason: "",
+	}
+
+	for {
+
+		resp, err := stream.Recv()
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		responseMap.Output = responseMap.Output + resp.Choices[0].Text
+		responseMap.FinishReason = resp.Choices[0].FinishReason
+		respJSON, err := json.Marshal(responseMap)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		dataChan <- string(respJSON)
+	}
+}
+
 func (o *OpenAIAdapter) EditText(input string, instruction string) (interface{}, error) {
 	return nil, nil
 }

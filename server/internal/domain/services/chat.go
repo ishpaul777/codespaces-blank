@@ -17,7 +17,7 @@ type ChatService interface {
 	GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions, prompt string, dataChan chan<- string, errChan chan<- error)
 
 	// GenerateStreamingResponse generates response for a chat in a streaming fashion
-	GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt string, messages []models.Message, dataChan chan<- string, errChan chan<- error)
+	// GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt string, messages []models.Message, dataChan chan<- string, errChan chan<- error)
 
 	// GetChatHistoryByUser returns all the chats for a user
 	GetChatHistoryByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error)
@@ -211,37 +211,4 @@ func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provi
 
 func (c *chatService) DeleteChat(userID, chatID uint) error {
 	return c.chatRepository.DeleteChat(userID, chatID)
-}
-
-func (c *chatService) GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt string, messages []models.Message, dataChan chan<- string, errChan chan<- error) {
-	if chatID == nil {
-		// if chatID is nil, it means that the chat is new and needs to be created
-		// and if there are more than one messages, it means that the chat is not new
-		// and the chatID is required
-		if len(messages) > 1 {
-			errChan <- errors.New("chat id is required for multiple messages")
-			return
-		}
-	}
-
-	if systemPrompt == "" {
-		systemMessage := models.Message{
-			Role:    "system",
-			Content: prompts.SYSTEM_PROMPT,
-		}
-
-		promptMessageArray := []models.Message{}
-		promptMessageArray = append(promptMessageArray, systemMessage)
-		messages = append(promptMessageArray, messages...)
-	}
-
-	generativeModel := generative_model.NewChatGenerativeModel(provider)
-	err := generativeModel.LoadConfig()
-	if err != nil {
-		errChan <- err
-		return
-	}
-
-	generativeModel.GenerateStreamingResponseUsingSSE(userID, chatID, model, temperature, messages, dataChan, errChan, c.chatRepository)
-
 }
