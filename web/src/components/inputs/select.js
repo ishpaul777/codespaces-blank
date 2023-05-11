@@ -15,8 +15,13 @@ export function Select({ label, onChange, initialValue, placeholder }) {
   );
 }
 
-
-export function SelectTemperature({ label, description, onChange, initialValue, value }){
+export function SelectTemperature({
+  label,
+  description,
+  onChange,
+  initialValue,
+  value,
+}) {
   return (
     <div placeholder="flex flex-col gap-2">
       <label>{label}</label>
@@ -29,8 +34,7 @@ export function SelectTemperature({ label, description, onChange, initialValue, 
         max="1"
         step="0.1"
         value={value}
-      >
-      </input>
+      ></input>
     </div>
-  )
+  );
 }
