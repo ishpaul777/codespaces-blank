@@ -5,6 +5,7 @@ import DocumentPage from "../pages/documents";
 import Document from "../pages/documents/create";
 import ImagePage from "../pages/images";
 import History from "../pages/history/history";
+import Playground from "../pages/natdev/Playground";
 export const routes = [
   {
     path: "/",
@@ -30,6 +31,7 @@ export const routes = [
         path: "/history",
         element: <History />,
       },
+      
     ],
   },
   {
@@ -39,5 +41,9 @@ export const routes = [
   {
     path: "/chats/dashboard",
     element: <ChatPage />,
+  },
+  {
+    path: "/playground",
+    element: <Playground />,
   },
 ];
