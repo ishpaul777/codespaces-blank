@@ -6,9 +6,7 @@ import {
   MdKeyboardBackspace,
 } from "react-icons/md";
 
-import {
-  AiOutlineMenuUnfold
-} from 'react-icons/ai'
+import { AiOutlineMenuUnfold } from "react-icons/ai";
 
 import { HiPlus } from "react-icons/hi";
 import { FaRobot } from "react-icons/fa";
@@ -47,9 +45,8 @@ export default function ChatPage() {
   const [initialPrompt, setIntialPrompt] = useState("");
 
   const [stream, setStream] = useState(true);
-  const [promptSiderCollapse, setPromptSiderCollapse] = useState(false)
-  const [chatSiderCollapse, setChatSiderCollapse] = useState(false)
-
+  const [promptSiderCollapse, setPromptSiderCollapse] = useState(false);
+  const [chatSiderCollapse, setChatSiderCollapse] = useState(false);
 
   const modelIDToLabel = {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
@@ -97,7 +94,7 @@ export default function ChatPage() {
   const [currentPrompt, setCurrentPrompt] = useState("");
 
   // chatHistory stores the chat history of the current user
-  const [chatHistory, setChatHistory] = useState([])
+  const [chatHistory, setChatHistory] = useState([]);
 
   // chatCount stores the total number of chats of the current user
   const [chatCount, setChatCount] = useState(0);
@@ -202,7 +199,7 @@ export default function ChatPage() {
   // uses the EventSource API to get the response from the server as it is a server side event
   const handleChatStream = () => {
     if (window.event.shiftKey && window.event.keyCode === 13) {
-      setCurrentPrompt(currentPrompt + "\n")
+      setCurrentPrompt(currentPrompt + "\n");
       return;
     }
     setLoading(true);
@@ -244,7 +241,7 @@ export default function ChatPage() {
 
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
-      console.log(chatObject)
+      console.log(chatObject);
       setChat(chatObject?.messages);
       setChatID(chatObject?.id);
     });
@@ -268,14 +265,13 @@ export default function ChatPage() {
     return <div ref={elementRef} />;
   };
 
-
   // handleKeypress is called when the user presses key in the prompt input
   // it calls the handleChatSubmit function when the user presses the enter key
   // it is used when the user is not using the streaming way of getting the chat response
   const handleKeypress = (e) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
-      if(stream) {
+      if (stream) {
         handleChatStream();
       } else {
         handleChatSubmit();
@@ -349,11 +345,27 @@ export default function ChatPage() {
     // 2. chat component
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
       {/* sidebar */}
-      <aside className={`sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-[20vw] bg-black-100"} flex flex-row ease-in-out duration-300 gap-4`}>
-        <div className={`bg-white relative w-full shadow-md ${chatSiderCollapse || 'pt-4 pl-4'}`}>
-          <div className={`my-4 w-full text-center justify-between gap-2 ${chatSiderCollapse ? 'd-none' : 'flex pr-4'} `}>
+      <aside
+        className={`sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${
+          chatSiderCollapse
+            ? "translate-x-0 w-0"
+            : "sm:w-[90vw] md:w-[20vw] bg-black-100"
+        } flex flex-row ease-in-out duration-300 gap-4`}
+      >
+        <div
+          className={`bg-white relative w-full shadow-md ${
+            chatSiderCollapse || "pt-4 pl-4"
+          }`}
+        >
+          <div
+            className={`my-4 w-full text-center justify-between gap-2 ${
+              chatSiderCollapse ? "d-none" : "flex pr-4"
+            } `}
+          >
             <button
-              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? 'd-none' : 'flex'} `}
+              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${
+                chatSiderCollapse ? "d-none" : "flex"
+              } `}
               onClick={() => handleNewChatClick()}
             >
               <HiPlus size={styles.iconSize} />
@@ -365,9 +377,11 @@ export default function ChatPage() {
               <ToastContainer />
             </button>
           </div>
-          <div className={`${chatSiderCollapse || 'pr-4'}`}>
+          <div className={`${chatSiderCollapse || "pr-4"}`}>
             <input
-              className={`w-full p-3 border border-gray-300 rounded-md  ${chatSiderCollapse ? 'd-none' : 'flex'} `}
+              className={`w-full p-3 border border-gray-300 rounded-md  ${
+                chatSiderCollapse ? "d-none" : "flex"
+              } `}
               placeholder="Search prompt"
               onChange={(e) =>
                 setPaginationChatHistory({
@@ -378,7 +392,12 @@ export default function ChatPage() {
             />
             <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
           </div>
-          <ul className={`overflow-y-auto  ${chatSiderCollapse && 'd-none'}  mt-3`} style={{ maxHeight: '67vh' }}>
+          <ul
+            className={`overflow-y-auto  ${
+              chatSiderCollapse && "d-none"
+            }  mt-3`}
+            style={{ maxHeight: "67vh" }}
+          >
             {chatHistory.map((item, index) => {
               return (
                 <li
@@ -388,10 +407,12 @@ export default function ChatPage() {
                 >
                   <div className="flex items-center gap-3">
                     <BiMessageDetail size={styles.iconSize} />
-                    <span onClick={() => {
-                      setChat(item?.messages)
-                      setChatID(item?.id)
-                    }}>
+                    <span
+                      onClick={() => {
+                        setChat(item?.messages);
+                        setChatID(item?.id);
+                      }}
+                    >
                       {item?.title < maxListChars
                         ? item?.title
                         : `${item?.title?.slice(0, maxListChars) + "..."}
@@ -460,7 +481,11 @@ export default function ChatPage() {
               )}
             </div>
           </ul>
-          <div className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? 'd-none' : 'flex'} `}>
+          <div
+            className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${
+              chatSiderCollapse ? "d-none" : "flex"
+            } `}
+          >
             <ul className="flex justify-center flex-col">
               {chatOptionsList.map((item, index) => (
                 <li
@@ -475,19 +500,25 @@ export default function ChatPage() {
             </ul>
           </div>
         </div>
-      </aside >
+      </aside>
 
       {/* chat */}
-      <main className="main flex flex-grow flex-col py-4 transition-all duration-150 ease-in md:ml-0" >
+      <main className="main flex flex-grow flex-col py-4 transition-all duration-150 ease-in md:ml-0">
         <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col">
           {chat.length === 0 ? (
             <div className="flex flex-row justify-between w-full px-3">
-              <button onClick={() => setChatSiderCollapse(!chatSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
+              <button
+                onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
+                style={{ width: "fit-content", height: "fit-content" }}
+              >
                 <AiOutlineMenuUnfold size={styles.fileIconSize} />
               </button>
               <div className="border-b border-[#CED0D4] w-full flex flex-col items-center p-4 gap-4">
                 <h2 className="text-3xl font-semibold	">Tagore AI</h2>
-                <div className="md:w-3/5 sm:w-[90vw] top-0 sticky border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4" style={{ maxWidth: '600px' }}>
+                <div
+                  className="md:w-3/5 sm:w-[90vw] top-0 sticky border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4"
+                  style={{ maxWidth: "600px" }}
+                >
                   <Select
                     label={"Model"}
                     onChange={(e) => {
@@ -511,7 +542,7 @@ export default function ChatPage() {
                     }}
                     value={temperature}
                     description={
-                    "Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic."
+                      "Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic."
                     }
                   ></SelectTemperature>
                   <div className="flex justify-between w-full">
@@ -521,7 +552,10 @@ export default function ChatPage() {
                   </div>
                 </div>
               </div>
-              <button onClick={() => setPromptSiderCollapse(!promptSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
+              <button
+                onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
+                style={{ width: "fit-content", height: "fit-content" }}
+              >
                 <AiOutlineMenuUnfold size={styles.fileIconSize} />
               </button>
             </div>
@@ -530,7 +564,10 @@ export default function ChatPage() {
               <div
                 className={`border-b bg-body border-[#CED0D4] w-full p-4 gap-4 flex justify-between`}
               >
-                <button onClick={() => setChatSiderCollapse(!chatSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
+                <button
+                  onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
+                  style={{ width: "fit-content", height: "fit-content" }}
+                >
                   <AiOutlineMenuUnfold size={styles.fileIconSize} />
                 </button>
                 <div>
@@ -538,16 +575,27 @@ export default function ChatPage() {
                   <IoMdSettings
                     size={styles.iconSize}
                     className="inline ml-4"
-                    onClick={() => setIsSettingVisible((prevState) => !prevState)}
+                    onClick={() =>
+                      setIsSettingVisible((prevState) => !prevState)
+                    }
                     cursor={"pointer"}
                   />
                 </div>
-                <button onClick={() => setPromptSiderCollapse(!promptSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
+                <button
+                  onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
+                  style={{ width: "fit-content", height: "fit-content" }}
+                >
                   <AiOutlineMenuUnfold size={styles.fileIconSize} />
                 </button>
               </div>
 
-              <div className={`border-b bg-body border-[#CED0D4] ease-in-out duration-300 ${isSettingVisible ? 'h-80 p-4 w-full translate-y-100 flex flex-col items-center gap-4' : 'h-0 translate-y-0'}`}>
+              <div
+                className={`border-b bg-body border-[#CED0D4] ease-in-out duration-300 ${
+                  isSettingVisible
+                    ? "h-80 p-4 w-full translate-y-100 flex flex-col items-center gap-4"
+                    : "h-0 translate-y-0"
+                }`}
+              >
                 {isSettingVisible && (
                   <>
                     <h2 className="text-3xl ">Tagore AI</h2>
@@ -597,7 +645,9 @@ export default function ChatPage() {
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeMathjax]}
-                      className={`prose ${(chatSiderCollapse && promptSiderCollapse) && 'max-w-3xl'}`}
+                      className={`prose ${
+                        chatSiderCollapse && promptSiderCollapse && "max-w-3xl"
+                      }`}
                       components={{
                         code({ node, inline, className, children, ...props }) {
                           const match = /language-(\w+)/.exec(className || "");
@@ -634,19 +684,23 @@ export default function ChatPage() {
         <div className="md:px-8 sm:px-2 py-4 w-full flex justify-center items-center">
           {/* input division */}
           <div
-            className={` ${(!promptSiderCollapse && !chatSiderCollapse) ? 'w-4/5' : 'w-3/5'} relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
+            className={` ${
+              !promptSiderCollapse && !chatSiderCollapse ? "w-4/5" : "w-3/5"
+            } relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
           >
             <PromptInput
               value={currentPrompt}
               className="outline-none text-base border-none focus:ring-0"
               placeholder="Type a message"
               onChange={handlePromptChange}
-              onKeyDown={handleKeypress}
-            ></input>
+              onEnter={handleKeypress}
+            ></PromptInput>
             <div className="flex flex-row-reverse">
               <button
                 className={`flex items-center justify-center`}
-                onClick={(stream) ? () => handleChatStream() : () => handleChatSubmit()}
+                onClick={
+                  stream ? () => handleChatStream() : () => handleChatSubmit()
+                }
               >
                 {!loading ? (
                   <img src={sendButton} />
@@ -657,22 +711,22 @@ export default function ChatPage() {
             </div>
           </div>
         </div>
-      </ main>
+      </main>
 
       {/* prompt bar */}
-      <aside className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${promptSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-2/12"} flex flex-row ease-in-out duration-300 gap-4`} >
-        <div className={`bg-white w-full relative shadow-md ${promptSiderCollapse || 'pt-4 pl-4'}`}>
+      <aside
+        className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${
+          promptSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-2/12"
+        } flex flex-row ease-in-out duration-300 gap-4`}
+      >
+        <div
+          className={`bg-white w-full relative shadow-md ${
+            promptSiderCollapse || "pt-4 pl-4"
+          }`}
+        >
           <PromptBar open={!promptSiderCollapse} />
         </div>
-      </ aside>
-    </div >
+      </aside>
+    </div>
   );
 }
-
-
-
-
-
-
-
-

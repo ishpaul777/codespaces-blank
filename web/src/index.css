@@ -50,31 +50,28 @@ body {
   }
 }
 
-
 /* ===== Scrollbar CSS ===== */
-  /* Firefox */
-  .scrollbar-custom {
-    scrollbar-width: none;
-    scrollbar-color: #000000 #b0b0b0;
-  }
+/* Firefox */
+.scrollbar-custom {
+  scrollbar-width: none;
+  scrollbar-color: #000000 #b0b0b0;
+}
 
-  /* Chrome, Edge, and Safari */
-  .scrollbar-custom::-webkit-scrollbar {
-    width: 6px;
-  }
+/* Chrome, Edge, and Safari */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .scrollbar-custom::-webkit-scrollbar-track {
-    background: #b0b0b0;
-    border-radius: 8px;
-  }
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #b0b0b0;
+  border-radius: 8px;
+}
 
-  .scrollbar-custom::-webkit-scrollbar-thumb {
-    background-color: #696969;
-    border-radius: 8px;
-  }
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #696969;
+  border-radius: 8px;
+}
 
-
-  .scrollbar-custom::-webkit-scrollbar-thumb:hover{
-    background-color: #000;
-  }
-
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: #000;
+}
