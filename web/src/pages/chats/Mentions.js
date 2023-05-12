@@ -99,7 +99,7 @@ const Mentions = (props) => {
 
 	const textareaRef = useRef(null);
     useEffect(() => {
-        textareaRef.current.style.height = "auto";
+        textareaRef.current.style.height = "32px";
         const scrollHeight = textareaRef.current.scrollHeight;
         textareaRef.current.style.height = scrollHeight + "px";
     }, [props.value]);
@@ -109,13 +109,13 @@ const Mentions = (props) => {
 		<div>
 			<textarea
 				onChange={(e) => { handleChange(e) }}
-				className='rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 h-12'
+				className='rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto'
 				// onKeyDown={(e) => { handleKeydown(e) }}
 				ref={textareaRef}
 				value={props.value}
 				placeholder={props.placeholder}
 				onKeyDown={(e) => { handlePrefixKeyDown(e) }}
-				style={{resize: "vertical"}}
+				// style={{resize: "vertical"}}
 			/>
 			{showPromptsList && promptsList.length > 0 && (
 				<ul

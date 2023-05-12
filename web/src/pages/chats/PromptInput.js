@@ -24,6 +24,7 @@ function PromptInput(props) {
 
 
 	const handlePromptSelect = (option, prefix) => {
+		const { value } = option;
 		const { value: oldValue } = props;
 
 		// Find the last occurrence of prefix in oldValue

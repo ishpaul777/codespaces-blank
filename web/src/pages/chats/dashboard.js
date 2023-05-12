@@ -311,7 +311,7 @@ export default function ChatPage() {
   }, [paginationChatHistory.search_query]);
 
   // maxListChars is the maximum number of characters that can be shown in the chat list
-  const maxListChars = 24;
+  const maxListChars = 15;
 
   // deleteChatHistoryIndex is the index of the chat in the chatHistory array
   // which is to be deleted
@@ -349,7 +349,7 @@ export default function ChatPage() {
     // 2. chat component
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
       {/* sidebar */}
-      <aside className={`sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-2/12 bg-black-100"} flex flex-row ease-in-out duration-300 gap-4`}>
+      <aside className={`sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-[20vw] bg-black-100"} flex flex-row ease-in-out duration-300 gap-4`}>
         <div className={`bg-white relative w-full shadow-md ${chatSiderCollapse || 'pt-4 pl-4'}`}>
           <div className={`my-4 w-full text-center justify-between gap-2 ${chatSiderCollapse ? 'd-none' : 'flex pr-4'} `}>
             <button
