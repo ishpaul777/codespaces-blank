@@ -615,6 +615,7 @@ export default function ChatPage() {
                           setIntialPrompt(e.target.value);
                         }}
                         placeholder={"Enter your initial prompt"}
+                        disabled={true}
                       ></Input>
                     </div>
                   </>
