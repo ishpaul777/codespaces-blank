@@ -6,6 +6,7 @@ import Document from "../pages/documents/create";
 import ImagePage from "../pages/images";
 import History from "../pages/history/history";
 import Playground from "../pages/natdev/Playground";
+import Compare from "../pages/natdev/Compare";
 export const routes = [
   {
     path: "/",
@@ -45,5 +46,9 @@ export const routes = [
   {
     path: "/playground",
     element: <Playground />,
+  },
+  {
+    path: "/compare",
+    element: <Compare />,
   },
 ];

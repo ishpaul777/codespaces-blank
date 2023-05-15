@@ -1,6 +1,5 @@
 import React,{useState} from "react";
 import ArrowLeftIOS from "../../assets/icons/ArrowLeftIOS.svg";
-import Ellipse from "../../assets/icons/Ellipse.svg";
 import reset from "../../assets/icons/reset.svg";
 import refresh from "../../assets/icons/refresh.svg";
 import clear from "../../assets/icons/clear.svg";
@@ -8,6 +7,8 @@ import clear from "../../assets/icons/clear.svg";
 import DropDownInput from "./DropDownInput";
 import SliderInput from "./SliderInput";
 import ReactSlider from "react-slider";
+import { Link } from "react-router-dom";
+import  {FaUserAlt} from 'react-icons/fa'
 
 const Playground = () => {
 // const {sliderValue}=SliderInput();
@@ -17,22 +18,24 @@ const Playground = () => {
       <div className="absolute bg-[#ffffff] box-border flex flex-col justify-center items-center gap-2  w-[100%] h-[10%] border-b-[#E9E9E9] border-b border-solid ">
         <div className=" flex flex-row justify-between items-center w-[95%] h-[80%] ">
           <div className="flex flex-row items-center  gap-2.5 w-fit h-[60%] px-[2%]">
+          <Link to='/'>
             <img src={ArrowLeftIOS} alt="back" />
+            </Link>
             <div className="flex flex-row items-center justify-center gap-7 w-[207px] h-[22px] p-0">
-              <div className="w-[99px] h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#1E1E1E] cursor-pointer">
+              <Link to="/playground" className="w-[99px] h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#1E1E1E] cursor-pointer">
                 Playground
-              </div>
-              <div className="w-20 h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#9C9C9C] cursor-pointer">
+              </Link>
+              <Link to='/compare' className="w-20 h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#9C9C9C] cursor-pointer">
                 Compare
-              </div>
+              </Link>
             </div>
           </div>
           <div className="flex flex-row relative items-center gap-3.5 w-fit h-[100%] p-0 right-0 ">
             <div className="bg-[#f2f2f2] flex flex-row items-center justify-center gap-2 w-97px h-6 px-5 py-0.5 rounded-[23px] not-italic font-semibold text-sm leading-5 text-[#1D2939]">
               100.000
             </div>
-            <div className=" h-fit w-fit ">
-              <img src={Ellipse} alt="pfl" />
+            <div className=" h-fit w-fit p-2 ">
+              <FaUserAlt/>
             </div>
           </div>
         </div>
