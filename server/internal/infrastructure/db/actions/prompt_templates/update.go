@@ -2,7 +2,7 @@ package prompt_templates
 
 import "github.com/factly/tagore/server/internal/domain/models"
 
-func (p *PGPromptTemplateRepository) UpdatePromptTemplateRepository(userID, promptTemplateID uint, title, description, prompt string) (*models.PromptTemplate, error) {
+func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemplateID uint, title, description, prompt string) (*models.PromptTemplate, error) {
 
 	updateMap := map[string]interface{}{}
 

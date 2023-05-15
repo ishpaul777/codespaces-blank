@@ -11,7 +11,7 @@ var (
 	ErrPromptTemplateNotFound = errors.New("prompt template not found")
 )
 
-func (p *PGPromptTemplateRepository) DeletePromptTemplate(userID, promptTemplateID uint) error {
+func (p *PGPromptTemplateRepository) DeletePromptTemplateByID(userID, promptTemplateID uint) error {
 
 	promptTemplateTOBeDeleted := &models.PromptTemplate{
 		Base: models.Base{

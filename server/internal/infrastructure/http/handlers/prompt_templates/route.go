@@ -13,6 +13,13 @@ type httpHandler struct {
 
 func (h *httpHandler) routes() chi.Router {
 	router := chi.NewRouter()
+	router.Post("/", h.createPromptTemplate)
+	router.Get("/", h.getAllPromptTemplates)
+	router.Route("/{prompt_template_id}", func(r chi.Router) {
+		r.Get("/", h.getPromptTemplateByID)
+		r.Put("/", h.updatePrompTemplateByID)
+		r.Delete("/", h.DeletePromptTemplateByID)
+	})
 	return router
 }
 

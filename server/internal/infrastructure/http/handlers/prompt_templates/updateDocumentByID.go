@@ -15,7 +15,7 @@ type updateRequest struct {
 	Prompt      string `json:"prompt,omitempty"`
 }
 
-func (h *httpHandler) updatePrompTemplateID(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) updatePrompTemplateByID(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())
