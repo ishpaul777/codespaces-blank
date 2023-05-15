@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@factly/scooter-core": "^0.0.15",
-    "@material-tailwind/react": "^2.0.0",
+    "@factly/scooter-core": "^0.0.13",
     "@reduxjs/toolkit": "^1.9.5",
+    "@material-tailwind/react": "^2.0.0",
     "@tailwindcss/typography": "^0.5.9",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
