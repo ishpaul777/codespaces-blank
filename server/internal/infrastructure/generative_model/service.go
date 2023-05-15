@@ -14,6 +14,7 @@ type ConfigGenerativeModel interface {
 type TextGenerativeModel interface {
 	ConfigGenerativeModel
 	GenerateText(prompt string, maxTokens uint) (interface{}, string, error)
+	GenerateTextStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error)
 	EditText(input string, instruction string) (interface{}, error)
 }
 
