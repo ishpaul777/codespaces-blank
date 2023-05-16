@@ -14,9 +14,12 @@ type PromptTemplate struct {
 }
 
 func (p *PromptTemplate) ValidatePrompt(prompt string) error {
+	//regexp matches {{any_word}} pattern
 	re := regexp.MustCompile(`{{\w+}}`)
+	//find all matches in prompt
 	matches := re.FindAllString(prompt, -1)
 
+	// if prompt contains variables, check if they are properly wrapped in double curly braces
 	if len(matches) > 0 {
 		for _, match := range matches {
 			if !strings.HasPrefix(prompt, match) && !strings.HasSuffix(prompt, match) {
@@ -25,6 +28,7 @@ func (p *PromptTemplate) ValidatePrompt(prompt string) error {
 		}
 	}
 
+	//check if prompt contains unclosed or mismatched curly braces
 	bracesCount := strings.Count(prompt, "{") - strings.Count(prompt, "}")
 	if bracesCount != 0 {
 		return errors.New("prompt contains unclosed or mismatched curly braces")
