@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
@@ -44,6 +45,10 @@ func (h *httpHandler) createPromptTemplate(w http.ResponseWriter, r *http.Reques
 	promptTemplate, err = h.promptTemplateService.CreateNewPromptTemplate(userID, requestBody.Title, requestBody.Description, requestBody.Prompt)
 	if err != nil {
 		h.logger.Error("error creating prompt template", "error", err.Error())
+		if err == custom_errors.PromptTemplateTitleExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusUnprocessableEntity)))
+			return
+		}
 		errorx.Render(w, errorx.Parser(errorx.DBError()))
 		return
 	}

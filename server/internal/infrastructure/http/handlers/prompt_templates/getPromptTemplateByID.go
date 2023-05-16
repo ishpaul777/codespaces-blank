@@ -3,6 +3,7 @@ package prompt_templates
 import (
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
@@ -25,9 +26,13 @@ func (h *httpHandler) getPromptTemplateByID(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	promptTemplate, err := h.promptTemplateService.GetAllPromptTemplateByID(userID, uint(promptTemplateID))
+	promptTemplate, err := h.promptTemplateService.GetPromptTemplateByID(userID, uint(promptTemplateID))
 	if err != nil {
 		h.logger.Error("error in fetching prompt template by id", "error", err.Error())
+		if err == custom_errors.PromptTemplateNotFound {
+			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
+			return
+		}
 		errorx.Render(w, errorx.Parser(errorx.GetMessage("error in fetching prompt template by id", http.StatusInternalServerError)))
 		return
 	}

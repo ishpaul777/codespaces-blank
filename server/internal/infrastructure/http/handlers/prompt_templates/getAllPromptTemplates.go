@@ -34,7 +34,7 @@ func (h *httpHandler) getAllPromptTemplates(w http.ResponseWriter, r *http.Reque
 
 	reponse.PromptTemplates, reponse.Count, err = h.promptTemplateService.GetAllPromptTemplates(usedID, *pagination)
 	if err != nil {
-		h.logger.Error("error getting all documents", "error", err.Error())
+		h.logger.Error("error getting all prompt_templates", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}

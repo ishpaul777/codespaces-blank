@@ -13,6 +13,7 @@ type PromptTemplateRepository interface {
 	GetAllPromptTemplates(userID uint, pagination helper.Pagination) ([]models.PromptTemplate, uint, error)
 	GetPromptTemplateByID(userID uint, PromptTemplateID uint) (*models.PromptTemplate, error)
 	UpdatePromptTemplateByID(userID uint, PromptTemplateID uint, title string, description string, prompt string) (*models.PromptTemplate, error)
+	PromptTemplateTitleExists(title string) bool
 }
 
 func NewPromptTemplateRepository(database db.IDatabaseService) (PromptTemplateRepository, error) {
