@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import ArrowLeftIOS from "../../assets/icons/ArrowLeftIOS.svg";
 import reset from "../../assets/icons/reset.svg";
 import refresh from "../../assets/icons/refresh.svg";
@@ -8,24 +8,30 @@ import DropDownInput from "./DropDownInput";
 import SliderInput from "./SliderInput";
 import ReactSlider from "react-slider";
 import { Link } from "react-router-dom";
-import  {FaUserAlt} from 'react-icons/fa'
+import { FaUserAlt } from "react-icons/fa";
 
 const Playground = () => {
-// const {sliderValue}=SliderInput();
-// console.log(sliderValue);
+  // const {sliderValue}=SliderInput();
+  // console.log(sliderValue);
   return (
     <>
       <div className="absolute bg-[#ffffff] box-border flex flex-col justify-center items-center gap-2  w-[100%] h-[10%] border-b-[#E9E9E9] border-b border-solid ">
         <div className=" flex flex-row justify-between items-center w-[95%] h-[80%] ">
           <div className="flex flex-row items-center  gap-2.5 w-fit h-[60%] px-[2%]">
-          <Link to='/'>
-            <img src={ArrowLeftIOS} alt="back" />
+            <Link to="/">
+              <img src={ArrowLeftIOS} alt="back" />
             </Link>
             <div className="flex flex-row items-center justify-center gap-7 w-[207px] h-[22px] p-0">
-              <Link to="/playground" className="w-[99px] h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#1E1E1E] cursor-pointer">
+              <Link
+                to="/playground"
+                className="w-[99px] h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#1E1E1E] cursor-pointer"
+              >
                 Playground
               </Link>
-              <Link to='/compare' className="w-20 h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#9C9C9C] cursor-pointer">
+              <Link
+                to="/compare"
+                className="w-20 h-[100%] not-italic font-semibold text-lg leading-[22px] text-[#9C9C9C] cursor-pointer"
+              >
                 Compare
               </Link>
             </div>
@@ -35,7 +41,7 @@ const Playground = () => {
               100.000
             </div>
             <div className=" h-fit w-fit p-2 ">
-              <FaUserAlt/>
+              <FaUserAlt />
             </div>
           </div>
         </div>
@@ -79,40 +85,82 @@ const Playground = () => {
           </div>
           <div className="flex flex-col items-start gap-4 w-full h-[65%] p-0">
             <div className="w-full h-1/7 gap-2 flex flex-col justify-evenly">
-            
-              <SliderInput heading="Maximum Length" min={0} max={600} step={1} defaultValue={200}  />
+              <SliderInput
+                heading="Maximum Length"
+                min={0}
+                max={600}
+                step={1}
+                defaultValue={200}
+              />
             </div>
             <div className="w-full h-1/7 gap-2 flex flex-col justify-evenly">
-              <SliderInput heading="Temperature" min={0} max={3} step={1} defaultValue={1}  />
+              <SliderInput
+                heading="Temperature"
+                min={0}
+                max={3}
+                step={1}
+                defaultValue={1}
+              />
             </div>
             <div className="w-full h-1/7 gap-2 flex flex-col justify-evenly">
-              
-              <SliderInput heading="Top P" min={0} max={3} step={1} defaultValue={1}  />
+              <SliderInput
+                heading="Top P"
+                min={0}
+                max={3}
+                step={1}
+                defaultValue={1}
+              />
             </div>
             <div className="w-full h-1/7 gap-2 flex flex-col justify-evenly">
-            
-              <SliderInput heading="Top K" min={0} max={100} step={1} defaultValue={30}  />
+              <SliderInput
+                heading="Top K"
+                min={0}
+                max={100}
+                step={1}
+                defaultValue={30}
+              />
             </div>
             <div className="w-full h-1/7 gap-2 flex flex-col justify-evenly">
-              
-              <SliderInput heading="Frequency Penalty" min={0} max={100} step={1} defaultValue={30}  />
+              <SliderInput
+                heading="Frequency Penalty"
+                min={0}
+                max={100}
+                step={1}
+                defaultValue={30}
+              />
             </div>
             <div className="w-full h-1/7 gap-2 flex flex-col justify-evenly">
-              <SliderInput heading="Presence Penalty" min={0} max={100} step={1} defaultValue={30}  />
+              <SliderInput
+                heading="Presence Penalty"
+                min={0}
+                max={100}
+                step={1}
+                defaultValue={30}
+              />
             </div>
             <div className="w-full h-1/7 gap-2 flex flex-col justify-evenly">
-              <SliderInput heading="Repetition Penalty" min={0} max={100} step={1} defaultValue={30}  />
+              <SliderInput
+                heading="Repetition Penalty"
+                min={0}
+                max={100}
+                step={1}
+                defaultValue={30}
+              />
             </div>
           </div>
           <div className="flex flex-col items-start justify-between gap-2  w-full h-auto p-0">
-                <div className="w-full flex justify-between ">
-                    <div className="w-fit h-fit not-italic font-medium text-sm leading-5 text-[#344054]">Show Probabilities </div>
-                    <input type="checkbox"/>
-                </div>
-                <div className="w-full h-fit flex justify-between ">
-                    <div className="w-fit h-fit not-italic font-medium text-sm leading-5 text-[#344054]">Highlight Model</div>
-                    <input type="checkbox"/>
-                </div>
+            <div className="w-full flex justify-between ">
+              <div className="w-fit h-fit not-italic font-medium text-sm leading-5 text-[#344054]">
+                Show Probabilities{" "}
+              </div>
+              <input type="checkbox" />
+            </div>
+            <div className="w-full h-fit flex justify-between ">
+              <div className="w-fit h-fit not-italic font-medium text-sm leading-5 text-[#344054]">
+                Highlight Model
+              </div>
+              <input type="checkbox" />
+            </div>
           </div>
         </div>
       </div>

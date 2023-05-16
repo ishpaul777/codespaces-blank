@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 // import './SliderInput.css';
 
-const SliderInput = ({ min, max, step, defaultValue,heading }) => {
+const SliderInput = ({ min, max, step, defaultValue, heading }) => {
   const [sliderValue, setSliderValue] = useState(defaultValue);
-  
+
   const handleSliderChange = (event) => {
     const value = parseInt(event.target.value);
     setSliderValue(value);

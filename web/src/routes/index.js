@@ -32,7 +32,6 @@ export const routes = [
         path: "/history",
         element: <History />,
       },
-      
     ],
   },
   {
