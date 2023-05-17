@@ -17,3 +17,18 @@ func (p *PGPromptTemplateRepository) GetPromptTemplateByID(userID uint, promptTe
 	}
 	return promptTemplate, nil
 }
+
+func (p *PGPromptTemplateRepository) GetPromptTemplateCollectionByID(userID, tempColID uint) (*models.PromptTemplateCollection, error) {
+	tempCol := &models.PromptTemplateCollection{}
+
+	err := p.client.Model(&models.PromptTemplateCollection{}).Where("created_by_id = ? AND id = ?", userID, tempColID).First(tempCol).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, custom_errors.PromptTemplateCollectionNotFound
+		}
+		return nil, err
+	}
+
+	return tempCol, nil
+}

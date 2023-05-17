@@ -12,9 +12,9 @@ import (
 )
 
 type createPromptTemplate struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Prompt      string `json:"prompt"`
+	Title       string `json:"title" validate:"required"`
+	Description string `json:"description" `
+	Prompt      string `json:"prompt" validate:"required"`
 }
 
 func (h *httpHandler) createPromptTemplate(w http.ResponseWriter, r *http.Request) {

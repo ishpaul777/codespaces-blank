@@ -9,3 +9,11 @@ func (p *PGPromptTemplateRepository) PromptTemplateTitleExists(title string) boo
 	}
 	return true
 }
+
+func (p *PGPromptTemplateRepository) PromptTemplateCollectionNameExists(name string) bool {
+	err := p.client.Model(&models.PromptTemplateCollection{}).Where("name = ?", name).First(&models.PromptTemplateCollection{}).Error
+	if err != nil {
+		return false
+	}
+	return true
+}

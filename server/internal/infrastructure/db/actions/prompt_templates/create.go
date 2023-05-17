@@ -28,3 +28,24 @@ func (p *PGPromptTemplateRepository) CreatePromptTemplate(userID uint, title, de
 	}
 	return newPromptTemplate, nil
 }
+
+func (p *PGPromptTemplateRepository) CreatePromptTemplateCollection(userID uint, name string) (*models.PromptTemplateCollection, error) {
+	newPromptTemplateCollection := &models.PromptTemplateCollection{
+		Base: models.Base{
+			CreatedByID: userID,
+		},
+		Name: name,
+	}
+
+	exists := p.PromptTemplateCollectionNameExists(name)
+
+	if exists {
+		return nil, custom_errors.PromptTemplateCollectionNameExists
+	}
+
+	err := p.client.Model(&models.PromptTemplateCollection{}).Create(&newPromptTemplateCollection).Error
+	if err != nil {
+		return nil, err
+	}
+	return newPromptTemplateCollection, nil
+}

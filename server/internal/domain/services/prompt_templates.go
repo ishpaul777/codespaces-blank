@@ -12,6 +12,11 @@ type PromptTemplateService interface {
 	GetAllPromptTemplates(userID uint, pagination helper.Pagination) ([]models.PromptTemplate, uint, error)
 	GetPromptTemplateByID(userID uint, promptTemplateID uint) (*models.PromptTemplate, error)
 	UpdatePromptTemplateByID(userID uint, promptTemplateID uint, title string, description string, prompt string) (*models.PromptTemplate, error)
+	CreateNewPromptTemplateCollection(userID uint, name string) (*models.PromptTemplateCollection, error)
+	DeletePromptTemplateCollectionByID(userID, promptTemplateCollectionID uint) error
+	GetAllPromptTemplateCollections(userID uint, pagination helper.Pagination) ([]models.PromptTemplateCollection, uint, error)
+	GetPromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint) (*models.PromptTemplateCollection, error)
+	UpdatePromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint, name string) (*models.PromptTemplateCollection, error)
 }
 
 type promptTemplateService struct {
@@ -41,6 +46,26 @@ func (ps *promptTemplateService) GetAllPromptTemplates(userID uint, pagination h
 // UpdatePromptTemplateByID implements PromptTemplateService
 func (ps *promptTemplateService) UpdatePromptTemplateByID(userID uint, promptTemplateID uint, title string, description string, prompt string) (*models.PromptTemplate, error) {
 	return ps.promptTemplateRepository.UpdatePromptTemplateByID(userID, promptTemplateID, title, description, prompt)
+}
+
+func (ps *promptTemplateService) CreateNewPromptTemplateCollection(userID uint, name string) (*models.PromptTemplateCollection, error) {
+	return ps.promptTemplateRepository.CreatePromptTemplateCollection(userID, name)
+}
+
+func (ps *promptTemplateService) DeletePromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint) error {
+	return ps.promptTemplateRepository.DeletePromptTemplateCollectionByID(userID, promptTemplateCollectionID)
+}
+
+func (ps *promptTemplateService) GetAllPromptTemplateCollections(userID uint, pagination helper.Pagination) ([]models.PromptTemplateCollection, uint, error) {
+	return ps.promptTemplateRepository.GetAllPromptTemplateCollections(userID, pagination)
+}
+
+func (ps *promptTemplateService) GetPromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint) (*models.PromptTemplateCollection, error) {
+	return ps.promptTemplateRepository.GetPromptTemplateCollectionByID(userID, promptTemplateCollectionID)
+}
+
+func (ps *promptTemplateService) UpdatePromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint, name string) (*models.PromptTemplateCollection, error) {
+	return ps.promptTemplateRepository.UpdatePromptTemplateCollectionByID(userID, promptTemplateCollectionID, name)
 }
 
 func NewPromptTemplateService(repository repositories.PromptTemplateRepository) PromptTemplateService {

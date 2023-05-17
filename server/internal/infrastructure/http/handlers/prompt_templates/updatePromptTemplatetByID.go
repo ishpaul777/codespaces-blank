@@ -27,8 +27,8 @@ func (h *httpHandler) updatePrompTemplateByID(w http.ResponseWriter, r *http.Req
 	ptID := helper.GetPathParamByName(r, "prompt_template_id")
 	promptTemplateID, err := helper.StringToInt(ptID)
 	if err != nil {
-		h.logger.Error("error in parsing document id", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid document id", http.StatusBadRequest)))
+		h.logger.Error("error in parsing prompt template id", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid prompt template id", http.StatusBadRequest)))
 		return
 	}
 
@@ -43,7 +43,7 @@ func (h *httpHandler) updatePrompTemplateByID(w http.ResponseWriter, r *http.Req
 
 	updatePromptTemplate, err := h.promptTemplateService.UpdatePromptTemplateByID(userID, uint(promptTemplateID), updateReq.Title, updateReq.Description, updateReq.Prompt)
 	if err != nil {
-		h.logger.Error("error updating document by id", "error", err.Error())
+		h.logger.Error("error updating prompt template by id", "error", err.Error())
 		if err == custom_errors.PromptTemplateNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
