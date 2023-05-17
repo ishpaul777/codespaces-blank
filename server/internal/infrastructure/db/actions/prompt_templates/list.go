@@ -1,8 +1,6 @@
 package prompt_templates
 
 import (
-	"log"
-
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 )
@@ -23,7 +21,7 @@ func (p *PGPromptTemplateRepository) GetAllPromptTemplates(userID uint, paginati
 		db = db.Where("title ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}
 
-	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Find(&promptTemplates).Error
+	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Preload("PromptTemplateCollection").Find(&promptTemplates).Error
 
 	if err != nil {
 		return nil, 0, err
@@ -44,13 +42,12 @@ func (p *PGPromptTemplateRepository) GetAllPromptTemplateCollections(userID uint
 	}
 
 	db := p.client.Model(&models.PromptTemplateCollection{}).Where("created_by_id = ?", userID)
-	log.Println("====================================>>", pagination.SearchQuery)
 
 	if pagination.SearchQuery != "" {
 		db = db.Where("name ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}
 
-	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Find(&tempCols).Error
+	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Preload("PromptTemplates").Find(&tempCols).Error
 
 	if err != nil {
 		return nil, 0, err

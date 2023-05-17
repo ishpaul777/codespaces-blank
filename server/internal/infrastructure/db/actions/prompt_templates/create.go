@@ -5,21 +5,29 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 )
 
-func (p *PGPromptTemplateRepository) CreatePromptTemplate(userID uint, title, description, prompt string) (*models.PromptTemplate, error) {
+func (p *PGPromptTemplateRepository) CreatePromptTemplate(userID uint, title, description, prompt string, collection_id *uint) (*models.PromptTemplate, error) {
+	exists := p.PromptTemplateTitleExists(title)
+
+	if exists {
+		return nil, custom_errors.PromptTemplateTitleExists
+	}
+
+	if collection_id != nil {
+		// check whether collection exists
+		collectionExists := p.PromptTemplateCollectionExists(*collection_id)
+		if !collectionExists {
+			return nil, custom_errors.PromptTemplateCollectionNotFound
+		}
+	}
 
 	newPromptTemplate := &models.PromptTemplate{
 		Base: models.Base{
 			CreatedByID: userID,
 		},
-		Title:       title,
-		Description: description,
-		Prompt:      prompt,
-	}
-
-	exists := p.PromptTemplateTitleExists(title)
-
-	if exists {
-		return nil, custom_errors.PromptTemplateTitleExists
+		Title:                      title,
+		Description:                description,
+		Prompt:                     prompt,
+		PromptTemplateCollectionID: collection_id,
 	}
 
 	err := p.client.Model(&models.PromptTemplate{}).Create(&newPromptTemplate).Error

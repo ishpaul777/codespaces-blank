@@ -12,9 +12,10 @@ import (
 )
 
 type createPromptTemplate struct {
-	Title       string `json:"title" validate:"required"`
-	Description string `json:"description" `
-	Prompt      string `json:"prompt" validate:"required"`
+	Title        string `json:"title" validate:"required"`
+	Description  string `json:"description" `
+	Prompt       string `json:"prompt" validate:"required"`
+	CollectionID *uint  `json:"prompt_template_collection_id,omitempty"`
 }
 
 func (h *httpHandler) createPromptTemplate(w http.ResponseWriter, r *http.Request) {
@@ -42,11 +43,15 @@ func (h *httpHandler) createPromptTemplate(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	promptTemplate, err = h.promptTemplateService.CreateNewPromptTemplate(userID, requestBody.Title, requestBody.Description, requestBody.Prompt)
+	promptTemplate, err = h.promptTemplateService.CreateNewPromptTemplate(userID, requestBody.Title, requestBody.Description, requestBody.Prompt, requestBody.CollectionID)
 	if err != nil {
 		h.logger.Error("error creating prompt template", "error", err.Error())
 		if err == custom_errors.PromptTemplateTitleExists {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusUnprocessableEntity)))
+			return
+		}
+		if err == custom_errors.PromptTemplateCollectionNotFound {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.DBError()))

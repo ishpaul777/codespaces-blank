@@ -50,7 +50,11 @@ func (p *PGPromptTemplateRepository) DeletePromptTemplateCollectionByID(userID, 
 			return err
 		}
 	}
-
+	// delete all prompt templates associated with the prompt template collection
+	err = p.client.Model(&models.PromptTemplate{}).Where("prompt_template_collection_id = ?", templateColID).Delete(&models.PromptTemplate{}).Error
+	if err != nil {
+		return err
+	}
 	err = p.client.Delete(tempColToBeDeleted).Error
 
 	if err != nil {
