@@ -24,6 +24,15 @@ type ChatService interface {
 
 	// DeleteChat deletes a chat by id and user id and returns the error if any
 	DeleteChat(userID, chatID uint) error
+
+	// Create new chat collection
+	CreateChatCollection(userID uint, name string) (*models.ChatCollection, error)
+	// Get all chat collections by user
+	GetAllChatCollectionsByUser(userID uint, pagination helper.Pagination) ([]models.ChatCollection, uint, error)
+	// Get chat collection by id
+	GetChatCollectionByID(chatCollectionID uint) (*models.ChatCollection, error)
+	// Delete chat collection
+	DeleteChatCollection(userID, chatCollectionID uint) error
 }
 
 // chatService is a concrete implementation of ChatService interface
@@ -207,6 +216,22 @@ func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provi
 	}
 
 	generativeModel.GenerateStreamingResponse(model, temperature, *chat, dataChan, errChan, c.chatRepository)
+}
+
+func (c *chatService) CreateChatCollection(userID uint, name string) (*models.ChatCollection, error) {
+	return c.chatRepository.CreateChatCollection(userID, name)
+}
+
+func (c *chatService) GetChatCollectionByID(chatCollectionID uint) (*models.ChatCollection, error) {
+	return c.chatRepository.GetChatCollectionByID(chatCollectionID)
+}
+
+func (c *chatService) GetAllChatCollectionsByUser(userID uint, pagination helper.Pagination) ([]models.ChatCollection, uint, error) {
+	return c.chatRepository.GetAllChatCollectionsByUser(userID, pagination)
+}
+
+func (c *chatService) DeleteChatCollection(userID, chatCollectionID uint) error {
+	return c.chatRepository.DeleteChatCollection(userID, chatCollectionID)
 }
 
 func (c *chatService) DeleteChat(userID, chatID uint) error {

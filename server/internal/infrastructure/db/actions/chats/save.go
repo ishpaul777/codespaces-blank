@@ -53,3 +53,17 @@ func (p *PGChatsRepository) SaveChat(userID uint, chatID *uint, model string, me
 
 	return &chat, nil
 }
+
+func (p *PGChatsRepository) CreateChatCollection(userID uint, name string) (*models.ChatCollection, error) {
+	chatCollection := models.ChatCollection{
+		Base: models.Base{
+			CreatedByID: userID,
+		},
+		Name: name,
+	}
+	err := p.client.Create(&chatCollection).Error
+	if err != nil {
+		return nil, err
+	}
+	return &chatCollection, nil
+}
