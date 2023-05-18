@@ -55,6 +55,7 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 		errChan := make(chan error)
 
 		defer func() {
+			fmt.Print("closed channel is called in the end")
 			close(msgChan)
 			msgChan = nil
 			close(errChan)
