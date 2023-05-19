@@ -7,7 +7,6 @@ import ImagePage from "../pages/images";
 import History from "../pages/history/history";
 import Playground from "../pages/natdev/Playground";
 import Compare from "../pages/natdev/Compare";
-import Personas from "../pages/personas";
 export const routes = [
   {
     path: "/",
@@ -32,10 +31,6 @@ export const routes = [
       {
         path: "/history",
         element: <History />,
-      },
-      {
-        path: "/personas",
-        element: <Personas />,
       },
     ],
   },

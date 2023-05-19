@@ -42,11 +42,6 @@ export function Sidebar() {
       linkTo: "/",
     },
     {
-      name: "Personas",
-      icon: Templates,
-      linkTo: "/personas",
-    },
-    {
       name: "Chat",
       icon: Chat,
       linkTo: "/chats/dashboard",
