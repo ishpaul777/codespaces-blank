@@ -397,7 +397,6 @@ export default function Document() {
             }}
             tagoreConfig={{
               fetcher: async (input, options) => {
-                console.log(input);
                 const response = await axios.post(
                   `http://localhost:8080/prompts/generate`,
                   {
