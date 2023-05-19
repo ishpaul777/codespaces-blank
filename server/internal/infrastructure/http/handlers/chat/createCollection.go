@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
@@ -34,6 +35,10 @@ func (h *httpHandler) createChatCollection(w http.ResponseWriter, r *http.Reques
 	chatCollection := &models.ChatCollection{}
 	chatCollection, err = h.chatService.CreateChatCollection(userID, requestBody.Name)
 	if err != nil {
+		if err == custom_errors.ChatCollectionNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusUnprocessableEntity)))
+			return
+		}
 		h.logger.Error("error creating chat collection", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.DBError()))
 		return

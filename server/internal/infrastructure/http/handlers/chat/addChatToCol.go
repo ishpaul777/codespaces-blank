@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
@@ -33,6 +34,10 @@ func (h *httpHandler) addChatToCollection(w http.ResponseWriter, r *http.Request
 	err = h.chatService.AddChatToCollection(userID, res.ChatID, res.ChatCollectionID)
 	if err != nil {
 		h.logger.Error("error adding chat to collection", "error", err.Error())
+		if err == custom_errors.ChatNotFound || err == custom_errors.ChatCollectionNotFound {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
+			return
+		}
 		errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusInternalServerError)))
 		return
 	}

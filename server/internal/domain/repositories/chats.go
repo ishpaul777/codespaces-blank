@@ -19,6 +19,7 @@ type ChatRepository interface {
 	GetChatCollectionByID(chatCollectionID uint) (*models.ChatCollection, error)
 	DeleteChatCollection(userID, chatCollectionID uint) error
 	IsUserChatCollectionOwner(userID, chatCollectionID uint) (bool, error)
+	ChatCollectionNameExists(name string) bool
 }
 
 func NewChatRepository(database db.IDatabaseService) (ChatRepository, error) {
