@@ -39,7 +39,7 @@ func (p *PGChatsRepository) GetAllChatCollectionsByUser(userID uint, pagination 
 	if pagination.SearchQuery != "" {
 		db = db.Where("name ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}
-	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Find(&chatCollections).Error
+	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Preload("Chats").Find(&chatCollections).Error
 	if err != nil {
 		return nil, 0, err
 	}

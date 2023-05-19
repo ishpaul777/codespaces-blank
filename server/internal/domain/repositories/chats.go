@@ -9,6 +9,7 @@ import (
 
 type ChatRepository interface {
 	SaveChat(userID uint, chatID *uint, model string, messages []models.Message, usage models.Usage) (*models.Chat, error)
+	AddChatToCollection(userID, chatID, chatCollectionID uint) error
 	GetAllChatsByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error)
 	DeleteChat(userID, chatID uint) error
 	GetChatByID(chatID uint) (*models.Chat, error)

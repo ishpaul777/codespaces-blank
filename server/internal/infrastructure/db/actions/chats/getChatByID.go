@@ -13,7 +13,7 @@ func (p *PGChatsRepository) GetChatByID(chatID uint) (*models.Chat, error) {
 
 func (p *PGChatsRepository) GetChatCollectionByID(chatCollectionID uint) (*models.ChatCollection, error) {
 	chatCollection := &models.ChatCollection{}
-	err := p.client.Model(&models.ChatCollection{}).Where("id = ?", chatCollectionID).First(chatCollection).Error
+	err := p.client.Model(&models.ChatCollection{}).Where("id = ?", chatCollectionID).Preload("Chats").First(chatCollection).Error
 	if err != nil {
 		return nil, err
 	}
