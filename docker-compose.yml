@@ -62,7 +62,7 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - PUBLIC_URL=http://127.0.0.1:4455/.factly/tagore/web
-      - REACT_APP_PUBLIC_URL='http://127.0.0.1:4455/.factly/tagore/web';
+      - REACT_APP_PUBLIC_URL=/.factly/tagore/web
       - REACT_APP_TAGORE_API_URL=http://localhost:8080
     ports:
       - "3000:3000"
