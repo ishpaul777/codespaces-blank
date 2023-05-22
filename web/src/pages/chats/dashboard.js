@@ -44,13 +44,20 @@ export default function ChatPage() {
 
   const [initialPrompt, setIntialPrompt] = useState("");
 
-  const [stream, setStream] = useState(true);
+  const [stream, setStream] = useState(false);
   const [promptSiderCollapse, setPromptSiderCollapse] = useState(false);
   const [chatSiderCollapse, setChatSiderCollapse] = useState(false);
 
   const modelIDToLabel = {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
     "gpt-4": "GPT-4",
+    "claude-v1.3": "Claude v1.3",
+  };
+
+  const modelIDtoProvider = {
+    "gpt-3.5-turbo": "openai",
+    "gpt-4": "openai",
+    "claude-v1.3": "anthropic",
   };
 
   const styles = {
@@ -164,7 +171,7 @@ export default function ChatPage() {
     var requestBody = {
       prompt: currentMessage.content,
       model: model,
-      provider: "openai",
+      provider: modelIDtoProvider[model],
       userID: 1,
       temperature: temperature,
       additional_instructions: "Return the content in valid markdown format.",
@@ -615,6 +622,7 @@ export default function ChatPage() {
                           setIntialPrompt(e.target.value);
                         }}
                         placeholder={"Enter your initial prompt"}
+                        disabled={true}
                       ></Input>
                     </div>
                   </>
