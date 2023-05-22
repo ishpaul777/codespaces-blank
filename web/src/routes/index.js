@@ -1,7 +1,9 @@
 import Layout from "../components/layout/layout";
+import LayoutAlt from "../components/layout/layoutAlt";
 import { HomePage } from "../pages";
 import ChatPage from "../pages/chats/dashboard";
 import DocumentPage from "../pages/documents";
+import Profile from "../pages/profile-settings/profile";
 import Document from "../pages/documents/create";
 import ImagePage from "../pages/images";
 import History from "../pages/history/history";
@@ -28,9 +30,18 @@ export const routes = [
         path: "/images",
         element: <ImagePage />,
       },
-      {
-        path: "/history",
-        element: <History />,
+    ],
+  },
+  {
+    path: "/",
+    element: <LayoutAlt />,
+    children: [
+      { 
+        path: "/profile",
+        element: <Profile /> 
+      },
+      { path: "/history",
+        element: <History />
       },
     ],
   },

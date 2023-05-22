@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ArrowLeftIOS from "../../assets/icons/ArrowLeftIOS.svg";
 import reset from "../../assets/icons/reset.svg";
 import refresh from "../../assets/icons/refresh.svg";
@@ -6,7 +6,6 @@ import clear from "../../assets/icons/clear.svg";
 
 import DropDownInput from "./DropDownInput";
 import SliderInput from "./SliderInput";
-import ReactSlider from "react-slider";
 import { Link } from "react-router-dom";
 import { FaUserAlt } from "react-icons/fa";
 
@@ -68,8 +67,8 @@ const Playground = () => {
 
       <div className="flex flex-row items-start justify-evenly gap-3 absolute min-w-[20%] h-fit px-[29px] py-[10px] right-[0] top-[10%] bg-[#f9fafb]">
         <div className="flex flex-col items-start gap-4 w-[90%] h-[99%] p-0">
-          <div className="flex flex-col gap-[2px] w-full">
-            <div className="w-9 h-5 not-italic font-medium text-sm leading-5 text-[#344054]">
+          <div className="flex flex-col gap-[5px] w-full">
+            <div className="w-fit h-5 not-italic font-medium text-sm leading-5 text-[#344054]">
               Model
             </div>
             <DropDownInput />
