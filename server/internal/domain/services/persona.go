@@ -7,11 +7,11 @@ import (
 )
 
 type PersonaService interface {
-	CreateNewPersona(userID uint, name, description, prompt, avatar string, visibility models.VISIBILITY) (*models.Persona, error)
+	CreateNewPersona(userID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error)
 	DeletePersonaByID(userID, personaID uint) error
 	GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
 	GetPersonaByID(userID uint, personaID uint) (*models.Persona, error)
-	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar string, visibility models.VISIBILITY) (*models.Persona, error)
+	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error)
 }
 
 type personaService struct {
@@ -22,7 +22,7 @@ func NewPersonaService(personaRepository repositories.PersonaRepository) Persona
 	return &personaService{personaRepository}
 }
 
-func (s *personaService) CreateNewPersona(userID uint, name, description, prompt, avatar string, visibility models.VISIBILITY) (*models.Persona, error) {
+func (s *personaService) CreateNewPersona(userID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
 	return s.personaRepository.CreatePersona(userID, name, description, prompt, avatar, visibility)
 }
 
@@ -38,6 +38,6 @@ func (s *personaService) DeletePersonaByID(userID, personaID uint) error {
 	return s.personaRepository.DeletePersonaByID(userID, personaID)
 }
 
-func (s *personaService) UpdatePersonaByID(userID uint, personaID uint, name string, description string, prompt, avatar string, visibility models.VISIBILITY) (*models.Persona, error) {
+func (s *personaService) UpdatePersonaByID(userID uint, personaID uint, name string, description string, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
 	return s.personaRepository.UpdatePersonaByID(userID, personaID, name, description, prompt, avatar, visibility)
 }

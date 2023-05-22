@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (p *PGPersonaRepository) UpdatePersonaByID(userID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
+func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
 	updateMap := map[string]interface{}{}
 
 	if name != "" {
@@ -30,7 +30,7 @@ func (p *PGPersonaRepository) UpdatePersonaByID(userID uint, name, description, 
 	}
 
 	persona := &models.Persona{}
-	err := p.client.Model(&models.Persona{}).Where("created_by_id = ? AND id = ?", userID).Updates(updateMap).First(persona).Error
+	err := p.client.Model(&models.Persona{}).Where("created_by_id = ? AND id = ?", userID, personaID).Updates(updateMap).First(persona).Error
 
 	if err != nil {
 

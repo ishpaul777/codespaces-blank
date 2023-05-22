@@ -5,9 +5,9 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 )
 
-func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prompt, avatar string, visibility models.VISIBILITY) (*models.Persona, error) {
+func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
 
-	valid := models.ValidateVisibility(visibility)
+	valid := models.ValidateVisibility(*visibility)
 	if !valid {
 		return nil, custom_errors.PersonaVisibilityInvalid
 	}
@@ -25,7 +25,7 @@ func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prom
 		Description: description,
 		Prompt:      prompt,
 		Avatar:      avatar,
-		Visibility:  visibility,
+		Visibility:  *visibility,
 	}
 	err := r.client.Create(&persona).Error
 	if err != nil {

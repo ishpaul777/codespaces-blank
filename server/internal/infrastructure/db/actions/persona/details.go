@@ -6,9 +6,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func (p *PGPersonaRepository) GetPersonaByID(personaID uint) (*models.Persona, error) {
+func (p *PGPersonaRepository) GetPersonaByID(userID, personaID uint) (*models.Persona, error) {
 	persona := &models.Persona{}
-	err := p.client.Model(&models.Persona{}).Where("id = ?", personaID).First(&persona).Error
+	err := p.client.Model(&models.Persona{}).Where("created_by_id = ? AND id = ?", personaID).First(&persona).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, custom_errors.PersonaNotFound
