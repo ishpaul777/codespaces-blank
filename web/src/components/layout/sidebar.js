@@ -42,11 +42,6 @@ export function Sidebar() {
       linkTo: "/",
     },
     {
-      name: "Personas",
-      icon: Templates,
-      linkTo: "/personas",
-    },
-    {
       name: "Chat",
       icon: Chat,
       linkTo: "/chats/dashboard",
@@ -58,16 +53,19 @@ export function Sidebar() {
       name: "View Profile",
       icon: Profile,
       linkTo: "/profile",
+      
     },
     {
       name: "History",
       icon: History,
       linkTo: "/history",
+      arrow:ArrowLeft,
     },
     {
       name: "Favorites",
       icon: Bookmark,
       linkTo: "/favorites",
+      arrow:ArrowLeft,
     },
     {
       name: "Usage",
@@ -91,12 +89,12 @@ export function Sidebar() {
   };
   return (
     <div
-      className={`p-5 pt-8 w-1/6 bg-background-sidebar h-screen flex flex-col`}
+      className={`p-5 pt-8 w-fit bg-background-sidebar h-screen flex flex-col`}
     >
-      <div className={`flex gap-x-2 items-center justify-center ml-2`}>
+      <div className={`flex gap-x-2 items-center justify-center w-fit`}>
         <img
           src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
-          className="cursor-pointer w-3/4"
+          className="cursor-pointer w-3/4" alt="logo"
         />
       </div>
       {/* Sidebar menu options */}
@@ -112,8 +110,11 @@ export function Sidebar() {
               onClick={() => setActiveTab(index)}
             >
               <div className="flex gap-x-4">
-                <img src={menu.icon} />
+                <img src={menu.icon} alt="menu-icon" />
                 <h3>{menu.name}</h3>
+              </div>
+              <div>
+                {menu.arrow}
               </div>
             </li>
           </Link>
