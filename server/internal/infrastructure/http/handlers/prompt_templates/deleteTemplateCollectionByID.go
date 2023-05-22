@@ -9,7 +9,7 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-func (h *httpHandler) deletePromptTemplateByID(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) deleteTemplateCollectionByID(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 
 	if err != nil {
@@ -18,19 +18,19 @@ func (h *httpHandler) deletePromptTemplateByID(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ptID := helper.GetPathParamByName(r, "prompt_template_id")
-	promptTemplatetID, err := helper.StringToInt(ptID)
+	tcID := helper.GetPathParamByName(r, "template_collection_id")
+	templateCollectionID, err := helper.StringToInt(tcID)
 	if err != nil {
 		h.logger.Error("error in parsing prompt template id", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid prompt template id", http.StatusBadRequest)))
 		return
 	}
 
-	err = h.promptTemplateService.DeletePromptTemplateByID(userID, uint(promptTemplatetID))
+	err = h.promptTemplateService.DeletePromptTemplateCollectionByID(userID, uint(templateCollectionID))
 
 	if err != nil {
 		h.logger.Error("error in deleting prompt template", "error", err.Error())
-		if err == custom_errors.PromptTemplateNotFound {
+		if err == custom_errors.PromptTemplateCollectionNotFound {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
 			return
 		}
@@ -39,6 +39,7 @@ func (h *httpHandler) deletePromptTemplateByID(w http.ResponseWriter, r *http.Re
 	}
 
 	renderx.JSON(w, http.StatusOK, map[string]interface{}{
-		"message": "prompt template deleted succcesfully",
+		"message": "template collection deleted succcesfully",
 	})
+
 }
