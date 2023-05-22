@@ -1,11 +1,13 @@
+import { useState } from "react";
 import { CreateButton } from "../../components/buttons/CreateButton";
 import PersonaCard from "../../components/cards/personaCard";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
-import avtarImg from "../../assets/avatar.png"
+import avtarImg from "../../assets/avatar.png";
 
 export default function Personas() {
   const items = Array(30).fill(0);
+  const [tab, setTab] = useState("All");
   return (
     <div className="m-10">
       {/* This is Page header */}
@@ -20,9 +22,27 @@ export default function Personas() {
         </div>
       </div>
       <div className="flex flex-row justify-between items-center mt-8 mx-1">
-        <div className="flex flex-row font-semibold text-base gap-4">
-          <button className="text-grey-50 active:text-grey-50">All</button>
-          <button className="text-grey-50 active:text-grey-50">Created</button>
+        <div className="flex flex-row font-semibold text-[18px] gap-4 border-b border-solid border-[#D9E7DA]">
+          <button
+            className={`text-grey-50 py-[10px] ${
+              tab === "All"
+                ? "text-black-50 border-b-[2px] border-black-50"
+                : ""
+            }`}
+            onClick={() => setTab("All")}
+          >
+            All
+          </button>
+          <button
+            className={`text-grey-50 py-[10px] ${
+              tab === "Created"
+                ? "text-black-50 border-b-[2px] border-black-50"
+                : ""
+            }`}
+            onClick={() => setTab("Created")}
+          >
+            Created
+          </button>
         </div>
         <select
           name="category"
@@ -37,7 +57,7 @@ export default function Personas() {
         </select>
       </div>
       {/* This is Page Items */}
-      <div className="flex flex-row flex-wrap items-center my-10">
+      <div className="grid grid-cols-5 gap-5 my-10">
         {items.map((num) => (
           <PersonaCard
             image={avtarImg}
