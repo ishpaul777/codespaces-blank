@@ -4,10 +4,20 @@ import PersonaCard from "../../components/cards/personaCard";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
 import avtarImg from "../../assets/avatar.png";
+import Pagination from "./pagination";
 
 export default function Personas() {
-  const items = Array(30).fill(0);
+  const items = Array(34).fill(0);
   const [tab, setTab] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageSize = 10;
+  const total = items.length;
+  const totalPages = Math.ceil(total / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = currentPage * pageSize;
+  const pageData = items.slice(startIndex, endIndex);
+
   return (
     <div className="m-10">
       {/* This is Page header */}
@@ -57,8 +67,8 @@ export default function Personas() {
         </select>
       </div>
       {/* This is Page Items */}
-      <div className="grid grid-cols-5 gap-5 my-10">
-        {items.map((num) => (
+      <div className="grid grid-cols-5 gap-5 my-10 h-[63vh]">
+        {pageData.map((num) => (
           <PersonaCard
             image={avtarImg}
             name={"Factly"}
@@ -66,6 +76,11 @@ export default function Personas() {
           />
         ))}
       </div>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 }
