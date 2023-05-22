@@ -21,8 +21,8 @@ func (h *httpHandler) getPromptTemplateByID(w http.ResponseWriter, r *http.Reque
 	promptTemplateID, err := helper.StringToInt(ptID)
 
 	if err != nil {
-		h.logger.Error("error in parsing document id", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid document id", http.StatusBadRequest)))
+		h.logger.Error("error in parsing prompt template id", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid prompt template id", http.StatusBadRequest)))
 		return
 	}
 

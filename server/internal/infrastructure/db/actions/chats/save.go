@@ -2,7 +2,9 @@ package chats
 
 import (
 	"errors"
+	"log"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 )
@@ -52,4 +54,23 @@ func (p *PGChatsRepository) SaveChat(userID uint, chatID *uint, model string, me
 	}
 
 	return &chat, nil
+}
+
+func (p *PGChatsRepository) CreateChatCollection(userID uint, name string) (*models.ChatCollection, error) {
+	exists := p.ChatCollectionNameExists(name)
+	log.Println("=================> ", exists)
+	if exists {
+		return nil, custom_errors.ChatCollectionNameExists
+	}
+	chatCollection := models.ChatCollection{
+		Base: models.Base{
+			CreatedByID: userID,
+		},
+		Name: name,
+	}
+	err := p.client.Create(&chatCollection).Error
+	if err != nil {
+		return nil, err
+	}
+	return &chatCollection, nil
 }

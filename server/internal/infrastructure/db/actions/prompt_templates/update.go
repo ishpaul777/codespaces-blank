@@ -6,7 +6,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemplateID uint, title, description, prompt string) (*models.PromptTemplate, error) {
+func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemplateID uint, title, description, prompt string, collection_id *uint) (*models.PromptTemplate, error) {
+
+	if collection_id != nil {
+		// check if collection exists
+		collectionExists := p.PromptTemplateCollectionExists(*collection_id)
+
+		if !collectionExists {
+			return nil, custom_errors.PromptTemplateCollectionNotFound
+		}
+	}
 
 	updateMap := map[string]interface{}{}
 
@@ -22,6 +31,10 @@ func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemp
 		updateMap["prompt"] = prompt
 	}
 
+	if collection_id != nil {
+		updateMap["prompt_template_collection_id"] = collection_id
+	}
+
 	promptTemplate := &models.PromptTemplate{}
 	err := p.client.Model(&models.PromptTemplate{}).Where("created_by_id = ? AND id = ?", userID, promptTemplateID).Updates(updateMap).First(promptTemplate).Error
 	if err != nil {
@@ -32,4 +45,23 @@ func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemp
 	}
 
 	return promptTemplate, nil
+}
+
+func (p *PGPromptTemplateRepository) UpdatePromptTemplateCollectionByID(userID, tempColID uint, name string) (*models.PromptTemplateCollection, error) {
+	updateMap := map[string]interface{}{}
+
+	if name != "" {
+		updateMap["name"] = name
+	}
+
+	tempCol := &models.PromptTemplateCollection{}
+	err := p.client.Model(&models.PromptTemplateCollection{}).Where("created_by_id = ? AND id = ?", userID, tempColID).Updates(updateMap).First(tempCol).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, custom_errors.PromptTemplateCollectionNotFound
+		}
+		return nil, err
+	}
+
+	return tempCol, nil
 }

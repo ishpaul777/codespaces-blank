@@ -31,3 +31,34 @@ func (p *PGPromptTemplateRepository) DeletePromptTemplateByID(userID, promptTemp
 
 	return nil
 }
+
+func (p *PGPromptTemplateRepository) DeletePromptTemplateCollectionByID(userID, templateColID uint) error {
+
+	tempColToBeDeleted := &models.PromptTemplateCollection{
+		Base: models.Base{
+			ID: templateColID,
+		},
+	}
+
+	err := p.client.Model(&models.PromptTemplateCollection{}).Where("created_by_id = ? AND id = ?", userID, templateColID).First(&tempColToBeDeleted).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return custom_errors.PromptTemplateCollectionNotFound
+		} else {
+			return err
+		}
+	}
+	// delete all prompt templates associated with the prompt template collection
+	err = p.client.Model(&models.PromptTemplate{}).Where("prompt_template_collection_id = ?", templateColID).Delete(&models.PromptTemplate{}).Error
+	if err != nil {
+		return err
+	}
+	err = p.client.Delete(tempColToBeDeleted).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

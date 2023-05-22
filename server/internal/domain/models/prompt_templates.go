@@ -8,9 +8,11 @@ import (
 
 type PromptTemplate struct {
 	Base
-	Title       string `gorm:"column:title;unique" json:"title"`
-	Description string `gorm:"column:description" json:"description"`
-	Prompt      string `gorm:"column:prompt" json:"prompt"`
+	Title                      string                    `gorm:"column:title;unique; not null" json:"title"`
+	Description                string                    `gorm:"column:description" json:"description"`
+	Prompt                     string                    `gorm:"column:prompt; not null" json:"prompt"`
+	PromptTemplateCollectionID *uint                     `gorm:"column:prompt_template_collection_id;default null" json:"prompt_template_collection_id"`
+	PromptTemplateCollection   *PromptTemplateCollection `gorm:"foreignKey:PromptTemplateCollectionID" json:"prompt_template_collection"`
 }
 
 func (p *PromptTemplate) ValidatePrompt(prompt string) error {
@@ -34,4 +36,10 @@ func (p *PromptTemplate) ValidatePrompt(prompt string) error {
 		return errors.New("prompt contains unclosed or mismatched curly braces")
 	}
 	return nil
+}
+
+type PromptTemplateCollection struct {
+	Base
+	Name            string           `json:"name" gorm:"column:name;not null;unique"`
+	PromptTemplates []PromptTemplate `json:"prompt_templates" gorm:"foreignKey:PromptTemplateCollectionID"`
 }

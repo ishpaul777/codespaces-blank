@@ -1,4 +1,4 @@
-package chat
+package prompt_templates
 
 import (
 	"net/http"
@@ -9,13 +9,13 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-type responseGetAllChats struct {
-	Total   uint          `json:"total"`
-	Chats   []models.Chat `json:"chats"`
-	Message string        `json:"message"`
+type response struct {
+	Count               uint                              `json:"count"`
+	TemplateCollections []models.PromptTemplateCollection `json:"prompt_template_collections"`
+	Message             string                            `json:"message"`
 }
 
-func (h *httpHandler) getAllChatsByUser(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) getAllTemplateCollections(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())
@@ -30,15 +30,15 @@ func (h *httpHandler) getAllChatsByUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	response := &responseGetAllChats{}
+	res := &response{}
 
-	response.Chats, response.Total, err = h.chatService.GetChatHistoryByUser(userID, *pagination)
+	res.TemplateCollections, res.Count, err = h.promptTemplateService.GetAllPromptTemplateCollections(userID, *pagination)
 	if err != nil {
-		h.logger.Error("error getting all chats", "error", err.Error())
+		h.logger.Error("error getting all prompt_templates", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}
 
-	response.Message = "Chats fetched successfully"
-	renderx.JSON(w, http.StatusOK, response)
+	res.Message = "Prompt template collections retrieved successfully"
+	renderx.JSON(w, http.StatusOK, res)
 }
