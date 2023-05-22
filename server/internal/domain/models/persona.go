@@ -1,8 +1,24 @@
 package models
 
+type VISIBILITY string
+
+var (
+
+	// VISIBILITY_PUBLIC represents a public visibility
+	VISIBILITY_PUBLIC VISIBILITY = "public"
+	// VISIBILITY_PRIVATE represents a private visibility
+	VISIBILITY_PRIVATE VISIBILITY = "private"
+)
+
 type Persona struct {
-	Name        string `gorm:"column:name" json:"name"`
-	Description string `gorm:"column:description" json:"description"`
-	Prompt      string `gorm:"column:prompt" json:"prompt"`
-	Avarar      string `gorm:"column:avatar" json:"avatar"`
+	Base
+	Name        string     `gorm:"column:name" json:"name"`
+	Description string     `gorm:"column:description" json:"description"`
+	Prompt      string     `gorm:"column:prompt" json:"prompt"`
+	Avarar      string     `gorm:"column:avatar" json:"avatar"`
+	Vibility    VISIBILITY `gorm:"column:visibility" json:"visibility"`
+}
+
+func ValidateVisibility(v VISIBILITY) bool {
+	return v == VISIBILITY_PUBLIC || v == VISIBILITY_PRIVATE
 }
