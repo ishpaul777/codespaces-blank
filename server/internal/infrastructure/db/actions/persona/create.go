@@ -7,9 +7,15 @@ import (
 
 func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
 
-	valid := models.ValidateVisibility(*visibility)
-	if !valid {
-		return nil, custom_errors.PersonaVisibilityInvalid
+	// if visibility is nil, set it to private
+	if visibility == nil {
+		visibility = new(models.VISIBILITY)
+		*visibility = models.VISIBILITY_PRIVATE
+	} else {
+		valid := models.ValidateVisibility(*visibility)
+		if !valid {
+			return nil, custom_errors.PersonaVisibilityInvalid
+		}
 	}
 
 	exists := r.PersonaNameExists(name)

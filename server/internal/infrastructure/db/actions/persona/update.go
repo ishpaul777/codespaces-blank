@@ -7,6 +7,10 @@ import (
 )
 
 func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
+
+	if p.PersonaNameExists(name) {
+		return nil, custom_errors.PersonaNameExists
+	}
 	updateMap := map[string]interface{}{}
 
 	if name != "" {
@@ -26,6 +30,10 @@ func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, de
 	}
 
 	if visibility != nil {
+		valid := models.ValidateVisibility(*visibility)
+		if !valid {
+			return nil, custom_errors.PersonaVisibilityInvalid
+		}
 		updateMap["visibility"] = visibility
 	}
 
@@ -35,7 +43,7 @@ func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, de
 	if err != nil {
 
 		if err == gorm.ErrRecordNotFound {
-			return nil, custom_errors.PromptTemplateNotFound
+			return nil, custom_errors.PersonaNotFound
 		}
 		return nil, err
 	}
