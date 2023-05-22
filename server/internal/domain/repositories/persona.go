@@ -12,6 +12,7 @@ type PersonaRepository interface {
 	GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
 	GetPersonaByID(userID, personaID uint) (*models.Persona, error)
 	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar string, visibility models.VISIBILITY) (*models.Persona, error)
+	PersonaNameExists(name string) bool
 }
 
 func NewPersonaRepository(database db.IDatabaseService) (PersonaRepository, error) {
