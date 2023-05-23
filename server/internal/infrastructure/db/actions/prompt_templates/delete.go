@@ -7,7 +7,6 @@ import (
 )
 
 func (p *PGPromptTemplateRepository) DeletePromptTemplateByID(userID, promptTemplateID uint) error {
-
 	promptTemplateToBeDeleted := &models.PromptTemplate{
 		Base: models.Base{
 			ID: promptTemplateID,

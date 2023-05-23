@@ -10,6 +10,7 @@ import (
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/chat"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/documents"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/images"
+	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/persona"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompt_templates"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompts"
 	"github.com/go-chi/chi"
@@ -64,18 +65,25 @@ func RunHTTPServer(app *application.App) {
 	if err != nil {
 		logger.Fatal("error creating prompt template repository")
 	}
+	personaRepository, err := repositories.NewPersonaRepository(db)
+	if err != nil {
+		logger.Fatal("error creating persona repository")
+	}
 
 	promptService := services.NewPromptService(promptRepository)
 	documentService := services.NewDocumentService(documentRepository)
 	imageService := services.NewImageService(imageRepository)
 	chatService := services.NewChatService(chatRepository)
 	promptTemplateService := services.NewPromptTemplateService(promptTemplateRepository)
+	personaService := services.NewPersonaService(personaRepository)
 
 	prompts.InitRoutes(router, promptService, logger)
 	documents.InitRoutes(router, documentService, logger)
 	images.InitRoutes(router, imageService, logger)
 	chat.InitRoutes(router, chatService, logger)
 	prompt_templates.InitRoutes(router, promptTemplateService, logger)
+	persona.InitRoutes(router, personaService, logger)
+
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Server.Port), router)
 	if err != nil {
 		logger.Fatal(fmt.Sprintf("error starting HTTP server: %s", err.Error()))
