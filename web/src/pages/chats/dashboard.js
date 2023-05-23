@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import FactlyLogo from "../../assets/icons/factlyLogo.jsx";
 import { SSE } from "sse.js";
 import {
   MdOutlineClearAll,
@@ -42,11 +43,35 @@ import PromptInput from "./PromptInput";
 export default function ChatPage() {
   const navigate = useNavigate();
 
+  const [stream, setStream] = useState(true);
   const [initialPrompt, setIntialPrompt] = useState("");
+  const [isMobileScreen, setIsMobileScreen] = useState(false)
+  const [promptSiderCollapse, setPromptSiderCollapse] = useState(isMobileScreen ? true : false)
+  const [chatSiderCollapse, setChatSiderCollapse] = useState(isMobileScreen ? true : false)
 
-  const [stream, setStream] = useState(false);
-  const [promptSiderCollapse, setPromptSiderCollapse] = useState(false);
-  const [chatSiderCollapse, setChatSiderCollapse] = useState(false);
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsMobileScreen(true)
+    }
+    window.addEventListener('resize', () => {
+      if (window.innerWidth < 768) {
+        setIsMobileScreen(true)
+      } else {
+        setIsMobileScreen(false)
+      }
+    })
+
+    return () => {
+      window.removeEventListener('resize', () => {
+        if (window.innerWidth < 768) {
+
+          setIsMobileScreen(true)
+        } else {
+          setIsMobileScreen(false)
+        }
+      })
+    }
+  }, [])
 
   const modelIDToLabel = {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
@@ -345,34 +370,18 @@ export default function ChatPage() {
         errorToast(err?.message);
       });
   };
-
   return (
     // chat container, it has 2 sections
     // 1. chat list
     // 2. chat component
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
       {/* sidebar */}
-      <aside
-        className={`sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${
-          chatSiderCollapse
-            ? "translate-x-0 w-0"
-            : "sm:w-[90vw] md:w-[20vw] bg-black-100"
-        } flex flex-row ease-in-out duration-300 gap-4`}
-      >
-        <div
-          className={`bg-white relative w-full shadow-md ${
-            chatSiderCollapse || "pt-4 pl-4"
-          }`}
-        >
-          <div
-            className={`my-4 w-full text-center justify-between gap-2 ${
-              chatSiderCollapse ? "d-none" : "flex pr-4"
-            } `}
-          >
+      <aside className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse ? "translate-x-0 w-0" : `${isMobileScreen ? 'w-3/4 ' : 'w-[20vw] '}bg-black-100`} flex flex-row  ease-in-out duration-300 gap-4`}>
+        <div className={`bg-white relative w-full shadow-md ${chatSiderCollapse || 'pt-4 pl-4'}`}>
+          <div className={`my-4 w-full text-center justify-between gap-2 ${chatSiderCollapse ? 'd-none' : 'flex pr-4'} `}>
             <button
-              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${
-                chatSiderCollapse ? "d-none" : "flex"
-              } `}
+              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? "d-none" : "flex"
+                } `}
               onClick={() => handleNewChatClick()}
             >
               <HiPlus size={styles.iconSize} />
@@ -386,9 +395,8 @@ export default function ChatPage() {
           </div>
           <div className={`${chatSiderCollapse || "pr-4"}`}>
             <input
-              className={`w-full p-3 border border-gray-300 rounded-md  ${
-                chatSiderCollapse ? "d-none" : "flex"
-              } `}
+              className={`w-full p-3 border border-gray-300 rounded-md  ${chatSiderCollapse ? "d-none" : "flex"
+                } `}
               placeholder="Search prompt"
               onChange={(e) =>
                 setPaginationChatHistory({
@@ -400,9 +408,8 @@ export default function ChatPage() {
             <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
           </div>
           <ul
-            className={`overflow-y-auto  ${
-              chatSiderCollapse && "d-none"
-            }  mt-3`}
+            className={`overflow-y-auto  ${chatSiderCollapse && "d-none"
+              }  mt-3`}
             style={{ maxHeight: "67vh" }}
           >
             {chatHistory.map((item, index) => {
@@ -410,20 +417,20 @@ export default function ChatPage() {
                 <li
                   draggable={true}
                   key={index}
+                  onClick={() => {
+                    setChat(item?.messages);
+                    setChatID(item?.id);
+                  }}
                   className="mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2"
                 >
                   <div className="flex items-center gap-3">
                     <BiMessageDetail size={styles.iconSize} />
-                    <span
-                      onClick={() => {
-                        setChat(item?.messages);
-                        setChatID(item?.id);
-                      }}
-                    >
+                    <span                    >
                       {item?.title < maxListChars
                         ? item?.title
                         : `${item?.title?.slice(0, maxListChars) + "..."}
                         `}
+
                     </span>
                   </div>
 
@@ -454,15 +461,13 @@ export default function ChatPage() {
               );
             })}
             <div
-              className={`flex ${
-                paginationChatHistory.page === 1
-                  ? "flex-row-reverse"
-                  : "flex-row"
-              } ${
-                paginationChatHistory.offset !== 0 &&
+              className={`flex ${paginationChatHistory.page === 1
+                ? "flex-row-reverse"
+                : "flex-row"
+                } ${paginationChatHistory.offset !== 0 &&
                 chatCount > paginationChatHistory.limit &&
                 "justify-between"
-              } p-2 text-base cursor-pointer mt-4`}
+                } p-2 text-base cursor-pointer mt-4`}
             >
               {paginationChatHistory.page > 1 && (
                 <span
@@ -489,9 +494,8 @@ export default function ChatPage() {
             </div>
           </ul>
           <div
-            className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${
-              chatSiderCollapse ? "d-none" : "flex"
-            } `}
+            className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? "d-none" : "flex"
+              } `}
           >
             <ul className="flex justify-center flex-col">
               {chatOptionsList.map((item, index) => (
@@ -510,22 +514,26 @@ export default function ChatPage() {
       </aside>
 
       {/* chat */}
-      <main className="main flex flex-grow flex-col py-4 transition-all duration-150 ease-in md:ml-0">
-        <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col">
+      <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0" >
+        <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
           {chat.length === 0 ? (
-            <div className="flex flex-row justify-between w-full px-3">
-              <button
-                onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
-                style={{ width: "fit-content", height: "fit-content" }}
-              >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
-              </button>
-              <div className="border-b border-[#CED0D4] w-full flex flex-col items-center p-4 gap-4">
-                <h2 className="text-3xl font-semibold	">Tagore AI</h2>
-                <div
-                  className="md:w-3/5 sm:w-[90vw] top-0 sticky border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4"
-                  style={{ maxWidth: "600px" }}
-                >
+            <>
+              <div className="flex flex-row justify-between w-full px-3 pt-4">
+                <button onClick={() => {
+                  setChatSiderCollapse(!chatSiderCollapse)
+                  isMobileScreen && setPromptSiderCollapse(true)
+                }} style={{ width: 'fit-content', height: 'fit-content' }}>
+                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                </button>
+                <button onClick={() => {
+                  setPromptSiderCollapse(!promptSiderCollapse)
+                  isMobileScreen && setChatSiderCollapse(true)
+                }} style={{ width: 'fit-content', height: 'fit-content' }}>
+                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                </button>
+              </div>
+              <div className="border-none w-full flex flex-col items-center p-4 gap-4">
+                <div className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4" style={{ maxWidth: isMobileScreen ? '80vw' : '400px', width: isMobileScreen ? '80vw' : '' }}>
                   <Select
                     label={"Model"}
                     onChange={(e) => {
@@ -543,33 +551,19 @@ export default function ChatPage() {
                     placeholder={"Enter your system prompt"}
                   ></Input>
                   <SelectTemperature
-                    label={"Temperature"}
+                    label={"Conversation Style"}
                     onChange={(e) => {
                       setTemperature(e.target.value);
                     }}
                     value={temperature}
-                    description={
-                      "Higher values of temperature like 0.9 will make the output more random, while lower values like 0.1 will make it more focused and deterministic."
-                    }
-                  ></SelectTemperature>
-                  <div className="flex justify-between w-full">
-                    <span>Precise</span>
-                    <span>Neutral</span>
-                    <span>Creative</span>
-                  </div>
+                  />
                 </div>
               </div>
-              <button
-                onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
-                style={{ width: "fit-content", height: "fit-content" }}
-              >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
-              </button>
-            </div>
+            </>
           ) : (
-            <div className="sticky top-0">
+            <div className={`sticky top-0 w-full mb-1 z-40 pt-4 ${isMobileScreen ? 'bg-white' : 'bg-white'}`}>
               <div
-                className={`border-b bg-body border-[#CED0D4] w-full p-4 gap-4 flex justify-between`}
+                className={`border-none bg-white w-full px-4 py-2 gap-4 flex justify-between`}
               >
                 <button
                   onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
@@ -588,25 +582,16 @@ export default function ChatPage() {
                     cursor={"pointer"}
                   />
                 </div>
-                <button
-                  onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
-                  style={{ width: "fit-content", height: "fit-content" }}
-                >
+                {isMobileScreen ? <p className="text-lg font-bold">Tagore AI</p> : null}
+                <button onClick={() => setPromptSiderCollapse(!promptSiderCollapse)} style={{ width: 'fit-content', height: 'fit-content' }}>
                   <AiOutlineMenuUnfold size={styles.fileIconSize} />
                 </button>
               </div>
 
-              <div
-                className={`border-b bg-body border-[#CED0D4] ease-in-out duration-300 ${
-                  isSettingVisible
-                    ? "h-80 p-4 w-full translate-y-100 flex flex-col items-center gap-4"
-                    : "h-0 translate-y-0"
-                }`}
-              >
+              <div className={`bg-white ease-in-out duration-300 ${isSettingVisible ? 'h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4' : 'h-0 translate-y-0'}`}>
                 {isSettingVisible && (
                   <>
-                    <h2 className="text-3xl ">Tagore AI</h2>
-                    <div className="md:w-3/5 sm:w-[90vw] border border-[#CED0D4] rounded-lg flex flex-col p-4 gap-4">
+                    <div className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4" style={{ maxWidth: isMobileScreen ? '80vw' : '400px', width: isMobileScreen ? '80vw' : '' }}>
                       <Select
                         label={"Model"}
                         onChange={(e) => {
@@ -621,66 +606,65 @@ export default function ChatPage() {
                         onChange={(e) => {
                           setIntialPrompt(e.target.value);
                         }}
-                        placeholder={"Enter your initial prompt"}
-                        disabled={true}
+                        placeholder={"Enter your system prompt"}
                       ></Input>
+                      <SelectTemperature
+                        label={"Conversation Style"}
+                        onChange={(e) => {
+                          setTemperature(e.target.value);
+                        }}
+                        value={temperature}
+                      />
                     </div>
                   </>
                 )}
               </div>
             </div>
           )}
-          {chat
-            .filter((message) => message.role !== "system")
-            .map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className={`border-b border-[#CED0D4] w-full flex justify-center p-4 ${
-                    item.role === "user" && "bg-[#E4E7ED]"
+          {chat.filter((item) => item.role !== "system").map((item, index) => {
+            return (
+              <div
+                key={index}
+                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center px-7 py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
                   }`}
-                >
-                  <div className={`w-3/5 grid grid-cols-[1fr_9fr] gap-4`}>
-                    <div>
-                      {item.role === "user" ? (
-                        <AiOutlineUser
-                          size={styles.fileIconSize}
-                        ></AiOutlineUser>
-                      ) : (
-                        <FaRobot size={styles.fileIconSize}></FaRobot>
-                      )}
-                    </div>
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm, remarkMath]}
-                      rehypePlugins={[rehypeMathjax]}
-                      className={`prose ${
-                        chatSiderCollapse && promptSiderCollapse && "max-w-3xl"
-                      }`}
-                      components={{
-                        code({ node, inline, className, children, ...props }) {
-                          const match = /language-(\w+)/.exec(className || "");
-
-                          return !inline ? (
-                            <CodeBlock
-                              key={index}
-                              language={(match && match[1]) || ""}
-                              value={String(children).replace(/\n$/, "")}
-                              {...props}
-                            />
-                          ) : (
-                            <code className={className} {...props}>
-                              {children}
-                            </code>
-                          );
-                        },
-                      }}
-                    >
-                      {item.content}
-                    </ReactMarkdown>
+              >
+                <div className={`w-full flex gap-4`}>
+                  <div className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${item.role === "user" ? 'bg-green-600 ring-green-600' : 'ring-red-600 bg-red-600'} text-white mr-2`}>
+                    {item.role === "user" ? (
+                      <span className="text-lg"> U </span>
+                    ) : (
+                      <FactlyLogo />
+                    )}
                   </div>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeMathjax]}
+                    className={`prose ${isMobileScreen ? 'max-w-[17rem]' : (chatSiderCollapse && promptSiderCollapse) && 'max-w-3xl'}`}
+                    components={{
+                      code({ node, inline, className, children, ...props }) {
+                        const match = /language-(\w+)/.exec(className || "");
+
+                        return !inline ? (
+                          <CodeBlock
+                            key={index}
+                            language={(match && match[1]) || ""}
+                            value={String(children).replace(/\n$/, "")}
+                            {...props}
+                          />
+                        ) : (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                    }}
+                  >
+                    {item.content}
+                  </ReactMarkdown>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
           <AlwaysScrollToBottom />
           {loading && (
             <div className="flex justify-center mt-4">
@@ -689,12 +673,10 @@ export default function ChatPage() {
           )}
         </div>
         {/* chat input container */}
-        <div className="md:px-8 sm:px-2 py-4 w-full flex justify-center items-center">
+        <div className="py-4 w-full flex justify-center items-center">
           {/* input division */}
           <div
-            className={` ${
-              !promptSiderCollapse && !chatSiderCollapse ? "w-4/5" : "w-3/5"
-            } relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
+            className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
           >
             <PromptInput
               value={currentPrompt}
@@ -720,21 +702,40 @@ export default function ChatPage() {
           </div>
         </div>
       </main>
-
       {/* prompt bar */}
-      <aside
-        className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${
-          promptSiderCollapse ? "translate-x-0 w-0" : "sm:w-[90vw] md:w-2/12"
-        } flex flex-row ease-in-out duration-300 gap-4`}
-      >
-        <div
-          className={`bg-white w-full relative shadow-md ${
-            promptSiderCollapse || "pt-4 pl-4"
-          }`}
-        >
+      <aside className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${promptSiderCollapse ? "translate-x-0 w-0" : `${isMobileScreen ? 'w-3/4 ' : 'w-[20vw] '}`} flex flex-row ease-in-out duration-300 gap-4 z-50`} >
+        <div className={`bg-white w-full relative shadow-md ${promptSiderCollapse || 'pt-4 pl-4'}`}>
           <PromptBar open={!promptSiderCollapse} />
         </div>
-      </aside>
-    </div>
+      </ aside>
+      <div className={`
+        ${(isMobileScreen) ? (promptSiderCollapse) ? 'd-none ' : 'flex ' : 'd-none'}
+        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
+      `} onClick={() => {
+          setPromptSiderCollapse(!promptSiderCollapse)
+          isMobileScreen && setPromptSiderCollapse(true)
+        }}
+      >
+        <button className="absolute top-4 right-3/4 pr-4"
+          onClick={() => {
+            setPromptSiderCollapse(!promptSiderCollapse)
+            isMobileScreen && setPromptSiderCollapse(true)
+          }} style={{ width: 'fit-content', height: 'fit-content' }}>
+          <AiOutlineMenuUnfold size={styles.fileIconSize} color="#fff" />
+        </button>
+      </div>
+      <div className={` ${(isMobileScreen) ? (chatSiderCollapse) ? 'd-none ' : 'flex ' : 'd-none'}
+        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
+      `} onClick={() => {
+          setChatSiderCollapse(!chatSiderCollapse)
+        }}>
+        <button className="absolute top-4 left-3/4 pl-4"
+          onClick={() => {
+            setChatSiderCollapse(!chatSiderCollapse)
+          }} style={{ width: 'fit-content', height: 'fit-content' }}>
+          <AiOutlineMenuUnfold size={styles.fileIconSize} color="#fff" />
+        </button>
+      </div>
+    </div >
   );
 }
