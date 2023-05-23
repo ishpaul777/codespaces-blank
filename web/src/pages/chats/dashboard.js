@@ -370,8 +370,6 @@ export default function ChatPage() {
         errorToast(err?.message);
       });
   };
-  console.log(chat)
-
   return (
     // chat container, it has 2 sections
     // 1. chat list
@@ -419,17 +417,16 @@ export default function ChatPage() {
                 <li
                   draggable={true}
                   key={index}
+                  onClick={() => {
+                    console.log(item)
+                    setChat(item?.messages);
+                    setChatID(item?.id);
+                  }}
                   className="mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2"
                 >
                   <div className="flex items-center gap-3">
                     <BiMessageDetail size={styles.iconSize} />
-                    <span
-                      onClick={() => {
-                        setChat(item?.messages);
-                        setChatID(item?.id);
-                        console.log(item)
-                      }}
-                    >
+                    <span                    >
                       {item?.title < maxListChars
                         ? item?.title
                         : `${item?.title?.slice(0, maxListChars) + "..."}
