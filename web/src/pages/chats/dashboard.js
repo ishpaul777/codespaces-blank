@@ -418,7 +418,6 @@ export default function ChatPage() {
                   draggable={true}
                   key={index}
                   onClick={() => {
-                    console.log(item)
                     setChat(item?.messages);
                     setChatID(item?.id);
                   }}
