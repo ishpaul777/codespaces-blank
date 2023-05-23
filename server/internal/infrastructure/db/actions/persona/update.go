@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
+func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY) (*models.Persona, error) {
 
 	if p.PersonaNameExists(name) {
 		return nil, custom_errors.PersonaNameExists
@@ -27,6 +27,10 @@ func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, de
 
 	if avatar != "" {
 		updateMap["avatar"] = avatar
+	}
+
+	if model != "" {
+		updateMap["model"] = model
 	}
 
 	if visibility != nil {

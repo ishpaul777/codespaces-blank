@@ -5,7 +5,7 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 )
 
-func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prompt, avatar string, visibility *models.VISIBILITY) (*models.Persona, error) {
+func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY) (*models.Persona, error) {
 
 	// if visibility is nil, set it to private
 	if visibility == nil {
@@ -23,6 +23,10 @@ func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prom
 		return nil, custom_errors.PersonaNameExists
 	}
 
+	if model == "" {
+		model = "gpt-3.5-turbo"
+	}
+
 	persona := models.Persona{
 		Base: models.Base{
 			CreatedByID: userID,
@@ -32,6 +36,7 @@ func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prom
 		Prompt:      prompt,
 		Avatar:      avatar,
 		Visibility:  *visibility,
+		Model:       model,
 	}
 	err := r.client.Create(&persona).Error
 	if err != nil {

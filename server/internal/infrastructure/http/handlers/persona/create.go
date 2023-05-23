@@ -14,9 +14,10 @@ import (
 type createPersona struct {
 	Name        string             `json:"name"`
 	Description string             `json:"description"`
-	Avatar      string             `json:"avatar_url"`
+	Avatar      string             `json:"avatar"`
 	Prompt      string             `json:"prompt"`
 	Visibility  *models.VISIBILITY `json:"visibility,omitempty"`
+	Model       string             `json:"model,omitempty"`
 }
 
 func (h *htttHandler) create(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +37,7 @@ func (h *htttHandler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	persona, err := h.personaService.CreateNewPersona(userID, requestBody.Name, requestBody.Description, requestBody.Prompt, requestBody.Avatar, requestBody.Visibility)
+	persona, err := h.personaService.CreateNewPersona(userID, requestBody.Name, requestBody.Description, requestBody.Prompt, requestBody.Avatar, requestBody.Model, requestBody.Visibility)
 	if err != nil {
 		h.logger.Error("error creating persona")
 		if err == custom_errors.PersonaNameExists {
