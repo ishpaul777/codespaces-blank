@@ -8,6 +8,7 @@ import History from "../pages/history/history";
 import Playground from "../pages/natdev/Playground";
 import Compare from "../pages/natdev/Compare";
 import Personas from "../pages/personas";
+import CreatePersona from "../pages/personas/create";
 export const routes = [
   {
     path: "/",
@@ -37,12 +38,17 @@ export const routes = [
         path: "/personas",
         element: <Personas />,
       },
+      {
+        path: "/personas/create",
+        element: <CreatePersona />,
+      },
     ],
   },
   {
     path: "/documents/create",
     element: <Document />,
   },
+
   {
     path: "/chats/dashboard",
     element: <ChatPage />,
