@@ -63,6 +63,7 @@ services:
     environment:
       - NEXT_PUBLIC_BASE_PATH=/.factly/mande/web
       - REACT_APP_TAGORE_API_URL=http://localhost:8080
+      - REACT_APP_COMPANION_URL=http://localhost:3020
     ports:
       - "3000:3000"
     volumes:
@@ -70,7 +71,44 @@ services:
     restart: unless-stopped
     stdin_open: true
     networks:
+      - tagore 
+  #########################################################################
+  #####                        MINIO                                #######
+  #########################################################################
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9002:9002"
+    volumes:
+      - ./volumes/minio/data:/export
+      - ./volumes/minio/config:/root/.minio
+    environment:
+      - MINIO_ACCESS_KEY=miniokey
+      - MINIO_SECRET_KEY=miniosecret
+    networks:
       - tagore
+    command: server -console-address :9002 /export
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    volumes:
+      - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+    networks:
+      - tagore
+    entrypoint: >
+      /bin/sh -c " apk add --no-cache bash; wait-for-it.sh minio:9000 -- echo 'Minio is up. Creating the bucket!!'; /usr/bin/mc config host add myminio http://minio:9000 miniokey miniosecret; /usr/bin/mc mb myminio/tagore; /usr/bin/mc anonymous set public myminio/tagore; exit 0; "
+  ###########################################################################
+  #######             UPLOAD SERVICES                                 #######
+  ###########################################################################
+  companion:
+    image: transloadit/companion
+    ports:
+      - "3020:3020"
+    env_file:
+      - ./companion/.env
                
 networks:
   tagore:
