@@ -7,12 +7,15 @@ import {
   MdKeyboardBackspace,
 } from "react-icons/md";
 
+import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
+import { BiChevronLeft } from "react-icons/bi";
+
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 
 import { HiPlus } from "react-icons/hi";
 import { FaRobot } from "react-icons/fa";
 import {
-  AiOutlineUser,
+  AiOutlineEdit,
   AiOutlineDelete,
   AiOutlineCheck,
   AiOutlineClose,
@@ -31,7 +34,7 @@ import {
   getChatHistoryByUserID,
   getChatResponse,
 } from "../../actions/chat";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CodeBlock } from "../../components/codeblock";
 import { ToastContainer } from "react-toastify";
 import { errorToast, successToast } from "../../util/toasts";
@@ -48,30 +51,51 @@ export default function ChatPage() {
   const [isMobileScreen, setIsMobileScreen] = useState(false)
   const [promptSiderCollapse, setPromptSiderCollapse] = useState(isMobileScreen ? true : false)
   const [chatSiderCollapse, setChatSiderCollapse] = useState(isMobileScreen ? true : false)
-
+  const [chatTitle, setChatTitle] = useState("")
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      setIsMobileScreen(true)
-    }
-    window.addEventListener('resize', () => {
-      if (window.innerWidth < 768) {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
         setIsMobileScreen(true)
       } else {
         setIsMobileScreen(false)
+        setPromptSiderCollapse(false)
+        setChatSiderCollapse(false)
       }
-    })
-
-    return () => {
-      window.removeEventListener('resize', () => {
-        if (window.innerWidth < 768) {
-
-          setIsMobileScreen(true)
-        } else {
-          setIsMobileScreen(false)
-        }
-      })
     }
+
+    window.addEventListener('resize', handleResize)
+    handleResize()
+
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyClick = (content) => {
+    navigator.clipboard.writeText(content);
+    setIsCopied(true);
+
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 5000);
+  };
+
+
+  const [isEditing, setIsEditing] = useState({
+    status: false,
+    id: null,
+  });
+  const editref = useRef(null);
+
+  useEffect(() => {
+    if (isEditing.status) {
+
+      editref.current.style.height = "auto";
+      const scrollHeight = editref.current.scrollHeight;
+      editref.current.style.height = scrollHeight + "px";
+    }
+  }, [isEditing.status]);
+
 
   const modelIDToLabel = {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
@@ -276,6 +300,7 @@ export default function ChatPage() {
       console.log(chatObject);
       setChat(chatObject?.messages);
       setChatID(chatObject?.id);
+      setIsEditing({ status: false, id: null });
     });
 
     source.addEventListener("error", (event) => {
@@ -420,8 +445,12 @@ export default function ChatPage() {
                   onClick={() => {
                     setChat(item?.messages);
                     setChatID(item?.id);
+                    setChatTitle(item?.title);
+                    setIsEditing({ status: false, id: null });
                   }}
-                  className="mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2"
+                  className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+                    ${chatID === item?.id && "bg-hover-on-white"}
+                  `}
                 >
                   <div className="flex items-center gap-3">
                     <BiMessageDetail size={styles.iconSize} />
@@ -430,7 +459,6 @@ export default function ChatPage() {
                         ? item?.title
                         : `${item?.title?.slice(0, maxListChars) + "..."}
                         `}
-
                     </span>
                   </div>
 
@@ -561,9 +589,17 @@ export default function ChatPage() {
               </div>
             </>
           ) : (
-            <div className={`sticky top-0 w-full mb-1 z-40 pt-4 ${isMobileScreen ? 'bg-white' : 'bg-white'}`}>
+            <div className={`sticky top-0 w-full mb-1 z-40 pt-4 bg-body`}>
+              {/* chat header */}
+              <Link to="/" className="flex items-center px-4 font-bold ">
+                <BiChevronLeft size={28} />
+                <span className="text-lg font-bold">{chatTitle.length < 60
+                  ? chatTitle
+                  : `${chatTitle?.slice(0, 60) + "..."}
+                        `}</span>
+              </Link>
               <div
-                className={`border-none bg-white w-full px-4 py-2 gap-4 flex justify-between`}
+                className={`border-none bg-body w-full px-4 py-2 gap-4 flex justify-between`}
               >
                 <button
                   onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
@@ -588,7 +624,7 @@ export default function ChatPage() {
                 </button>
               </div>
 
-              <div className={`bg-white ease-in-out duration-300 ${isSettingVisible ? 'h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4' : 'h-0 translate-y-0'}`}>
+              <div className={`bg-body ease-in-out duration-300 ${isSettingVisible ? 'h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4' : 'h-0 translate-y-0'}`}>
                 {isSettingVisible && (
                   <>
                     <div className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4" style={{ maxWidth: isMobileScreen ? '80vw' : '400px', width: isMobileScreen ? '80vw' : '' }}>
@@ -625,7 +661,7 @@ export default function ChatPage() {
             return (
               <div
                 key={index}
-                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center px-7 py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
+                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
                   }`}
               >
                 <div className={`w-full flex gap-4`}>
@@ -636,38 +672,86 @@ export default function ChatPage() {
                       <FactlyLogo />
                     )}
                   </div>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeMathjax]}
-                    className={`prose ${isMobileScreen ? 'max-w-[17rem]' : (chatSiderCollapse && promptSiderCollapse) && 'max-w-3xl'}`}
-                    components={{
-                      code({ node, inline, className, children, ...props }) {
-                        const match = /language-(\w+)/.exec(className || "");
+                  {
+                    isEditing.status && isEditing.id === index ? (
+                      <div className="w-[85%] flex flex-col justigy-center">
+                        <textarea
+                          ref={editref}
+                          className="bg-transparent p-2 outline-none text-base border-none focus:ring-0 h-auto scrollbar-hide pt-1"
+                          autoFocus={true}
+                          style={{
+                            borderBottom: '1px solid #000'
+                          }}
+                          value={item.content}
+                        />
+                        <div className="flex justify-center items-center gap-4 mt-2">
+                          <button className="flex items-center justify-center  bg-black px-3 py-3 rounded-md text-white" onClick={(e) => { e.stopPropagation(); setIsEditing({ status: !isEditing.status, id: isEditing.status ? null : index }) }}> Save & Submit
+                          </button>
+                          <button className="flex items-center justify-center border-[#eee] " onClick={(e) => { e.stopPropagation(); setIsEditing({ status: !isEditing.status, id: isEditing.status ? null : index }) }}>
+                            Cancel
+                          </button>
 
-                        return !inline ? (
-                          <CodeBlock
-                            key={index}
-                            language={(match && match[1]) || ""}
-                            value={String(children).replace(/\n$/, "")}
-                            {...props}
-                          />
-                        ) : (
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        );
-                      },
-                    }}
-                  >
-                    {item.content}
-                  </ReactMarkdown>
+                        </div>
+                      </div>
+                    ) : (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeMathjax]}
+                        className={`prose ${isMobileScreen ? 'max-w-[17rem]' : (chatSiderCollapse || promptSiderCollapse) ? 'max-w-4xl' : "max-w-2xl"} `}
+                        components={{
+                          code({ node, inline, className, children, ...props }) {
+                            const match = /language-(\w+)/.exec(className || "");
+
+                            return !inline ? (
+                              <CodeBlock
+                                key={index}
+                                language={(match && match[1]) || ""}
+                                value={String(children).replace(/\n$/, "")}
+                                {...props}
+                              />
+                            ) : (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            );
+                          },
+                        }}
+                      >
+                        {item.content}
+                      </ReactMarkdown>
+                    )
+                  }
+                </div>
+                <div
+                  className={`self-start`}
+                >
+                  {
+                    item.role !== "user" ?
+                      (<button className="flex items-center justify-center text-lg" onClick={(e) => {
+                        e.stopPropagation()
+                        handleCopyClick(item.content)
+                      }}
+                      >           {isCopied ? <BsClipboard2Check /> : <BsClipboard />}
+                      </button>)
+                      :
+                      !(isEditing.status && isEditing.id === index) ?
+                        (<button className="flex items-center justify-center text-lg" onClick={(e) => {
+                          e.stopPropagation()
+                          setIsEditing({ status: !isEditing.status, id: isEditing.status ? null : index })
+                          // editref.current.focus()
+                        }}
+                        >
+                          <AiOutlineEdit />
+                        </button>
+                        ) : (null)
+                  }
                 </div>
               </div>
             );
           })}
-          <AlwaysScrollToBottom />
           {loading && (
             <div className="flex justify-center mt-4">
+              <AlwaysScrollToBottom />
               <BeatLoader size={styles.iconSize} color={"#CED0D4"} />
             </div>
           )}

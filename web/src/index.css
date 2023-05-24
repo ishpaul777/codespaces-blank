@@ -75,3 +75,10 @@ body {
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {
   background-color: #000;
 }
+
+/* hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+
