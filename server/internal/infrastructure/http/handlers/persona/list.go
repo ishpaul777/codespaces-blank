@@ -1,4 +1,4 @@
-package chat
+package persona
 
 import (
 	"net/http"
@@ -9,13 +9,13 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-type responseGetAllChats struct {
-	Total   uint          `json:"total"`
-	Chats   []models.Chat `json:"chats"`
-	Message string        `json:"message"`
+type responseGetAllPeersonas struct {
+	Count   uint             `json:"count"`
+	Pesonas []models.Persona `json:"personas"`
+	Message string           `json:"message"`
 }
 
-func (h *httpHandler) getAllChatsByUser(w http.ResponseWriter, r *http.Request) {
+func (h *htttHandler) list(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())
@@ -30,15 +30,15 @@ func (h *httpHandler) getAllChatsByUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	response := &responseGetAllChats{}
+	response := &responseGetAllPeersonas{}
 
-	response.Chats, response.Total, err = h.chatService.GetChatHistoryByUser(userID, *pagination)
+	response.Pesonas, response.Count, err = h.personaService.GetAllPersonas(userID, *pagination)
 	if err != nil {
-		h.logger.Error("error getting all chats", "error", err.Error())
+		h.logger.Error("error getting all personas", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}
 
-	response.Message = "Chats fetched successfully"
+	response.Message = "Personas fetched successfully"
 	renderx.JSON(w, http.StatusOK, response)
 }

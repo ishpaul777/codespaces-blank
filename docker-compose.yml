@@ -14,7 +14,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_MULTIPLE_DATABASES=tagore,kavach
+      - POSTGRES_MULTIPLE_DATABASES=tagore,kavach,kratos,keto
     healthcheck: 
       interval: 10s
       retries: 10
@@ -61,7 +61,8 @@ services:
       context: ./web
       dockerfile: Dockerfile.dev
     environment:
-      - NEXT_PUBLIC_BASE_PATH=/.factly/mande/web
+      - PUBLIC_URL=http://127.0.0.1:4455/.factly/tagore/web
+      - REACT_APP_PUBLIC_URL=/.factly/tagore/web
       - REACT_APP_TAGORE_API_URL=http://localhost:8080
     ports:
       - "3000:3000"
@@ -71,6 +72,227 @@ services:
     stdin_open: true
     networks:
       - tagore
-               
+
+
+  ###########################################################################
+  #######             KRATOS, KETO AND OATHKEEPER                     #######
+  ###########################################################################
+  kratos-migrate:
+    depends_on:
+      - postgres
+    image: oryd/kratos:v0.11.1
+    environment:
+      - DSN=postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
+    volumes:
+      - type: bind
+        source: ./ory-services/kratos/config
+        target: /etc/config/kratos
+    command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
+    restart: on-failure
+    networks:
+      - tagore
+
+
+
+  kratos:
+    depends_on:
+      - kratos-migrate
+    image: oryd/kratos:v0.11.1
+    ports:
+      - "4433:4433" # public
+      - "4434:4434" # admin
+    environment:
+      - DSN=postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
+      - LOG_LEVEL=trace
+    volumes:
+      - type: bind
+        source: ./ory-services/kratos/config
+        target: /etc/config/kratos
+    command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
+    restart: unless-stopped
+    networks:
+      - tagore
+
+
+
+  keto-migrate:
+    image: oryd/keto:v0.9.0-alpha.0
+    environment:
+      - LOG_LEVEL=debug
+    depends_on:
+      - postgres
+    volumes:
+      - type: bind
+        source: ./ory-services/keto
+        target: /etc/config/keto
+    # command: namespace migrate legacy -c "/etc/config/keto/keto.yml" --yes
+    command: migrate up -c "/etc/config/keto/keto.yml" --yes
+    restart: on-failure
+    networks:
+      - tagore
+
+
+
+  keto:
+    depends_on:
+      - keto-migrate
+    image: oryd/keto:v0.9.0-alpha.0
+    ports:
+      - "4466:4466" # read
+      - "4467:4467" # write
+      - "4468:4468" # metric
+    environment:
+      - LOG_LEVEL=debug
+    volumes:
+      - type: bind
+        source: ./ory-services/keto
+        target: /etc/config/keto
+    command: serve -c "/etc/config/keto/keto.yml"
+    networks:
+      - tagore
+
+
+  oathkeeper:
+    image: oryd/oathkeeper:latest-alpine
+    depends_on:
+      - kratos
+    ports:
+      - "4455:4455"
+      - "4456:4456"
+    environment:
+      - LOG_LEVEL=debug
+    volumes:
+      - type: bind
+        source: ./ory-services/oathkeeper
+        target: /etc/config/oathkeeper
+    command: serve proxy -c "/etc/config/oathkeeper/.oathkeeper.yml"
+    restart: on-failure
+    networks:
+      - tagore      
+
+
+  ###########################################################################
+  #######             KAVACH                                          #######
+  ###########################################################################
+  kavach-server:
+    depends_on:
+      - postgres
+      - keto
+      - kratos
+      - kavach-migrate
+    ports:
+      - 5001:8000
+    image: factly/kavach-server:0.31.0
+    volumes:
+      - type: bind
+        source: ./data/kavach/server
+        target: /app/data
+    environment:
+      - WAIT_HOSTS=postgres:5432, kratos:4434 , keto:4466
+      - KAVACH_DATABASE_HOST=postgres
+      - KAVACH_DATABASE_USER=postgres
+      - KAVACH_DATABASE_PASSWORD=postgres
+      - KAVACH_DATABASE_NAME=kavach
+      - KAVACH_DATABASE_PORT=5432
+      - KAVACH_DATABASE_SSL_MODE=disable
+      - KAVACH_KETO_READ_API_URL=http://keto:4466
+      - KAVACH_KETO_WRITE_API_URL=http://keto:4467
+      - KAVACH_KRATOS_ADMIN_URL=http://kratos:4434
+      - KAVACH_KRATOS_PUBLIC_URL=http://kratos:4433
+      - KAVACH_MODE=development
+      - KAVACH_USE_SQLITE=false
+      - KAVACH_SQLITE_DB_PATH=kavach.db
+      - KAVACH_IMAGEPROXY_URL=http://127.0.0.1:7001
+      - KAVACH_DOMAIN_NAME=http://127.0.0.1:4455/.factly/kavach/web
+      - KAVACH_DYNAMIC_FROM_EMAIL='kavach'
+      - KAVACH_MANDE_HOST=http://mande.factly.in
+      - KAVACH_DYNAMIC_MANDE_TEMPLATE_ID=1
+      - KAVACH_DYNAMIC_SENDGRID_API_KEY=SENDGRID_API_KEY
+      - KAVACH_ENABLE_MULTITENANCY=true
+      - KAVACH_DISABLE_REGISTRATION=false
+      - KAVACH_APPLICATION_NAME=Kavach
+      - KAVACH_DEFAULT_USER_EMAIL=mande@admin.in
+      - KAVACH_DEFAULT_USER_PASSWORD=Data123@#
+      - KAVACH_DEFAULT_ORGANISATION_NAME=Mande
+      - KAVACH_ENABLE_IMGPROXY=false
+      - KAVACH_DYNAMIC_EMAIL_ENABLED=true
+      - KAVACH_BUCKET_NAME=login.factly.in
+      - KAVACH_MASTER_KEY=master_key
+    restart: unless-stopped
+    networks:
+      - tagore
+
+
+  kavach-migrate:
+    depends_on:
+      - postgres
+      - keto
+      - kratos
+    volumes:
+      - type: bind
+        source: ./data/kavach/server
+        target: /app/data
+    image: factly/kavach-server:0.31.0
+    environment:
+      - WAIT_HOSTS=postgres:5432, kratos:4434 , keto:4466
+      - KAVACH_DATABASE_HOST=postgres
+      - KAVACH_DATABASE_USER=postgres
+      - KAVACH_DATABASE_PASSWORD=postgres
+      - KAVACH_DATABASE_NAME=kavach
+      - KAVACH_DATABASE_PORT=5432
+      - KAVACH_DATABASE_SSL_MODE=disable
+      - KAVACH_KETO_READ_API_URL=http://keto:4466
+      - KAVACH_KETO_WRITE_API_URL=http://keto:4467
+      - KAVACH_KRATOS_ADMIN_URL=http://kratos:4434
+      - KAVACH_KRATOS_PUBLIC_URL=http://kratos:4433
+      - KAVACH_MODE=development
+      - KAVACH_USE_SQLITE=false
+      - KAVACH_SQLITE_DB_PATH=kavach.db
+      - KAVACH_IMAGEPROXY_URL=http://127.0.0.1:7001
+      - KAVACH_DOMAIN_NAME=http://127.0.0.1:4455/.factly/kavach/web
+      - KAVACH_DYNAMIC_FROM_EMAIL='kavach'
+      - KAVACH_MANDE_HOST=http://mande.factly.in
+      - KAVACH_DYNAMIC_MANDE_TEMPLATE_ID=1
+      - KAVACH_DYNAMIC_SENDGRID_API_KEY=SENDGRID_API_KEY
+      - KAVACH_ENABLE_MULTITENANCY=false
+      - KAVACH_DISABLE_REGISTRATION=false
+      - KAVACH_APPLICATION_NAME=Kavach
+      - KAVACH_DEFAULT_USER_EMAIL=mande@admin.in
+      - KAVACH_DEFAULT_USER_PASSWORD=Data123@#
+      - KAVACH_DEFAULT_ORGANISATION_NAME=Mande
+      - KAVACH_ENABLE_IMGPROXY=false
+      - KAVACH_DYNAMIC_EMAIL_ENABLED=true
+      - KAVACH_BUCKET_NAME=login.factly.in
+      - KAVACH_MASTER_KEY=master_key
+    entrypoint: ["/bin/sh", "-c", "/app/kavach-server migrate && /app/kavach-server create-super-org"]
+    networks:
+      - tagore
+
+
+  kavach-web:
+    image: factly/kavach-web:0.31.0-dev
+    environment:
+      - PUBLIC_URL=http://127.0.0.1:4455/.factly/kavach/web
+    volumes:
+      - type: bind
+        source: ./data/kavach/web/config.js
+        target: /app/public/config.js
+    restart: unless-stopped
+    networks:
+      - tagore
+
+
+  ###########################################################################
+  #######             SMTP SERVICES                                 #######
+  ###########################################################################
+  mailslurper:
+    image: oryd/mailslurper:latest-smtps
+    ports:  
+      - "4436:4436"
+      - "4437:4437"
+    networks:
+      - tagore
+
+
 networks:
   tagore:
