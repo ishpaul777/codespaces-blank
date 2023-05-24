@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -194,6 +196,14 @@ func (a *AnthropicAdapter) GenerateStreamingResponse(model string, temperature f
 	for {
 		data := make([]byte, 1024)
 		_, err := resp.Body.Read(data)
+		if errors.Is(err, io.EOF) {
+			_, dbErr := chatRepo.SaveChat(chat.CreatedByID, &chat.ID, model, messages, models.Usage{})
+			if dbErr != nil {
+				errChan <- dbErr
+				return
+			}
+		}
+
 		if err != nil {
 			errChan <- err
 			return
@@ -201,28 +211,29 @@ func (a *AnthropicAdapter) GenerateStreamingResponse(model string, temperature f
 
 		jsonData := strings.Replace(string(data), "data: ", "", 1)
 		jsonData = strings.ReplaceAll(jsonData, "\x00", "")
-		eachResponse := anthropicChatResponse{}
-		err = json.Unmarshal([]byte(jsonData), &eachResponse)
-		if err != nil {
-			errChan <- err
-			return
-		}
+		log.Println("=====>", jsonData)
+		if jsonData != "[Done]" {
+			eachResponse := anthropicChatResponse{}
+			err = json.Unmarshal([]byte(jsonData), &eachResponse)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			messages[len(messages)-1].Content = eachResponse.Completion
+			msgStream, err := helper.ConvertToJSONB(messages[1:])
+			if err != nil {
+				errChan <- err
+				return
+			}
+			chat.Messages = msgStream
 
-		messages[len(messages)-1].Content = eachResponse.Completion
-		msgStream, err := helper.ConvertToJSONB(messages[1:])
-		if err != nil {
-			errChan <- err
-			return
+			byteStream, err := json.Marshal(chat)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			dataChan <- string(byteStream)
 		}
-		chat.Messages = msgStream
-
-		byteStream, err := json.Marshal(chat)
-		if err != nil {
-			errChan <- err
-			return
-		}
-
-		dataChan <- string(byteStream)
 	}
 	// generateRequestText(messages)
 }
