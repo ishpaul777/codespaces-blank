@@ -13,7 +13,7 @@ const Content = () => {
               16m ago
             </div>
           </div>
-          <div classname="w-full flex items-center flex-row justify-end">
+          <div className="w-full flex items-center flex-row justify-end">
             <BiDotsVerticalRounded />
           </div>
         </div>

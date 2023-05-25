@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "./sidebar";
+import { SidebarAlt } from "./sidebarAlt";
 import { ToastContainer } from "react-toastify";
 export default function Layout() {
   return (

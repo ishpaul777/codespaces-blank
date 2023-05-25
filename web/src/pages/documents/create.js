@@ -10,6 +10,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { DocActionButton } from "../../components/buttons/DocActionButton";
 import { SizeButton } from "../../components/buttons/SizeButton";
 import { BiSave } from "react-icons/bi";
+import { generateTextFromPrompt } from "../../actions/text";
 
 export default function Document() {
   const [prompt, setPrompt] = useState("");
@@ -397,18 +398,26 @@ export default function Document() {
             }}
             tagoreConfig={{
               fetcher: async (input, options) => {
-                console.log(input);
-                const response = await axios.post(
-                  `http://localhost:8080/prompts/generate`,
-                  {
-                    input: `${input}\n Return the response as a valid HTML without html, head or body tags`,
-                    max_tokens: 200,
-                  },
-                  { headers: { "X-User": "20" } }
-                );
-                // ${systemPrompt}
-                const data = response.data;
-                return data;
+                const requestBody = {
+                  input: input,
+                  generate_for: options,
+                  provider: 'openai',
+                  stream: false,
+                  model: 'gpt-3.5-turbo',
+                  additional_instructions: 'The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.'
+                };
+
+                const response = await generateTextFromPrompt(requestBody, 1);
+                // remove \n\n from the response output
+                // clean the html strings in output from newlines(\n\n)
+                console.log(response);
+                var cleanedResponse = {};
+                cleanedResponse.output = response.output.replace(/\n/g, '');
+                // remove spaces bigger than 2 
+                cleanedResponse.output = cleanedResponse.output.replace(/ {3,}/g, ' ');
+                cleanedResponse.finish_reason = response.finish_reason;
+                console.log(cleanedResponse)
+                return cleanedResponse;
               },
             }}
           />

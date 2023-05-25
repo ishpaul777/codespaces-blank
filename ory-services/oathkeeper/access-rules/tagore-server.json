@@ -1,0 +1,38 @@
+[
+  {
+    "id": "tagore:server:protected",
+    "upstream": {
+      "preserve_host": true,
+      "url": "http://tagore-server:8080",
+      "strip_path": ".factly/tagore/server"
+    },
+    "match": {
+      "url": "http://127.0.0.1:4455/.factly/tagore/server/<.*>",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
+    },
+    "authenticators": [
+      {
+        "handler": "cookie_session"
+      }
+    ],
+    "authorizer": {
+      "handler": "allow"
+    },
+    "mutators": [
+      {
+        "handler": "id_token"
+      },
+      {
+        "handler": "hydrator"
+      },
+      {
+        "handler": "header"
+      }
+    ]
+  }
+]

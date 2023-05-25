@@ -12,11 +12,13 @@ type httpHandler struct {
 	logger      logger.ILogger
 }
 
-func (h *httpHandler) routes() chi.Router {
+func (h *httpHandler) chatRoutes() chi.Router {
 	router := chi.NewRouter()
 	router.Post("/completions", h.createChatResponse)
 	router.Get("/history", h.getAllChatsByUser)
 	router.Delete("/{chat_id}", h.deleteChat)
+	router.Put("/collections", h.addChatToCollection)
+
 	return router
 }
 
@@ -25,5 +27,20 @@ func InitRoutes(router *chi.Mux, chatService services.ChatService, logger logger
 		chatService: chatService,
 		logger:      logger,
 	}
-	router.Mount("/chat", httpHandler.routes())
+	router.Mount("/chat", httpHandler.chatRoutes())
+	router.Mount("/chat_collections", httpHandler.chatCollectionRoutes())
+
+}
+
+func (h *httpHandler) chatCollectionRoutes() chi.Router {
+	router := chi.NewRouter()
+
+	router.Post("/", h.createChatCollection)
+	router.Get("/", h.getAllChatCollectionsByUser)
+	router.Route("/{chat_collection_id}", func(r chi.Router) {
+		r.Get("/", h.getChatCollectionByID)
+		r.Delete("/", h.deleteChatCollection)
+	})
+
+	return router
 }

@@ -83,7 +83,7 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		response, err := h.promptService.GenerateText(requestBody.Provider, uint(uID), requestBody.InputPrompt, requestBody.GenerateFor, requestBody.AdditionalInstructions, requestBody.MaxTokens)
+		response, err := h.promptService.GenerateText(requestBody.Provider, requestBody.Model, uint(uID), requestBody.InputPrompt, requestBody.GenerateFor, requestBody.AdditionalInstructions, requestBody.MaxTokens)
 
 		if err != nil {
 			h.logger.Error("error generating text", "error", err.Error())

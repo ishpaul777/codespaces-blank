@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 
+	"github.com/factly/tagore/server/internal/domain/constants/prompts"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/pkg/helper"
@@ -41,7 +43,7 @@ func (o *OpenAIAdapter) LoadConfig() error {
 	return nil
 }
 
-func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}, string, error) {
+func (o *OpenAIAdapter) GenerateTextUsingTextModel(prompt, model string, maxTokens uint) (interface{}, string, error) {
 	req := openai.CompletionRequest{
 		Prompt:    prompt,
 		MaxTokens: int(maxTokens),
@@ -56,14 +58,44 @@ func (o *OpenAIAdapter) GenerateText(prompt string, maxTokens uint) (interface{}
 	return resp.Choices[0].Text, resp.Choices[0].FinishReason, nil
 }
 
-// GenerateTextStream generates text stream using OpenAI's API
+func (o *OpenAIAdapter) GenerateTextUsingChatModel(prompt, model, additionalInstructions string, maxTokens uint) (interface{}, string, error) {
+
+	systemMessage := openai.ChatCompletionMessage{
+		Role:    "system",
+		Content: prompts.SYSTEM_PROMPT_FOR_TEXT_GENERATION,
+	}
+
+	textGenerationMessage := openai.ChatCompletionMessage{
+		Role:    "user",
+		Content: prompt + ". " + additionalInstructions,
+	}
+
+	messages := []openai.ChatCompletionMessage{}
+	messages = append(messages, systemMessage)
+	messages = append(messages, textGenerationMessage)
+	fmt.Println("messages", messages)
+	ctx := context.Background()
+	req := openai.ChatCompletionRequest{
+		Messages: messages,
+		Model:    model,
+	}
+
+	resp, err := o.Client.CreateChatCompletion(ctx, req)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return resp.Choices[0].Message.Content, resp.Choices[0].FinishReason, nil
+}
+
+// GenerateTextUsintTextModelStream generates text stream using OpenAI's API
 // it takes :
 // 		prompt: the prompt to be used for generating the text
 // 		maxTokens: the maximum number of tokens to be generated
 // 		dataChan: a channel to send the generated text
 // 		errChan: a channel to send the error
 
-func (o *OpenAIAdapter) GenerateTextStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error) {
+func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error) {
 	if model == "" {
 		model = openai.GPT3TextDavinci003
 	}
@@ -104,6 +136,10 @@ func (o *OpenAIAdapter) GenerateTextStream(model string, prompt string, maxToken
 
 		dataChan <- string(respJSON)
 	}
+}
+
+func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error) {
+
 }
 
 func (o *OpenAIAdapter) EditText(input string, instruction string) (interface{}, error) {

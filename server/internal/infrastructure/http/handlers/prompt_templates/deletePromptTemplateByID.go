@@ -9,7 +9,7 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-func (h *httpHandler) DeletePromptTemplateByID(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) deletePromptTemplateByID(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 
 	if err != nil {

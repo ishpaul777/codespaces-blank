@@ -11,7 +11,7 @@ export function Input({
       <label>{label}</label>
       {type === "input" ? (
         <input
-          className={`p-2 border border-[#CED0D4] rounded-md bg-transparent ${
+          className={`p-2 border border-[#D0D5DD] rounded-md bg-transparent outline-none ${
             disabled && "disabled:cursor-not-allowed"
           }`}
           placeholder={placeholder}
@@ -21,7 +21,7 @@ export function Input({
         ></input>
       ) : (
         <textarea
-          className={`p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none ${
+          className={`p-2 border border-[#D0D5DD] rounded-md bg-transparent resize-none outline-none ${
             disabled && "disabled:cursor-not-allowed"
           }`}
           placeholder={placeholder}

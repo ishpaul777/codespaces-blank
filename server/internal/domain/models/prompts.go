@@ -11,3 +11,15 @@ type GenerateTextResponse struct {
 	Output       string `json:"output"`
 	FinishReason string `json:"finish_reason"`
 }
+
+// ModelBelongsToChat checks if the model belongs to the chat
+func ModelBelongsToChat(model string) bool {
+	switch model {
+	case "gpt-3.5-turbo":
+		return true
+	case "gpt-4":
+		return true
+	default:
+		return false
+	}
+}
