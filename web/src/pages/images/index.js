@@ -84,11 +84,9 @@ export default function ImagePage() {
       "stableDiffusion"
     )
       .then((response) => {
-        console.log(response);
         setImages(response?.map((image) => ({ ...image, isHover: false })));
       })
       .catch((err) => {
-        console.log();
         errorToast("error in generating variations of image " + err?.message);
       })
       .finally(() => {

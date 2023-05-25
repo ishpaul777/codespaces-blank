@@ -297,7 +297,6 @@ export default function ChatPage() {
 
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
-      console.log(chatObject);
       setChat(chatObject?.messages);
       setChatID(chatObject?.id);
       setIsEditing({ status: false, id: null });
