@@ -30,7 +30,7 @@ type ChatGenerativeModel interface {
 	ConfigGenerativeModel
 	GenerateResponse(model string, temperature float32, chat models.Chat, chatRepo repositories.ChatRepository) (*models.Chat, error)
 	GenerateStreamingResponse(model string, temperature float32, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
-	GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
+	// GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 }
 
 func NewTextGenerativeModel(provider string) TextGenerativeModel {
@@ -57,6 +57,8 @@ func NewChatGenerativeModel(provider string) ChatGenerativeModel {
 	switch provider {
 	case "openai":
 		return NewOpenAIAdapter()
+	case "anthropic":
+		return NewAnthropicAdapter()
 	default:
 		return NewOpenAIAdapter()
 	}
