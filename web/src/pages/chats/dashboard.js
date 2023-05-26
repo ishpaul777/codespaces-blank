@@ -1,47 +1,49 @@
 import React, { useEffect, useRef, useState } from "react";
-import FactlyLogo from "../../assets/icons/factlyLogo.jsx";
+// import FactlyLogo from "../../assets/icons/factlyLogo.jsx";
 import { SSE } from "sse.js";
 import {
   MdOutlineClearAll,
-  MdOutlineCreateNewFolder,
+  // MdOutlineCreateNewFolder,
   MdKeyboardBackspace,
 } from "react-icons/md";
 
-import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
-import { BiChevronLeft } from "react-icons/bi";
+// import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
+// import { BiChevronLeft } from "react-icons/bi";
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 
-import { HiPlus } from "react-icons/hi";
-import { FaRobot } from "react-icons/fa";
-import {
-  AiOutlineEdit,
-  AiOutlineDelete,
-  AiOutlineCheck,
-  AiOutlineClose,
-} from "react-icons/ai";
-import { IoMdSettings } from "react-icons/io";
+// import { HiPlus } from "react-icons/hi";
+// import { FaRobot } from "react-icons/fa";
+// import {
+//   AiOutlineEdit,
+//   AiOutlineDelete,
+//   AiOutlineCheck,
+//   AiOutlineClose,
+// } from "react-icons/ai";
+// import { IoMdSettings } from "react-icons/io";
 
-import { BiMessageDetail } from "react-icons/bi";
+// import { BiMessageDetail } from "react-icons/bi";
 import sendButton from "../../assets/icons/send-button.svg";
-import { BeatLoader, ClipLoader } from "react-spinners";
-import ReactMarkdown from "react-markdown";
-import rehypeMathjax from "rehype-mathjax";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
+// import { BeatLoader, ClipLoader } from "react-spinners";
+// import ReactMarkdown from "react-markdown";
+// import rehypeMathjax from "rehype-mathjax";
+// import remarkGfm from "remark-gfm";
+// import remarkMath from "remark-math";
 import {
   deleteChatByID,
   getChatHistoryByUserID,
   getChatResponse,
 } from "../../actions/chat";
-import { Link, useNavigate } from "react-router-dom";
-import { CodeBlock } from "../../components/codeblock";
-import { ToastContainer } from "react-toastify";
+import { 
+  // Link,
+   useNavigate } from "react-router-dom";
+// import { CodeBlock } from "../../components/codeblock";
+// import { ToastContainer } from "react-toastify";
 import { errorToast, successToast } from "../../util/toasts";
-import { Input } from "../../components/inputs/Input";
-import { Select, SelectTemperature } from "../../components/inputs/select";
+// import { Input } from "../../components/inputs/Input";
+// import { Select, SelectTemperature } from "../../components/inputs/select";
 import PromptBar from "./PromptBar";
-import PromptInput from "./PromptInput";
+// import PromptInput from "./PromptInput";
 import SideBar from "./sidebar.js";
 import ChatBar from "./chatbar.js";
 
@@ -366,7 +368,7 @@ export default function ChatPage() {
   }, [paginationChatHistory.search_query]);
 
   // maxListChars is the maximum number of characters that can be shown in the chat list
-  const maxListChars = 15;
+  // const maxListChars = 15;
 
   // deleteChatHistoryIndex is the index of the chat in the chatHistory array
   // which is to be deleted

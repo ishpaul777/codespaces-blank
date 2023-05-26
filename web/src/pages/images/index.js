@@ -196,11 +196,13 @@ export default function ImagePage() {
           <span>to generate variations</span>
         </div>
         <div className="mr-4 flex gap-2">
-        <select
+          <select
             name="Image Counter"
             className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
           >
-            <option value="" default selected className="hidden">Image Count</option>
+            <option value="" default selected className="hidden">
+              Image Count
+            </option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>

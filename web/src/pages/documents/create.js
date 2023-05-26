@@ -401,10 +401,11 @@ export default function Document() {
                 const requestBody = {
                   input: input,
                   generate_for: options,
-                  provider: 'openai',
+                  provider: "openai",
                   stream: false,
-                  model: 'gpt-3.5-turbo',
-                  additional_instructions: 'The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.'
+                  model: "gpt-3.5-turbo",
+                  additional_instructions:
+                    "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
                 };
 
                 const response = await generateTextFromPrompt(requestBody, 1);
@@ -412,11 +413,14 @@ export default function Document() {
                 // clean the html strings in output from newlines(\n\n)
                 console.log(response);
                 var cleanedResponse = {};
-                cleanedResponse.output = response.output.replace(/\n/g, '');
-                // remove spaces bigger than 2 
-                cleanedResponse.output = cleanedResponse.output.replace(/ {3,}/g, ' ');
+                cleanedResponse.output = response.output.replace(/\n/g, "");
+                // remove spaces bigger than 2
+                cleanedResponse.output = cleanedResponse.output.replace(
+                  / {3,}/g,
+                  " "
+                );
                 cleanedResponse.finish_reason = response.finish_reason;
-                console.log(cleanedResponse)
+                console.log(cleanedResponse);
                 return cleanedResponse;
               },
             }}

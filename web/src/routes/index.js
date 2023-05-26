@@ -11,6 +11,8 @@ import Playground from "../pages/natdev/Playground";
 import Compare from "../pages/natdev/Compare";
 import Personas from "../pages/personas";
 import CreatePersona from "../pages/personas/create";
+import { PersonaChat } from "../pages/personas/chat";
+
 export const routes = [
   {
     path: "/",
@@ -39,20 +41,18 @@ export const routes = [
       {
         path: "/personas/create",
         element: <CreatePersona />,
-      },
+      }
     ],
   },
   {
     path: "/",
     element: <LayoutAlt />,
     children: [
-      { 
+      {
         path: "/profile",
-        element: <Profile /> 
+        element: <Profile />,
       },
-      { path: "/history",
-        element: <History />
-      },
+      { path: "/history", element: <History /> },
     ],
   },
   {
@@ -63,6 +63,10 @@ export const routes = [
   {
     path: "/chats/dashboard",
     element: <ChatPage />,
+  },
+  {
+    path: "personas/:id/chat",
+    element: <PersonaChat />,
   },
   {
     path: "/playground",
