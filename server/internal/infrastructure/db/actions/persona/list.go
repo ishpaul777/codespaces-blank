@@ -14,7 +14,19 @@ func (p *PGPersonaRepository) GetAllPersonas(userID uint, pagiantion helper.Pagi
 		offset = 0
 	}
 
-	db := p.client.Model(&models.Persona{}).Where("created_by_id = ?", userID)
+	// fetching all the personas created by the user
+	// which are private
+	db := p.client.Model(&models.Persona{}).Where(&models.Persona{
+		Base: models.Base{
+			CreatedByID: userID,
+		},
+		Visibility: "private",
+	}).Or(&models.Persona{
+		Visibility: "public",
+	})
+
+	// fetcing all the personas which are public
+	// and created by other users
 
 	if pagiantion.SearchQuery != "" {
 		db = db.Where("name ILIKE ?", "%"+pagiantion.SearchQuery+"%")
