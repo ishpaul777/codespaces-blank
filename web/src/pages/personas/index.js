@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateButton } from "../../components/buttons/CreateButton";
 import PersonaCard from "../../components/cards/personaCard";
 import Search from "../../components/search";
@@ -18,6 +18,9 @@ export default function Personas() {
   const endIndex = currentPage * pageSize;
   const pageData = items.slice(startIndex, endIndex);
 
+  useEffect(() => {
+
+  }, [])
   return (
     <div className="m-10">
       {/* This is Page header */}
@@ -67,9 +70,10 @@ export default function Personas() {
         </select>
       </div>
       {/* This is Page Items */}
-      <div className="grid grid-cols-5 gap-5 my-10 h-[63vh]">
+      <div className="grid grid-cols-5 grid-rows-2 gap-6 my-10">
         {pageData.map((num) => (
           <PersonaCard
+            key={num}
             image={avtarImg}
             name={"Factly"}
             desc={"This is Factly media and research"}

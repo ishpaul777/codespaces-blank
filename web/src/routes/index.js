@@ -32,6 +32,14 @@ export const routes = [
         path: "/images",
         element: <ImagePage />,
       },
+      {
+        path: "/personas",
+        element: <Personas />,
+      },
+      {
+        path: "/personas/create",
+        element: <CreatePersona />,
+      },
     ],
   },
   {
@@ -44,14 +52,6 @@ export const routes = [
       },
       { path: "/history",
         element: <History />
-      },
-      {
-        path: "/personas",
-        element: <Personas />,
-      },
-      {
-        path: "/personas/create",
-        element: <CreatePersona />,
       },
     ],
   },
