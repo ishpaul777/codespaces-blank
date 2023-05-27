@@ -385,7 +385,7 @@ export default function Document() {
             })}
           </div>
         </div>
-        <div className="w-full py-1 flex justify-center">
+        <div className="w-full py-1">
           <ScooterCore
             placeholder="Write your content here. Press / for commands and /generate for AI commands"
             editorInstance={(editor) => setEditor(editor)}

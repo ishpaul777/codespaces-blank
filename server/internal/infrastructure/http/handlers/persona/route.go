@@ -27,6 +27,11 @@ func (h *httpHandler) routes() chi.Router {
 func (h *httpHandler) chatRoutes() chi.Router {
 	router := chi.NewRouter()
 	router.Post("/", h.createChat)
+	router.Get("/", h.getPersonaChatsByUserID)
+	router.Route("/{chat_id}", func(r chi.Router) {
+		r.Get("/", h.getPersonaChatByID)
+		r.Delete("/", h.deletePersonaChatByID)
+	})
 	return router
 }
 func InitRoutes(router *chi.Mux, personaService services.PersonaService, logger logger.ILogger) {

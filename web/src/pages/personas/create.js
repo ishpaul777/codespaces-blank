@@ -61,9 +61,6 @@ export default function CreatePersona() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("Form submitted:", {
-      requestBody,
-    });
   };
 
   const styles = {

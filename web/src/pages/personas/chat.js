@@ -103,7 +103,7 @@ export const PersonaChat = () => {
       title: "Go back to personas",
       icon: <MdKeyboardBackspace size={styles.iconSize} />,
       onClick: () => {
-        navigate("/chats");
+        navigate("/personas");
       },
     },
   ];
