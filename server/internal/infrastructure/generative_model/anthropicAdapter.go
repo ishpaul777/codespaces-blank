@@ -254,3 +254,7 @@ func generateRequestText(messages []models.Message) string {
 
 	return requestString
 }
+
+func (a *AnthropicAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {
+
+}

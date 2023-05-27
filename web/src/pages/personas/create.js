@@ -47,9 +47,7 @@ export default function CreatePersona() {
     },
   });
 
-  const handleChange = (e) => {
-
-  };
+  const handleChange = (e) => {};
   const onDelete = () => {
     setAvatar("");
   };
@@ -64,16 +62,15 @@ export default function CreatePersona() {
     e.preventDefault();
 
     console.log("Form submitted:", {
-      requestBody 
+      requestBody,
     });
   };
 
   const styles = {
     text: {
-      heading: '',
-      description: '',
-      
-    }
+      heading: "",
+      description: "",
+    },
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -87,9 +84,7 @@ export default function CreatePersona() {
             Create and chat
           </button>
         </div>
-        <div className="grid-cols-2 my-10">
-
-        </div>
+        <div className="grid-cols-2 my-10"></div>
         <Modal open={open} onClose={handleModalClose}>
           <UppyUploader onUpload={handleUpload}></UppyUploader>
         </Modal>

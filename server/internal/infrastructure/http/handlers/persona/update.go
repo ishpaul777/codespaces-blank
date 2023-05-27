@@ -20,7 +20,7 @@ type updateRequest struct {
 	Model       string             `json:"model,omitempty"`
 }
 
-func (h *htttHandler) update(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) update(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())

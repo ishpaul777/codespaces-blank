@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 
@@ -73,7 +72,6 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModel(prompt, model, additionalInst
 	messages := []openai.ChatCompletionMessage{}
 	messages = append(messages, systemMessage)
 	messages = append(messages, textGenerationMessage)
-	fmt.Println("messages", messages)
 	ctx := context.Background()
 	req := openai.ChatCompletionRequest{
 		Messages: messages,
@@ -323,14 +321,8 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(model string, temperature floa
 	}
 }
 
-func (o *OpenAIAdapter) GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
-	chat := models.Chat{
-		Base: models.Base{
-			// ID:          *chatID,
-			CreatedByID: userID,
-		},
-	}
-
+func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {
+	const temperature = 0.9
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
 	for _, message := range messages {
 		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
@@ -342,8 +334,8 @@ func (o *OpenAIAdapter) GenerateStreamingResponseUsingSSE(userID uint, chatID *u
 	req := openai.ChatCompletionRequest{
 		Model:       model,
 		Messages:    requestMessages,
-		Temperature: temperature,
 		Stream:      true,
+		Temperature: temperature,
 	}
 
 	ctx := context.Background()
@@ -360,9 +352,46 @@ func (o *OpenAIAdapter) GenerateStreamingResponseUsingSSE(userID uint, chatID *u
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
-			_, dbErr := chatRepo.SaveChat(userID, chatID, model, messages, models.Usage{})
-			if dbErr != nil {
-				errChan <- dbErr
+			if chatID == nil {
+				personaChat, err := personaRepo.CreatePersonaChat(userID, personaID, messages, models.Usage{
+					PromptTokens:     0,
+					TotalTokens:      0,
+					CompletionTokens: 0,
+				})
+
+				if err != nil {
+					errChan <- err
+					return
+				}
+
+				byteStream, err := json.Marshal(personaChat)
+				if err != nil {
+					errChan <- err
+					return
+				}
+
+				dataChan <- string(byteStream)
+				errChan <- io.EOF
+				return
+			} else {
+				personaChat, err := personaRepo.UpdatePersonaChat(userID, personaID, *chatID, messages, models.Usage{
+					PromptTokens:     0,
+					TotalTokens:      0,
+					CompletionTokens: 0,
+				})
+				if err != nil {
+					errChan <- err
+					return
+				}
+
+				byteStream, err := json.Marshal(personaChat)
+				if err != nil {
+					errChan <- err
+					return
+				}
+
+				dataChan <- string(byteStream)
+				errChan <- io.EOF
 				return
 			}
 		}
@@ -380,9 +409,11 @@ func (o *OpenAIAdapter) GenerateStreamingResponseUsingSSE(userID uint, chatID *u
 			return
 		}
 
-		chat.Messages = msgStream
+		personaChat := models.PersonaChat{
+			Messages: msgStream,
+		}
 
-		byteStream, err := json.Marshal(chat)
+		byteStream, err := json.Marshal(personaChat)
 		if err != nil {
 			errChan <- err
 			return

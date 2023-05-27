@@ -98,15 +98,6 @@ export default function ImagePage() {
     return URL.createObjectURL(blob);
   }
 
-  async function downloadImage(url, filename) {
-    const a = document.createElement("a");
-    a.href = await toDataURL(url);
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
   // handleProviderChange is a function that handles the change in the provider select element
   const handleProviderChange = (e) => {
     setImageRequest({
@@ -164,6 +155,34 @@ export default function ImagePage() {
         "A field of sunflowers with a rainbow in the background on a sunny day.",
     },
   ];
+
+  function downloadImageFromBase64Url(base64Url, fileName) {
+    // Convert the Base64 data to a Blob object
+    const blob = b64toBlob(base64Url);
+
+    // Create a temporary link element
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+
+    // Simulate a click on the link to trigger the download
+    link.click();
+
+    // Clean up the URL object
+    URL.revokeObjectURL(link.href);
+  }
+
+  function b64toBlob(base64Data) {
+    const byteCharacters = atob(base64Data);
+    const byteArrays = [];
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteArrays.push(byteCharacters.charCodeAt(i));
+    }
+
+    const byteArray = new Uint8Array(byteArrays);
+    return new Blob([byteArray], { type: "image/png" }); // Modify the MIME type if needed
+  }
 
   return (
     <div className={`my-16 mx-10`}>
@@ -239,7 +258,9 @@ export default function ImagePage() {
                       className={`w-full rounded-lg relative`}
                       onMouseEnter={() => onMouseIn(index)}
                       onMouseLeave={() => onMouseOut(index)}
-                      // onClick={() => downloadImage(image?.url, 'image.png')}
+                      onClick={() =>
+                        downloadImageFromBase64Url(image?.url, "image.png")
+                      }
                     >
                       <img
                         alt="generated logos"

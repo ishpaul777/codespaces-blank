@@ -28,7 +28,7 @@ func ValidateVisibility(v VISIBILITY) bool {
 	return (v == VISIBILITY_PUBLIC) || (v == VISIBILITY_PRIVATE)
 }
 
-type PersonaChats struct {
+type PersonaChat struct {
 	Base
 	PersonaID uint `json:"persona_id" gorm:"column:persona_id" `
 	// Title is the title of the chat

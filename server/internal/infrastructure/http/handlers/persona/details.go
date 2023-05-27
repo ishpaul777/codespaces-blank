@@ -9,7 +9,7 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-func (h *htttHandler) details(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) details(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 
 	if err != nil {

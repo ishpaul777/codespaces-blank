@@ -41,7 +41,7 @@ export const routes = [
       {
         path: "/personas/create",
         element: <CreatePersona />,
-      }
+      },
     ],
   },
   {

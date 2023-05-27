@@ -1,7 +1,13 @@
-export default function PersonaCard({ name, desc, image }) {
+import { Link } from "react-router-dom";
+
+export default function PersonaCard({ name, desc, image, id }) {
   const maxDescriptionLength = 60;
   return (
-    <div className="flex flex-col justify-between w-full rounded-lg bg-white-30 px-[20px] py-[16px] cursor-pointer ">
+    <Link
+      to={`/personas/${id}/chat`}
+      className="flex flex-col justify-between w-full rounded-lg bg-white-30 px-[20px] py-[16px] cursor-pointer "
+      state={{ name, desc, image }}
+    >
       <div className="h-[60%]">
         <img src={image} className="w-full h-full rounded-lg" />
       </div>
@@ -11,6 +17,6 @@ export default function PersonaCard({ name, desc, image }) {
           ? `${desc?.slice(0, maxDescriptionLength)}...`
           : desc}
       </p>
-    </div>
+    </Link>
   );
 }

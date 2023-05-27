@@ -20,5 +20,4 @@ export const getPersona = ({ page, limit, search_query }) => {
     .then((data) => {
       return data;
     });
-  // ;
 };

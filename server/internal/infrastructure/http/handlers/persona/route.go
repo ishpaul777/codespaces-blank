@@ -6,12 +6,12 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type htttHandler struct {
+type httpHandler struct {
 	personaService services.PersonaService
 	logger         logger.ILogger
 }
 
-func (h *htttHandler) routes() chi.Router {
+func (h *httpHandler) routes() chi.Router {
 	router := chi.NewRouter()
 	router.Post("/", h.create)
 	router.Get("/", h.list)
@@ -19,11 +19,17 @@ func (h *htttHandler) routes() chi.Router {
 		r.Get("/", h.details)
 		r.Put("/", h.update)
 		r.Delete("/", h.delete)
+		r.Mount("/chats", h.chatRoutes())
 	})
 	return router
 }
 
+func (h *httpHandler) chatRoutes() chi.Router {
+	router := chi.NewRouter()
+	router.Post("/", h.createChat)
+	return router
+}
 func InitRoutes(router *chi.Mux, personaService services.PersonaService, logger logger.ILogger) {
-	httpHandler := &htttHandler{personaService: personaService, logger: logger}
+	httpHandler := &httpHandler{personaService: personaService, logger: logger}
 	router.Mount("/personas", httpHandler.routes())
 }

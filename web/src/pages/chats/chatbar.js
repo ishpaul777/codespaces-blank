@@ -1,10 +1,8 @@
 import { AiOutlineMenuUnfold } from "react-icons/ai";
-import { BiChevronLeft } from "react-icons/bi";
-import FactlyLogo from "../../assets/icons/factlyLogo.jsx";
+import FactlyLogo from "../../assets/icons/factlyLogo";
 import { AiOutlineEdit } from "react-icons/ai";
 import { Select, SelectTemperature } from "../../components/inputs/select";
 import { Input } from "../../components/inputs/Input";
-import { Link } from "react-router-dom";
 import { IoMdSettings } from "react-icons/io";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "../../components/codeblock";
@@ -110,15 +108,13 @@ export default function ChatBar({
         ) : (
           <div className={`sticky top-0 w-full mb-1 z-40 pt-4 bg-body`}>
             {/* chat header */}
-            <Link to="/" className="flex items-center px-4 font-bold ">
-              <BiChevronLeft size={28} />
-              <span className="text-lg font-bold">
-                {chatTitle.length < 60
-                  ? chatTitle
-                  : `${chatTitle?.slice(0, 60) + "..."}
+            {/* <BiChevronLeft size={28} /> */}
+            <span className="text-lg font-bold">
+              {chatTitle.length < 60
+                ? chatTitle
+                : `${chatTitle?.slice(0, 60) + "..."}
                         `}
-              </span>
-            </Link>
+            </span>
             <div
               className={`border-none bg-body w-full px-4 py-2 gap-4 flex justify-between`}
             >

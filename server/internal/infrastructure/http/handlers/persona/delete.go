@@ -9,7 +9,7 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-func (h *htttHandler) delete(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) delete(w http.ResponseWriter, r *http.Request) {
 	usedID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())

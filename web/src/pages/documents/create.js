@@ -125,7 +125,6 @@ export default function Document() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-User": 1,
       },
       body: JSON.stringify({
         input: prompt,
@@ -134,7 +133,7 @@ export default function Document() {
     })
       .then((response) => response.json())
       .then((data) => {
-        let clean_html_string = data?.output.replace(/\s+/g, " ");
+        let clean_html_string = data?.output.replace(/\n|\t|(?<=>)\s*/g, "");
         setPromptData(clean_html_string);
       })
       .catch((error) => {
@@ -386,7 +385,7 @@ export default function Document() {
             })}
           </div>
         </div>
-        <div className="w-full py-1">
+        <div className="w-full py-1 flex justify-center">
           <ScooterCore
             placeholder="Write your content here. Press / for commands and /generate for AI commands"
             editorInstance={(editor) => setEditor(editor)}
@@ -411,16 +410,17 @@ export default function Document() {
                 const response = await generateTextFromPrompt(requestBody, 1);
                 // remove \n\n from the response output
                 // clean the html strings in output from newlines(\n\n)
-                console.log(response);
                 var cleanedResponse = {};
-                cleanedResponse.output = response.output.replace(/\n/g, "");
+                cleanedResponse.output = response.output.replace(
+                  /\n|\t|(?<=>)\s*/g,
+                  ""
+                );
                 // remove spaces bigger than 2
                 cleanedResponse.output = cleanedResponse.output.replace(
                   / {3,}/g,
                   " "
                 );
                 cleanedResponse.finish_reason = response.finish_reason;
-                console.log(cleanedResponse);
                 return cleanedResponse;
               },
             }}

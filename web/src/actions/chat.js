@@ -1,9 +1,8 @@
-export async function getChatResponse(requestBody, userID) {
+export async function getChatResponse(requestBody) {
   return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-User": userID,
     },
     body: JSON.stringify(requestBody),
   }).then((response) => {
@@ -20,7 +19,7 @@ export async function getChatResponse(requestBody, userID) {
 // getChatHistoryByUserID function is used to get chat history by user ID
 // it sends http request to the server and validates and returns the response
 // parameters: userID
-export async function getChatHistoryByUserID(userID, pagination) {
+export async function getChatHistoryByUserID(pagination) {
   return fetch(
     `${process.env.REACT_APP_TAGORE_API_URL}/chat/history?` +
       new URLSearchParams({
@@ -32,7 +31,6 @@ export async function getChatHistoryByUserID(userID, pagination) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "X-User": userID,
       },
     }
   ).then((response) => {
@@ -49,12 +47,11 @@ export async function getChatHistoryByUserID(userID, pagination) {
 // deleteChatByID function is used to delete a chat by its ID
 // it sends http request to the server and validates and returns the response
 // parameters: chatID, userID
-export async function deleteChatByID(chatID, userID) {
+export async function deleteChatByID(chatID) {
   return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/chat/${chatID}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "X-User": userID,
     },
   }).then((response) => {
     if (response.status === 200) {

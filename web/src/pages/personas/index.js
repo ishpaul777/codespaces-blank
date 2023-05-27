@@ -84,6 +84,7 @@ export default function Personas() {
             image={persona?.avatar}
             name={persona?.name}
             desc={persona?.description}
+            id={persona?.id}
           />
         ))}
       </div>

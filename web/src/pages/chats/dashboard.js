@@ -34,9 +34,10 @@ import {
   getChatHistoryByUserID,
   getChatResponse,
 } from "../../actions/chat";
-import { 
+import {
   // Link,
-   useNavigate } from "react-router-dom";
+  useNavigate,
+} from "react-router-dom";
 // import { CodeBlock } from "../../components/codeblock";
 // import { ToastContainer } from "react-toastify";
 import { errorToast, successToast } from "../../util/toasts";
@@ -239,7 +240,7 @@ export default function ChatPage() {
     setChat(newMessages);
     setCurrentPrompt("");
 
-    getChatResponse(requestBody, 1)
+    getChatResponse(requestBody)
       .then((data) => {
         if (!chatID) {
           setChatID(data.id);
@@ -342,7 +343,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     // get the chat history of the user
-    getChatHistoryByUserID(1, paginationChatHistory)
+    getChatHistoryByUserID(paginationChatHistory)
       .then((data) => {
         setChatHistory(data.chats);
         setChatCount(data.total);
@@ -383,7 +384,7 @@ export default function ChatPage() {
   // handleChatDelete is called when the user clicks on the cross icon in the chat list
   // it deletes the chat from the chatHistory array
   const handleChatDelete = (id) => {
-    deleteChatByID(id, 1)
+    deleteChatByID(id)
       .then((response) => {
         successToast(response.message);
         setDeleteChatHistoryIndex(null);
