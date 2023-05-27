@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 
@@ -322,6 +323,7 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(model string, temperature floa
 }
 
 func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {
+	fmt.Println(messages)
 	const temperature = 0.9
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
 	for _, message := range messages {

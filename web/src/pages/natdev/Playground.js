@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { FaUserAlt } from "react-icons/fa";
 
 const Playground = () => {
-
   return (
     <>
       <div className="absolute bg-[#ffffff] box-border flex flex-col justify-center items-center gap-2  w-[100%] h-[10%] border-b-[#E9E9E9] border-b border-solid ">

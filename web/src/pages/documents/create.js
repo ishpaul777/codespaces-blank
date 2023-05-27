@@ -11,6 +11,7 @@ import { DocActionButton } from "../../components/buttons/DocActionButton";
 import { SizeButton } from "../../components/buttons/SizeButton";
 import { BiSave } from "react-icons/bi";
 import { generateTextFromPrompt } from "../../actions/text";
+import { useNavigate } from "react-router-dom";
 
 export default function Document() {
   const [prompt, setPrompt] = useState("");
@@ -44,12 +45,13 @@ export default function Document() {
     countColor: "#929DAF",
   };
 
+  const navigate = useNavigate();
   const [editorData, setEditorData] = useState(``);
 
   const [promptData, setPromptData] = useState(``);
 
   const handleGoBack = () => {
-    window.location.href = "/documents";
+    navigate("/documents");
   };
 
   const handlePromptChange = (value) => {

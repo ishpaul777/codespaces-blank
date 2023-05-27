@@ -14,14 +14,15 @@ func (p *PGPersonaRepository) GetAllPersonaChatsByUserID(userID, personaID uint,
 		offset = 0
 	}
 
-	err := p.client.Model(&models.PersonaChat{}).Where("persona_id = ? AND created_by_id = ?", personaID, userID).Count(&total).Error
-	if err != nil {
-		return personaChats, uint(total), err
+	db := p.client.Model(&models.PersonaChat{}).Where("persona_id = ? AND created_by_id = ?", personaID, userID)
+	if pagination.SearchQuery != "" {
+		db = db.Where("title ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}
 
-	err = p.client.Model(&models.PersonaChat{}).Where("persona_id = ? AND created_by_id = ?", personaID, userID).Order("created_at desc").Offset(offset).Limit(pagination.Limit).Find(&personaChats).Error
+	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Find(&personaChats).Error
+
 	if err != nil {
-		return personaChats, uint(total), err
+		return nil, 0, err
 	}
 
 	return personaChats, uint(total), nil

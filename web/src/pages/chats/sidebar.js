@@ -26,6 +26,7 @@ export default function SideBar({
   handleHistoryDeleteClick,
   chatCount,
   chatOptionsList,
+  isFolderVisible=true
 }) {
   const maxListChars = 15;
   const styles = {
@@ -60,11 +61,20 @@ export default function SideBar({
             <HiPlus size={styles.iconSize} />
             <span className="text-lg">New Chat</span>
           </button>
-          <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
-            <MdOutlineCreateNewFolder size={styles.fileIconSize} />
-            {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
-            <ToastContainer />
-          </button>
+          {
+            isFolderVisible ? (
+              <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
+              <MdOutlineCreateNewFolder size={styles.fileIconSize} />
+              {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
+              <ToastContainer />
+            </button>
+            )
+            : (
+              <div>
+                    <ToastContainer />
+              </div>
+            )
+          }
         </div>
         <div className={`${chatSiderCollapse || "pr-4"}`}>
           <input
@@ -90,17 +100,19 @@ export default function SideBar({
               <li
                 draggable={true}
                 key={index}
-                onClick={() => {
-                  setChat(item?.messages);
-                  setChatID(item?.id);
-                  setChatTitle(item?.title);
-                  setIsEditing({ status: false, id: null });
-                }}
                 className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
                     ${chatID === item?.id && "bg-hover-on-white"}
                   `}
               >
-                <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center gap-3"
+                  onClick={() => {
+                    setChat(item?.messages);
+                    setChatID(item?.id);
+                    setChatTitle(item?.title);
+                    setIsEditing({ status: false, id: null });
+                  }}
+                >
                   <BiMessageDetail size={styles.iconSize} />
                   <span>
                     {item?.title < maxListChars

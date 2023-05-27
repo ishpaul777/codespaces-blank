@@ -11,7 +11,7 @@ export default function Search({ placeholder, onChange, handleSearch }) {
           onChange={onChange}
         ></input>
       </div>
-      <SearchButton onClick={() => handleSearch} />
+      <SearchButton onClick={() => handleSearch()} />
     </div>
   );
 }

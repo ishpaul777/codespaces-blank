@@ -21,3 +21,67 @@ export const getPersona = ({ page, limit, search_query }) => {
       return data;
     });
 };
+
+export const getPersonaChatsByUserID = (personaID, pagination) => {
+  return fetch(
+    `${PERSONA_API}/${personaID}/chats?` +
+      new URLSearchParams({
+        limit: pagination.limit,
+        page: pagination.page,
+        search_query: pagination.search_query,
+      })
+  )
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      } else {
+        return response.json().then((data) => {
+          throw Error(data.errors?.[0].message);
+        });
+      }
+    })
+    .then((data) => {
+      return data;
+    });
+};
+
+// deletePersonaChatByID function is used to delete a chat by its ID
+// it sends http request to the server and validates and returns the response
+// parameters: personaID, chatID
+export async function deletePersonaChatByID(personaID, chatID) {
+  return fetch(`${PERSONA_API}/${personaID}/chats/${chatID}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return response.json().then((data) => {
+        throw Error(data.errors?.[0].message);
+      });
+    }
+  });
+}
+
+// createPersona function is used to create a persona
+// it sends http request to the server and validates and returns the response
+// parameters: name, description, avatar, prompt, visibility
+export async function createPersona(requestBody) {
+  return fetch(PERSONA_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  }).then((response) => {
+    if (response.status === 201) {
+      return response.json();
+    } else {
+      return response.json().then((data) => {
+        throw Error(data.errors?.[0].message);
+      });
+    }
+  });
+}

@@ -15,8 +15,19 @@ export default function Personas() {
     search_query: "",
     count: 0,
   });
+
+  const [searchQuery, setSearchQuery] = useState("");
   // personData is the data of the persona on the current page
   const [personaData, setPersonaData] = useState([]);
+
+  useEffect(() => {
+    getPersona({
+      page: pagination.page,
+      limit: pagination.limit,
+    }).then((data) => {
+      setPersonaData(data.personas);
+    });
+  }, [pagination]);
 
   useEffect(() => {
     getPersona({
@@ -26,7 +37,7 @@ export default function Personas() {
     }).then((data) => {
       setPersonaData(data.personas);
     });
-  }, [pagination]);
+  }, [pagination.search_query]);
 
   return (
     <div className="m-10">
@@ -35,7 +46,18 @@ export default function Personas() {
         <h2 className="text-3xl font-medium">Personas</h2>
 
         <div className="flex flex-row w-1/2 items-center gap-2">
-          <Search placeholder={"search Personas"} />
+          <Search
+            placeholder={"search Personas"}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
+            handleSearch={() => {
+              setPagination({
+                ...pagination,
+                search_query: searchQuery,
+              });
+            }}
+          />
           <Link to="/personas/create">
             <CreateButton text={"Create Personas"} />
           </Link>
@@ -64,7 +86,7 @@ export default function Personas() {
             Created
           </button>
         </div>
-        <select
+        {/* <select
           name="category"
           id="person"
           className="text-grey-50 p-2 border-solid border-grey-30 rounded-lg border-[1px] w-56 h-10"
@@ -74,7 +96,7 @@ export default function Personas() {
           </option>
           <option value="1">1</option>
           <option value="2">2</option>
-        </select>
+        </select> */}
       </div>
       {/* This is Page Items */}
       <div className="grid grid-cols-5 grid-rows-2 gap-6 my-10">

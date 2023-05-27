@@ -19,6 +19,11 @@ import {
   MdKeyboardBackspace,
 } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  deletePersonaChatByID,
+  getPersonaChatsByUserID,
+} from "../../actions/persona";
+import { errorToast, successToast } from "../../util/toasts";
 
 export const PersonaChat = () => {
   const navigate = useNavigate();
@@ -66,8 +71,20 @@ export const PersonaChat = () => {
     handlers for the chat page
   */
   // it deletes the chat from the chatHistory array
-  const handleChatDelete = (id) => {
-    // TODO: handle persona chat delete
+  const handleChatDelete = (chatID) => {
+    deletePersonaChatByID(id, chatID)
+      .then(() => {
+        successToast("Chat delete successfully");
+      })
+      .then(() => {
+        getPersonaChatsByUserID(id, paginationChatHistory).then((data) => {
+          setChatHistory(data.chats);
+          setChatCount(data.count);
+        });
+      })
+      .catch(() => {
+        errorToast("Unable to delete chat. Please try again.");
+      });
   };
 
   const AlwaysScrollToBottom = () => {
@@ -90,6 +107,7 @@ export const PersonaChat = () => {
       setIsCopied(false);
     }, 5000);
   };
+
   const chatOptionsList = [
     {
       title: "Clear conversations",
@@ -127,7 +145,17 @@ export const PersonaChat = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getPersonaChatsByUserID(id, paginationChatHistory)
+      .then((res) => {
+        setChatHistory(res.chats);
+        setChatCount(res.count);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [paginationChatHistory]);
+
   // handleNewChatClick is called when the user clicks on the new chat button
   // it resets the chat state and the chatID state
   const handleNewChatClick = () => {
@@ -142,7 +170,7 @@ export const PersonaChat = () => {
 
     setChatCount(0);
 
-    // TODO : get persona chat history
+    getPersonaChatsByUserID(id, paginationChatHistory);
   };
 
   // handleKeypress is called when the user presses key in the prompt input
@@ -324,6 +352,7 @@ export const PersonaChat = () => {
         handleHistoryDeleteClick={handleHistoryDeleteClick}
         chatCount={chatCount}
         chatOptionsList={chatOptionsList}
+        isFolderVisible={false}
       />
       <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
         <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
