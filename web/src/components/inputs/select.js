@@ -1,10 +1,12 @@
-import '../../index.css';
-import { BiChevronDown } from 'react-icons/bi';
-import React, { useState } from 'react';
+import "../../index.css";
+import { BiChevronDown } from "react-icons/bi";
+import React, { useState } from "react";
 
 export function Select({ label, onChange, initialValue, placeholder }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(initialValue.toUpperCase());
+  const [selectedValue, setSelectedValue] = useState(
+    initialValue.toUpperCase()
+  );
 
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -31,17 +33,19 @@ export function Select({ label, onChange, initialValue, placeholder }) {
           <div className="absolute top-full left-0 w-full bg-white border border-[#CED0D4] rounded-md z-10 outline-none">
             <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase()  === 'GPT-3.5-TURBO' ? 'bg-gray-200' : ''
+                selectedValue.toUpperCase() === "GPT-3.5-TURBO"
+                  ? "bg-gray-200"
+                  : ""
               }`}
-              onClick={() => handleOptionClick('gpt-3.5-turbo')}
+              onClick={() => handleOptionClick("gpt-3.5-turbo")}
             >
               GPT-3.5-TURBO
             </button>
             <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase()  === 'GPT-4' ? 'bg-gray-200' : ''
+                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
               }`}
-              onClick={() => handleOptionClick('gpt-4')}
+              onClick={() => handleOptionClick("gpt-4")}
             >
               GPT-4
             </button>
@@ -52,30 +56,45 @@ export function Select({ label, onChange, initialValue, placeholder }) {
   );
 }
 
-
-
 // #EAEAEA
-export function SelectTemperature({ label, description, onChange, initialValue, value }) {
-  const active = value < 0.5 ? 'Precise' : value == 0.5 ? 'Neutral' : 'Creative';
+export function SelectTemperature({
+  label,
+  description,
+  onChange,
+  initialValue,
+  value,
+}) {
+  const active =
+    value < 0.5 ? "Precise" : value == 0.5 ? "Neutral" : "Creative";
 
   const getButtonClassName = (buttonValue) => {
-    return `py-3 rounded-md w-1/3 ${active === buttonValue ? 'bg-black text-white' : 'bg-gray-200'}`;
+    return `py-3 rounded-md w-1/3 ${
+      active === buttonValue ? "bg-black text-white" : "bg-gray-200"
+    }`;
   };
-
 
   return (
     <div placeholder="flex flex-col gap-2 mt-2">
       <label>{label}</label>
       <div className="flex justify-between w-full gap-2 mt-2">
-        <button className={getButtonClassName('Precise')}
+        <button
+          className={getButtonClassName("Precise")}
           onClick={() => onChange({ target: { value: 0.1 } })}
-        >Precise</button>
-        <button className={getButtonClassName('Neutral')}
+        >
+          Precise
+        </button>
+        <button
+          className={getButtonClassName("Neutral")}
           onClick={() => onChange({ target: { value: 0.5 } })}
-        >Neutral</button>
-        <button className={getButtonClassName('Creative')}
+        >
+          Neutral
+        </button>
+        <button
+          className={getButtonClassName("Creative")}
           onClick={() => onChange({ target: { value: 1 } })}
-        >Creative</button>
+        >
+          Creative
+        </button>
       </div>
       <input
         className="w-full py-2 slider border border-[#CED0D4] rounded-md bg-transparent accent-black cursor-pointer"

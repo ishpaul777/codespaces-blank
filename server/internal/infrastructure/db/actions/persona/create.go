@@ -24,7 +24,7 @@ func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prom
 	}
 
 	if model == "" {
-		model = "gpt-3.5-turbo"
+		model = "gpt-4"
 	}
 
 	persona := models.Persona{

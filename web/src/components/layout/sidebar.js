@@ -58,19 +58,18 @@ export function Sidebar() {
       name: "View Profile",
       icon: Profile,
       linkTo: "/profile",
-      
     },
     {
       name: "History",
       icon: History,
       linkTo: "/history",
-      arrow:ArrowLeft,
+      arrow: ArrowLeft,
     },
     {
       name: "Favorites",
       icon: Bookmark,
       linkTo: "/favorites",
-      arrow:ArrowLeft,
+      arrow: ArrowLeft,
     },
     {
       name: "Usage",
@@ -99,7 +98,8 @@ export function Sidebar() {
       <div className={`flex gap-x-2 items-center justify-center w-fit`}>
         <img
           src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
-          className="cursor-pointer w-3/4" alt="logo"
+          className="cursor-pointer w-3/4"
+          alt="logo"
         />
       </div>
       {/* Sidebar menu options */}
@@ -118,9 +118,7 @@ export function Sidebar() {
                 <img src={menu.icon} alt="menu-icon" />
                 <h3>{menu.name}</h3>
               </div>
-              <div>
-                {menu.arrow}
-              </div>
+              <div>{menu.arrow}</div>
             </li>
           </Link>
         ))}

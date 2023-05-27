@@ -128,6 +128,5 @@ func (p *promptService) GenerateTextStream(provider, model string, userID uint, 
 	}
 
 	prompt := constructPrompt(input, generateFor, additionalInstructions)
-	fmt.Println(prompt)
 	generativeModel.GenerateTextUsingTextModelStream(model, prompt, maxTokens, dataChan, errChan)
 }

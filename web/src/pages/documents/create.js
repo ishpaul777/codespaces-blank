@@ -11,6 +11,7 @@ import { DocActionButton } from "../../components/buttons/DocActionButton";
 import { SizeButton } from "../../components/buttons/SizeButton";
 import { BiSave } from "react-icons/bi";
 import { generateTextFromPrompt } from "../../actions/text";
+import { useNavigate } from "react-router-dom";
 
 export default function Document() {
   const [prompt, setPrompt] = useState("");
@@ -44,12 +45,13 @@ export default function Document() {
     countColor: "#929DAF",
   };
 
+  const navigate = useNavigate();
   const [editorData, setEditorData] = useState(``);
 
   const [promptData, setPromptData] = useState(``);
 
   const handleGoBack = () => {
-    window.location.href = "/documents";
+    navigate("/documents");
   };
 
   const handlePromptChange = (value) => {
@@ -125,7 +127,6 @@ export default function Document() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-User": 1,
       },
       body: JSON.stringify({
         input: prompt,
@@ -134,7 +135,7 @@ export default function Document() {
     })
       .then((response) => response.json())
       .then((data) => {
-        let clean_html_string = data?.output.replace(/\s+/g, " ");
+        let clean_html_string = data?.output.replace(/\n|\t|(?<=>)\s*/g, "");
         setPromptData(clean_html_string);
       })
       .catch((error) => {
@@ -401,22 +402,27 @@ export default function Document() {
                 const requestBody = {
                   input: input,
                   generate_for: options,
-                  provider: 'openai',
+                  provider: "openai",
                   stream: false,
-                  model: 'gpt-3.5-turbo',
-                  additional_instructions: 'The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.'
+                  model: "gpt-3.5-turbo",
+                  additional_instructions:
+                    "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
                 };
 
                 const response = await generateTextFromPrompt(requestBody, 1);
                 // remove \n\n from the response output
                 // clean the html strings in output from newlines(\n\n)
-                console.log(response);
                 var cleanedResponse = {};
-                cleanedResponse.output = response.output.replace(/\n/g, '');
-                // remove spaces bigger than 2 
-                cleanedResponse.output = cleanedResponse.output.replace(/ {3,}/g, ' ');
+                cleanedResponse.output = response.output.replace(
+                  /\n|\t|(?<=>)\s*/g,
+                  ""
+                );
+                // remove spaces bigger than 2
+                cleanedResponse.output = cleanedResponse.output.replace(
+                  / {3,}/g,
+                  " "
+                );
                 cleanedResponse.finish_reason = response.finish_reason;
-                console.log(cleanedResponse)
                 return cleanedResponse;
               },
             }}

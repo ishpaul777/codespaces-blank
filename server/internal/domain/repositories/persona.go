@@ -14,6 +14,14 @@ type PersonaRepository interface {
 	GetPersonaByID(userID, personaID uint) (*models.Persona, error)
 	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY) (*models.Persona, error)
 	PersonaNameExists(name string) bool
+
+	// PersonaChat Methods
+	CreatePersonaChat(userID, personaID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error)
+	UpdatePersonaChat(userID, personaID, chatID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error)
+	GetPersonaChatByID(userID, personaID, chatID uint) (*models.PersonaChat, error)
+	GetAllPersonaChatsByUserID(userID, personaID uint, pagination helper.Pagination) ([]models.PersonaChat, uint, error)
+	DeletePersonaChatByID(userID, personaID, chatID uint) error
+	
 }
 
 func NewPersonaRepository(database db.IDatabaseService) (PersonaRepository, error) {

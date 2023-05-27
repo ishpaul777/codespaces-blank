@@ -86,7 +86,6 @@ export default function DocumentPage() {
           })}
           <tbody className={`w-full`}>
             {documentPageData.data.map((value, index) => {
-              console.log(value);
               return (
                 <tr
                   className="w-full border-y border-border-primary"

@@ -1,22 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateButton } from "../../components/buttons/CreateButton";
 import PersonaCard from "../../components/cards/personaCard";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
 import avtarImg from "../../assets/avatar.png";
 import Pagination from "./pagination";
+import { getPersona } from "../../actions/persona";
 
 export default function Personas() {
-  const items = Array(34).fill(0);
   const [tab, setTab] = useState("All");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 8,
+    search_query: "",
+    count: 0,
+  });
 
-  const pageSize = 10;
-  const total = items.length;
-  const totalPages = Math.ceil(total / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = currentPage * pageSize;
-  const pageData = items.slice(startIndex, endIndex);
+  const [searchQuery, setSearchQuery] = useState("");
+  // personData is the data of the persona on the current page
+  const [personaData, setPersonaData] = useState([]);
+
+  useEffect(() => {
+    getPersona({
+      page: pagination.page,
+      limit: pagination.limit,
+    }).then((data) => {
+      setPersonaData(data.personas);
+    });
+  }, [pagination]);
+
+  useEffect(() => {
+    getPersona({
+      page: pagination.page,
+      limit: pagination.limit,
+      search_query: pagination.search_query,
+    }).then((data) => {
+      setPersonaData(data.personas);
+    });
+  }, [pagination.search_query]);
 
   return (
     <div className="m-10">
@@ -25,7 +46,18 @@ export default function Personas() {
         <h2 className="text-3xl font-medium">Personas</h2>
 
         <div className="flex flex-row w-1/2 items-center gap-2">
-          <Search placeholder={"search Personas"} />
+          <Search
+            placeholder={"search Personas"}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
+            handleSearch={() => {
+              setPagination({
+                ...pagination,
+                search_query: searchQuery,
+              });
+            }}
+          />
           <Link to="/personas/create">
             <CreateButton text={"Create Personas"} />
           </Link>
@@ -54,7 +86,7 @@ export default function Personas() {
             Created
           </button>
         </div>
-        <select
+        {/* <select
           name="category"
           id="person"
           className="text-grey-50 p-2 border-solid border-grey-30 rounded-lg border-[1px] w-56 h-10"
@@ -64,22 +96,24 @@ export default function Personas() {
           </option>
           <option value="1">1</option>
           <option value="2">2</option>
-        </select>
+        </select> */}
       </div>
       {/* This is Page Items */}
-      <div className="grid grid-cols-5 gap-5 my-10 h-[63vh]">
-        {pageData.map((num) => (
+      <div className="grid grid-cols-5 grid-rows-2 gap-6 my-10">
+        {personaData.map((persona, index) => (
           <PersonaCard
-            image={avtarImg}
-            name={"Factly"}
-            desc={"This is Factly media and research"}
+            key={index}
+            image={persona?.avatar}
+            name={persona?.name}
+            desc={persona?.description}
+            id={persona?.id}
           />
         ))}
       </div>
       <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        totalPages={pagination.count}
+        currentPage={pagination.page}
+        setCurrentPage={setPagination}
       />
     </div>
   );

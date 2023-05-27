@@ -20,7 +20,7 @@ type createPersona struct {
 	Model       string             `json:"model,omitempty"`
 }
 
-func (h *htttHandler) create(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) create(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 
 	if err != nil {
