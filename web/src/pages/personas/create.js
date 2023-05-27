@@ -188,10 +188,15 @@ export default function CreatePersona() {
     createPersona(reqBody)
       .then((res) => {
         successToast("Persona created successfully");
-        navigate("/personas/" + res.id + "/chat");
+        navigate("/personas/" + res.id + "/chat", {
+          state: {
+            name: res.name,
+            desc: res.description,
+            image: res.avatar,
+          },
+        });
       })
       .catch((err) => {
-
         errorToast("Unable to create persona");
       });
   };

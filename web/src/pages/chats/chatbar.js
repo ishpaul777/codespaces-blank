@@ -45,7 +45,6 @@ export default function ChatBar({
   handleChatStream,
   handleChatSubmit,
   sendButton,
-
 }) {
   return (
     <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
@@ -53,15 +52,15 @@ export default function ChatBar({
         {chat.length === 0 ? (
           <>
             <div className="flex flex-row justify-between w-full px-3 pt-4">
-                  <button
-                  onClick={() => {
-                    setChatSiderCollapse(!chatSiderCollapse);
-                    isMobileScreen && setPromptSiderCollapse(true);
-                  }}
-                  style={{ width: "fit-content", height: "fit-content" }}
-                >
-                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
-                </button>
+              <button
+                onClick={() => {
+                  setChatSiderCollapse(!chatSiderCollapse);
+                  isMobileScreen && setPromptSiderCollapse(true);
+                }}
+                style={{ width: "fit-content", height: "fit-content" }}
+              >
+                <AiOutlineMenuUnfold size={styles.fileIconSize} />
+              </button>
               <button
                 onClick={() => {
                   setPromptSiderCollapse(!promptSiderCollapse);

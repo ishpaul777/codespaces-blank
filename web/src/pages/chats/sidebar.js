@@ -26,7 +26,7 @@ export default function SideBar({
   handleHistoryDeleteClick,
   chatCount,
   chatOptionsList,
-  isFolderVisible=true
+  isFolderVisible = true,
 }) {
   const maxListChars = 15;
   const styles = {
@@ -61,20 +61,17 @@ export default function SideBar({
             <HiPlus size={styles.iconSize} />
             <span className="text-lg">New Chat</span>
           </button>
-          {
-            isFolderVisible ? (
-              <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
+          {isFolderVisible ? (
+            <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
               <MdOutlineCreateNewFolder size={styles.fileIconSize} />
               {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
               <ToastContainer />
             </button>
-            )
-            : (
-              <div>
-                    <ToastContainer />
-              </div>
-            )
-          }
+          ) : (
+            <div>
+              <ToastContainer />
+            </div>
+          )}
         </div>
         <div className={`${chatSiderCollapse || "pr-4"}`}>
           <input
