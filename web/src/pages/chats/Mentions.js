@@ -113,10 +113,11 @@ const Mentions = (props) => {
         // onKeyDown={(e) => { handleKeydown(e) }}
         ref={textareaRef}
         value={props.value}
-        placeholder={props.placeholder}
+        placeholder={'Ask me anything...'}
         onKeyDown={(e) => {
           handlePrefixKeyDown(e);
         }}
+        
         // style={{resize: "vertical"}}
       />
       {showPromptsList && promptsList.length > 0 && (
