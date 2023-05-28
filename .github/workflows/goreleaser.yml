@@ -1,4 +1,4 @@
-name: Release CI
+name: Server Release CI
 on:
   push:
     tags:
@@ -23,6 +23,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v0
