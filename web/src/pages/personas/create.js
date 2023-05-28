@@ -201,6 +201,7 @@ export default function CreatePersona() {
       });
   };
 
+  const promptExampleLink = "https://poe.com/prompt_examples";
   return (
     <form onSubmit={handleSubmit}>
       <div className="my-5 mx-10">
@@ -266,7 +267,7 @@ export default function CreatePersona() {
                 using an intro message instead.
               </p>
               <a
-                href="#"
+                href={promptExampleLink}
                 className="flex flex-row items-center gap-2 text-[12px] text-[#0022D4] font-medium"
               >
                 View prompt examples <RiShareBoxLine color="#0022D4" />
