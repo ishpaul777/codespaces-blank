@@ -72,6 +72,8 @@ func validateAnthropicModel(model string) bool {
 		return true
 	case "claude-v1.3-100k":
 		return true
+	case "claude-instant-v1":
+		return true
 	default:
 		return false
 	}

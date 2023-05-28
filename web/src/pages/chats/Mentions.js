@@ -52,7 +52,7 @@ const Mentions = (props) => {
   useEffect(() => {
     const temp = options.filter((option) => {
       return (
-        option.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+        option.label?.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
       );
     });
     setPromptsList(temp);
@@ -90,7 +90,7 @@ const Mentions = (props) => {
   React.useEffect(() => {
     const temp = options.filter((option) => {
       return (
-        option.label.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+        option.label?.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
       );
     });
     setPromptsList(temp);

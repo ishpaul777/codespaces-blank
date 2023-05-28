@@ -1,34 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-// import FactlyLogo from "../../assets/icons/factlyLogo.jsx";
 import { SSE } from "sse.js";
-import {
-  MdOutlineClearAll,
-  // MdOutlineCreateNewFolder,
-  MdKeyboardBackspace,
-} from "react-icons/md";
-
-// import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
-// import { BiChevronLeft } from "react-icons/bi";
+import { MdOutlineClearAll, MdKeyboardBackspace } from "react-icons/md";
 
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 
-// import { HiPlus } from "react-icons/hi";
-// import { FaRobot } from "react-icons/fa";
-// import {
-//   AiOutlineEdit,
-//   AiOutlineDelete,
-//   AiOutlineCheck,
-//   AiOutlineClose,
-// } from "react-icons/ai";
-// import { IoMdSettings } from "react-icons/io";
-
-// import { BiMessageDetail } from "react-icons/bi";
 import sendButton from "../../assets/icons/send-button.svg";
-// import { BeatLoader, ClipLoader } from "react-spinners";
-// import ReactMarkdown from "react-markdown";
-// import rehypeMathjax from "rehype-mathjax";
-// import remarkGfm from "remark-gfm";
-// import remarkMath from "remark-math";
 import {
   deleteChatByID,
   getChatHistoryByUserID,
@@ -195,7 +171,7 @@ export default function ChatPage() {
 
     setChatCount(0);
 
-    getChatHistoryByUserID(1, paginationChatHistory)
+    getChatHistoryByUserID(paginationChatHistory)
       .then((data) => {
         setChatHistory(data.chats);
       })
@@ -356,7 +332,7 @@ export default function ChatPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       // get the chat history of the user
-      getChatHistoryByUserID(1, paginationChatHistory)
+      getChatHistoryByUserID(paginationChatHistory)
         .then((data) => {
           setChatHistory(data.chats);
         })
@@ -388,7 +364,7 @@ export default function ChatPage() {
       .then((response) => {
         successToast(response.message);
         setDeleteChatHistoryIndex(null);
-        getChatHistoryByUserID(1, paginationChatHistory)
+        getChatHistoryByUserID(paginationChatHistory)
           .then((data) => {
             setChatHistory(data.chats);
           })
@@ -424,6 +400,7 @@ export default function ChatPage() {
         handleHistoryDeleteClick={handleHistoryDeleteClick}
         chatCount={chatCount}
         chatOptionsList={chatOptionsList}
+        isFolderVisible={false}
       />
 
       {/* chat */}

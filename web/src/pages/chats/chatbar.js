@@ -98,7 +98,7 @@ export default function ChatBar({
                 <SelectTemperature
                   label={"Conversation Style"}
                   onChange={(e) => {
-                    setTemperature(e.target.value);
+                    setTemperature(parseFloat(e.target.value));
                   }}
                   value={temperature}
                 />
@@ -106,15 +106,15 @@ export default function ChatBar({
             </div>
           </>
         ) : (
-          <div className={`sticky top-0 w-full mb-1 z-40 pt-4 bg-body`}>
+          <div className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}>
             {/* chat header */}
             {/* <BiChevronLeft size={28} /> */}
-            <span className="text-lg font-bold">
+            {/* <span className="text-lg font-bold">
               {chatTitle.length < 60
                 ? chatTitle
                 : `${chatTitle?.slice(0, 60) + "..."}
                         `}
-            </span>
+            </span> */}
             <div
               className={`border-none bg-body w-full px-4 py-2 gap-4 flex justify-between`}
             >
@@ -167,6 +167,7 @@ export default function ChatBar({
                       }}
                       placeholder={"select model"}
                       initialValue={model}
+                      disabled={true}
                     ></Select>
                     <Input
                       initialValue={initialPrompt}
@@ -175,12 +176,10 @@ export default function ChatBar({
                         setIntialPrompt(e.target.value);
                       }}
                       placeholder={"Enter your system prompt"}
+                      disabled={true}
                     ></Input>
                     <SelectTemperature
                       label={"Conversation Style"}
-                      onChange={(e) => {
-                        setTemperature(e.target.value);
-                      }}
                       value={temperature}
                     />
                   </div>
