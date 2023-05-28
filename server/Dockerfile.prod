@@ -1,0 +1,11 @@
+# Start fresh from a smaller image
+FROM alpine:3.16
+RUN apk add ca-certificates
+
+RUN apk add gcc musl-dev
+WORKDIR /app
+COPY tagore-server .
+
+# Run the binary program produced by `go install`
+ENTRYPOINT ["/app/tagore-server"]
+CMD ["serve"]
