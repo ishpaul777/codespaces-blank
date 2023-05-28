@@ -1,0 +1,58 @@
+name: Web CI
+on:
+  pull_request:
+    branches: [develop, main]
+    paths: 
+    - 'web/**'
+  push:
+    branches: [develop, main]
+    paths: 
+    - 'web/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./web
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Cache node-modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Use NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: npm ci
+        working-directory: ${{env.working-directory}}
+      - run: npm run format:check
+        working-directory: ${{env.working-directory}}
+      # - run: npm run test:coverage
+      #   working-directory: ${{env.working-directory}}
+      #   env:
+      #     CI: true
+      # - name: Upload Test Coverage
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: code-coverage
+      #     path: coverage
+      # - run: sed -i 's|SF:/home/runner/work/tagore-web/tagore-web/|SF:|g' coverage/lcov.info
+      #   working-directory: ${{env.working-directory}}
+      # - name: Analyze with SonarCloud
+      #   uses: sonarsource/sonarcloud-github-action@main
+      #   with:
+      #     projectBaseDir: ${{env.working-directory}}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Create a Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

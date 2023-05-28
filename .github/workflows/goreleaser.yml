@@ -1,0 +1,44 @@
+name: Release CI
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Use Go
+        uses: actions/setup-go@v4
+        id: setup_go
+        with:
+          go-version: "1.19"
+      - name: Cache go-modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/735814365928/locations/global/workloadIdentityPools/ga-google-artifact-registry/providers/github
+          service_account: ga-google-artifact-registry@factly-prod.iam.gserviceaccount.com
+          access_token_lifetime: 1800s          
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v2
+        with:
+          registry: asia-south1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}      
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

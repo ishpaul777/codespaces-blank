@@ -1,0 +1,44 @@
+project_name: tagore
+
+builds:
+- id: tagore-server
+  dir: server
+  binary: tagore-server
+  env:
+  - CGO_ENABLED=0
+  - GO386=softfloat
+  goos:
+  - linux
+
+archives:
+  - id: tagore-server
+    builds:
+      - tagore-server 
+    name_template: "tagore-server_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+dockers:
+- dockerfile: server/Dockerfile.prod
+  image_templates:
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Tag }}"
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest"
+
+  use: docker
+  build_flag_templates:
+  - "--platform=linux/amd64"
+
+docker_manifests:
+  - 
+    image_templates:
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Version }}"
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest"
+
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
