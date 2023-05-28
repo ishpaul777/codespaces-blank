@@ -41,7 +41,7 @@ func (config Config) LoadConfig() (*Config, error) {
 	log.Println("loading configuration for tagore server")
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
-	viper.SetEnvPrefix("kavach")
+	viper.SetEnvPrefix("tagore")
 	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()
