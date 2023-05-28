@@ -10,11 +10,10 @@ import { useSelector } from "react-redux";
 function PromptInput(props) {
   const { value, onChange, placeholder, onEnter } = props;
   const prompts = useSelector((state) => state.prompts);
-
-  const options = prompts.map((prompt) => {
+  const options = prompts?.map((prompt) => {
     return {
-      value: prompt.content,
-      label: prompt.name,
+      value: prompt.prompt,
+      label: prompt.title,
     };
   });
   const [isSelectingPrompt, setIsSelectingPrompt] = React.useState(false);

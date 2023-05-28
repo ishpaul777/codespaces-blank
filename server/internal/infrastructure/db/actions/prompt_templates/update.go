@@ -17,6 +17,7 @@ func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemp
 		}
 	}
 
+
 	updateMap := map[string]interface{}{}
 
 	if title != "" {

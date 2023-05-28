@@ -2,7 +2,13 @@ import "../../index.css";
 import { BiChevronDown } from "react-icons/bi";
 import React, { useState } from "react";
 
-export function Select({ label, onChange, initialValue, placeholder }) {
+export function Select({
+  label,
+  onChange,
+  initialValue,
+  placeholder,
+  disabled,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(
     initialValue.toUpperCase()
@@ -29,7 +35,7 @@ export function Select({ label, onChange, initialValue, placeholder }) {
           {selectedValue ? selectedValue.toUpperCase() : placeholder}
           <BiChevronDown className="inline-block ml-2" />
         </button>
-        {isOpen && (
+        {isOpen && !disabled && (
           <div className="absolute top-full left-0 w-full bg-white border border-[#CED0D4] rounded-md z-10 outline-none">
             <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
@@ -49,6 +55,38 @@ export function Select({ label, onChange, initialValue, placeholder }) {
             >
               GPT-4
             </button>
+            {/* <button
+              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
+                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
+              }`}
+              onClick={() => handleOptionClick("claude-v1.3")}
+            >
+              Claude-v1.3
+            </button>
+            <button
+              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
+                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
+              }`}
+              onClick={() => handleOptionClick("claude-v1.2")}
+            >
+              Claude-v1.2
+            </button>
+            <button
+              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
+                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
+              }`}
+              onClick={() => handleOptionClick("claude-v1.3-100k")}
+            >
+              Claude-v1.3-100k
+            </button>
+            <button
+              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
+                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
+              }`}
+              onClick={() => handleOptionClick("claude-instant-v1")}
+            >
+              Claude-instant-v1
+            </button> */}
           </div>
         )}
       </div>

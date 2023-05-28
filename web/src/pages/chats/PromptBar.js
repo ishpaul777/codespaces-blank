@@ -4,8 +4,9 @@
 // after clicking the button, modal will pop up and ask the user to enter a prompt name, description, and main text --- DONE
 // user can name use {{}} to create a variable that user can fill in later when they are creating a story --- DONE
 // later when prompt seleted by user will be asked to fill the empty variables
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
+import { errorToast, successToast } from "../../util/toasts";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import {
   AiOutlineCheck,
@@ -16,11 +17,18 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createPrompt,
   deletePrompt,
+  getAllPrompts,
   updatePrompt,
 } from "../../redux/actions/promptsActions";
 import { HiPlus } from "react-icons/hi";
 import { ToastContainer } from "react-toastify";
 import { BiBulb } from "react-icons/bi";
+import {
+  createPromptTemplate,
+  deletePromptTemplate,
+  getAllPromptTemplates,
+  updatePromptTemplate,
+} from "../../actions/prompts";
 
 function PromptBar({ open }) {
   const styles = {
@@ -30,11 +38,22 @@ function PromptBar({ open }) {
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [updatePromptIndex, setUpdatePromptIndex] = useState(null);
-  const [showerror, setShowerror] = useState(false);
+  const [showerror, setShowerror] = useState({
+    title: false,
+    description: false,
+    prompt: false,
+  });
+
+  const [pagination, setPagination] = useState({
+    limit: 12,
+    page: 1,
+    search_query: "",
+  });
+
   const [promptValues, setPromptValues] = useState({
-    name: "",
+    title: "",
     description: "",
-    content: "",
+    prompt: "",
   });
   const [deletePromptIndex, setDeletePromptIndex] = useState(null);
   const dispatch = useDispatch();
@@ -45,35 +64,105 @@ function PromptBar({ open }) {
       [name]: value,
     }));
   }
+
   function handleFormSubmit(values) {
-    if (!values.name || values.name === "") {
-      return setShowerror(true);
+    var error = false;
+    if (!values.title || values.title === "") {
+      setShowerror((prevValues) => ({ ...prevValues, title: true }));
+      error = true;
     }
 
-    dispatch(createPrompt({ ...values, id: prompts.length + 1 }));
-    setShowModal(false);
-    setPromptValues({ name: "", description: "", content: "" });
-    setShowerror(false);
+    if (!values.prompt || values.prompt === "") {
+      setShowerror((prevValues) => ({ ...prevValues, prompt: true }));
+      error = true;
+    }
+
+    if (!values.description || values.description === "") {
+      setShowerror((prevValues) => ({ ...prevValues, description: true }));
+      error = true;
+    }
+
+    if (error) return;
+
+    createPromptTemplate(values)
+      .then((data) => {
+        getAllPromptTemplates(pagination)
+          .then((data) => {
+            dispatch(getAllPrompts(data?.prompt_templates));
+            setPromptCount(data?.count);
+          })
+          .catch((error) => {
+            errorToast(error.message);
+          });
+        setShowModal(false);
+        setPromptValues({ title: "", description: "", content: "" });
+        setShowerror(false);
+      })
+      .catch((error) => {
+        errorToast(error.message);
+      });
   }
+
+  useEffect(() => {
+    getAllPromptTemplates(pagination)
+      .then((data) => {
+        dispatch(getAllPrompts(data?.prompt_templates));
+        setPromptCount(data?.count);
+      })
+      .catch((error) => {
+        errorToast(error.message);
+      });
+  }, [pagination]);
+
   function handleDeletePrompt(index) {
-    setDeletePromptIndex(index);
-    dispatch(deletePrompt(deletePromptIndex));
-    setDeletePromptIndex(null);
+    deletePromptTemplate(index)
+      .then(() => {
+        dispatch(deletePrompt(deletePromptIndex));
+        setDeletePromptIndex(null);
+        successToast("Prompt template deleted successfully");
+      })
+      .catch((error) => {
+        errorToast(error.message);
+      });
   }
 
   const prompts = useSelector((state) => state.prompts);
-  const [filteredPrompts, setFilteredPrompts] = useState(null);
+
+  const [promptCount, setPromptCount] = useState(0);
 
   const handleUpdateFormSubmit = (values) => {
-    if (values.name === "") {
-      return setShowerror(true);
+    var error = false;
+    if (!values.title || values.title === "") {
+      setShowerror((prevValues) => ({ ...prevValues, title: true }));
+      error = true;
     }
 
-    dispatch(updatePrompt({ ...values, id: updatePromptIndex }));
-    setShowUpdateModal(false);
-    setUpdatePromptIndex(null);
-    setPromptValues({ name: "", description: "", content: "" });
-    setShowerror(false);
+    if (!values.prompt || values.prompt === "") {
+      setShowerror((prevValues) => ({ ...prevValues, prompt: true }));
+      error = true;
+    }
+
+    if (!values.description || values.description === "") {
+      setShowerror((prevValues) => ({ ...prevValues, description: true }));
+      error = true;
+    }
+
+    if (error) return;
+
+    updatePromptTemplate({ ...values, id: updatePromptIndex }).then(() => {
+      setShowUpdateModal(false);
+      setUpdatePromptIndex(null);
+      setPromptValues({ title: "", description: "", content: "" });
+      setShowerror(false);
+      getAllPromptTemplates(pagination)
+        .then((data) => {
+          dispatch(getAllPrompts(data?.prompt_templates));
+          setPromptCount(data?.count);
+        })
+        .catch((error) => {
+          errorToast(error.message);
+        });
+    });
   };
 
   const renderPrompt = (prompt, index) => (
@@ -88,7 +177,7 @@ function PromptBar({ open }) {
     >
       <div className="flex justify-start gap-4 items-center">
         <BiBulb size={styles.iconSize} />
-        <h3 className="text-lg">{prompt.name}</h3>
+        <h3 className="text-lg">{prompt.title}</h3>
       </div>
       <div className="flex justify-end gap-2 items-center">
         {deletePromptIndex === prompt.id ? (
@@ -122,12 +211,10 @@ function PromptBar({ open }) {
   );
 
   const handlePromptSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-
-    const filtered = prompts.filter((prompt) => {
-      return prompt.name.toLowerCase().includes(value);
-    });
-    setFilteredPrompts(filtered);
+    setPagination((prevValues) => ({
+      ...prevValues,
+      search_query: e.target.value,
+    }));
   };
 
   return (
@@ -141,16 +228,24 @@ function PromptBar({ open }) {
           className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${
             !open ? "d-none" : "flex"
           } `}
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setShowModal(true);
+            setPromptValues({
+              title: "",
+              description: "",
+              prompt: "",
+            });
+          }}
         >
           <HiPlus size={styles.iconSize} />
           <span className="text-lg">New Prompt</span>
         </button>
-        <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
+        {/* <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
           <MdOutlineCreateNewFolder size={styles.fileIconSize} />
           {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
-          <ToastContainer />
-        </button>
+
+        {/* </button> */}
+        <ToastContainer />
       </div>
 
       {/* create modal */}
@@ -164,7 +259,7 @@ function PromptBar({ open }) {
         onCancel={() => {
           setShowerror(false);
           setShowModal(false);
-          setPromptValues({ name: "", description: "", content: "" });
+          setPromptValues({ title: "", description: "", content: "" });
         }}
       >
         <ModalContent
@@ -185,7 +280,7 @@ function PromptBar({ open }) {
           setShowUpdateModal(false);
           setShowerror(false);
           setUpdatePromptIndex(null);
-          setPromptValues({ name: "", description: "", content: "" });
+          setPromptValues({ title: "", description: "", content: "" });
         }}
       >
         <ModalContent
@@ -207,11 +302,41 @@ function PromptBar({ open }) {
       </div>
       <ul
         className={`overflow-y-auto  ${!open && "d-none"}  mt-3`}
-        style={{ maxHeight: "67vh" }}
+        style={{ maxHeight: "70vh" }}
       >
-        {filteredPrompts && filteredPrompts !== []
-          ? filteredPrompts.map((prompt, index) => renderPrompt(prompt, index))
-          : prompts.map((prompt, index) => renderPrompt(prompt, index))}
+        {prompts?.map((prompt, index) => renderPrompt(prompt, index))}
+        <div
+          className={`flex ${
+            pagination.page === 1 ? "flex-row-reverse" : "flex-row"
+          } ${
+            pagination.offset !== 0 &&
+            promptCount > pagination.limit &&
+            "justify-between"
+          } p-2 text-base cursor-pointer mt-4`}
+        >
+          {pagination.page > 1 && (
+            <span
+              onClick={() => {
+                setPagination((prevPage) => {
+                  return { ...prevPage, page: prevPage.page - 1 };
+                });
+              }}
+            >
+              Previous
+            </span>
+          )}
+          {promptCount > pagination.limit && (
+            <span
+              onClick={() =>
+                setPagination((prevPage) => {
+                  return { ...prevPage, page: prevPage.page + 1 };
+                })
+              }
+            >
+              Next
+            </span>
+          )}
+        </div>
       </ul>
     </>
   );
@@ -223,21 +348,21 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
   return (
     <form className="flex flex-col w-full gap-4">
       <div className="flex flex-col w-ful gap-2">
-        <label className="font-medium text-gray-700 text-base">Name</label>
+        <label className="font-medium text-gray-700 text-base">Title</label>
         <input
           placeholder="Name of the prompt"
           className="p-2 border border-[#CED0D4] rounded-md bg-transparent"
           type="input"
-          name="name"
-          value={promptValues.name}
+          name="title"
+          value={promptValues.title}
           onChange={handleValueChange}
         />
         <p
           className={`mt-1 ${
-            showerror ? "block" : "d-none"
+            showerror.title ? "block" : "d-none"
           } text-pink-600 text-sm`}
         >
-          Please provide a name for prompt.
+          Please provide a title for prompt.
         </p>
       </div>
       <div className="flex flex-col w-ful gap-2">
@@ -252,17 +377,31 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
           rows={4}
           onChange={handleValueChange}
         />
+        <p
+          className={`mt-1 ${
+            showerror.description ? "block" : "d-none"
+          } text-pink-600 text-sm`}
+        >
+          Please provide a description for prompt.
+        </p>
       </div>
       <div className="flex flex-col w-ful gap-2">
         <label className="font-medium text-gray-700 text-base">Prompt</label>
         <textarea
           placeholder="Prompt content. Use {{}} to denote a variable. Ex: {{name}} is a {{adjective}} {{noun}}"
-          name={"content"}
+          name={"prompt"}
           className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
-          value={promptValues.content}
+          value={promptValues.prompt}
           rows={10}
           onChange={handleValueChange}
         />
+        <p
+          className={`mt-1 ${
+            showerror.prompt ? "block" : "d-none"
+          } text-pink-600 text-sm`}
+        >
+          Please provide a template for prompt.
+        </p>
       </div>
     </form>
   );

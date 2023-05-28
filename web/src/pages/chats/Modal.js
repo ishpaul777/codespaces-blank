@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 function Modal(props) {
-  const [isOpen, setIsOpen] = useState(props.visible);
-
   const handleOk = () => {
     props.onOk();
-    setIsOpen(false);
   };
 
   const handleCancel = () => {
     props.onCancel();
-    setIsOpen(false);
   };
   const overlayClasses =
     "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
