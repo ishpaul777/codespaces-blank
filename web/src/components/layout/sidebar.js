@@ -37,11 +37,6 @@ export function Sidebar() {
       linkTo: "/images",
     },
     {
-      name: "Templates",
-      icon: Templates,
-      linkTo: "/",
-    },
-    {
       name: "Personas",
       icon: Templates,
       linkTo: "/personas",
