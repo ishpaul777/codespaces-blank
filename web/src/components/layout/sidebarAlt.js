@@ -1,19 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import ArrowLeft from "../../assets/icons/arrow-left.svg";
-import ArrowWithTail from "../../assets/icons/arrow-with-tail.svg";
 import Arrow from "../../assets/icons/arrow.svg";
-import Bookmark from "../../assets/icons/bookmark.svg";
-import Chat from "../../assets/icons/chat.svg";
 import Documents from "../../assets/icons/documents.svg";
 import Home from "../../assets/icons/home.svg";
-import History from "../../assets/icons/history.svg";
 import Images from "../../assets/icons/images.svg";
 import Logout from "../../assets/icons/logout.svg";
-import Profile from "../../assets/icons/profile.svg";
-import Templates from "../../assets/icons/templates.svg";
-import Usage from "../../assets/icons/usage.svg";
-import ArrowLeftIOS from "../../assets/icons/ArrowLeftIOS.svg";
+
 // import FactlyLogo from '../../assets/factly-logo.svg';
 
 export function SidebarAlt() {
