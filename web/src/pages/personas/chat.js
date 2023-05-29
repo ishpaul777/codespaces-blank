@@ -26,6 +26,8 @@ import {
 } from "../../actions/persona";
 import { errorToast, successToast } from "../../util/toasts";
 import CentralLoading from "../../components/loader/centralLoading";
+import { GrStop } from "react-icons/gr";
+import { IoReloadOutline } from "react-icons/io5";
 export const PersonaChat = () => {
   const navigate = useNavigate();
   // constants for styling the chat page
@@ -98,6 +100,8 @@ export const PersonaChat = () => {
     useEffect(() => elementRef.current.scrollIntoView({ behavior: "smooth" }));
     return <div ref={elementRef} />;
   };
+
+  // const sseClient = new SSE(process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`);
 
   // handleHistoryDeleteClick makes the the checked and close buttons visible by
   // setting the deleteChatHistoryIndex to the index of the chat in the chatHistory array
@@ -271,6 +275,7 @@ export const PersonaChat = () => {
     source.stream();
   };
 
+
   const handleEdit = (messages, index) => {
     setChatLoading(true);
     messages[index].content = isEditing.value;
@@ -356,6 +361,53 @@ export const PersonaChat = () => {
     }
   }, [isEditing.status]);
 
+
+  const handleRegenerate = () => {    
+    let newMessages = chat.slice(0, chat.length - 1);
+    setChatLoading(true);
+    setChat(newMessages)
+
+    var requestBody = {
+      messages: newMessages,
+      additional_instructions:
+        "The response should be in markdown format(IMPORTANT).",
+      stream: stream,
+      id: chatID,
+    };
+
+    var source = new SSE(
+      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      {
+        payload: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+      
+    source.addEventListener("message", (event) => {
+      let chatObject = JSON.parse(event.data);
+      setChat(chatObject?.messages);
+      setChatID(chatObject?.id);
+    });
+
+    source.addEventListener("error", (event) => {
+      setIsEditing({ status: false, id: null });
+      source.close();
+      setChatLoading(false);
+      if (!String(event.data).includes("[DONE]")) {
+        return;
+      }
+    });
+
+    source.stream();
+
+  };
+
+  const handleStop = () => {
+    console.log(chat)
+  }
   return (
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
       {loading ? (
@@ -554,8 +606,19 @@ export const PersonaChat = () => {
               )}
             </div>
             {/* chat input container */}
-            <div className="py-4 w-full flex justify-center items-center">
-              {/* input division */}
+            <div className="py-4 w-full flex flex-col gap-4 justify-center items-center">
+              {/* {chatLoading && (
+                <button className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2" onClick={handleStop}>
+                  <GrStop color="#000" size={"16px"} />
+                  Stop Generating
+                </button>
+              )} */}
+              {(!chatLoading && chat?.length >= 2) && (
+                <button className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2" onClick={handleRegenerate}>
+                  <IoReloadOutline color="#000" size={"16px"} />
+                  Regenerate Response
+                </button>
+              )}
               <div
                 className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
               >
