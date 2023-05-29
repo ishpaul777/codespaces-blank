@@ -21,7 +21,7 @@ type Persona struct {
 	Visibility  VISIBILITY `gorm:"column:visibility" json:"visibility"`
 	Provider    string     `gorm:"column:provider" json:"provider"`
 	Model       string     `gorm:"column:model;" json:"model"`
-	IsDefault   bool       `gorm:"column:is_default" json:"is_default"`
+	IsDefault   bool       `gorm:"column:is_default; default false" json:"is_default"`
 }
 
 func ValidateVisibility(v VISIBILITY) bool {

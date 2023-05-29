@@ -18,6 +18,7 @@ type updateRequest struct {
 	Avatar      string             `json:"avatar,omitempty"`
 	Visibility  *models.VISIBILITY `json:"visibility,omitempty"`
 	Model       string             `json:"model,omitempty"`
+	IsDefault   *bool              `json:"is_default,omitempty"`
 }
 
 func (h *httpHandler) update(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +45,7 @@ func (h *httpHandler) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatePersona, err := h.personaService.UpdatePersonaByID(userID, uint(personaID), updateReq.Name, updateReq.Description, updateReq.Prompt, updateReq.Avatar, updateReq.Model, updateReq.Visibility)
+	updatePersona, err := h.personaService.UpdatePersonaByID(userID, uint(personaID), updateReq.Name, updateReq.Description, updateReq.Prompt, updateReq.Avatar, updateReq.Model, updateReq.Visibility, updateReq.IsDefault)
 	if err != nil {
 
 		h.logger.Error("error updating document by id", "error", err.Error())

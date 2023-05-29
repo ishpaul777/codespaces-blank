@@ -3,19 +3,12 @@ package persona
 import (
 	"net/http"
 
-	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
 )
 
-type responseGetAllPeersonas struct {
-	Count   uint             `json:"count"`
-	Pesonas []models.Persona `json:"personas"`
-	Message string           `json:"message"`
-}
-
-func (h *httpHandler) list(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) default_(w http.ResponseWriter, r *http.Request) {
 	userID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())
@@ -30,17 +23,15 @@ func (h *httpHandler) list(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pagination.Queries = map[string]string{"visibility": helper.GetQueryParamByName(r, "visibility")}
-
 	response := &responseGetAllPeersonas{}
 
-	response.Pesonas, response.Count, err = h.personaService.GetAllPersonas(userID, *pagination)
+	response.Pesonas, response.Count, err = h.personaService.GetAllDefaultPersonas(userID, *pagination)
 	if err != nil {
 		h.logger.Error("error getting all personas", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}
 
-	response.Message = "Personas fetched successfully"
+	response.Message = "Default Personas fetched successfully"
 	renderx.JSON(w, http.StatusOK, response)
 }
