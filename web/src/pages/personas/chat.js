@@ -47,6 +47,8 @@ export const PersonaChat = () => {
   const [isMobileScreen, setIsMobileScreen] = useState(false);
 
   const [loading, setLoading] = useState(true);
+
+  const [chatLoading, setChatLoading] = useState(false);
   const [chatSiderCollapse, setChatSiderCollapse] = useState(
     isMobileScreen ? true : false
   );
@@ -218,7 +220,7 @@ export const PersonaChat = () => {
       setCurrentPrompt(currentPrompt + "\n");
       return;
     }
-    setLoading(true);
+    setChatLoading(true);
     let currentMessage = {
       role: "user",
       content: currentPrompt,
@@ -260,7 +262,7 @@ export const PersonaChat = () => {
     source.addEventListener("error", (event) => {
       setIsEditing({ status: false, id: null });
       source.close();
-      setLoading(false);
+      setChatLoading(false);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -270,7 +272,7 @@ export const PersonaChat = () => {
   };
 
   const handleEdit = (messages, index) => {
-    setLoading(true);
+    setChatLoading(true);
     messages[index].content = isEditing.value;
     setChat(messages);
     var requestBody = {
@@ -301,7 +303,7 @@ export const PersonaChat = () => {
     source.addEventListener("error", (event) => {
       setIsEditing({ status: false, id: null });
       source.close();
-      setLoading(false);
+      setChatLoading(false);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -544,7 +546,7 @@ export const PersonaChat = () => {
                     </div>
                   );
                 })}
-              {loading && (
+              {chatLoading && (
                 <div className="flex justify-center mt-4">
                   <AlwaysScrollToBottom />
                   <BeatLoader size={styles.iconSize} color={"#CED0D4"} />
@@ -573,7 +575,7 @@ export const PersonaChat = () => {
                         : () => handleChatSubmit()
                     }
                   >
-                    {!loading ? (
+                    {!chatLoading ? (
                       <img src={sendButton} />
                     ) : (
                       <ClipLoader size={20} color={"#000"} />
