@@ -24,7 +24,11 @@ export default function ImagePage() {
     n: 8,
     provider: "stableDiffusion",
   });
-
+ 
+  const handleRangeChange = (event) => {
+    setImageRequest((prev) => ({ ...prev, n: Number(event.target.value) }));
+  };
+  
   const onMouseIn = (index) => {
     setImages(
       images.map((image, i) => {
@@ -219,22 +223,18 @@ export default function ImagePage() {
           <span>to generate variations</span>
         </div>
         <div className="mr-4 flex gap-2">
-          {/* <select
-            name="Image Counter"
-            className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
-          >
-            <option value="" default selected className="hidden">
-              Image Count
-            </option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-          </select> */}
+        <div  className="flex flex-row items-center space-x-2">
+        <label className="text-gray-600">Image Count :</label>
+      <input
+        type="range"
+        min={1}
+        max={8}
+        value={imageRequest.n}
+        onChange={handleRangeChange}
+        className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
+      />
+      <span className="text-gray-600">{imageRequest.n}</span>
+    </div>
           <select
             name="provider"
             className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
