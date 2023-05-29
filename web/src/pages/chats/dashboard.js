@@ -459,7 +459,7 @@ export default function ChatPage() {
         handleHistoryDeleteClick={handleHistoryDeleteClick}
         chatCount={chatCount}
         chatOptionsList={chatOptionsList}
-        isFolderVisible={false}
+        isFolderVisible={true}
       />
 
       {/* chat */}
