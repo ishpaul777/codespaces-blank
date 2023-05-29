@@ -86,3 +86,19 @@ export async function createPersona(requestBody) {
     }
   });
 }
+
+// getPersonaByID fetches the persona from the server using its ID
+// parameters: personaID
+export async function getPersonaByID(personaID) {
+  return fetch(`${PERSONA_API}/${personaID}`, {
+    credentials: "include",
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return response.json().then((data) => {
+        throw Error(data.errors?.[0].message);
+      });
+    }
+  });
+}

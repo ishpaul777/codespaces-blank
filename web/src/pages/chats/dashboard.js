@@ -428,7 +428,7 @@ export default function ChatPage() {
           setChat(data?.messages);
         })
         .catch((err) => {
-          errorToast(err)
+          errorToast(err);
         })
         .finally(() => {
           setLoading(false);
