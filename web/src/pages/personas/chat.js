@@ -152,7 +152,7 @@ export const PersonaChat = () => {
         setChatCount(res.count);
       })
       .catch((err) => {
-        console.log(err);
+        errorToast(err);
       });
   }, [paginationChatHistory]);
 

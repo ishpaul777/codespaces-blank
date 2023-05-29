@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 
@@ -195,14 +194,7 @@ func (o *OpenAIAdapter) GenerateVariation(model string, image *os.File, nOfImage
 	return generatedImages, nil
 }
 
-func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, chat models.Chat, chatRepo repositories.ChatRepository) (*models.Chat, error) {
-	messages := make([]models.Message, 0)
-
-	err := json.Unmarshal([]byte(chat.Messages), &messages)
-	if err != nil {
-		return nil, err
-	}
-
+func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, *models.Usage, error) {
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
 	for _, message := range messages {
 		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
@@ -210,8 +202,6 @@ func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, chat
 			Content: message.Content,
 		})
 	}
-
-	// messages := make([]openai.ChatCompletionMessage, 0)
 
 	req := openai.ChatCompletionRequest{
 		Model:       model,
@@ -222,7 +212,7 @@ func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, chat
 	ctx := context.Background()
 	response, err := o.Client.CreateChatCompletion(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	latestMessage := models.Message{}
@@ -231,34 +221,14 @@ func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, chat
 	latestMessage.Content = response.Choices[0].Message.Content
 	messages = append(messages, latestMessage)
 
-	chat.Messages, err = json.Marshal(messages)
-
-	if err != nil {
-		return nil, err
-	}
-
-	updatedChat, err := chatRepo.SaveChat(chat.CreatedByID, &chat.ID, model, messages, models.Usage{
-		PromptTokens:     response.Usage.PromptTokens,
-		CompletionTokens: response.Usage.CompletionTokens,
-		TotalTokens:      response.Usage.TotalTokens,
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedChat, nil
+	return messages, &models.Usage{
+		TotalTokens:      0,
+		CompletionTokens: 0,
+		PromptTokens:     0,
+	}, nil
 }
 
-func (o *OpenAIAdapter) GenerateStreamingResponse(model string, temperature float32, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
-	messages := make([]models.Message, 0)
-
-	err := json.Unmarshal([]byte(chat.Messages), &messages)
-	if err != nil {
-		errChan <- err
-		return
-	}
-
+func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
 	for _, message := range messages {
 		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
@@ -266,8 +236,6 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(model string, temperature floa
 			Content: message.Content,
 		})
 	}
-
-	// messages := make([]openai.ChatCompletionMessage, 0)
 
 	req := openai.ChatCompletionRequest{
 		Model:       model,
@@ -287,14 +255,25 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(model string, temperature floa
 	latestMessage.Role = "assistant"
 
 	messages = append(messages, latestMessage)
+
+	// chat is the chat object which will be streamed
+	chat := &models.Chat{}
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
-			_, dbErr := chatRepo.SaveChat(chat.CreatedByID, &chat.ID, model, messages, models.Usage{})
+			// fullChatData is the the chat object with all the details
+			var dbErr error
+			chat, dbErr = chatRepo.SaveChat(userID, chatID, model, messages, models.Usage{})
 			if dbErr != nil {
 				errChan <- dbErr
 				return
 			}
+			byteStream, err := json.Marshal(chat)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			dataChan <- string(byteStream)
 		}
 
 		if err != nil {
@@ -304,7 +283,7 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(model string, temperature floa
 
 		messages[len(messages)-1].Content += response.Choices[0].Delta.Content
 
-		msgStream, err := helper.ConvertToJSONB(messages[1:])
+		msgStream, err := helper.ConvertToJSONB(messages)
 		if err != nil {
 			errChan <- err
 			return
@@ -323,7 +302,6 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(model string, temperature floa
 }
 
 func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {
-	fmt.Println(messages)
 	const temperature = 0.9
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
 	for _, message := range messages {

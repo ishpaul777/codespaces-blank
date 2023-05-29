@@ -7,20 +7,21 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
 )
 
 type chatRequestBody struct {
-	Prompt                 string  `json:"prompt"`
-	Model                  string  `json:"model"`
-	ChatID                 *uint   `json:"id"`
-	Provider               string  `json:"provider"`
-	Temperature            float32 `json:"temperature"`
-	SystemPrompt           string  `json:"system_prompt"`
-	AdditionalInstructions string  `json:"additional_instructions"`
-	Stream                 bool    `json:"stream"`
+	Messages               []models.Message `json:"messages"`
+	Model                  string           `json:"model"`
+	ChatID                 *uint            `json:"id"`
+	Provider               string           `json:"provider"`
+	Temperature            float32          `json:"temperature"`
+	SystemPrompt           string           `json:"system_prompt"`
+	AdditionalInstructions string           `json:"additional_instructions"`
+	Stream                 bool             `json:"stream"`
 }
 
 func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +63,7 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 			errChan = nil
 		}()
 
-		go h.chatService.GenerateStreamingResponse(userID, requestBody.ChatID, requestBody.Provider, requestBody.Model, requestBody.Temperature, requestBody.SystemPrompt, requestBody.AdditionalInstructions, requestBody.Prompt, msgChan, errChan)
+		go h.chatService.GenerateStreamingResponse(userID, requestBody.ChatID, requestBody.Provider, requestBody.Model, requestBody.Temperature, requestBody.SystemPrompt, requestBody.AdditionalInstructions, requestBody.Messages, msgChan, errChan)
 
 		for {
 			select {
@@ -87,7 +88,7 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 			}
 		}
 	} else {
-		chatResponse, err := h.chatService.GenerateResponse(userID, requestBody.ChatID, requestBody.Provider, requestBody.Model, requestBody.Temperature, requestBody.SystemPrompt, requestBody.AdditionalInstructions, requestBody.Prompt)
+		chatResponse, err := h.chatService.GenerateResponse(userID, requestBody.ChatID, requestBody.Provider, requestBody.Model, requestBody.Temperature, requestBody.SystemPrompt, requestBody.AdditionalInstructions, requestBody.Messages)
 		if err != nil {
 			h.logger.Error("error while generating chat response", "error", err.Error())
 			errorx.Render(w, errorx.Parser(errorx.InternalServerError()))

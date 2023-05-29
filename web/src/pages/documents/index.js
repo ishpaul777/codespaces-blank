@@ -5,6 +5,7 @@ import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { getDocuments } from "../../actions/text";
 import moment from "moment";
+import { errorToast } from "../../util/toasts";
 export default function DocumentPage() {
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
@@ -31,7 +32,7 @@ export default function DocumentPage() {
   ];
 
   useEffect(() => {
-    getDocuments(1)
+    getDocuments()
       .then((response) => {
         setDocumentPageData({
           count: response.count,
@@ -39,7 +40,7 @@ export default function DocumentPage() {
         });
       })
       .catch((error) => {
-        console.log(error.message);
+        errorToast(error?.message);
       });
   }, []);
 
