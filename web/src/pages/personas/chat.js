@@ -101,12 +101,7 @@ export const PersonaChat = () => {
     return <div ref={elementRef} />;
   };
 
-  const sseClient = new SSE(process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-  });
+  // const sseClient = new SSE(process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`);
 
   // handleHistoryDeleteClick makes the the checked and close buttons visible by
   // setting the deleteChatHistoryIndex to the index of the chat in the chatHistory array
@@ -251,24 +246,33 @@ export const PersonaChat = () => {
       requestBody.id = chatID;
     }
 
-    sseClient.payload = JSON.stringify(requestBody);
+    var source = new SSE(
+      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      {
+        payload: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    sseClient.addEventListener("message", (event) => {
-        let chatObject = JSON.parse(event.data);
-        setChat(chatObject?.messages);
-        setChatID(chatObject?.id);
-      });
+    source.addEventListener("message", (event) => {
+      let chatObject = JSON.parse(event.data);
+      setChat(chatObject?.messages);
+      setChatID(chatObject?.id);
+    });
 
-    sseClient.addEventListener("error", (event) => {
+    source.addEventListener("error", (event) => {
       setIsEditing({ status: false, id: null });
-      sseClient.close();
+      source.close();
       setChatLoading(false);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
     });
 
-    sseClient.stream();
+    source.stream();
   };
 
 
@@ -402,10 +406,8 @@ export const PersonaChat = () => {
   };
 
   const handleStop = () => {
-    sseClient.close();
-    setChatLoading(false);
+    console.log(chat)
   }
-
   return (
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
       {loading ? (
@@ -605,12 +607,12 @@ export const PersonaChat = () => {
             </div>
             {/* chat input container */}
             <div className="py-4 w-full flex flex-col gap-4 justify-center items-center">
-              {chatLoading && (
+              {/* {chatLoading && (
                 <button className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2" onClick={handleStop}>
                   <GrStop color="#000" size={"16px"} />
                   Stop Generating
                 </button>
-              )}
+              )} */}
               {(!chatLoading && chat?.length >= 2) && (
                 <button className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2" onClick={handleRegenerate}>
                   <IoReloadOutline color="#000" size={"16px"} />
