@@ -254,6 +254,7 @@ export const PersonaChat = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       }
     );
 
@@ -296,6 +297,7 @@ export const PersonaChat = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       }
     );
 
@@ -383,6 +385,7 @@ export const PersonaChat = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       }
     );
       
