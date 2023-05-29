@@ -25,13 +25,13 @@ export default function Personas() {
     getPersona({
       page: pagination.page,
       limit: pagination.limit,
-    }).then((data) => {
-      setPersonaData(data.personas);
     })
-    .catch((err) => {
-      errorToast('Something went wrong! Please try again later.');
-    })
-    ;
+      .then((data) => {
+        setPersonaData(data.personas);
+      })
+      .catch((err) => {
+        errorToast("Something went wrong! Please try again later.");
+      });
   }, [pagination]);
 
   useEffect(() => {

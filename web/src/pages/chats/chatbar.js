@@ -45,6 +45,8 @@ export default function ChatBar({
   handleChatStream,
   handleChatSubmit,
   sendButton,
+  handleChatEdit,
+  chatID,
 }) {
   return (
     <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
@@ -221,7 +223,13 @@ export default function ChatBar({
                         style={{
                           borderBottom: "1px solid #000",
                         }}
-                        value={item.content}
+                        defaultValue={item.content}
+                        onChange={(e) => {
+                          setIsEditing({
+                            ...isEditing,
+                            value: e.target.value,
+                          });
+                        }}
                       />
                       <div className="flex justify-center items-center gap-4 mt-2">
                         <button
@@ -232,6 +240,8 @@ export default function ChatBar({
                               status: !isEditing.status,
                               id: isEditing.status ? null : index,
                             });
+
+                            handleChatEdit(chatID, chat, index);
                           }}
                         >
                           {" "}

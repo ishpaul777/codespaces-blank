@@ -1,7 +1,6 @@
 package services
 
 import (
-	"encoding/json"
 	"errors"
 
 	prompts "github.com/factly/tagore/server/internal/domain/constants/prompts"
@@ -12,12 +11,11 @@ import (
 )
 
 type ChatService interface {
-	GenerateResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions, prompt string) (*models.Chat, error)
+	GenerateResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message) (*models.Chat, error)
 	// GenerateStreamingResponse generates response for a chat in a streaming fashion
-	GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions, prompt string, dataChan chan<- string, errChan chan<- error)
 
 	// GenerateStreamingResponse generates response for a chat in a streaming fashion
-	// GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt string, messages []models.Message, dataChan chan<- string, errChan chan<- error)
+	GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error)
 
 	// GetChatHistoryByUser returns all the chats for a user
 	GetChatHistoryByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error)
@@ -49,15 +47,17 @@ func NewChatService(repository repositories.ChatRepository) ChatService {
 	}
 }
 
-func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions, prompt string) (*models.Chat, error) {
-	// if chatID is nil, it means that the chat is new and needs to be created
-	// and if there are more than one messages, it means that the chat is not new
-	// and the chatID is required
-	// getting all the previous messages for the chat
-	var err error
-	chat := &models.Chat{}
-	if chatID != nil {
+func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message) (*models.Chat, error) {
+	generativeModel := generative_model.NewChatGenerativeModel(provider)
+	err := generativeModel.LoadConfig()
+	if err != nil {
+		return nil, err
+	}
 
+	var responseMessage []models.Message
+	var usage *models.Usage
+
+	if chatID != nil {
 		isOwner, err := c.chatRepository.IsUserChatOwner(userID, *chatID)
 		if err != nil {
 			return nil, err
@@ -68,30 +68,12 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 			return nil, err
 		}
 
-		chat, err = c.chatRepository.GetChatByID(*chatID)
-		if err != nil {
-			return nil, err
-		}
-
-		newMessage := make([]models.Message, 0)
-
-		err = json.Unmarshal([]byte(chat.Messages), &newMessage)
-		if err != nil {
-			return nil, err
-		}
-
-		newMessage = append(newMessage, models.Message{
-			Content: prompt,
-			Role:    "user",
-		})
-
-		chat, err = c.chatRepository.SaveChat(userID, chatID, model, newMessage, models.Usage{})
+		responseMessage, usage, err = generativeModel.GenerateResponse(model, temperature, messages)
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		newMessage := make([]models.Message, 0)
-
 		systemMessage := models.Message{}
 
 		if systemPrompt == "" {
@@ -107,24 +89,14 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 			}
 		}
 
-		newMessage = append(newMessage, systemMessage, models.Message{
-			Content: prompt,
-			Role:    "user",
-		})
-
-		chat, err = c.chatRepository.SaveChat(userID, chatID, model, newMessage, models.Usage{})
+		newMessage = append(newMessage, systemMessage, messages[0])
+		responseMessage, usage, err = generativeModel.GenerateResponse(model, temperature, newMessage)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	generativeModel := generative_model.NewChatGenerativeModel(provider)
-	err = generativeModel.LoadConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	chat, err = generativeModel.GenerateResponse(model, temperature, *chat, c.chatRepository)
+	chat, err := c.chatRepository.SaveChat(userID, chatID, model, responseMessage, *usage)
 	if err != nil {
 		return nil, err
 	}
@@ -136,53 +108,18 @@ func (c *chatService) GetChatHistoryByUser(userID uint, pagination helper.Pagina
 	return c.chatRepository.GetAllChatsByUser(userID, pagination)
 }
 
-func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions, prompt string, dataChan chan<- string, errChan chan<- error) {
+func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error) {
+	generativeModel := generative_model.NewChatGenerativeModel(provider)
+	err := generativeModel.LoadConfig()
+	if err != nil {
+		errChan <- err
+		return
+	}
+
 	// if chatID is nil, it means that the chat is new and needs to be created
-	// and if there are more than one messages, it means that the chat is not new
-	// and the chatID is required
-	// getting all the previous messages for the chat
-	var err error
-	chat := &models.Chat{}
-	if chatID != nil {
 
-		isOwner, err := c.chatRepository.IsUserChatOwner(userID, *chatID)
-		if err != nil {
-			errChan <- err
-			return
-		}
-
-		if !isOwner {
-			errChan <- errors.New("user is not the owner of the chat")
-			return
-		}
-
-		chat, err = c.chatRepository.GetChatByID(*chatID)
-		if err != nil {
-			errChan <- err
-			return
-		}
-
+	if chatID == nil {
 		newMessage := make([]models.Message, 0)
-
-		err = json.Unmarshal([]byte(chat.Messages), &newMessage)
-		if err != nil {
-			errChan <- err
-			return
-		}
-
-		newMessage = append(newMessage, models.Message{
-			Content: prompt,
-			Role:    "user",
-		})
-
-		chat, err = c.chatRepository.SaveChat(userID, chatID, model, newMessage, models.Usage{})
-		if err != nil {
-			errChan <- err
-			return
-		}
-	} else {
-		newMessage := make([]models.Message, 0)
-
 		systemMessage := models.Message{}
 
 		if systemPrompt == "" {
@@ -198,26 +135,12 @@ func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provi
 			}
 		}
 
-		newMessage = append(newMessage, systemMessage, models.Message{
-			Content: prompt,
-			Role:    "user",
-		})
+		newMessage = append(newMessage, systemMessage, messages[0])
+		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, newMessage, dataChan, errChan, c.chatRepository)
 
-		chat, err = c.chatRepository.SaveChat(userID, chatID, model, newMessage, models.Usage{})
-		if err != nil {
-			errChan <- err
-			return
-		}
+	} else {
+		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, messages, dataChan, errChan, c.chatRepository)
 	}
-
-	generativeModel := generative_model.NewChatGenerativeModel(provider)
-	err = generativeModel.LoadConfig()
-	if err != nil {
-		errChan <- err
-		return
-	}
-
-	generativeModel.GenerateStreamingResponse(model, temperature, *chat, dataChan, errChan, c.chatRepository)
 }
 
 func (c *chatService) CreateChatCollection(userID uint, name string) (*models.ChatCollection, error) {

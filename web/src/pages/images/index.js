@@ -7,14 +7,14 @@ import {
 import { HashLoader } from "react-spinners";
 import { isURL } from "../../util/validateRegex";
 import { errorToast } from "../../util/toasts";
-import sunflowerImage from '../../assets/sunflower.png' 
-import astronautImage from '../../assets/astronaut.png'
-import brightCity from '../../assets/bright-city.png' 
-import madPanda from '../../assets/mad-panda.png'
-import handDrawnBoat from '../../assets/handrawn-boat.png'
-import foxNight from '../../assets/fox-night.png'
-import catWithHat from '../../assets/cat-with-hat.png'
-import davidWearingHeadphones from '../../assets/david-wearing-headphones.png'  
+import sunflowerImage from "../../assets/sunflower.png";
+import astronautImage from "../../assets/astronaut.png";
+import brightCity from "../../assets/bright-city.png";
+import madPanda from "../../assets/mad-panda.png";
+import handDrawnBoat from "../../assets/handrawn-boat.png";
+import foxNight from "../../assets/fox-night.png";
+import catWithHat from "../../assets/cat-with-hat.png";
+import davidWearingHeadphones from "../../assets/david-wearing-headphones.png";
 
 export default function ImagePage() {
   const fileInputRef = useRef(null);
@@ -66,12 +66,12 @@ export default function ImagePage() {
 
   const handleSearch = (imageRequest) => {
     setLoading(true);
-    getGeneratedImages(imageRequest, 1)
+    getGeneratedImages(imageRequest)
       .then((response) => {
         setImages(response?.map((image) => ({ ...image, isHover: false })));
       })
       .catch((error) => {
-        console.log(error.message);
+        errorToast(error?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -128,8 +128,7 @@ export default function ImagePage() {
     },
     {
       url: astronautImage,
-      prompt:
-        "An astronaut lounging in a tropical resort in space, vaporwave",
+      prompt: "An astronaut lounging in a tropical resort in space, vaporwave",
     },
     {
       url: catWithHat,
@@ -137,16 +136,17 @@ export default function ImagePage() {
     },
     {
       url: davidWearingHeadphones,
-      prompt: 'A photo of Michelangelo\'s sculpture of David wearing headphones djing'
+      prompt:
+        "A photo of Michelangelo's sculpture of David wearing headphones djing",
     },
     {
       url: brightCity,
-      prompt:'a pencil and watercolor drawing of a bright city in the future with flying cars',
+      prompt:
+        "a pencil and watercolor drawing of a bright city in the future with flying cars",
     },
     {
       url: handDrawnBoat,
-      prompt:
-        "A hand-drawn sailboat circled by birds on the sea at sunrise",
+      prompt: "A hand-drawn sailboat circled by birds on the sea at sunrise",
     },
     {
       url: sunflowerImage,
@@ -155,8 +155,7 @@ export default function ImagePage() {
     },
     {
       url: madPanda,
-      prompt:
-        "panda mad scientist mixing sparkling chemicals, digital art",
+      prompt: "panda mad scientist mixing sparkling chemicals, digital art",
     },
   ];
 
