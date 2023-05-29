@@ -223,7 +223,7 @@ export default function ImagePage() {
         </div>
         <div className="mr-4 flex gap-2">
         <div  className="flex flex-row items-center space-x-2">
-        <label className="text-gray-600">Image Count :</label>
+        <label className="text-gray-600">Image Count </label>
       <input
         type="range"
         min={1}
