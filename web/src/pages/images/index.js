@@ -6,8 +6,15 @@ import {
 } from "../../actions/images";
 import { HashLoader } from "react-spinners";
 import { isURL } from "../../util/validateRegex";
-
 import { errorToast } from "../../util/toasts";
+import sunflowerImage from '../../assets/sunflower.png' 
+import astronautImage from '../../assets/astronaut.png'
+import brightCity from '../../assets/bright-city.png' 
+import madPanda from '../../assets/mad-panda.png'
+import handDrawnBoat from '../../assets/handrawn-boat.png'
+import foxNight from '../../assets/fox-night.png'
+import catWithHat from '../../assets/cat-with-hat.png'
+import davidWearingHeadphones from '../../assets/david-wearing-headphones.png'  
 
 export default function ImagePage() {
   const fileInputRef = useRef(null);
@@ -116,43 +123,40 @@ export default function ImagePage() {
 
   const defaultImagePrompts = [
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt:
-        "A picturesque sunset over a calm ocean with palm trees on the beach.",
+      url: foxNight,
+      prompt: "A painting of a fox in the style of Starry Night",
     },
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      url: astronautImage,
       prompt:
-        "A snowy winter landscape with a log cabin and smoke rising from the chimney.",
+        "An astronaut lounging in a tropical resort in space, vaporwave",
     },
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt: "A colorful hot air balloon festival over a mountainous horizon.",
+      url: catWithHat,
+      prompt: "A photo of a cat with a hat on",
     },
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt:
-        "A misty morning in a dense forest with a river flowing through it.",
+      url: davidWearingHeadphones,
+      prompt: 'A photo of Michelangelo\'s sculpture of David wearing headphones djing'
     },
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
-      prompt:
-        "A medieval castle on a hilltop surrounded by colorful fields of flowers.",
+      url: brightCity,
+      prompt:'a pencil and watercolor drawing of a bright city in the future with flying cars',
     },
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      url: handDrawnBoat,
       prompt:
-        "A serene mountain lake at sunset with reflections of the surrounding landscape.",
+        "A hand-drawn sailboat circled by birds on the sea at sunrise",
     },
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      url: sunflowerImage,
       prompt:
-        "An urban cityscape at night with vibrant lights and reflections in a river.",
+        "A photograph of a sunflower with sunglasses on in the middle of the flower in a field on a bright sunny day",
     },
     {
-      url: "https://cdn.openai.com/labs/images/A%20van%20Gogh%20style%20painting%20of%20an%20American%20football%20player.webp?v=1",
+      url: madPanda,
       prompt:
-        "A field of sunflowers with a rainbow in the background on a sunny day.",
+        "panda mad scientist mixing sparkling chemicals, digital art",
     },
   ];
 
@@ -290,7 +294,7 @@ export default function ImagePage() {
                           alt="generated logos"
                           // onClick={() => downloadImage(image?.url, 'image.png')}
                           className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
-                          src={getURL(image?.url)}
+                          src={image.url}
                         ></img>
                         <div className="absolute top-0 left-0 w-full h-full flex flex-col bg-white justify-between items-start opacity-0 hover:opacity-80 cursor-pointer transition duration-300 ease-in-out">
                           <p className="text-black font-medium text-xl m-4 font-serif">
