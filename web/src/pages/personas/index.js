@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import avtarImg from "../../assets/avatar.png";
 import Pagination from "./pagination";
 import { getPersona } from "../../actions/persona";
+import { errorToast } from "../../util/toasts";
 
 export default function Personas() {
   const [tab, setTab] = useState("All");
@@ -26,7 +27,11 @@ export default function Personas() {
       limit: pagination.limit,
     }).then((data) => {
       setPersonaData(data.personas);
-    });
+    })
+    .catch((err) => {
+      errorToast('Something went wrong! Please try again later.');
+    })
+    ;
   }, [pagination]);
 
   useEffect(() => {
