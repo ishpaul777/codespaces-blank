@@ -1,9 +1,8 @@
-export const getGeneratedImages = (request, userID) => {
+export const getGeneratedImages = (request) => {
   return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/images`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-User": userID,
     },
     credentials: "include",
     body: JSON.stringify(request),

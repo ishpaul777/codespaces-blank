@@ -4,16 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io"
-	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
-	"github.com/factly/tagore/server/pkg/helper"
 )
 
 type AnthropicAdapter struct {
@@ -79,16 +75,9 @@ func validateAnthropicModel(model string) bool {
 	}
 }
 
-func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, chat models.Chat, chatRepo repositories.ChatRepository) (*models.Chat, error) {
+func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, *models.Usage, error) {
 	if !validateAnthropicModel(model) {
-		return nil, ErrIncorrectAnthropicModel
-	}
-
-	messages := make([]models.Message, 0)
-
-	err := json.Unmarshal([]byte(chat.Messages), &messages)
-	if err != nil {
-		return nil, err
+		return nil, nil, ErrIncorrectAnthropicModel
 	}
 
 	request := anthropicChatRequest{
@@ -101,20 +90,20 @@ func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, c
 
 	requestBody, err := json.Marshal(request)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	requestURL := a.API_URL + "/v1/complete"
 	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	req.Header.Add("x-api-key", a.API_KEY)
 
 	resp, err := a.Client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	defer resp.Body.Close()
@@ -122,7 +111,7 @@ func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, c
 	var response anthropicChatResponse
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	latestMessage := models.Message{
@@ -132,113 +121,107 @@ func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, c
 
 	messages = append(messages, latestMessage)
 
-	chat.Messages, err = json.Marshal(messages)
-	if err != nil {
-		return nil, err
-	}
-
-	updatedChat, err := chatRepo.SaveChat(chat.CreatedByID, &chat.ID, model, messages, models.Usage{})
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedChat, nil
+	return messages, &models.Usage{
+		TotalTokens:      0,
+		PromptTokens:     0,
+		CompletionTokens: 0,
+	}, nil
 }
 
-func (a *AnthropicAdapter) GenerateStreamingResponse(model string, temperature float32, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
-	if !validateAnthropicModel(model) {
-		errChan <- ErrIncorrectAnthropicModel
-		return
-	}
+// func (a *AnthropicAdapter) GenerateStreamingResponse(model string, temperature float32, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
+// 	if !validateAnthropicModel(model) {
+// 		errChan <- ErrIncorrectAnthropicModel
+// 		return
+// 	}
 
-	messages := make([]models.Message, 0)
+// 	messages := make([]models.Message, 0)
 
-	err := json.Unmarshal([]byte(chat.Messages), &messages)
-	if err != nil {
-		errChan <- err
-		return
-	}
+// 	err := json.Unmarshal([]byte(chat.Messages), &messages)
+// 	if err != nil {
+// 		errChan <- err
+// 		return
+// 	}
 
-	request := anthropicChatRequest{
-		Stream:       true,
-		Model:        model,
-		Temperature:  temperature,
-		PromptString: generateRequestText(messages),
-		MaxTokens:    2000,
-	}
+// 	request := anthropicChatRequest{
+// 		Stream:       true,
+// 		Model:        model,
+// 		Temperature:  temperature,
+// 		PromptString: generateRequestText(messages),
+// 		MaxTokens:    2000,
+// 	}
 
-	requestBody, err := json.Marshal(request)
-	if err != nil {
-		errChan <- err
-		return
-	}
+// 	requestBody, err := json.Marshal(request)
+// 	if err != nil {
+// 		errChan <- err
+// 		return
+// 	}
 
-	requestURL := a.API_URL + "/v1/complete"
-	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
-	if err != nil {
-		errChan <- err
-	}
-	req.Header.Set("Cache-Control", "no-cache")
-	req.Header.Set("Accept", "text/event-stream")
-	req.Header.Set("Connection", "keep-alive")
-	req.Header.Add("x-api-key", a.API_KEY)
+// 	requestURL := a.API_URL + "/v1/complete"
+// 	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
+// 	if err != nil {
+// 		errChan <- err
+// 	}
+// 	req.Header.Set("Cache-Control", "no-cache")
+// 	req.Header.Set("Accept", "text/event-stream")
+// 	req.Header.Set("Connection", "keep-alive")
+// 	req.Header.Add("x-api-key", a.API_KEY)
 
-	resp, err := a.Client.Do(req)
-	if err != nil {
-		errChan <- err
-		return
-	}
+// 	resp, err := a.Client.Do(req)
+// 	if err != nil {
+// 		errChan <- err
+// 		return
+// 	}
 
-	defer resp.Body.Close()
+// 	defer resp.Body.Close()
 
-	latestMessage := models.Message{
-		Role: "assistant",
-	}
-	messages = append(messages, latestMessage)
-	for {
-		data := make([]byte, 1024)
-		_, err := resp.Body.Read(data)
-		if errors.Is(err, io.EOF) {
-			_, dbErr := chatRepo.SaveChat(chat.CreatedByID, &chat.ID, model, messages, models.Usage{})
-			if dbErr != nil {
-				errChan <- dbErr
-				return
-			}
-		}
+// 	latestMessage := models.Message{
+// 		Role: "assistant",
+// 	}
+// 	messages = append(messages, latestMessage)
+// 	for {
+// 		data := make([]byte, 1024)
+// 		_, err := resp.Body.Read(data)
+// 		if errors.Is(err, io.EOF) {
+// 			_, dbErr := chatRepo.SaveChat(chat.CreatedByID, &chat.ID, model, messages, models.Usage{})
+// 			if dbErr != nil {
+// 				errChan <- dbErr
+// 				return
+// 			}
+// 		}
 
-		if err != nil {
-			errChan <- err
-			return
-		}
+// 		if err != nil {
+// 			errChan <- err
+// 			return
+// 		}
 
-		jsonData := strings.Replace(string(data), "data: ", "", 1)
-		jsonData = strings.ReplaceAll(jsonData, "\x00", "")
-		log.Println("=====>", jsonData)
-		if jsonData != "[Done]" {
-			eachResponse := anthropicChatResponse{}
-			err = json.Unmarshal([]byte(jsonData), &eachResponse)
-			if err != nil {
-				errChan <- err
-				return
-			}
-			messages[len(messages)-1].Content = eachResponse.Completion
-			msgStream, err := helper.ConvertToJSONB(messages[1:])
-			if err != nil {
-				errChan <- err
-				return
-			}
-			chat.Messages = msgStream
+// 		jsonData := strings.Replace(string(data), "data: ", "", 1)
+// 		jsonData = strings.ReplaceAll(jsonData, "\x00", "")
+// 		log.Println("=====>", jsonData)
+// 		if jsonData != "[Done]" {
+// 			eachResponse := anthropicChatResponse{}
+// 			err = json.Unmarshal([]byte(jsonData), &eachResponse)
+// 			if err != nil {
+// 				errChan <- err
+// 				return
+// 			}
+// 			messages[len(messages)-1].Content = eachResponse.Completion
+// 			msgStream, err := helper.ConvertToJSONB(messages[1:])
+// 			if err != nil {
+// 				errChan <- err
+// 				return
+// 			}
+// 			chat.Messages = msgStream
 
-			byteStream, err := json.Marshal(chat)
-			if err != nil {
-				errChan <- err
-				return
-			}
-			dataChan <- string(byteStream)
-		}
-	}
-	// generateRequestText(messages)
-}
+// 			byteStream, err := json.Marshal(chat)
+// 			if err != nil {
+// 				errChan <- err
+// 				return
+// 			}
+// 			dataChan <- string(byteStream)
+// 		}
+// 	}
+// 	// generateRequestText(messages)
+// }
 
 func generateRequestText(messages []models.Message) string {
 	requestString := ``
@@ -255,6 +238,10 @@ func generateRequestText(messages []models.Message) string {
 	requestString += (`. ` + messages[0].Content + ` \n\n Assitant: `)
 
 	return requestString
+}
+
+func (a *AnthropicAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
+
 }
 
 func (a *AnthropicAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {

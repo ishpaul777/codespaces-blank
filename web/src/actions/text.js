@@ -1,10 +1,9 @@
-export async function getDocuments(userID) {
+export async function getDocuments() {
   const response = await fetch(
     `${process.env.REACT_APP_TAGORE_API_URL}/documents`,
     {
       headers: {
         "Content-Type": "application/json",
-        "X-User": userID,
       },
       method: "GET",
       credentials: "include",

@@ -7,14 +7,14 @@ import {
 import { HashLoader } from "react-spinners";
 import { isURL } from "../../util/validateRegex";
 import { errorToast } from "../../util/toasts";
-import sunflowerImage from '../../assets/sunflower.png' 
-import astronautImage from '../../assets/astronaut.png'
-import brightCity from '../../assets/bright-city.png' 
-import madPanda from '../../assets/mad-panda.png'
-import handDrawnBoat from '../../assets/handrawn-boat.png'
-import foxNight from '../../assets/fox-night.png'
-import catWithHat from '../../assets/cat-with-hat.png'
-import davidWearingHeadphones from '../../assets/david-wearing-headphones.png'  
+import sunflowerImage from "../../assets/sunflower.png";
+import astronautImage from "../../assets/astronaut.png";
+import brightCity from "../../assets/bright-city.png";
+import madPanda from "../../assets/mad-panda.png";
+import handDrawnBoat from "../../assets/handrawn-boat.png";
+import foxNight from "../../assets/fox-night.png";
+import catWithHat from "../../assets/cat-with-hat.png";
+import davidWearingHeadphones from "../../assets/david-wearing-headphones.png";
 
 export default function ImagePage() {
   const fileInputRef = useRef(null);
@@ -24,6 +24,10 @@ export default function ImagePage() {
     n: 8,
     provider: "stableDiffusion",
   });
+
+  const handleRangeChange = (event) => {
+    setImageRequest((prev) => ({ ...prev, n: Number(event.target.value) }));
+  };
 
   const onMouseIn = (index) => {
     setImages(
@@ -66,12 +70,12 @@ export default function ImagePage() {
 
   const handleSearch = (imageRequest) => {
     setLoading(true);
-    getGeneratedImages(imageRequest, 1)
+    getGeneratedImages(imageRequest)
       .then((response) => {
         setImages(response?.map((image) => ({ ...image, isHover: false })));
       })
       .catch((error) => {
-        console.log(error.message);
+        errorToast(error?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -128,8 +132,7 @@ export default function ImagePage() {
     },
     {
       url: astronautImage,
-      prompt:
-        "An astronaut lounging in a tropical resort in space, vaporwave",
+      prompt: "An astronaut lounging in a tropical resort in space, vaporwave",
     },
     {
       url: catWithHat,
@@ -137,16 +140,17 @@ export default function ImagePage() {
     },
     {
       url: davidWearingHeadphones,
-      prompt: 'A photo of Michelangelo\'s sculpture of David wearing headphones djing'
+      prompt:
+        "A photo of Michelangelo's sculpture of David wearing headphones djing",
     },
     {
       url: brightCity,
-      prompt:'a pencil and watercolor drawing of a bright city in the future with flying cars',
+      prompt:
+        "a pencil and watercolor drawing of a bright city in the future with flying cars",
     },
     {
       url: handDrawnBoat,
-      prompt:
-        "A hand-drawn sailboat circled by birds on the sea at sunrise",
+      prompt: "A hand-drawn sailboat circled by birds on the sea at sunrise",
     },
     {
       url: sunflowerImage,
@@ -155,8 +159,7 @@ export default function ImagePage() {
     },
     {
       url: madPanda,
-      prompt:
-        "panda mad scientist mixing sparkling chemicals, digital art",
+      prompt: "panda mad scientist mixing sparkling chemicals, digital art",
     },
   ];
 
@@ -219,22 +222,18 @@ export default function ImagePage() {
           <span>to generate variations</span>
         </div>
         <div className="mr-4 flex gap-2">
-          {/* <select
-            name="Image Counter"
-            className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
-          >
-            <option value="" default selected className="hidden">
-              Image Count
-            </option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-          </select> */}
+          <div className="flex flex-row items-center space-x-2">
+            <label className="text-gray-600">Image Count </label>
+            <input
+              type="range"
+              min={1}
+              max={8}
+              value={imageRequest.n}
+              onChange={handleRangeChange}
+              className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
+            />
+            <span className="text-gray-600">{imageRequest.n}</span>
+          </div>
           <select
             name="provider"
             className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"

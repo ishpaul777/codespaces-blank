@@ -68,6 +68,7 @@ export default function ChatPage() {
   const [isEditing, setIsEditing] = useState({
     status: false,
     id: null,
+    value: "",
   });
   const editref = useRef(null);
 
@@ -176,7 +177,7 @@ export default function ChatPage() {
         setChatHistory(data.chats);
       })
       .catch((err) => {
-        console.log(err);
+        errorToast(err);
       });
   };
   // handlePromptChange is called when the user types in the prompt input
@@ -200,10 +201,9 @@ export default function ChatPage() {
     const newMessages = [...chat, currentMessage];
 
     var requestBody = {
-      prompt: currentMessage.content,
+      messages: newMessages,
       model: model,
       provider: modelIDtoProvider[model],
-      userID: 1,
       temperature: temperature,
       additional_instructions: "Return the content in valid markdown format.",
       stream: stream,
@@ -224,7 +224,7 @@ export default function ChatPage() {
         setChat(data?.messages);
       })
       .catch((err) => {
-        console.log(err);
+        errorToast(err);
       })
       .finally(() => {
         setLoading(false);
@@ -252,10 +252,9 @@ export default function ChatPage() {
     setCurrentPrompt("");
 
     var requestBody = {
-      prompt: currentMessage.content,
+      messages: newMessages,
       model: model,
-      provider: "openai",
-      userID: 1,
+      provider: modelIDtoProvider[model],
       temperature: temperature,
       additional_instructions: "Return the content in valid markdown format.",
       stream: stream,
@@ -271,7 +270,6 @@ export default function ChatPage() {
         payload: JSON.stringify(requestBody),
         method: "POST",
         headers: {
-          "X-User": 1,
           "Content-Type": "application/json",
         },
       }
@@ -281,10 +279,10 @@ export default function ChatPage() {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
       setChatID(chatObject?.id);
-      setIsEditing({ status: false, id: null });
     });
 
     source.addEventListener("error", (event) => {
+      setIsEditing({ status: false, id: null });
       source.close();
       setLoading(false);
       if (!String(event.data).includes("[DONE]")) {
@@ -325,7 +323,7 @@ export default function ChatPage() {
         setChatCount(data.total);
       })
       .catch((err) => {
-        console.log(err);
+        errorToast(err);
       });
   }, [paginationChatHistory.page, paginationChatHistory.limit]);
 
@@ -337,7 +335,7 @@ export default function ChatPage() {
           setChatHistory(data.chats);
         })
         .catch((err) => {
-          console.log(err);
+          errorToast(err);
         });
     }, 500);
 
@@ -375,6 +373,67 @@ export default function ChatPage() {
       .catch((err) => {
         errorToast(err?.message);
       });
+  };
+
+  const handleChatEdit = (id, messages, index) => {
+    setLoading(true);
+    var editedMessages = messages?.slice(0, index + 2);
+    editedMessages[editedMessages?.length - 1].content = isEditing.value;
+
+    setChat(editedMessages);
+    var requestBody = {
+      messages: editedMessages,
+      model: model,
+      provider: modelIDtoProvider[model],
+      temperature: temperature,
+      additional_instructions: "Return the content in valid markdown format.",
+      stream: stream,
+      id: id,
+    };
+
+    if (stream) {
+      var source = new SSE(
+        process.env.REACT_APP_TAGORE_API_URL + "/chat/completions",
+        {
+          payload: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      source.addEventListener("message", (event) => {
+        let chatObject = JSON.parse(event.data);
+        setChat(chatObject?.messages);
+        setChatID(chatObject?.id);
+      });
+
+      source.addEventListener("error", (event) => {
+        setIsEditing({ status: false, id: null });
+        source.close();
+        setLoading(false);
+        if (!String(event.data).includes("[DONE]")) {
+          return;
+        }
+      });
+
+      source.stream();
+    } else {
+      getChatResponse(requestBody)
+        .then((data) => {
+          if (!chatID) {
+            setChatID(data.id);
+          }
+          setChat(data?.messages);
+        })
+        .catch((err) => {
+          errorToast(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
   return (
     // chat container, it has 2 sections
@@ -436,6 +495,8 @@ export default function ChatPage() {
         handleChatStream={handleChatStream}
         handleChatSubmit={handleChatSubmit}
         sendButton={sendButton}
+        handleChatEdit={handleChatEdit}
+        chatID={chatID}
       />
 
       {/* prompt bar */}

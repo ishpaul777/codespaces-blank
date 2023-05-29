@@ -21,10 +21,11 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   deletePersonaChatByID,
+  getPersonaByID,
   getPersonaChatsByUserID,
 } from "../../actions/persona";
 import { errorToast, successToast } from "../../util/toasts";
-
+import CentralLoading from "../../components/loader/centralLoading";
 export const PersonaChat = () => {
   const navigate = useNavigate();
   // constants for styling the chat page
@@ -38,11 +39,14 @@ export const PersonaChat = () => {
   // reading data send from the link in react router dom
   const location = useLocation();
   const { name, desc, image } = location.state;
+
+  const [persona, setPersona] = useState({});
+
   // state variables for the chat page
   const [stream, setStream] = useState(true);
   const [isMobileScreen, setIsMobileScreen] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [chatSiderCollapse, setChatSiderCollapse] = useState(
     isMobileScreen ? true : false
   );
@@ -146,15 +150,33 @@ export const PersonaChat = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     getPersonaChatsByUserID(id, paginationChatHistory)
       .then((res) => {
         setChatHistory(res.chats);
         setChatCount(res.count);
       })
       .catch((err) => {
-        console.log(err);
+        errorToast(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [paginationChatHistory]);
+
+  useEffect(() => {
+    setLoading(true);
+    getPersonaByID(id)
+      .then((response) => {
+        setPersona(response);
+      })
+      .catch(() => {
+        errorToast("Unable to fetch persona. Please try again.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   // handleNewChatClick is called when the user clicks on the new chat button
   // it resets the chat state and the chatID state
@@ -334,225 +356,235 @@ export const PersonaChat = () => {
 
   return (
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
-      <SideBar
-        isMobileScreen={isMobileScreen}
-        chatSiderCollapse={chatSiderCollapse}
-        handleNewChatClick={handleNewChatClick}
-        paginationChatHistory={paginationChatHistory}
-        setPaginationChatHistory={setPaginationChatHistory}
-        chatHistory={chatHistory}
-        setChat={setChat}
-        setChatID={setChatID}
-        setIsEditing={setIsEditing}
-        chatID={chatID}
-        setChatTitle={() => {}}
-        deleteChatHistoryIndex={deleteChatHistoryIndex}
-        handleChatDelete={handleChatDelete}
-        setDeleteChatHistoryIndex={setDeleteChatHistoryIndex}
-        handleHistoryDeleteClick={handleHistoryDeleteClick}
-        chatCount={chatCount}
-        chatOptionsList={chatOptionsList}
-        isFolderVisible={false}
-      />
-      <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
-        <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
-          <div className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}>
-            {/* chat header */}
-            {/* <BiChevronLeft size={28} /> */}
-            <span className="text-lg font-bold px-8">
-              {name?.length < 60
-                ? name
-                : `${name?.slice(0, 60) + "..."}
+      {loading ? (
+        <CentralLoading />
+      ) : (
+        <>
+          <SideBar
+            isMobileScreen={isMobileScreen}
+            chatSiderCollapse={chatSiderCollapse}
+            handleNewChatClick={handleNewChatClick}
+            paginationChatHistory={paginationChatHistory}
+            setPaginationChatHistory={setPaginationChatHistory}
+            chatHistory={chatHistory}
+            setChat={setChat}
+            setChatID={setChatID}
+            setIsEditing={setIsEditing}
+            chatID={chatID}
+            setChatTitle={() => {}}
+            deleteChatHistoryIndex={deleteChatHistoryIndex}
+            handleChatDelete={handleChatDelete}
+            setDeleteChatHistoryIndex={setDeleteChatHistoryIndex}
+            handleHistoryDeleteClick={handleHistoryDeleteClick}
+            chatCount={chatCount}
+            chatOptionsList={chatOptionsList}
+            isFolderVisible={false}
+          />
+          <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
+            <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
+              <div
+                className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}
+              >
+                {/* chat header */}
+                {/* <BiChevronLeft size={28} /> */}
+                <span className="text-lg font-bold px-8">
+                  {persona?.name?.length < 60
+                    ? persona?.name
+                    : `${persona?.name?.slice(0, 60) + "..."}
                         `}
-            </span>
-          </div>
-          {chat
-            .filter((item) => item.role !== "system")
-            .map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
-                    item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
-                  }`}
-                >
-                  <div className={`w-full flex gap-4`}>
+                </span>
+              </div>
+              {chat
+                .filter((item) => item.role !== "system")
+                .map((item, index) => {
+                  return (
                     <div
-                      className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
-                        item.role === "user"
-                          ? "bg-green-600 ring-green-600"
-                          : "ring-red-600 bg-red-600"
-                      } text-white mr-2`}
+                      key={index}
+                      className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
+                        item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
+                      }`}
                     >
-                      {item.role === "user" ? (
-                        <span className="text-lg"> U </span>
-                      ) : (
-                        <FactlyLogo />
-                      )}
-                    </div>
-                    {isEditing.status && isEditing.id === index ? (
-                      <div className="w-[85%] flex flex-col justigy-center">
-                        <textarea
-                          ref={editref}
-                          className="bg-transparent p-2 outline-none text-base border-none focus:ring-0 h-auto scrollbar-hide pt-1"
-                          autoFocus={true}
-                          style={{
-                            borderBottom: "1px solid #000",
-                          }}
-                          onChange={(e) => {
-                            setIsEditing({
-                              ...isEditing,
-                              value: e.target.value,
-                            });
-                          }}
-                          defaultValue={item.content}
-                        />
-                        <div className="flex justify-center items-center gap-4 mt-2">
+                      <div className={`w-full flex gap-4`}>
+                        <div
+                          className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
+                            item.role === "user"
+                              ? "bg-green-600 ring-green-600"
+                              : "ring-red-600 bg-red-600"
+                          } text-white mr-2`}
+                        >
+                          {item.role === "user" ? (
+                            <span className="text-lg"> U </span>
+                          ) : (
+                            <FactlyLogo />
+                          )}
+                        </div>
+                        {isEditing.status && isEditing.id === index ? (
+                          <div className="w-[85%] flex flex-col justigy-center">
+                            <textarea
+                              ref={editref}
+                              className="bg-transparent p-2 outline-none text-base border-none focus:ring-0 h-auto scrollbar-hide pt-1"
+                              autoFocus={true}
+                              style={{
+                                borderBottom: "1px solid #000",
+                              }}
+                              onChange={(e) => {
+                                setIsEditing({
+                                  ...isEditing,
+                                  value: e.target.value,
+                                });
+                              }}
+                              defaultValue={item.content}
+                            />
+                            <div className="flex justify-center items-center gap-4 mt-2">
+                              <button
+                                className="flex items-center justify-center  bg-black px-3 py-3 rounded-md text-white"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsEditing({
+                                    status: !isEditing.status,
+                                    id: isEditing.status ? null : index,
+                                  });
+                                  handleEdit(
+                                    chat
+                                      .filter((obj) => obj.role !== "system")
+                                      .slice(0, index + 1),
+                                    index
+                                  );
+                                }}
+                              >
+                                {" "}
+                                Save & Submit
+                              </button>
+                              <button
+                                className="flex items-center justify-center border-[#eee] "
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsEditing({
+                                    status: !isEditing.status,
+                                    id: isEditing.status ? null : index,
+                                  });
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeMathjax]}
+                            className={`prose ${
+                              isMobileScreen
+                                ? "max-w-[17rem]"
+                                : chatSiderCollapse
+                                ? "max-w-4xl"
+                                : "max-w-2xl"
+                            } `}
+                            components={{
+                              code({
+                                node,
+                                inline,
+                                className,
+                                children,
+                                ...props
+                              }) {
+                                const match = /language-(\w+)/.exec(
+                                  className || ""
+                                );
+
+                                return !inline ? (
+                                  <CodeBlock
+                                    key={index}
+                                    language={(match && match[1]) || ""}
+                                    value={String(children).replace(/\n$/, "")}
+                                    {...props}
+                                  />
+                                ) : (
+                                  <code className={className} {...props}>
+                                    {children}
+                                  </code>
+                                );
+                              },
+                            }}
+                          >
+                            {item.content}
+                          </ReactMarkdown>
+                        )}
+                      </div>
+                      <div className={`self-start`}>
+                        {item.role !== "user" ? (
                           <button
-                            className="flex items-center justify-center  bg-black px-3 py-3 rounded-md text-white"
+                            className="flex items-center justify-center text-lg"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setIsEditing({
-                                status: !isEditing.status,
-                                id: isEditing.status ? null : index,
-                              });
-                              handleEdit(
-                                chat
-                                  .filter((obj) => obj.role !== "system")
-                                  .slice(0, index + 1),
-                                index
-                              );
+                              handleCopyClick(item.content);
                             }}
                           >
                             {" "}
-                            Save & Submit
+                            {isCopied ? <BsClipboard2Check /> : <BsClipboard />}
                           </button>
+                        ) : !(isEditing.status && isEditing.id === index) ? (
                           <button
-                            className="flex items-center justify-center border-[#eee] "
+                            className="flex items-center justify-center text-lg"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setIsEditing({
-                                status: !isEditing.status,
-                                id: isEditing.status ? null : index,
-                              });
+                              setIsEditing((prevState) => ({
+                                ...prevState,
+                                status: !prevState.status,
+                                id: prevState.status ? null : index,
+                                value: item.content,
+                              }));
+                              // editref.current.focus()
                             }}
                           >
-                            Cancel
+                            <AiOutlineEdit />
                           </button>
-                        </div>
+                        ) : null}
                       </div>
-                    ) : (
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm, remarkMath]}
-                        rehypePlugins={[rehypeMathjax]}
-                        className={`prose ${
-                          isMobileScreen
-                            ? "max-w-[17rem]"
-                            : chatSiderCollapse
-                            ? "max-w-4xl"
-                            : "max-w-2xl"
-                        } `}
-                        components={{
-                          code({
-                            node,
-                            inline,
-                            className,
-                            children,
-                            ...props
-                          }) {
-                            const match = /language-(\w+)/.exec(
-                              className || ""
-                            );
-
-                            return !inline ? (
-                              <CodeBlock
-                                key={index}
-                                language={(match && match[1]) || ""}
-                                value={String(children).replace(/\n$/, "")}
-                                {...props}
-                              />
-                            ) : (
-                              <code className={className} {...props}>
-                                {children}
-                              </code>
-                            );
-                          },
-                        }}
-                      >
-                        {item.content}
-                      </ReactMarkdown>
-                    )}
-                  </div>
-                  <div className={`self-start`}>
-                    {item.role !== "user" ? (
-                      <button
-                        className="flex items-center justify-center text-lg"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCopyClick(item.content);
-                        }}
-                      >
-                        {" "}
-                        {isCopied ? <BsClipboard2Check /> : <BsClipboard />}
-                      </button>
-                    ) : !(isEditing.status && isEditing.id === index) ? (
-                      <button
-                        className="flex items-center justify-center text-lg"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsEditing((prevState) => ({
-                            ...prevState,
-                            status: !prevState.status,
-                            id: prevState.status ? null : index,
-                            value: item.content,
-                          }));
-                          // editref.current.focus()
-                        }}
-                      >
-                        <AiOutlineEdit />
-                      </button>
-                    ) : null}
-                  </div>
+                    </div>
+                  );
+                })}
+              {loading && (
+                <div className="flex justify-center mt-4">
+                  <AlwaysScrollToBottom />
+                  <BeatLoader size={styles.iconSize} color={"#CED0D4"} />
                 </div>
-              );
-            })}
-          {loading && (
-            <div className="flex justify-center mt-4">
-              <AlwaysScrollToBottom />
-              <BeatLoader size={styles.iconSize} color={"#CED0D4"} />
+              )}
             </div>
-          )}
-        </div>
-        {/* chat input container */}
-        <div className="py-4 w-full flex justify-center items-center">
-          {/* input division */}
-          <div
-            className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
-          >
-            <PromptInput
-              value={currentPrompt}
-              className="outline-none text-base border-none focus:ring-0"
-              placeholder="Type a message"
-              onChange={handlePromptChange}
-              onEnter={handleKeypress}
-            ></PromptInput>
-            <div className="flex flex-row-reverse">
-              <button
-                className={`flex items-center justify-center`}
-                onClick={
-                  stream ? () => handleChatStream() : () => handleChatSubmit()
-                }
+            {/* chat input container */}
+            <div className="py-4 w-full flex justify-center items-center">
+              {/* input division */}
+              <div
+                className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
               >
-                {!loading ? (
-                  <img src={sendButton} />
-                ) : (
-                  <ClipLoader size={20} color={"#000"} />
-                )}
-              </button>
+                <PromptInput
+                  value={currentPrompt}
+                  className="outline-none text-base border-none focus:ring-0"
+                  placeholder="Type a message"
+                  onChange={handlePromptChange}
+                  onEnter={handleKeypress}
+                ></PromptInput>
+                <div className="flex flex-row-reverse">
+                  <button
+                    className={`flex items-center justify-center`}
+                    onClick={
+                      stream
+                        ? () => handleChatStream()
+                        : () => handleChatSubmit()
+                    }
+                  >
+                    {!loading ? (
+                      <img src={sendButton} />
+                    ) : (
+                      <ClipLoader size={20} color={"#000"} />
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </main>
+          </main>
+        </>
+      )}
     </div>
   );
 };
