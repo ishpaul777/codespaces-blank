@@ -7,6 +7,7 @@ import { routes } from "./routes";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import "react-toastify/dist/ReactToastify.css";
+
 const router = createBrowserRouter(routes, {
   basename: process.env.REACT_APP_PUBLIC_URL,
 });

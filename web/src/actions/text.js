@@ -7,6 +7,7 @@ export async function getDocuments(userID) {
         "X-User": userID,
       },
       method: "GET",
+      credentials: "include",
     }
   );
 
@@ -29,6 +30,7 @@ export const generateTextFromPrompt = async (requestBody, userID) => {
       },
       method: "POST",
       body: JSON.stringify(requestBody),
+      credentials: "include",
     }
   );
 

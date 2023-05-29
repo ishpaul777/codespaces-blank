@@ -5,6 +5,7 @@ export const getGeneratedImages = (request, userID) => {
       "Content-Type": "application/json",
       "X-User": userID,
     },
+    credentials: "include",
     body: JSON.stringify(request),
   }).then((response) => {
     if (response.status === 200) {
@@ -33,6 +34,7 @@ export const generateVariationsOfImage = (file, n, model, provider) => {
   return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/images/variation`, {
     method: "POST",
     body: formData,
+    credentials: "include",
   }).then((response) => {
     if (response.status === 200) {
       return response.json();

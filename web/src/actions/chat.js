@@ -4,6 +4,7 @@ export async function getChatResponse(requestBody) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(requestBody),
   }).then((response) => {
     if (response.status === 200) {
@@ -32,6 +33,7 @@ export async function getChatHistoryByUserID(pagination) {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     }
   ).then((response) => {
     if (response.status === 200) {
@@ -53,6 +55,7 @@ export async function deleteChatByID(chatID) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   }).then((response) => {
     if (response.status === 200) {
       return response.json();

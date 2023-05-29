@@ -215,7 +215,7 @@ export default function ImagePage() {
           <span>to generate variations</span>
         </div>
         <div className="mr-4 flex gap-2">
-          <select
+          {/* <select
             name="Image Counter"
             className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
           >
@@ -230,14 +230,14 @@ export default function ImagePage() {
             <option value="6">6</option>
             <option value="7">7</option>
             <option value="8">8</option>
-          </select>
+          </select> */}
           <select
             name="provider"
             className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
             onChange={handleProviderChange}
           >
             <option value="stableDiffusion">Stable Diffusion</option>
-            <option value="openai">Dall E</option>
+            {/* <option value="openai">Dall E</option> */}
           </select>
         </div>
         {/* <SearchButton textColor="black" text="Upload an Image" background="button-primary">

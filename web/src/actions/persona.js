@@ -7,6 +7,7 @@ export const getPersona = ({ page, limit, search_query }) => {
       limit: limit,
       search_query: search_query,
     },
+    credentials: "include",
   })
     .then((response) => {
       if (response.status === 200) {

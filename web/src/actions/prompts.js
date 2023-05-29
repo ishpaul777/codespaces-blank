@@ -6,6 +6,7 @@ export const getAllPromptTemplates = (pagination) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   })
     .then((response) => {
       if (response.status === 200) {
@@ -27,6 +28,7 @@ export const createPromptTemplate = (requestBody) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(requestBody),
   }).then((response) => {
     if (response.status === 200) {
@@ -45,6 +47,7 @@ export const updatePromptTemplate = (requestBody) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(requestBody),
   }).then((response) => {
     if (response.status === 200) {
@@ -63,6 +66,7 @@ export const deletePromptTemplate = (promptID) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   }).then((response) => {
     if (response.status === 200) {
       return response.json();
@@ -75,7 +79,13 @@ export const deletePromptTemplate = (promptID) => {
 };
 
 export const getPromptTemplateByID = (promptID) => {
-  return fetch(`${PROMPT_TEMPLATES}/${promptID}`)
+  return fetch(`${PROMPT_TEMPLATES}/${promptID}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  })
     .then((response) => {
       if (response.status === 200) {
         return response.json();
