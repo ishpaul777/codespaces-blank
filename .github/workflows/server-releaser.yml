@@ -34,4 +34,4 @@ jobs:
         push: true
         tags: asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:${{ env.RELEASE_VERSION }}-dev,asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest-dev
         context: server
-        file: server/Dockerfile.dev
+        file: server/Dockerfile
