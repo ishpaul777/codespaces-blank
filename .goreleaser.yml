@@ -29,8 +29,8 @@ dockers:
 docker_manifests:
   - 
     image_templates:
-    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Version }}"
-    # - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest"
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Version }}-releaser"
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest-releaser"
 
 checksum:
   name_template: 'checksums.txt'
