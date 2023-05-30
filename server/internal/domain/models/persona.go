@@ -14,7 +14,8 @@ var (
 
 type Persona struct {
 	Base
-	Name        string     `gorm:"column:name;" json:"name"`
+	Name        string     `gorm:"column:name" json:"name"`
+	Slug        string     `gorm:"column:slug" json:"slug"`
 	Description string     `gorm:"column:description" json:"description"`
 	Prompt      string     `gorm:"column:prompt" json:"prompt"`
 	Avatar      string     `gorm:"column:avatar" json:"avatar"`

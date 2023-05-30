@@ -39,6 +39,7 @@ func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prom
 		Base: models.Base{
 			CreatedByID: userID,
 		},
+		Provider:    "openai",
 		Name:        name,
 		Description: description,
 		Prompt:      prompt,

@@ -18,6 +18,7 @@ func (h *httpHandler) getDefaultPersona(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	response.Count = uint(len(response.Personas))
 	response.Message = "Default Personas fetched successfully"
 	renderx.JSON(w, http.StatusOK, response)
 }
