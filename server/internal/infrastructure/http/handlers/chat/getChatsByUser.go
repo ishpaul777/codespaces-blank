@@ -45,7 +45,7 @@ func (h *httpHandler) getAllChatsByUser(w http.ResponseWriter, r *http.Request) 
 
 type responseGetAllChatCollections struct {
 	Total           uint                    `json:"total"`
-	ChatCollections []models.ChatCollection `json:"chats"`
+	ChatCollections []models.ChatCollection `json:"collections"`
 	Message         string                  `json:"message"`
 }
 
