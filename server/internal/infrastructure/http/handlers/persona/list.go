@@ -10,9 +10,9 @@ import (
 )
 
 type responseGetAllPersonas struct {
-	Count   uint             `json:"count"`
-	Pesonas []models.Persona `json:"personas"`
-	Message string           `json:"message"`
+	Count    uint             `json:"count"`
+	Personas []models.Persona `json:"personas"`
+	Message  string           `json:"message"`
 }
 
 func (h *httpHandler) list(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +34,7 @@ func (h *httpHandler) list(w http.ResponseWriter, r *http.Request) {
 
 	response := &responseGetAllPersonas{}
 
-	response.Pesonas, response.Count, err = h.personaService.GetAllPersonas(userID, *pagination)
+	response.Personas, response.Count, err = h.personaService.GetAllPersonas(userID, *pagination)
 	if err != nil {
 		h.logger.Error("error getting all personas", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))

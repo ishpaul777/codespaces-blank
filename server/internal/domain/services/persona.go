@@ -14,7 +14,7 @@ type PersonaService interface {
 	GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
 	GetPersonaByID(userID uint, personaID uint) (*models.Persona, error)
 	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error)
-	GetAllDefaultPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
+	GetAllDefaultPersonas() ([]models.Persona, error)
 	// PersonaChat Methods
 	ChatWithPersonaStream(userID, personaID uint, personaChatID *uint, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error)
 	GetAllPersonaChatByUserID(userID, personaID uint, pagination helper.Pagination) ([]models.PersonaChat, uint, error)
@@ -62,8 +62,8 @@ func (s *personaService) DeletePersonaChatByID(userID uint, personaID uint, chat
 	return s.personaRepository.DeletePersonaChatByID(userID, personaID, chatID)
 }
 
-func (s *personaService) GetAllDefaultPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error) {
-	return s.personaRepository.GetAllDefaultPersonas(userID, pagination)
+func (s *personaService) GetAllDefaultPersonas() ([]models.Persona, error) {
+	return s.personaRepository.GetAllDefaultPersonas()
 }
 
 func (s *personaService) ChatWithPersonaStream(userID, personaID uint, personaChatID *uint, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error) {

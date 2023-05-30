@@ -15,7 +15,7 @@ func (h *httpHandler) routes() chi.Router {
 	router := chi.NewRouter()
 	router.Post("/", h.create)
 	router.Get("/", h.list)
-	router.Get("/default", h.default_)
+	router.Get("/default", h.getDefaultPersona)
 	router.Route("/{persona_id}", func(r chi.Router) {
 		r.Get("/", h.details)
 		r.Put("/", h.update)
