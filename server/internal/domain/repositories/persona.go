@@ -14,7 +14,7 @@ type PersonaRepository interface {
 	GetPersonaByID(userID, personaID uint) (*models.Persona, error)
 	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error)
 	PersonaNameExists(name string) bool
-	GetAllDefaultPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
+	GetAllDefaultPersonas() ([]models.Persona, error)
 
 	// PersonaChat Methods
 	CreatePersonaChat(userID, personaID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error)
