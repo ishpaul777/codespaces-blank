@@ -21,7 +21,7 @@ export default function ImagePage() {
 
   const [imageRequest, setImageRequest] = useState({
     prompt: "",
-    n: 8,
+    n: 4,
     provider: "stableDiffusion",
   });
 
