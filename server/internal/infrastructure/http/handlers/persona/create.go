@@ -11,7 +11,7 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-type createPersona struct {
+type createPersonaRequest struct {
 	Name        string             `json:"name"`
 	Description string             `json:"description"`
 	Avatar      string             `json:"avatar"`
@@ -30,7 +30,7 @@ func (h *httpHandler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestBody := &createPersona{}
+	requestBody := &createPersonaRequest{}
 	err = json.NewDecoder(r.Body).Decode(requestBody)
 	if err != nil {
 		h.logger.Error("error decoding request body", "error", err.Error())
