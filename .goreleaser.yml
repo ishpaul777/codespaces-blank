@@ -19,7 +19,7 @@ archives:
 dockers:
 - dockerfile: server/Dockerfile.prod
   image_templates:
-    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Tag }}"
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Tag }}-releaser"
     # - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest"
 
   use: docker
