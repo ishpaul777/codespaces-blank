@@ -1,4 +1,4 @@
-name: Server Release CI
+name: Server Release CI (Only Docker)
 on:
   push:
     tags:
@@ -32,6 +32,6 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         push: true
-        tags: asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:${{ env.RELEASE_VERSION }}-dev,asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest-dev
+        tags: asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:${{ env.RELEASE_VERSION }},asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest
         context: server
         file: server/Dockerfile
