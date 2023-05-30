@@ -20,17 +20,17 @@ dockers:
 - dockerfile: server/Dockerfile.prod
   image_templates:
     - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Tag }}-releaser"
-    # - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest"
+    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest-releaser"
 
   use: docker
   build_flag_templates:
   - "--platform=linux/amd64"
 
-docker_manifests:
-  - 
-    image_templates:
-    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Version }}-releaser"
-    - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest-releaser"
+# docker_manifests:
+#   - 
+#     image_templates:
+#     - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:{{ .Version }}-releaser"
+#     - "asia-south1-docker.pkg.dev/factly-prod/tagore/tagore-server:latest-releaser"
 
 checksum:
   name_template: 'checksums.txt'
