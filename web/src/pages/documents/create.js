@@ -123,7 +123,7 @@ export default function Document() {
   const handleCompose = () => {
     const prompt = generatePrompt();
     setLoading(true);
-    fetch(`${process.env.REACT_APP_TAGORE_API_URL}/prompts/generate`, {
+    fetch(`${window.REACT_APP_TAGORE_API_URL}/prompts/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

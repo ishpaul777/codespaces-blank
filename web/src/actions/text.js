@@ -1,6 +1,6 @@
 export async function getDocuments() {
   const response = await fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/documents`,
+    `${window.REACT_APP_TAGORE_API_URL}/documents`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function getDocuments() {
 
 export const generateTextFromPrompt = async (requestBody, userID) => {
   const response = await fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/prompts/generate`,
+    `${window.REACT_APP_TAGORE_API_URL}/prompts/generate`,
     {
       headers: {
         "Content-Type": "application/json",

@@ -52,8 +52,6 @@ export function HomePage() {
     }
   ];
 
-
-  console.log('menuOptions', menuOptions)
   useEffect(() => {
     getDefaultPersona()
     .then((response) => {

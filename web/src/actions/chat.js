@@ -1,5 +1,5 @@
 export async function getChatResponse(requestBody) {
-  return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/chat/completions`, {
+  return fetch(`${window.REACT_APP_TAGORE_API_URL}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export async function getChatResponse(requestBody) {
 // parameters: userID
 export async function getChatHistoryByUserID(pagination) {
   return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/chat/history?` +
+    `${window.REACT_APP_TAGORE_API_URL}/chat/history?` +
       new URLSearchParams({
         limit: pagination.limit,
         page: pagination.page,
@@ -50,7 +50,7 @@ export async function getChatHistoryByUserID(pagination) {
 // it sends http request to the server and validates and returns the response
 // parameters: chatID, userID
 export async function deleteChatByID(chatID) {
-  return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/chat/${chatID}`, {
+  return fetch(`${window.REACT_APP_TAGORE_API_URL}/chat/${chatID}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
