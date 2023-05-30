@@ -107,10 +107,10 @@ export default function ChatPage() {
       },
     },
     {
-      title: "Back",
+      title: "Back to Dashboard",
       icon: <MdKeyboardBackspace size={styles.iconSize} />,
       onClick: () => {
-        navigate("/chats");
+        navigate("/");
       },
     },
   ];
