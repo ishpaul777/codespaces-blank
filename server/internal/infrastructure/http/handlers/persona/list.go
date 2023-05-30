@@ -9,7 +9,7 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-type responseGetAllPeersonas struct {
+type responseGetAllPersonas struct {
 	Count   uint             `json:"count"`
 	Pesonas []models.Persona `json:"personas"`
 	Message string           `json:"message"`
@@ -32,7 +32,7 @@ func (h *httpHandler) list(w http.ResponseWriter, r *http.Request) {
 
 	pagination.Queries = map[string]string{"visibility": helper.GetQueryParamByName(r, "visibility")}
 
-	response := &responseGetAllPeersonas{}
+	response := &responseGetAllPersonas{}
 
 	response.Pesonas, response.Count, err = h.personaService.GetAllPersonas(userID, *pagination)
 	if err != nil {

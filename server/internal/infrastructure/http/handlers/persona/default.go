@@ -23,7 +23,7 @@ func (h *httpHandler) default_(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := &responseGetAllPeersonas{}
+	response := &responseGetAllPersonas{}
 
 	response.Pesonas, response.Count, err = h.personaService.GetAllDefaultPersonas(userID, *pagination)
 	if err != nil {
