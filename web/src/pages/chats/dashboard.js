@@ -272,6 +272,7 @@ export default function ChatPage() {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       }
     );
 
@@ -400,6 +401,7 @@ export default function ChatPage() {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
 
