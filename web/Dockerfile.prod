@@ -10,7 +10,7 @@ RUN npm i --silent --legacy-peer-deps
 
 # copy source files to image and build
 COPY . .
-RUN npm run build
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # production environment
 FROM nginx:stable-alpine
