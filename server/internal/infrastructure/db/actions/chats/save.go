@@ -3,7 +3,6 @@ package chats
 import (
 	"errors"
 
-	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 )
