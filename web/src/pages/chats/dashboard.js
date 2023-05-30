@@ -265,7 +265,7 @@ export default function ChatPage() {
     }
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + "/chat/completions",
+      window.REACT_APP_TAGORE_API_URL + "/chat/completions",
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -394,7 +394,7 @@ export default function ChatPage() {
 
     if (stream) {
       var source = new SSE(
-        process.env.REACT_APP_TAGORE_API_URL + "/chat/completions",
+        window.REACT_APP_TAGORE_API_URL + "/chat/completions",
         {
           payload: JSON.stringify(requestBody),
           method: "POST",
