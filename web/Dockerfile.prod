@@ -6,7 +6,7 @@ RUN apk update && apk add git
 # install node modules
 COPY ./package.json ./
 COPY ./package-lock.json ./
-RUN npm ci --silent
+RUN npm i --silent --legacy-peer-deps
 
 # copy source files to image and build
 COPY . .
