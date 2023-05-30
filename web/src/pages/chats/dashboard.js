@@ -272,7 +272,7 @@ export default function ChatPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       }
     );
 
@@ -450,6 +450,7 @@ export default function ChatPage() {
         paginationChatHistory={paginationChatHistory}
         setPaginationChatHistory={setPaginationChatHistory}
         chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
         setChat={setChat}
         setChatID={setChatID}
         setChatTitle={setChatTitle}

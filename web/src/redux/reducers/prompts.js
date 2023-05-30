@@ -24,3 +24,8 @@ const promptsReducer = (state = initialState, action) => {
 };
 
 export default promptsReducer;
+
+// http://127.0.0.1:4455/.factly/tagore/server/chat_collections - get chat collections
+// /chat_collection -  post body {name: "collection name", } - create collection
+// /chat/collections - put body {chat_id: 1, collection_id: 1}
+// /chat_collections/:id -  delete body {} - delete collection
