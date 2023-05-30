@@ -30,7 +30,10 @@ export const getPersonaChatsByUserID = (personaID, pagination) => {
         limit: pagination.limit,
         page: pagination.page,
         search_query: pagination.search_query,
-      })
+      }),
+      {
+        credentials: "include",
+      }
   )
     .then((response) => {
       if (response.status === 200) {
@@ -55,6 +58,7 @@ export async function deletePersonaChatByID(personaID, chatID) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   }).then((response) => {
     if (response.status === 200) {
       return response.json();
@@ -76,6 +80,7 @@ export async function createPersona(requestBody) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(requestBody),
+    credentials: "include",
   }).then((response) => {
     if (response.status === 201) {
       return response.json();
