@@ -38,10 +38,6 @@ export const PersonaChat = () => {
 
   const { id } = useParams();
 
-  // reading data send from the link in react router dom
-  const location = useLocation();
-  const { name, desc, image } = location.state;
-
   const [persona, setPersona] = useState({});
 
   // state variables for the chat page

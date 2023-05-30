@@ -102,3 +102,19 @@ export async function getPersonaByID(personaID) {
     }
   });
 }
+
+// getDefaultPersona fetches the default persona from the server
+// endpoint: /personas/default
+export async function getDefaultPersona() {
+  return fetch(`${PERSONA_API}/default`, {
+    credentials: "include",
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return response.json().then((data) => {
+        throw Error(data.errors?.[0].message);
+      });
+    }
+  });
+}
