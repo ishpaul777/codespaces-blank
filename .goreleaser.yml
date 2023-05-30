@@ -10,11 +10,11 @@ builds:
   goos:
   - linux
 
-archives:
-  - id: tagore-server
-    builds:
-      - tagore-server 
-    name_template: "tagore-server_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+# archives:
+#   - id: tagore-server
+#     builds:
+#       - tagore-server 
+#     name_template: "tagore-server_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
 dockers:
 - dockerfile: server/Dockerfile.prod
