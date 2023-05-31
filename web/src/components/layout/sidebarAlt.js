@@ -125,11 +125,10 @@ export function SidebarAlt() {
                   </div>
                 </div>
                 {isSubMenuVisible(index) && menu.subOptions && (
-                  <ul className="flex flex-col items-evenly justify-evenly mt-5 h-[100px]">
+                  <ul className="flex flex-col items-evenly justify-evenly mt-2 h-[100px] mr-11">
                     {menu.subOptions.map((subOption, subIndex) => (
                       <li key={subIndex}>
                         <div className="flex gap-x-4">
-                          <img src={menu.icon} alt="menu-icon" />
                           <h3>{subOption.name}</h3>
                         </div>
                       </li>
@@ -141,7 +140,7 @@ export function SidebarAlt() {
           ))}
         </ul>
       </div>
-      <div className="flex gap-x-4 h-[10%] text-base font-normal text-black items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer bg-button-primary">
+      <div className="flex gap-x-4 h-[7%] text-base font-normal text-black items-center justify-start p-3 cursor-pointer bg-button-primary">
         <img className="w-[18px] h-[18px]" src={Logout} alt="Logout" />
         <h3>Logout</h3>
       </div>
