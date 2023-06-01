@@ -260,6 +260,10 @@ export default function ChatPage() {
       stream: stream,
     };
 
+    if(initialPrompt !== '') {
+      requestBody.system_prompt = initialPrompt;
+    }
+
     if (chatID) {
       requestBody.id = chatID;
     }
