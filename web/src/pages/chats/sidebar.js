@@ -121,7 +121,6 @@ export default function SideBar({
       //   setCollections(data.collections);
       // });
       dispatch(getAllChatCollections());
-      console.log(collections);
     }
   }, []);
 
@@ -236,8 +235,8 @@ export default function SideBar({
   return (
     <aside
       className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
-          ? "translate-x-0 w-0"
-          : `${isMobileScreen ? "w-3/4 " : "w-[20vw] "}bg-black-100`
+        ? "translate-x-0 w-0"
+        : `${isMobileScreen ? "w-3/4 " : "w-[20vw] "}bg-black-100`
         } flex flex-row  ease-in-out duration-300 gap-4`}
     >
       <div
@@ -316,7 +315,10 @@ export default function SideBar({
                   />
                   <AiOutlineClose
                     size={styles.iconSize}
-                    onClick={() => setCollectionCreateFormVisible(false)}
+                    onClick={() => {
+                      setCollectionName("");
+                      setCollectionCreateFormVisible(false)
+                    }}
                   />
                 </div>
               </div>
@@ -459,7 +461,3 @@ export default function SideBar({
     </aside>
   );
 }
-
-// when the chats fetched we need the chats that are not in any collection
-// when collections are fetched we need collections with chats []
-// when a chat without collection is dragged to a collection we need to update the chat with collection id and remove it from the chats list

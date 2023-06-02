@@ -109,7 +109,7 @@ const addChatToCollection = (collectionId, chatId, chatHistory) => async (dispat
 			const chat = chatHistory.find((chat) => chat.id === chatId);
 			dispatch({
 				type: "ADD_CHAT_TO_COLLECTION",
-				payload: { collectionId, chat},
+				payload: { collectionId, chat },
 			});
 		}
 		)

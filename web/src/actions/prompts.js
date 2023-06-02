@@ -1,6 +1,6 @@
 import { PROMPT_TEMPLATES } from "../constants/prompt_templates";
 
-export const getAllPromptTemplates = (pagination) => {
+export const getAllPromptTemplates = async (pagination) => {
   return fetch(PROMPT_TEMPLATES + "?" + new URLSearchParams(pagination), {
     method: "GET",
     headers: {
@@ -22,7 +22,7 @@ export const getAllPromptTemplates = (pagination) => {
     });
 };
 
-export const createPromptTemplate = (requestBody) => {
+export const createPromptTemplate = async (requestBody) => {
   return fetch(PROMPT_TEMPLATES, {
     method: "POST",
     headers: {
@@ -41,7 +41,7 @@ export const createPromptTemplate = (requestBody) => {
   });
 };
 
-export const updatePromptTemplate = (requestBody) => {
+export const updatePromptTemplate = async (requestBody) => {
   return fetch(`${PROMPT_TEMPLATES}/${requestBody.id}`, {
     method: "PUT",
     headers: {
@@ -60,7 +60,7 @@ export const updatePromptTemplate = (requestBody) => {
   });
 };
 
-export const deletePromptTemplate = (promptID) => {
+export const deletePromptTemplate = async (promptID) => {
   return fetch(`${PROMPT_TEMPLATES}/${promptID}`, {
     method: "DELETE",
     headers: {
@@ -78,7 +78,7 @@ export const deletePromptTemplate = (promptID) => {
   });
 };
 
-export const getPromptTemplateByID = (promptID) => {
+export const getPromptTemplateByID = async (promptID) => {
   return fetch(`${PROMPT_TEMPLATES}/${promptID}`, {
     method: "GET",
     headers: {

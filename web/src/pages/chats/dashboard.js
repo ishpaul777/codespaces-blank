@@ -515,7 +515,7 @@ export default function ChatPage() {
             promptSiderCollapse || "pt-4 pl-4"
           }`}
         >
-          <PromptBar open={!promptSiderCollapse} />
+          <PromptBar open={!promptSiderCollapse} isFolderVisible={true} />
         </div>
       </aside>
       <div
