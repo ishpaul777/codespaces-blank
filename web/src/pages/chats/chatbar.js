@@ -1,4 +1,4 @@
-import { AiOutlineMenuUnfold } from "react-icons/ai";
+import { AiOutlineMenuUnfold, AiOutlineMenuFold } from "react-icons/ai";
 import FactlyLogo from "../../assets/icons/factlyLogo";
 import { AiOutlineEdit } from "react-icons/ai";
 import { Select, SelectTemperature } from "../../components/inputs/select";
@@ -61,7 +61,11 @@ export default function ChatBar({
                 }}
                 style={{ width: "fit-content", height: "fit-content" }}
               >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                {chatSiderCollapse ? (
+                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                ) : (
+                  <AiOutlineMenuFold size={styles.fileIconSize} />
+                )}
               </button>
               <button
                 onClick={() => {
@@ -70,7 +74,11 @@ export default function ChatBar({
                 }}
                 style={{ width: "fit-content", height: "fit-content" }}
               >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                {promptSiderCollapse ? (
+                  <AiOutlineMenuFold size={styles.fileIconSize} />
+                ) : (
+                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                )}
               </button>
             </div>
             <div className="border-none w-full flex flex-col items-center p-4 gap-4">

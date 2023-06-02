@@ -1,38 +1,54 @@
 package persona
 
 import (
+	"fmt"
+
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 )
 
-func (p *PGPersonaRepository) GetAllPersonas(userID uint, pagiantion helper.Pagination) ([]models.Persona, uint, error) {
+func (p *PGPersonaRepository) GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error) {
 	var personas []models.Persona
 	var count int64
-	offset := (pagiantion.Page - 1) * pagiantion.Limit
+	offset := (pagination.Page - 1) * pagination.Limit
 
 	if offset < 0 {
 		offset = 0
 	}
 
-	// fetching all the personas created by the user
-	// which are private
+	// private visibility means user will only fetch the personas created by him
+	// public visibility means user will fetch all the personas created by him and other users which are public
+
+	// fetching all the personas created by the user which are private
 	db := p.client.Model(&models.Persona{}).Where(&models.Persona{
 		Base: models.Base{
 			CreatedByID: userID,
 		},
 		Visibility: "private",
-	}).Or(&models.Persona{
-		Visibility: "public",
 	})
+
+	fmt.Println("this is visibility", pagination.Queries["visibility"])
+	if pagination.Queries["visibility"] == "private" {
+		db = db.Or(&models.Persona{
+			Base: models.Base{
+				CreatedByID: userID,
+			},
+			Visibility: "public",
+		})
+	} else {
+		db = db.Or(&models.Persona{
+			Visibility: "public",
+		})
+	}
 
 	// fetcing all the personas which are public
 	// and created by other users
 
-	if pagiantion.SearchQuery != "" {
-		db = db.Where("name ILIKE ?", "%"+pagiantion.SearchQuery+"%")
+	if pagination.SearchQuery != "" {
+		db = db.Where("name ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}
 
-	err := db.Count(&count).Offset(offset).Limit(pagiantion.Limit).Find(&personas).Error
+	err := db.Count(&count).Offset(offset).Limit(pagination.Limit).Find(&personas).Error
 
 	if err != nil {
 		return nil, 0, err

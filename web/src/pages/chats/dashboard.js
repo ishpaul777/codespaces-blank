@@ -107,10 +107,10 @@ export default function ChatPage() {
       },
     },
     {
-      title: "Back",
+      title: "Back to Dashboard",
       icon: <MdKeyboardBackspace size={styles.iconSize} />,
       onClick: () => {
-        navigate("/chats");
+        navigate("/");
       },
     },
   ];
@@ -260,12 +260,16 @@ export default function ChatPage() {
       stream: stream,
     };
 
+    if(initialPrompt !== '') {
+      requestBody.system_prompt = initialPrompt;
+    }
+
     if (chatID) {
       requestBody.id = chatID;
     }
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + "/chat/completions",
+      window.REACT_APP_TAGORE_API_URL + "/chat/completions",
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -394,7 +398,7 @@ export default function ChatPage() {
 
     if (stream) {
       var source = new SSE(
-        process.env.REACT_APP_TAGORE_API_URL + "/chat/completions",
+        window.REACT_APP_TAGORE_API_URL + "/chat/completions",
         {
           payload: JSON.stringify(requestBody),
           method: "POST",

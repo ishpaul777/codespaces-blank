@@ -38,10 +38,6 @@ export const PersonaChat = () => {
 
   const { id } = useParams();
 
-  // reading data send from the link in react router dom
-  const location = useLocation();
-  const { name, desc, image } = location.state;
-
   const [persona, setPersona] = useState({});
 
   // state variables for the chat page
@@ -101,7 +97,7 @@ export const PersonaChat = () => {
     return <div ref={elementRef} />;
   };
 
-  // const sseClient = new SSE(process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`);
+  // const sseClient = new SSE(window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`);
 
   // handleHistoryDeleteClick makes the the checked and close buttons visible by
   // setting the deleteChatHistoryIndex to the index of the chat in the chatHistory array
@@ -247,7 +243,7 @@ export const PersonaChat = () => {
     }
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -289,7 +285,7 @@ export const PersonaChat = () => {
     };
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -376,7 +372,7 @@ export const PersonaChat = () => {
     };
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -405,9 +401,9 @@ export const PersonaChat = () => {
     source.stream();
   };
 
-  const handleStop = () => {
-    console.log(chat);
-  };
+  // const handleStop = () => {
+  //   console.log(chat)
+  // }
   return (
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
       {loading ? (
