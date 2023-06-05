@@ -436,7 +436,7 @@ export const PersonaChat = () => {
             chatOptionsList={chatOptionsList}
             isFolderVisible={false}
           />
-          <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
+          <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-full">
             <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
               <div
                 className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}
