@@ -12,6 +12,8 @@ import PromptInput from "./PromptInput";
 import rehypeMathjax from "rehype-mathjax";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import { IoReloadOutline } from "react-icons/io5";
+import { GrStop } from "react-icons/gr";
 
 export default function ChatBar({
   chat,
@@ -47,6 +49,8 @@ export default function ChatBar({
   sendButton,
   handleChatEdit,
   chatID,
+  handleRegenerate,
+  handleStop,
 }) {
   return (
     <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
@@ -342,8 +346,26 @@ export default function ChatBar({
         )}
       </div>
       {/* chat input container */}
-      <div className="py-4 w-full flex justify-center items-center">
+      <div className="py-4 w-full flex flex-col gap-2 justify-center items-center">
         {/* input division */}
+        {loading && (
+          <button
+            className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+            onClick={handleStop}
+          >
+            <GrStop color="#000" size={"16px"} />
+            Stop Generating
+          </button>
+        )}
+        {!loading && chat?.length >= 2 && (
+          <button
+            className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+            onClick={handleRegenerate}
+          >
+            <IoReloadOutline color="#000" size={"16px"} />
+            Regenerate Response
+          </button>
+        )}
         <div
           className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
         >

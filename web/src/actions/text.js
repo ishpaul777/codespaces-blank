@@ -1,14 +1,11 @@
 export async function getDocuments() {
-  const response = await fetch(
-    `${window.REACT_APP_TAGORE_API_URL}/documents`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "GET",
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${window.REACT_APP_TAGORE_API_URL}/documents`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET",
+    credentials: "include",
+  });
 
   if (response.status === 200) {
     const data = await response.json();

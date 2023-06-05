@@ -1,26 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SSE } from "sse.js";
 import { MdOutlineClearAll, MdKeyboardBackspace } from "react-icons/md";
-
 import { AiOutlineMenuUnfold } from "react-icons/ai";
-
 import sendButton from "../../assets/icons/send-button.svg";
 import {
   deleteChatByID,
   getChatHistoryByUserID,
   getChatResponse,
 } from "../../actions/chat";
-import {
-  // Link,
-  useNavigate,
-} from "react-router-dom";
-// import { CodeBlock } from "../../components/codeblock";
-// import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { errorToast, successToast } from "../../util/toasts";
-// import { Input } from "../../components/inputs/Input";
-// import { Select, SelectTemperature } from "../../components/inputs/select";
 import PromptBar from "./PromptBar";
-// import PromptInput from "./PromptInput";
 import SideBar from "./sidebar.js";
 import ChatBar from "./chatbar.js";
 
@@ -71,6 +61,10 @@ export default function ChatPage() {
     value: "",
   });
   const editref = useRef(null);
+
+  // sseClient is the client for the server sent events
+  // it is used to get the chat response from the server
+  const [sseClient, setSSEClient] = useState(null);
 
   useEffect(() => {
     if (isEditing.status) {
@@ -171,7 +165,7 @@ export default function ChatPage() {
     });
 
     setChatCount(0);
-
+    setSSEClient(null);
     getChatHistoryByUserID(paginationChatHistory)
       .then((data) => {
         setChatHistory(data.chats);
@@ -260,7 +254,7 @@ export default function ChatPage() {
       stream: stream,
     };
 
-    if(initialPrompt !== '') {
+    if (initialPrompt !== "") {
       requestBody.system_prompt = initialPrompt;
     }
 
@@ -276,9 +270,11 @@ export default function ChatPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       }
     );
+
+    setSSEClient(source);
 
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
@@ -289,6 +285,7 @@ export default function ChatPage() {
     source.addEventListener("error", (event) => {
       setIsEditing({ status: false, id: null });
       source.close();
+      setSSEClient(null);
       setLoading(false);
       if (!String(event.data).includes("[DONE]")) {
         return;
@@ -408,7 +405,7 @@ export default function ChatPage() {
           withCredentials: true,
         }
       );
-
+      setSSEClient(source);
       source.addEventListener("message", (event) => {
         let chatObject = JSON.parse(event.data);
         setChat(chatObject?.messages);
@@ -418,6 +415,71 @@ export default function ChatPage() {
       source.addEventListener("error", (event) => {
         setIsEditing({ status: false, id: null });
         source.close();
+        setLoading(false);
+        setSSEClient(null);
+        if (!String(event.data).includes("[DONE]")) {
+          return;
+        }
+      });
+
+      source.stream();
+    } else {
+      getChatResponse(requestBody)
+        .then((data) => {
+          if (!chatID) {
+            setChatID(data.id);
+          }
+          setChat(data?.messages);
+        })
+        .catch((err) => {
+          errorToast(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
+
+  // handleRegenerate is called when the user clicks on the regenerate button
+  // it regenerates the chat response
+  const handleRegenerate = () => {
+    let newMessages = chat.slice(0, chat.length - 1);
+    setLoading(true);
+    setChat(newMessages);
+
+    var requestBody = {
+      messages: newMessages,
+      model: model,
+      provider: modelIDtoProvider[model],
+      temperature: temperature,
+      additional_instructions: "Return the content in valid markdown format.",
+      stream: stream,
+      id: chatID,
+    };
+
+    if (stream) {
+      var source = new SSE(
+        window.REACT_APP_TAGORE_API_URL + "/chat/completions",
+        {
+          payload: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      setSSEClient(source);
+      source.addEventListener("message", (event) => {
+        let chatObject = JSON.parse(event.data);
+        setChat(chatObject?.messages);
+        setChatID(chatObject?.id);
+      });
+
+      source.addEventListener("error", (event) => {
+        setIsEditing({ status: false, id: null });
+        source.close();
+        setSSEClient(null);
         setLoading(false);
         if (!String(event.data).includes("[DONE]")) {
           return;
@@ -441,6 +503,16 @@ export default function ChatPage() {
         });
     }
   };
+
+  // handleStop is called when the user clicks on the 'Stop Generating' button
+  // it stops the chat response generation by aborting the sse connection
+  const handleStop = () => {
+    sseClient?.close();
+    setSSEClient(null);
+    setIsEditing({ status: false, id: null });
+    setLoading(false);
+  };
+
   return (
     // chat container, it has 2 sections
     // 1. chat list
@@ -503,6 +575,8 @@ export default function ChatPage() {
         sendButton={sendButton}
         handleChatEdit={handleChatEdit}
         chatID={chatID}
+        handleRegenerate={handleRegenerate}
+        handleStop={handleStop}
       />
 
       {/* prompt bar */}
