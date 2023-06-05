@@ -19,13 +19,12 @@ export async function getDocuments() {
   }
 }
 
-export const generateTextFromPrompt = async (requestBody, userID) => {
+export const generateTextFromPrompt = async (requestBody) => {
   const response = await fetch(
     `${window.REACT_APP_TAGORE_API_URL}/prompts/generate`,
     {
       headers: {
         "Content-Type": "application/json",
-        "X-User": userID,
       },
       method: "POST",
       body: JSON.stringify(requestBody),

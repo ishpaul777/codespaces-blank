@@ -128,12 +128,10 @@ func (p *promptService) GenerateTextStream(provider, model string, userID uint, 
 	}
 
 	isUsingChatModel := models.ModelBelongsToChat(model)
-	var prompt string
+	prompt := constructPromptForChat(input, generateFor)
 	if isUsingChatModel {
-		prompt = constructPromptForChat(input, generateFor)
 		generativeModel.GenerateTextUsingChatModelStream(model, prompt, maxTokens, additionalInstructions, dataChan, errChan)
+	} else {
+		generativeModel.GenerateTextUsingTextModelStream(model, prompt, maxTokens, dataChan, errChan)
 	}
-
-	prompt = constructPrompt(input, generateFor, additionalInstructions)
-	generativeModel.GenerateTextUsingTextModelStream(model, prompt, maxTokens, dataChan, errChan)
 }
