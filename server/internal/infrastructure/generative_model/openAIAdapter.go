@@ -136,7 +136,59 @@ func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(model string, prompt st
 	}
 }
 
-func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error) {
+func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(model string, prompt string, maxTokens uint, additionalInstructions string, dataChan chan<- string, errChan chan<- error) {
+	if model == "" {
+		model = openai.GPT3Dot5Turbo
+	}
+
+	systemMessage := openai.ChatCompletionMessage{
+		Role:    "system",
+		Content: prompts.SYSTEM_PROMPT_FOR_TEXT_GENERATION,
+	}
+
+	textGenerationMessage := openai.ChatCompletionMessage{
+		Role:    "user",
+		Content: prompt + ". " + additionalInstructions,
+	}
+
+	messages := []openai.ChatCompletionMessage{}
+	messages = append(messages, systemMessage)
+	messages = append(messages, textGenerationMessage)
+	ctx := context.Background()
+	req := openai.ChatCompletionRequest{
+		Messages:  messages,
+		Model:     model,
+		MaxTokens: int(maxTokens),
+	}
+
+	stream, err := o.Client.CreateChatCompletionStream(ctx, req)
+
+	if err != nil {
+		errChan <- err
+		return
+	}
+	responseMap := models.GenerateTextResponse{
+		Output:       "",
+		FinishReason: "",
+	}
+
+	for {
+		resp, err := stream.Recv()
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		responseMap.Output = responseMap.Output + resp.Choices[0].Delta.Content
+		responseMap.FinishReason = resp.Choices[0].FinishReason
+		respJson, err := json.Marshal(responseMap)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		dataChan <- string(respJson)
+	}
 
 }
 
