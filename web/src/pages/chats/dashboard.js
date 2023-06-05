@@ -45,7 +45,7 @@ export default function ChatPage() {
   }, []);
 
   const [isCopied, setIsCopied] = useState(false);
-  
+
   const handleCopyClick = (content) => {
     navigator.clipboard.writeText(content);
     setIsCopied(true);
@@ -61,6 +61,10 @@ export default function ChatPage() {
     value: "",
   });
   const editref = useRef(null);
+
+  // sseClient is the client for the server sent events
+  // it is used to get the chat response from the server
+  const [sseClient, setSSEClient] = useState(null);
 
   useEffect(() => {
     if (isEditing.status) {
@@ -161,7 +165,7 @@ export default function ChatPage() {
     });
 
     setChatCount(0);
-
+    setSSEClient(null);
     getChatHistoryByUserID(paginationChatHistory)
       .then((data) => {
         setChatHistory(data.chats);
@@ -270,6 +274,8 @@ export default function ChatPage() {
       }
     );
 
+    setSSEClient(source);
+
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -279,6 +285,7 @@ export default function ChatPage() {
     source.addEventListener("error", (event) => {
       setIsEditing({ status: false, id: null });
       source.close();
+      setSSEClient(null);
       setLoading(false);
       if (!String(event.data).includes("[DONE]")) {
         return;
@@ -398,7 +405,7 @@ export default function ChatPage() {
           withCredentials: true,
         }
       );
-
+      setSSEClient(source);
       source.addEventListener("message", (event) => {
         let chatObject = JSON.parse(event.data);
         setChat(chatObject?.messages);
@@ -409,6 +416,7 @@ export default function ChatPage() {
         setIsEditing({ status: false, id: null });
         source.close();
         setLoading(false);
+        setSSEClient(null);
         if (!String(event.data).includes("[DONE]")) {
           return;
         }
@@ -461,7 +469,7 @@ export default function ChatPage() {
           withCredentials: true,
         }
       );
-
+      setSSEClient(source);
       source.addEventListener("message", (event) => {
         let chatObject = JSON.parse(event.data);
         setChat(chatObject?.messages);
@@ -471,6 +479,7 @@ export default function ChatPage() {
       source.addEventListener("error", (event) => {
         setIsEditing({ status: false, id: null });
         source.close();
+        setSSEClient(null);
         setLoading(false);
         if (!String(event.data).includes("[DONE]")) {
           return;
@@ -498,10 +507,10 @@ export default function ChatPage() {
   // handleStop is called when the user clicks on the 'Stop Generating' button
   // it stops the chat response generation by aborting the sse connection
   const handleStop = () => {
-    console.log("the stream is stopped");
-    // setIsEditing({ status: false, id: null });
-    // source.close();
-    // setLoading(false);
+    sseClient?.close();
+    setSSEClient(null);
+    setIsEditing({ status: false, id: null });
+    setLoading(false);
   };
 
   return (

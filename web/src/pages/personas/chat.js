@@ -71,6 +71,8 @@ export const PersonaChat = () => {
   });
   const [deleteChatHistoryIndex, setDeleteChatHistoryIndex] = useState(null);
 
+  const [sseClient, setSSEClient] = useState(null);
+
   /* 
     handlers for the chat page
   */
@@ -191,7 +193,7 @@ export const PersonaChat = () => {
       page: 1,
       search_query: "",
     });
-
+    setSSEClient(null);
     setChatCount(0);
 
     getPersonaChatsByUserID(id, paginationChatHistory);
@@ -230,7 +232,6 @@ export const PersonaChat = () => {
 
     setChat(newMessages);
     setCurrentPrompt("");
-
     var requestBody = {
       messages: newMessages,
       additional_instructions:
@@ -253,7 +254,7 @@ export const PersonaChat = () => {
         withCredentials: true,
       }
     );
-
+    setSSEClient(source);
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -264,6 +265,7 @@ export const PersonaChat = () => {
       setIsEditing({ status: false, id: null });
       source.close();
       setChatLoading(false);
+      setSSEClient(null);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -295,7 +297,7 @@ export const PersonaChat = () => {
         withCredentials: true,
       }
     );
-
+    setSSEClient(source);
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -306,6 +308,7 @@ export const PersonaChat = () => {
       setIsEditing({ status: false, id: null });
       source.close();
       setChatLoading(false);
+      setSSEClient(null);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -382,7 +385,7 @@ export const PersonaChat = () => {
         withCredentials: true,
       }
     );
-
+    setSSEClient(source);
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -393,6 +396,7 @@ export const PersonaChat = () => {
       setIsEditing({ status: false, id: null });
       source.close();
       setChatLoading(false);
+      setSSEClient(null);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -401,9 +405,11 @@ export const PersonaChat = () => {
     source.stream();
   };
 
-  // const handleStop = () => {
-  //   console.log(chat)
-  // }
+  const handleStop = () => {
+    sseClient?.close();
+    setSSEClient(null);
+    setChatLoading(false);
+  };
   return (
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
       {loading ? (
@@ -603,12 +609,15 @@ export const PersonaChat = () => {
             </div>
             {/* chat input container */}
             <div className="py-4 w-full flex flex-col gap-4 justify-center items-center">
-              {/* {chatLoading && (
-                <button className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2" onClick={handleStop}>
+              {chatLoading && (
+                <button
+                  className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+                  onClick={handleStop}
+                >
                   <GrStop color="#000" size={"16px"} />
                   Stop Generating
                 </button>
-              )} */}
+              )}
               {!chatLoading && chat?.length >= 2 && (
                 <button
                   className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
