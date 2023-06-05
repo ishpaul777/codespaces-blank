@@ -250,7 +250,7 @@ export const PersonaChat = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       }
     );
 
@@ -272,7 +272,6 @@ export const PersonaChat = () => {
     source.stream();
   };
 
-
   const handleEdit = (messages, index) => {
     setChatLoading(true);
     messages[index].content = isEditing.value;
@@ -293,7 +292,7 @@ export const PersonaChat = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       }
     );
 
@@ -359,11 +358,10 @@ export const PersonaChat = () => {
     }
   }, [isEditing.status]);
 
-
-  const handleRegenerate = () => {    
+  const handleRegenerate = () => {
     let newMessages = chat.slice(0, chat.length - 1);
     setChatLoading(true);
-    setChat(newMessages)
+    setChat(newMessages);
 
     var requestBody = {
       messages: newMessages,
@@ -381,10 +379,10 @@ export const PersonaChat = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true
+        withCredentials: true,
       }
     );
-      
+
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -401,7 +399,6 @@ export const PersonaChat = () => {
     });
 
     source.stream();
-
   };
 
   // const handleStop = () => {
@@ -612,8 +609,11 @@ export const PersonaChat = () => {
                   Stop Generating
                 </button>
               )} */}
-              {(!chatLoading && chat?.length >= 2) && (
-                <button className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2" onClick={handleRegenerate}>
+              {!chatLoading && chat?.length >= 2 && (
+                <button
+                  className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+                  onClick={handleRegenerate}
+                >
                   <IoReloadOutline color="#000" size={"16px"} />
                   Regenerate Response
                 </button>

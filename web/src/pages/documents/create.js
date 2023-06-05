@@ -11,7 +11,7 @@ import { SizeButton } from "../../components/buttons/SizeButton";
 import { BiSave } from "react-icons/bi";
 import { generateTextFromPrompt } from "../../actions/text";
 import { useNavigate } from "react-router-dom";
-import { SSE } from 'sse.js';
+import { SSE } from "sse.js";
 export default function Document() {
   const [prompt, setPrompt] = useState("");
 
@@ -29,7 +29,6 @@ export default function Document() {
 
   // loading is a boolean variable which determines whether the backend is composing something or not
   const [loading, setLoading] = useState(false);
-
 
   const [stream, setStream] = useState(true);
   // continueButtonState is a boolean variable which determines different attributes of the continue button
@@ -389,59 +388,59 @@ export default function Document() {
           </div>
         </div>
         <div className="w-full flex justify-center">
-        <div className="w-[60%] py-1">
-          <ScooterCore
-            placeholder="Write your content here. Press / for commands and /generate for AI commands"
-            editorInstance={(editor) => setEditor(editor)}
-            initialValue={editorData}
-            heightStrategy="flexible"
-            menuType="bubble"
-            onChange={(change) => {
-              setEditorData(change?.html);
-            }}
-            tagoreConfig={{
-              stream: true,
-              sse : (input, selectedOption) => {
-                let source = new SSE(
-                  window.REACT_APP_TAGORE_API_URL + "/prompts/generate",
-                  {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    withCredentials: true,
-                    payload: JSON.stringify({
-                      input: input,
-                      generate_for: selectedOption,
-                      provider: "openai",
-                      stream: true,
-                      model: "gpt-3.5-turbo", //"gpt-3.5-turbo",
-                      additional_instructions:
-                        "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
-                      max_tokens: 2000,
-                    }),
-                  }
-                );
+          <div className="w-[60%] py-1">
+            <ScooterCore
+              placeholder="Write your content here. Press / for commands and /generate for AI commands"
+              editorInstance={(editor) => setEditor(editor)}
+              initialValue={editorData}
+              heightStrategy="flexible"
+              menuType="bubble"
+              onChange={(change) => {
+                setEditorData(change?.html);
+              }}
+              tagoreConfig={{
+                stream: true,
+                sse: (input, selectedOption) => {
+                  let source = new SSE(
+                    window.REACT_APP_TAGORE_API_URL + "/prompts/generate",
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      withCredentials: true,
+                      payload: JSON.stringify({
+                        input: input,
+                        generate_for: selectedOption,
+                        provider: "openai",
+                        stream: true,
+                        model: "gpt-3.5-turbo", //"gpt-3.5-turbo",
+                        additional_instructions:
+                          "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+                        max_tokens: 2000,
+                      }),
+                    }
+                  );
 
-                return source;
-              },
-              fetcher: async (input, options) => {
-                const requestBody = {
-                  input: input,
-                  generate_for: options,
-                  provider: "openai",
-                  stream: false,
-                  model: "gpt-3.5-turbo",
-                  additional_instructions:
-                    "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
-                };
+                  return source;
+                },
+                fetcher: async (input, options) => {
+                  const requestBody = {
+                    input: input,
+                    generate_for: options,
+                    provider: "openai",
+                    stream: false,
+                    model: "gpt-3.5-turbo",
+                    additional_instructions:
+                      "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+                  };
 
-                const response = await generateTextFromPrompt(requestBody);
-                return response
-              },
-            }}
-          />
-        </div>
+                  const response = await generateTextFromPrompt(requestBody);
+                  return response;
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

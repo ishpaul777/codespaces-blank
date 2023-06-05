@@ -87,15 +87,14 @@ export function Sidebar() {
     return name;
   };
 
-
   useEffect(() => {
     const path = window.location.pathname;
 
     let index = 0;
-    if(process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       // find index of the menu option based on the path
       menuOptions.forEach((option, currentIndex) => {
-        if(`/.factly/tagore/web${option}` === path){
+        if (`/.factly/tagore/web${option}` === path) {
           index = currentIndex;
           return;
         }
@@ -103,12 +102,12 @@ export function Sidebar() {
     } else {
       index = menuOptions.findIndex((option) => option.linkTo === path);
     }
-    if(index > -1) {
+    if (index > -1) {
       setActiveTab(index);
     } else {
       setActiveTab(0);
     }
-  }, [])
+  }, []);
   return (
     <div
       className={`p-5 pt-8 w-fit bg-background-sidebar h-screen flex flex-col`}
