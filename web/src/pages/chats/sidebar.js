@@ -75,7 +75,6 @@ export default function SideBar({
   };
 
   const handleDrop = () => {
-    console.log("drop", draggingChatId, dragOverCollectionId);
     if (draggingChatId && dragOverCollectionId) {
       // if the chat is not already in the collection add it
       const collection = collections.find((collection) => collection.id === dragOverCollectionId);

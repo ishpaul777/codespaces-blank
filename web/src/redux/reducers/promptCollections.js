@@ -1,21 +1,4 @@
-const initialState = [
-	{
-		id: 1, name: "First Collection",
-		prompts: [{
-			created_at: "2023-06-02T08:06:16.014478Z", created_by_id: 3,
-			deleted_at: null, description: "this is test", id: 1, prompt: "{{new}}",
-			prompt_template_collection: null,
-			prompt_template_collection_id: null,
-			title: "new",
-			updated_at: "2023-06-02T08:06:16.014478Z",
-			updated_by_id: 0
-		}]
-	},
-	{
-		id: 2, name: "Second Collection",
-		chats: [{ id: 1, name: "Chat 1" }, { id: 2, name: "Chat 2" }]
-	},
-];
+const initialState = [];
 
 const promptCollectionsReducer = (state = initialState, action) => {
 	switch (action.type) {

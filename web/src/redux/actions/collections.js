@@ -16,7 +16,6 @@ const createCollection = (collection) => async (dispatch) => {
 		}
 		)
 		.then((data) => {
-			console.log(data);
 			dispatch({
 				type: "CREATE_COLLECTION",
 				payload: data,

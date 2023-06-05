@@ -20,7 +20,7 @@ import {
   getAllPrompts,
   updatePrompt,
 } from "../../redux/actions/promptsActions";
-
+import { createPromptCollection, deletePromptCollection, getAllPromptCollections } from "../../redux/actions/promptCollections";
 import { BsCaretRightFill, BsCaretDownFill } from "react-icons/bs";
 
 
@@ -59,8 +59,9 @@ function PromptBar({ open, isFolderVisible }) {
 
   const handlePromptCollectionCreate = () => {
     if (promptcollectionName === "") return;
-    // TODO: create prompt collection
-    // dispatch(createPromptCollection(promptcollectionName));
+    dispatch(createPromptCollection({ name: promptcollectionName }));
+    setPromptCollectionName("");
+    setPromptCollectionCreateFormVisible(false);
   };
 
   const promptcreateCollectionRef = useRef(null);
@@ -146,12 +147,7 @@ function PromptBar({ open, isFolderVisible }) {
         errorToast(error.message);
       });
   }, [pagination]);
-  useEffect(() => {
-    if (isFolderVisible) {
-      // TODO: get all prompt collections
-      // dispatch(getAllPromptCollections());
-    }
-  }, []);
+
   function handleDeletePrompt(index) {
     deletePromptTemplate(index)
       .then(() => {
@@ -166,6 +162,12 @@ function PromptBar({ open, isFolderVisible }) {
 
   const prompts = useSelector((state) => state.prompts);
   const promptCollections = useSelector((state) => state.promptCollections);
+
+  useEffect(() => {
+    if (isFolderVisible) {
+      dispatch(getAllPromptCollections());
+    }
+  }, []);
 
   const [promptCount, setPromptCount] = useState(0);
 
@@ -216,6 +218,7 @@ function PromptBar({ open, isFolderVisible }) {
     const prompt = collection.prompts.find((prompt) => prompt.id === draggingPromptId);
     if (!prompt) {
       // TODO : add to collection
+
     }
 
     console.log("draggingPromptId", draggingPromptId);
@@ -325,8 +328,6 @@ function PromptBar({ open, isFolderVisible }) {
   };
 
   const maxListChars = 15;
-
-  console.log("promptCollections", promptCollections);
 
   return (
     <>
@@ -476,7 +477,7 @@ function PromptBar({ open, isFolderVisible }) {
                     handleDragEnter(item.id);
                   }}
                   className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
-                    ${2/*dragOverCollectionId === item.id && "bg-hover-on-white"*/}`}
+                    ${dragOverCollectionId === item.id && "bg-hover-on-white"}`}
                   onClick={() => {
                     if (currentPromptCollectionIndex === item.id) {
                       setCurrentPromptCollectionIndex(null);
@@ -506,10 +507,9 @@ function PromptBar({ open, isFolderVisible }) {
                         <>
                           <AiOutlineCheck
                             size={styles.iconSize}
-                            // TODO: handle collection delete
                             onClick={(E) => {
                               E.stopPropagation();
-                              // handleCollectionDelete(item.id);
+                              dispatch(deletePromptCollection(item.id));
                             }}
                           />
                           <AiOutlineClose

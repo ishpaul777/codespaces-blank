@@ -4,7 +4,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import promptsReducer from "./reducers/prompts";
 import thunk from "redux-thunk";
-import collectionsReducer from "./reducers/collections";
+import collectionsReducer from "./reducers/chatcollections";
 import promptCollectionsReducer from "./reducers/promptCollections";
 
 
