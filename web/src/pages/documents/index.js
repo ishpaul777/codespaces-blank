@@ -15,7 +15,7 @@ export default function DocumentPage() {
 
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 2,
+    limit: 10,
     search_query: "",
   });
 

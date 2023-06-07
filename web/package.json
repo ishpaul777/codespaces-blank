@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@factly/scooter": "^0.0.12",
-    "@factly/scooter-core": "^0.0.22",
+    "@factly/scooter-core": "^0.0.23",
     "@material-tailwind/react": "^2.0.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@tailwindcss/typography": "^0.5.9",
