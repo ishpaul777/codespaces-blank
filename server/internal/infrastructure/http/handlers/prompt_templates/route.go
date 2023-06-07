@@ -39,5 +39,5 @@ func (h *httpHandler) templateCollectionRoutes() chi.Router {
 func InitRoutes(router *chi.Mux, documentService services.PromptTemplateService, logger logger.ILogger) {
 	httpHandler := &httpHandler{documentService, logger}
 	router.Mount("/prompt_templates", httpHandler.promptTemplateRoutes())
-	router.Mount("/prompt_template_collection", httpHandler.templateCollectionRoutes())
+	router.Mount("/prompt_template_collections", httpHandler.templateCollectionRoutes())
 }
