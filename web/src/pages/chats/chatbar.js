@@ -53,7 +53,7 @@ export default function ChatBar({
   handleStop,
 }) {
   return (
-    <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
+    <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-[80%] ">
       <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
         {chat.length === 0 ? (
           <>
