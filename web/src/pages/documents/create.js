@@ -91,6 +91,8 @@ export default function Document() {
     setDocumentName(value);
   };
 
+  const [sseClient, setSseClient] = useState(null);
+
   const actionList = [
     {
       onClick: () => {
@@ -183,6 +185,7 @@ export default function Document() {
       }
     );
 
+    setSseClient(source);
     source.addEventListener("message", (event) => {
       let docObject = JSON.parse(event.data);
       setPromptData(docObject?.output);
@@ -267,6 +270,13 @@ export default function Document() {
     setID(searchParams?.get("id"));
     setIsEdit(searchParams?.get("isEdit"));
   }, [searchParams]);
+
+
+  const handleStop = () => {
+    sseClient.close();
+    setLoading(false);
+    setSseClient(null);
+  }
 
   return (
     // container for new/edit document page
@@ -397,6 +407,14 @@ export default function Document() {
               clickAction={() => handleCompose()}
               isPrimary={true}
             ></DocActionButton>
+            {
+              loading && (
+                <DocActionButton
+                  text={"Stop"}
+                  clickAction={() => handleStop()}
+              ></DocActionButton>
+              )
+            }
             {continueButtonState.visibility && (
               <DocActionButton
                 isLoading={false}
