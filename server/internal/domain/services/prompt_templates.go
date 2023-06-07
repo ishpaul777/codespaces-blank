@@ -17,6 +17,8 @@ type PromptTemplateService interface {
 	GetAllPromptTemplateCollections(userID uint, pagination helper.Pagination) ([]models.PromptTemplateCollection, uint, error)
 	GetPromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint) (*models.PromptTemplateCollection, error)
 	UpdatePromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint, name string) (*models.PromptTemplateCollection, error)
+	AddPromptTemplateToCollection(userID uint, promptTemplateID uint, promptTemplateCollectionID uint) error
+	RemovePromptTemplateFromCollection(userID uint, promptTemplateID uint, promptTemplateCollectionID uint) error
 }
 
 type promptTemplateService struct {
@@ -66,6 +68,14 @@ func (ps *promptTemplateService) GetPromptTemplateCollectionByID(userID uint, pr
 
 func (ps *promptTemplateService) UpdatePromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint, name string) (*models.PromptTemplateCollection, error) {
 	return ps.promptTemplateRepository.UpdatePromptTemplateCollectionByID(userID, promptTemplateCollectionID, name)
+}
+
+func (ps *promptTemplateService) AddPromptTemplateToCollection(userID uint, promptTemplateID uint, promptTemplateCollectionID uint) error {
+	return ps.promptTemplateRepository.AddPromptTemplateToCollection(userID, promptTemplateID, promptTemplateCollectionID)
+}
+
+func (ps *promptTemplateService) RemovePromptTemplateFromCollection(userID uint, promptTemplateID uint, promptTemplateCollectionID uint) error {
+	return ps.promptTemplateRepository.RemovePromptTemplateFromCollection(userID, promptTemplateID, promptTemplateCollectionID)
 }
 
 func NewPromptTemplateService(repository repositories.PromptTemplateRepository) PromptTemplateService {
