@@ -4,15 +4,24 @@ import InfoIcon from "../../assets/icons/info-icon.svg";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import Button from "../../components/buttons/SearchButton";
 import { ScooterCore } from "@factly/scooter-core";
-import { IoShareSocialOutline } from "react-icons/io5";
-import { MdDeleteOutline } from "react-icons/md";
+// import { IoShareSocialOutline } from "react-icons/io5";
+// import { MdDeleteOutline } from "react-icons/md";
 import { DocActionButton } from "../../components/buttons/DocActionButton";
 import { SizeButton } from "../../components/buttons/SizeButton";
-import { BiSave } from "react-icons/bi";
-import { generateTextFromPrompt } from "../../actions/text";
-import { useNavigate } from "react-router-dom";
+import {
+  createDocument,
+  deleteDocument,
+  generateTextFromPrompt,
+  getDocumentByID,
+  updateDocument,
+} from "../../actions/text";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { SSE } from "sse.js";
+import { ToastContainer } from "react-toastify";
+import { errorToast, successToast } from "../../util/toasts";
 export default function Document() {
+  const [searchParams] = useSearchParams();
+
   const [prompt, setPrompt] = useState("");
 
   // documentName maintains the state of name of the document
@@ -30,7 +39,13 @@ export default function Document() {
   // loading is a boolean variable which determines whether the backend is composing something or not
   const [loading, setLoading] = useState(false);
 
-  const [stream, setStream] = useState(true);
+  // id stores the id of the document
+  const [id, setID] = useState("" || searchParams.get("id"));
+
+  // isEdit is a boolean variable which determines whether the document is being edited or not
+  const [isEdit, setIsEdit] = useState(false || searchParams.get("isEdit"));
+
+  // const [stream, setStream] = useState(true);
   // continueButtonState is a boolean variable which determines different attributes of the continue button
   const [continueButtonState, setContinueButtonState] = useState({
     visibility: false,
@@ -49,6 +64,9 @@ export default function Document() {
   const [editorData, setEditorData] = useState(``);
 
   const [promptData, setPromptData] = useState(``);
+
+  // language stores the language of the document
+  const [language, setLanguage] = useState("english");
 
   const handleGoBack = () => {
     navigate("/documents");
@@ -75,80 +93,114 @@ export default function Document() {
 
   const actionList = [
     {
-      icon: BiSave,
-      onClick: () => {},
-      name: "save",
+      onClick: () => {
+        if (documentName === "") {
+          errorToast("document name cannot be empty");
+          return;
+        }
+
+        if (editor?.getHTML() === "") {
+          errorToast("document content cannot be empty");
+          return;
+        }
+
+        let requestBody = {
+          title: documentName,
+          description: editor?.getHTML(),
+        };
+
+        if (id && isEdit) {
+          updateDocument(id, requestBody)
+            .then(() => {
+              successToast("document updated successfully");
+            })
+            .catch(() => {
+              errorToast("error in updating document");
+            });
+        } else {
+          createDocument(requestBody)
+            .then((response) => {
+              navigate(`/documents/create?id=${response?.id}&isEdit=true`);
+              successToast("document created successfully");
+            })
+            .catch(() => {
+              errorToast("error in creating document");
+            });
+        }
+      },
+      name: "Save",
     },
     {
-      onClick: () => {},
-      icon: IoShareSocialOutline,
-      name: "share",
-    },
-    {
-      icon: MdDeleteOutline,
-      onClick: () => {},
-      name: "delete",
+      onClick: () => {
+        if (id && isEdit) {
+          deleteDocument(id)
+            .then(() => {
+              successToast("document deleted successfully");
+              setTimeout(() => {
+                navigate("/documents");
+              }, 1000);
+            })
+            .catch(() => {
+              errorToast("error in deleting document");
+            });
+        } else {
+          errorToast("document not created yet");
+        }
+      },
+      name: "Delete",
     },
   ];
 
-  const generatePrompt = () => {
-    let mainPrompt = prompt;
-
-    let nOfKeywords = 0;
-    if (keywords !== "") {
-      nOfKeywords = keywords.split(",").length;
-    }
-
-    if (nOfKeywords) {
-      let keyWordPrompt = ". It should have keywords like ";
-      keywords.split(",").forEach((keyword, index) => {
-        if (index === nOfKeywords - 1) {
-          keyWordPrompt += `${keyword}`;
-        } else {
-          keyWordPrompt += `${keyword},`;
-        }
-      });
-      mainPrompt += keyWordPrompt;
-    }
-
-    let htmlPrompt = `. You are used for text editor and the text editor renders only HTML, so please return using HTML tags without newline tags. For example -     <h1>Heading</h1>
-        <h2>Subheading</h2>
-        <p>This is some text.</p>
-    `;
-
-    mainPrompt += htmlPrompt;
-    return mainPrompt;
-  };
-
   const handleCompose = () => {
-    const prompt = generatePrompt();
+    let inputPrompt = `${prompt}.`;
+    if (keywords) {
+      inputPrompt += ` It should have keywords like ${keywords}.`;
+    }
+
+    if (language) {
+      inputPrompt += ` It should be in ${language}.`;
+    }
+
     setLoading(true);
-    fetch(`${window.REACT_APP_TAGORE_API_URL}/prompts/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        input: prompt,
-        max_tokens: selectedOutputLength.length,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        let clean_html_string = data?.output.replace(/\n|\t|(?<=>)\s*/g, "");
-        setPromptData(clean_html_string);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    let source = new SSE(
+      window.REACT_APP_TAGORE_API_URL + "/prompts/generate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        payload: JSON.stringify({
+          input: inputPrompt,
+          generate_for: "",
+          provider: "openai",
+          stream: true,
+          model: "gpt-3.5-turbo", //"gpt-3.5-turbo",
+          additional_instructions:
+            "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+          max_tokens: 2000,
+        }),
+      }
+    );
+
+    source.addEventListener("message", (event) => {
+      let docObject = JSON.parse(event.data);
+      setPromptData(docObject?.output);
+    });
+
+    source.addEventListener("error", (event) => {
+      source.close();
+      setLoading(false);
+      if (!String(event.data).includes("[DONE]")) {
+        return;
+      }
+    });
+    source.stream();
   };
 
   useEffect(() => {
     // inserting the prompt data in the editor when the promptData state variable would change
-    editor?.commands.insertContent(promptData);
+    editor?.commands?.setContent(promptData);
   }, [promptData]);
 
   const [selectedOutputLength, setSelectedOutputLength] = useState({
@@ -196,6 +248,25 @@ export default function Document() {
     setCustomLength(valueInInt);
     setSelectedOutputLength({ length: valueInInt, name: "Custom" });
   };
+
+  useEffect(() => {
+    if (id && isEdit) {
+      getDocumentByID(id)
+        .then((response) => {
+          setDocumentName(response?.title);
+          setIsSubmitVisible(false);
+          setPromptData(response?.description);
+        })
+        .catch((error) => {
+          errorToast("error in fetching document");
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    setID(searchParams?.get("id"));
+    setIsEdit(searchParams?.get("isEdit"));
+  }, [searchParams]);
 
   return (
     // container for new/edit document page
@@ -266,10 +337,11 @@ export default function Document() {
             <div className="flex w-full pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg bg-white">
               <select
                 className={`appearance-none w-[98%] cursor-pointer focus:outline-none`}
+                onChange={(e) => setLanguage(e.target.value)}
               >
                 <option value="english">English</option>
-                <option value="spanish">Hindi</option>
-                <option value="french">Telugu</option>
+                <option value="hindi">Hindi</option>
+                <option value="telugu">Telugu</option>
               </select>
               <img src={ArrowIcon} />
             </div>
@@ -335,7 +407,7 @@ export default function Document() {
             )}
             <DocActionButton
               text={"Reset"}
-              clickAction={() => editor?.commands.setContent("")}
+              clickAction={() => editor?.commands?.setContent("")}
               isPrimary={false}
             ></DocActionButton>
           </div>
@@ -353,7 +425,7 @@ export default function Document() {
               <>
                 <input
                   defaultValue={documentName}
-                  placeholder="enter the file name"
+                  placeholder="enter title for the document"
                   className="outline-none w-2/5"
                   onChange={(e) => onNameChange(e.target.value)}
                 ></input>
@@ -371,18 +443,23 @@ export default function Document() {
             {actionList.map((actionIcon) => {
               return (
                 // action icon container
-                <div
-                  className={`bg-background-secondary p-1 rounded-md cursor-pointer hover:bg-white`}
-                >
-                  <actionIcon.icon
-                    className={`text-2xl text-black ${
-                      actionIcon.name === "delete"
-                        ? "hover:text-[#FF4136]"
-                        : "hover:text-[#0074D9]"
-                    }`}
-                    onClick={actionIcon.onClick}
-                  />
-                </div>
+                <>
+                  {actionIcon.name === "Delete" ? (
+                    <div
+                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#FF0000] hover:text-white`}
+                      onClick={() => actionIcon.onClick()}
+                    >
+                      {actionIcon.name}
+                    </div>
+                  ) : (
+                    <div
+                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#007BFF] hover:text-white`}
+                      onClick={() => actionIcon.onClick()}
+                    >
+                      {actionIcon.name}
+                    </div>
+                  )}
+                </>
               );
             })}
           </div>
@@ -443,6 +520,7 @@ export default function Document() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
