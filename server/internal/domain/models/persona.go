@@ -14,14 +14,15 @@ var (
 
 type Persona struct {
 	Base
-	Name        string     `gorm:"column:name;" json:"name"`
+	Name        string     `gorm:"column:name" json:"name"`
+	Slug        string     `gorm:"column:slug" json:"slug"`
 	Description string     `gorm:"column:description" json:"description"`
 	Prompt      string     `gorm:"column:prompt" json:"prompt"`
 	Avatar      string     `gorm:"column:avatar" json:"avatar"`
 	Visibility  VISIBILITY `gorm:"column:visibility" json:"visibility"`
 	Provider    string     `gorm:"column:provider" json:"provider"`
 	Model       string     `gorm:"column:model;" json:"model"`
-	IsDefault   bool       `gorm:"column:is_default" json:"is_default"`
+	IsDefault   bool       `gorm:"column:is_default; default false" json:"is_default"`
 }
 
 func ValidateVisibility(v VISIBILITY) bool {

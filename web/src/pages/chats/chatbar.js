@@ -13,6 +13,8 @@ import PromptInput from "./PromptInput";
 import rehypeMathjax from "rehype-mathjax";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import { IoReloadOutline } from "react-icons/io5";
+import { GrStop } from "react-icons/gr";
 
 export default function ChatBar({
   chat,
@@ -48,12 +50,14 @@ export default function ChatBar({
   sendButton,
   handleChatEdit,
   chatID,
+  handleRegenerate,
+  handleStop,
 }) {
   const [isPromptModalVisible, setIsPromptModalVisible] = React.useState(false);
   const [isInitialPromptModalVisible, setIsInitialPromptModalVisible] = React.useState(false);
 
   return (
-    <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
+    <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-[80%] ">
       <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
         {chat.length === 0 ? (
           <>
@@ -65,7 +69,11 @@ export default function ChatBar({
                 }}
                 style={{ width: "fit-content", height: "fit-content" }}
               >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                {chatSiderCollapse ? (
+                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                ) : (
+                  <AiOutlineMenuFold size={styles.fileIconSize} />
+                )}
               </button>
               <button
                 onClick={() => {
@@ -74,7 +82,11 @@ export default function ChatBar({
                 }}
                 style={{ width: "fit-content", height: "fit-content" }}
               >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                {promptSiderCollapse ? (
+                  <AiOutlineMenuFold size={styles.fileIconSize} />
+                ) : (
+                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                )}
               </button>
             </div>
             <div className="border-none w-full flex flex-col items-center p-4 gap-4">
@@ -346,6 +358,24 @@ export default function ChatBar({
         style={{ zIndex: isInitialPromptModalVisible ? -1 : 0 }}
       >
         {/* input division */}
+        {loading && (
+          <button
+            className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+            onClick={handleStop}
+          >
+            <GrStop color="#000" size={"16px"} />
+            Stop Generating
+          </button>
+        )}
+        {!loading && chat?.length >= 2 && (
+          <button
+            className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+            onClick={handleRegenerate}
+          >
+            <IoReloadOutline color="#000" size={"16px"} />
+            Regenerate Response
+          </button>
+        )}
         <div
           className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
         >

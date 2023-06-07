@@ -26,7 +26,7 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
       <div className="flex justify-evenly items-center flex-row border rounded-[10px] border-solid border-[#D0D5DD]">
         <button
           className="not-italic font-semibold leading-5 px-5 py-2.5"
-          onClick={() => setCurrentPage((prev) => (prev == 1 ? 1 : prev - 1))}
+          onClick={() => setCurrentPage((prev) => (prev === 1 ? 1 : prev - 1))}
         >
           <AiOutlineArrowLeft />
         </button>
@@ -34,7 +34,7 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
         <button
           className="not-italic font-semibold leading-5 px-5 py-2.5"
           onClick={() =>
-            setCurrentPage((prev) => (prev == totalPages ? prev : prev + 1))
+            setCurrentPage((prev) => (prev === totalPages ? prev : prev + 1))
           }
         >
           <AiOutlineArrowRight />

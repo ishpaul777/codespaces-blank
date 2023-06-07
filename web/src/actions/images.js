@@ -1,5 +1,5 @@
 export const getGeneratedImages = (request) => {
-  return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/images`, {
+  return fetch(`${window.REACT_APP_TAGORE_API_URL}/images`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export const generateVariationsOfImage = (file, n, model, provider) => {
   formData.append("n", n);
   formData.append("model", model);
   formData.append("provider", provider);
-  return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/images/variation`, {
+  return fetch(`${window.REACT_APP_TAGORE_API_URL}/images/variation`, {
     method: "POST",
     body: formData,
     credentials: "include",

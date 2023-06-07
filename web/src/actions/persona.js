@@ -30,7 +30,10 @@ export const getPersonaChatsByUserID = (personaID, pagination) => {
         limit: pagination.limit,
         page: pagination.page,
         search_query: pagination.search_query,
-      })
+      }),
+    {
+      credentials: "include",
+    }
   )
     .then((response) => {
       if (response.status === 200) {
@@ -55,6 +58,7 @@ export async function deletePersonaChatByID(personaID, chatID) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   }).then((response) => {
     if (response.status === 200) {
       return response.json();
@@ -76,6 +80,7 @@ export async function createPersona(requestBody) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(requestBody),
+    credentials: "include",
   }).then((response) => {
     if (response.status === 201) {
       return response.json();
@@ -91,6 +96,22 @@ export async function createPersona(requestBody) {
 // parameters: personaID
 export async function getPersonaByID(personaID) {
   return fetch(`${PERSONA_API}/${personaID}`, {
+    credentials: "include",
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      return response.json().then((data) => {
+        throw Error(data.errors?.[0].message);
+      });
+    }
+  });
+}
+
+// getDefaultPersona fetches the default persona from the server
+// endpoint: /personas/default
+export async function getDefaultPersona() {
+  return fetch(`${PERSONA_API}/default`, {
     credentials: "include",
   }).then((response) => {
     if (response.status === 200) {

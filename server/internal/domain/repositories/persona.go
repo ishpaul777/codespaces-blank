@@ -8,12 +8,13 @@ import (
 )
 
 type PersonaRepository interface {
-	CreatePersona(userID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY) (*models.Persona, error)
+	CreatePersona(userID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error)
 	DeletePersonaByID(userID, personaID uint) error
 	GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
 	GetPersonaByID(userID, personaID uint) (*models.Persona, error)
-	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY) (*models.Persona, error)
+	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error)
 	PersonaNameExists(name string) bool
+	GetAllDefaultPersonas() ([]models.Persona, error)
 
 	// PersonaChat Methods
 	CreatePersonaChat(userID, personaID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error)
@@ -21,7 +22,6 @@ type PersonaRepository interface {
 	GetPersonaChatByID(userID, personaID, chatID uint) (*models.PersonaChat, error)
 	GetAllPersonaChatsByUserID(userID, personaID uint, pagination helper.Pagination) ([]models.PersonaChat, uint, error)
 	DeletePersonaChatByID(userID, personaID, chatID uint) error
-	
 }
 
 func NewPersonaRepository(database db.IDatabaseService) (PersonaRepository, error) {

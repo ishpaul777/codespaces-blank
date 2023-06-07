@@ -1,14 +1,11 @@
 export async function getDocuments() {
-  const response = await fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/documents`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "GET",
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${window.REACT_APP_TAGORE_API_URL}/documents`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET",
+    credentials: "include",
+  });
 
   if (response.status === 200) {
     const data = await response.json();
@@ -19,13 +16,12 @@ export async function getDocuments() {
   }
 }
 
-export const generateTextFromPrompt = async (requestBody, userID) => {
+export const generateTextFromPrompt = async (requestBody) => {
   const response = await fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/prompts/generate`,
+    `${window.REACT_APP_TAGORE_API_URL}/prompts/generate`,
     {
       headers: {
         "Content-Type": "application/json",
-        "X-User": userID,
       },
       method: "POST",
       body: JSON.stringify(requestBody),

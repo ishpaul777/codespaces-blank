@@ -38,10 +38,6 @@ export const PersonaChat = () => {
 
   const { id } = useParams();
 
-  // reading data send from the link in react router dom
-  const location = useLocation();
-  const { name, desc, image } = location.state;
-
   const [persona, setPersona] = useState({});
 
   // state variables for the chat page
@@ -75,6 +71,8 @@ export const PersonaChat = () => {
   });
   const [deleteChatHistoryIndex, setDeleteChatHistoryIndex] = useState(null);
 
+  const [sseClient, setSSEClient] = useState(null);
+
   /* 
     handlers for the chat page
   */
@@ -101,7 +99,7 @@ export const PersonaChat = () => {
     return <div ref={elementRef} />;
   };
 
-  // const sseClient = new SSE(process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`);
+  // const sseClient = new SSE(window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`);
 
   // handleHistoryDeleteClick makes the the checked and close buttons visible by
   // setting the deleteChatHistoryIndex to the index of the chat in the chatHistory array
@@ -195,7 +193,7 @@ export const PersonaChat = () => {
       page: 1,
       search_query: "",
     });
-
+    setSSEClient(null);
     setChatCount(0);
 
     getPersonaChatsByUserID(id, paginationChatHistory);
@@ -234,7 +232,6 @@ export const PersonaChat = () => {
 
     setChat(newMessages);
     setCurrentPrompt("");
-
     var requestBody = {
       messages: newMessages,
       additional_instructions:
@@ -247,7 +244,7 @@ export const PersonaChat = () => {
     }
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -257,7 +254,7 @@ export const PersonaChat = () => {
         withCredentials: true,
       }
     );
-
+    setSSEClient(source);
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -268,6 +265,7 @@ export const PersonaChat = () => {
       setIsEditing({ status: false, id: null });
       source.close();
       setChatLoading(false);
+      setSSEClient(null);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -289,7 +287,7 @@ export const PersonaChat = () => {
     };
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -299,7 +297,7 @@ export const PersonaChat = () => {
         withCredentials: true,
       }
     );
-
+    setSSEClient(source);
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -310,6 +308,7 @@ export const PersonaChat = () => {
       setIsEditing({ status: false, id: null });
       source.close();
       setChatLoading(false);
+      setSSEClient(null);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -376,7 +375,7 @@ export const PersonaChat = () => {
     };
 
     var source = new SSE(
-      process.env.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
+      window.REACT_APP_TAGORE_API_URL + `/personas/${id}/chats`,
       {
         payload: JSON.stringify(requestBody),
         method: "POST",
@@ -386,7 +385,7 @@ export const PersonaChat = () => {
         withCredentials: true,
       }
     );
-
+    setSSEClient(source);
     source.addEventListener("message", (event) => {
       let chatObject = JSON.parse(event.data);
       setChat(chatObject?.messages);
@@ -397,6 +396,7 @@ export const PersonaChat = () => {
       setIsEditing({ status: false, id: null });
       source.close();
       setChatLoading(false);
+      setSSEClient(null);
       if (!String(event.data).includes("[DONE]")) {
         return;
       }
@@ -406,7 +406,9 @@ export const PersonaChat = () => {
   };
 
   const handleStop = () => {
-    console.log(chat);
+    sseClient?.close();
+    setSSEClient(null);
+    setChatLoading(false);
   };
   return (
     <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
@@ -434,7 +436,7 @@ export const PersonaChat = () => {
             chatOptionsList={chatOptionsList}
             isFolderVisible={false}
           />
-          <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0">
+          <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-full">
             <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
               <div
                 className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}
@@ -607,12 +609,15 @@ export const PersonaChat = () => {
             </div>
             {/* chat input container */}
             <div className="py-4 w-full flex flex-col gap-4 justify-center items-center">
-              {/* {chatLoading && (
-                <button className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2" onClick={handleStop}>
+              {chatLoading && (
+                <button
+                  className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+                  onClick={handleStop}
+                >
                   <GrStop color="#000" size={"16px"} />
                   Stop Generating
                 </button>
-              )} */}
+              )}
               {!chatLoading && chat?.length >= 2 && (
                 <button
                   className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"

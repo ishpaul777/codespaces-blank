@@ -9,6 +9,7 @@ type Pagination struct {
 	Page        int
 	Limit       int
 	SearchQuery string
+	Queries     map[string]string
 }
 
 // GetPagination returns pagination object

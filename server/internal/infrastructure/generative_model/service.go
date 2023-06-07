@@ -16,7 +16,7 @@ type TextGenerativeModel interface {
 	GenerateTextUsingTextModel(prompt, model string, maxTokens uint) (interface{}, string, error)
 	GenerateTextUsingChatModel(prompt, model, additionalInstructions string, maxTokens uint) (interface{}, string, error)
 	GenerateTextUsingTextModelStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error)
-	GenerateTextUsingChatModelStream(model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error)
+	GenerateTextUsingChatModelStream(model string, prompt string, maxTokens uint, additionalInstructions string, dataChan chan<- string, errChan chan<- error)
 	EditText(input string, instruction string) (interface{}, error)
 }
 

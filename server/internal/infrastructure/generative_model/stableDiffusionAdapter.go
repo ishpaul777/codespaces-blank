@@ -75,6 +75,8 @@ func (s *StableDiffusionAdapter) LoadConfig() error {
 // validateModel checks if the model is valid or not
 func validateModel(model string) bool {
 	switch model {
+	case "stable-diffusion-xl-beta-v2-2-2":
+		return true
 	case "stable-diffusion-v1-5":
 		return true
 	case "stable-diffusion-512-v2-1":
@@ -88,7 +90,7 @@ func validateModel(model string) bool {
 
 func (s *StableDiffusionAdapter) GenerateImage(model string, nOfImages int32, prompt string) ([]models.GeneratedImage, error) {
 	if model == "" {
-		model = "stable-diffusion-v1-5"
+		model = "stable-diffusion-xl-beta-v2-2-2"
 	}
 
 	if !validateModel(model) {
@@ -151,7 +153,7 @@ func (s *StableDiffusionAdapter) GenerateImage(model string, nOfImages int32, pr
 
 func (s *StableDiffusionAdapter) GenerateVariation(model string, image *os.File, nOfImages int32) ([]models.GeneratedImage, error) {
 	if model == "" {
-		model = "stable-diffusion-v1-5"
+		model = "stable-diffusion-xl-beta-v2-2-2"
 	}
 
 	if !validateModel(model) {

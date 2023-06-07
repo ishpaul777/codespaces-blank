@@ -24,12 +24,12 @@ func NewPromptService(repository repositories.PromptRepository) PromptService {
 
 func GetPromptPrefix(generateFor string) string {
 	promptObject := map[string]string{
-		"summary":                     "```Please summarize the following article. The article provides important insights and analysis that I need to condense into a concise summary. [Article: %s]```",
+		"summary": "```Please summarize the following article. The article provides important insights and analysis that I need to condense into a concise summary. [Article: %s]```",
 
-		"continue-writing":            "```The user has started writing a story/article/blog post. Please continue writing the story/article/blog post. Do not repeat what's already written. Here's the beginning: [%s]```",
+		"continue-writing": "```The user has started writing a story/article/blog post. Please continue writing the story/article/blog post. Do not repeat what's already written. Here's the beginning: [%s]```",
 
-		"translate-spanish":           "```Translate from English to Spanish. User will provide the word or phrase you want to translate and you will provide the corresponding translation. Try to understand the user input preferences. Let's work together to ensure that the translation is accurate and reflects the original meaning in English. The input text is [%s]```",
-		
+		"translate-spanish": "```Translate from English to Spanish. User will provide the word or phrase you want to translate and you will provide the corresponding translation. Try to understand the user input preferences. Let's work together to ensure that the translation is accurate and reflects the original meaning in English. The input text is [%s]```",
+
 		"translate-chinese":           "```Translate from English to Chinese. User will provide the word or phrase you want to translate and you will provide the corresponding translation. Try to understand the user input preferences. Let's work together to ensure that the translation is accurate and reflects the original meaning in English. The input text is [%s]```",
 		"to-do-list":                  "```Create a to-do list for user based on there input. User will provide the task or text he/she would like to create the to-do list for. Once you have this information, you will generate a list of action items/tasks that you could consider adding to there to-do list. When you have your list, please review each item and prioritize or assign due dates as necessary to help you stay on track. The user input is [%s].```",
 		"find-action-item":            "",
@@ -127,6 +127,11 @@ func (p *promptService) GenerateTextStream(provider, model string, userID uint, 
 		return
 	}
 
-	prompt := constructPrompt(input, generateFor, additionalInstructions)
-	generativeModel.GenerateTextUsingTextModelStream(model, prompt, maxTokens, dataChan, errChan)
+	isUsingChatModel := models.ModelBelongsToChat(model)
+	prompt := constructPromptForChat(input, generateFor)
+	if isUsingChatModel {
+		generativeModel.GenerateTextUsingChatModelStream(model, prompt, maxTokens, additionalInstructions, dataChan, errChan)
+	} else {
+		generativeModel.GenerateTextUsingTextModelStream(model, prompt, maxTokens, dataChan, errChan)
+	}
 }
