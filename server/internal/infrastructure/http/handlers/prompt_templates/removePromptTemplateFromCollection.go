@@ -1,7 +1,6 @@
 package prompt_templates
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
@@ -10,11 +9,7 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-type addPromptTemplateToCollectionRequest struct {
-	CollectionID uint `json:"collection_id"`
-}
-
-func (h *httpHandler) addPromptTemplateToCollection(w http.ResponseWriter, r *http.Request) {
+func (h *httpHandler) removePromptTemplateFromCollection(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := helper.GetUserID(r)
 
@@ -32,29 +27,17 @@ func (h *httpHandler) addPromptTemplateToCollection(w http.ResponseWriter, r *ht
 		return
 	}
 
-	requestBody := &addPromptTemplateToCollectionRequest{}
-	err = json.NewDecoder(r.Body).Decode(requestBody)
-	if err != nil {
-		h.logger.Error("error decoding request body", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
-		return
-	}
-
-	err = h.promptTemplateService.AddPromptTemplateToCollection(userID, uint(promptTemplateID), requestBody.CollectionID)
+	err = h.promptTemplateService.RemovePromptTemplateFromCollection(userID, uint(promptTemplateID))
 
 	if err != nil {
-		h.logger.Error("error add prompt_template to collection", "error", err.Error())
+		h.logger.Error("error while removing prompt_template from collection", "error", err.Error())
 		if err == custom_errors.PromptTemplateNotFound {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage("prompt_template not found", http.StatusNotFound)))
-			return
-		} else if err == custom_errors.PromptTemplateCollectionNotFound {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage("collection not found", http.StatusNotFound)))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}
 
-	renderx.JSON(w, http.StatusOK, "prompt_template added to collection")
-
+	renderx.JSON(w, http.StatusOK, "prompt_template removed from collection")
 }

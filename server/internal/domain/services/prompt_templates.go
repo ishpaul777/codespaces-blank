@@ -18,7 +18,7 @@ type PromptTemplateService interface {
 	GetPromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint) (*models.PromptTemplateCollection, error)
 	UpdatePromptTemplateCollectionByID(userID uint, promptTemplateCollectionID uint, name string) (*models.PromptTemplateCollection, error)
 	AddPromptTemplateToCollection(userID uint, promptTemplateID uint, promptTemplateCollectionID uint) error
-	RemovePromptTemplateFromCollection(userID uint, promptTemplateID uint, promptTemplateCollectionID uint) error
+	RemovePromptTemplateFromCollection(userID uint, promptTemplateID uint) error
 }
 
 type promptTemplateService struct {
@@ -74,8 +74,8 @@ func (ps *promptTemplateService) AddPromptTemplateToCollection(userID uint, prom
 	return ps.promptTemplateRepository.AddPromptTemplateToCollection(userID, promptTemplateID, promptTemplateCollectionID)
 }
 
-func (ps *promptTemplateService) RemovePromptTemplateFromCollection(userID uint, promptTemplateID uint, promptTemplateCollectionID uint) error {
-	return ps.promptTemplateRepository.RemovePromptTemplateFromCollection(userID, promptTemplateID, promptTemplateCollectionID)
+func (ps *promptTemplateService) RemovePromptTemplateFromCollection(userID uint, promptTemplateID uint) error {
+	return ps.promptTemplateRepository.RemovePromptTemplateFromCollection(userID, promptTemplateID)
 }
 
 func NewPromptTemplateService(repository repositories.PromptTemplateRepository) PromptTemplateService {

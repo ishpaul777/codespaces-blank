@@ -21,7 +21,7 @@ type PromptTemplateRepository interface {
 	UpdatePromptTemplateCollectionByID(userID uint, PromptTemplateCollectionID uint, name string) (*models.PromptTemplateCollection, error)
 	PromptTemplateCollectionNameExists(name string) bool
 	AddPromptTemplateToCollection(userID uint, PromptTemplateID uint, PromptTemplateCollectionID uint) error
-	RemovePromptTemplateFromCollection(userID uint, PromptTemplateID uint, PromptTemplateCollectionID uint) error
+	RemovePromptTemplateFromCollection(userID uint, PromptTemplateID uint) error
 }
 
 func NewPromptTemplateRepository(database db.IDatabaseService) (PromptTemplateRepository, error) {
