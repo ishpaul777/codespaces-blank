@@ -20,8 +20,8 @@ func (h *httpHandler) promptTemplateRoutes() chi.Router {
 		r.Put("/", h.updatePrompTemplateByID)
 		r.Delete("/", h.deletePromptTemplateByID)
 	})
-	router.Put("/add_to_col/{prompt_template_id}", h.addPromptTemplateToCollection)
-	router.Put("/remove_from_col/{prompt_template_id}", h.removePromptTemplateFromCollection)
+	router.Put("/add/{prompt_template_id}", h.addPromptTemplateToCollection)
+	router.Put("/remove/{prompt_template_id}", h.removePromptTemplateFromCollection)
 	return router
 }
 
