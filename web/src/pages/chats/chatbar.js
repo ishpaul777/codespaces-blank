@@ -1,5 +1,5 @@
 import React from "react";
-import { AiOutlineMenuUnfold } from "react-icons/ai";
+import { AiOutlineMenuUnfold,AiOutlineMenuFold } from "react-icons/ai";
 import FactlyLogo from "../../assets/icons/factlyLogo";
 import { AiOutlineEdit } from "react-icons/ai";
 import { Select, SelectTemperature } from "../../components/inputs/select";

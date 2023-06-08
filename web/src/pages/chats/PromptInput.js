@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 // onKeyDown={handleKeypressStream}
 function PromptInput(props) {
   const { value, onChange, placeholder, onEnter, isPromptModalVisible, setIsPromptModalVisible, position } = props;
-  console.log("PromptInput props", props);
   const prompts = useSelector((state) => state.prompts);
   const options = prompts?.map((prompt) => {
     return {

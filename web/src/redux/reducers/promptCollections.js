@@ -16,22 +16,30 @@ const promptCollectionsReducer = (state = initialState, action) => {
 		case "GET_ALL_PROMPT_COLLECTIONS":
 			// Set collections in state
 			return action.payload;
-		// case "ADD_PROMPT_TO_PROMPT_COLLECTION":
-		//   // remove chat from current collection and add to new collection
-		//   const { collectionId, chat } = action.payload;
-		//   // remove chat from current collection
-		//   const newState = state.map((collection) => {
-		//     collection.chats = collection.chats.filter( (c) => c.id !== chat.id);
-		//     return collection;
-		//   });
-		//   // add chat to new collection
-		//   return newState.map((collection) => {
-		//     if (collection.id === collectionId) {
-		//       return { ...collection, chats: [chat, ...collection.chats] };
-		//     } else {
-		//       return collection;
-		//     }
-		//   });
+		case "ADD_PROMPT_TO_PROMPT_COLLECTION": {
+			// remove prompt from current collection and add to new collection
+			let { collectionId, prompt } = action.payload;
+			// remove prompt from current collection
+			const newState = state.map((collection) => {
+				collection.prompt_templates = collection.prompt_templates?.filter((p) => p.id !== prompt.id);
+				return collection;
+			});
+			// add chat to new collection
+			return newState.map((collection) => {
+				if (collection.id === collectionId) {
+					return { ...collection, prompt_templates: [prompt, ...collection.prompt_templates] };
+				} else {
+					return collection;
+				}
+			});
+		}
+		case "REMOVE_PROMPT_FROM_PROMPT_COLLECTION": {
+			let { prompt } = action.payload;
+			return state.map((collection) => {
+				collection.prompt_templates = collection.prompt_templates?.filter((p) => p.id !== prompt.id);
+				return collection;
+			});
+		}
 
 		default:
 			return state;
