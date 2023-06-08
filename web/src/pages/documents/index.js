@@ -1,17 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CreateButton } from "../../components/buttons/CreateButton";
 import Search from "../../components/search";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import { getDocuments } from "../../actions/text";
+import { deleteDocument, getDocuments } from "../../actions/text";
 import moment from "moment";
-import { errorToast } from "../../util/toasts";
+import { errorToast, successToast } from "../../util/toasts";
+import { getKratosSessionDetails } from "../../actions/kratos";
 export default function DocumentPage() {
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
     data: [],
   });
 
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    search_query: "",
+  });
+
+  let navigate = useNavigate();
   const tableHeader = [
     {
       name: "Name",
@@ -31,8 +39,8 @@ export default function DocumentPage() {
     },
   ];
 
-  useEffect(() => {
-    getDocuments()
+  const fetchDocuments = async () => {
+    getDocuments(pagination.limit, pagination.page, pagination.search_query)
       .then((response) => {
         setDocumentPageData({
           count: response.count,
@@ -42,21 +50,56 @@ export default function DocumentPage() {
       .catch((error) => {
         errorToast(error?.message);
       });
-  }, []);
+  };
 
-  let values = [
-    {
-      name: "Document 1",
-      createdBy: "John Doe",
-      lastModified: "2021-10-10",
-    },
-  ];
+  useEffect(() => {
+    fetchDocuments();
+  }, [pagination.limit, pagination.page]);
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      setPagination({
+        ...pagination,
+        page: 1,
+      });
+      fetchDocuments();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [pagination.search_query]);
 
   const tableStyles = {
     valuesPadding: "px-4 py-6",
     headerPadding: "p-4",
   };
 
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    getKratosSessionDetails()
+      .then((response) => {
+        setEmail(response?.identity?.traits?.email);
+      })
+      .catch((error) => {
+        errorToast(error?.message);
+      });
+  }, []);
+
+  const handleDelete = (id) => {
+    deleteDocument(id)
+      .then(() => {
+        if (documentPageData.data?.length === 1 && pagination.page !== 1) {
+          setPagination({
+            ...pagination,
+            page: pagination.page - 1,
+          });
+        }
+        fetchDocuments();
+        successToast("Document deleted successfully");
+      })
+      .catch((error) => {
+        errorToast(error?.message);
+      });
+  };
   return (
     // this is the main page container
     <div className="my-16 mx-10">
@@ -65,7 +108,15 @@ export default function DocumentPage() {
         <h2 className="text-3xl font-medium">Documents</h2>
 
         <div className="flex flex-row w-1/2 items-center gap-2">
-          <Search placeholder={"search documents"} />
+          <Search
+            placeholder={"search documents"}
+            onChange={(e) => {
+              setPagination({
+                ...pagination,
+                search_query: e.target.value,
+              });
+            }}
+          />
           {/* create document button */}
           <Link to="/documents/create">
             <CreateButton text={"Create Document"} />
@@ -100,7 +151,7 @@ export default function DocumentPage() {
                   <td
                     className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
                   >
-                    {value?.createdBy || "John Doe"}
+                    {email}
                   </td>
                   <td
                     className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
@@ -110,14 +161,24 @@ export default function DocumentPage() {
                   <td
                     className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black flex items-center gap-2`}
                   >
-                    <button className="flex gap-2 text-[#6495ED] border border-[#6495ED] bg-white p-2 rounded-md">
-                      <AiOutlineEdit className="text-base" color="#6495ED" />
-                      <span>Edit</span>
-                    </button>
-                    <button className="flex gap-2 text-[#DC143C] border border-[#DC143C] bg-white p-2 rounded-md">
-                      <AiOutlineDelete className="text-base" color="#DC143C" />
-                      <span>Delete</span>
-                    </button>
+                    <div
+                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#007BFF] hover:text-white`}
+                      onClick={() => {
+                        navigate(
+                          `/documents/create?id=${value.id}&isEdit=true`
+                        );
+                      }}
+                    >
+                      Edit
+                    </div>
+                    <div
+                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#FF0000] hover:text-white`}
+                      onClick={() => {
+                        handleDelete(value?.id);
+                      }}
+                    >
+                      Delete
+                    </div>
                   </td>
                 </tr>
               );
@@ -125,6 +186,46 @@ export default function DocumentPage() {
           </tbody>
         </table>
       </div>
+      {
+        // this is the pagination
+        documentPageData.count > pagination.limit && (
+          <div
+            className={`flex justify-between mt-6 ${
+              pagination.page == 1 && "flex-row-reverse"
+            }`}
+          >
+            {/* previous button */}
+            {pagination.page > 1 && (
+              <div
+                className="bg-[#EDEDED] py-2 px-4 rounded-md cursor-pointer hover:scale-105"
+                onClick={() => {
+                  setPagination({
+                    ...pagination,
+                    page: pagination.page - 1,
+                  });
+                }}
+              >
+                Previous
+              </div>
+            )}
+            {/* next button */}
+            {documentPageData.data?.length >= pagination.limit &&
+              pagination.page * pagination.limit < documentPageData.count && (
+                <div
+                  className="bg-[#EDEDED] py-2 px-4 rounded-md cursor-pointer hover:scale-105"
+                  onClick={() => {
+                    setPagination({
+                      ...pagination,
+                      page: pagination.page + 1,
+                    });
+                  }}
+                >
+                  Next
+                </div>
+              )}
+          </div>
+        )
+      }
     </div>
   );
 }

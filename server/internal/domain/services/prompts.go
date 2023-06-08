@@ -62,7 +62,7 @@ func GetPromptPrefix(generateFor string) string {
 		return value
 	}
 
-	return "Generate Text for given input."
+	return "generate engaging and informative text content on the input provided by the user. The user input is [%s]"
 }
 
 func constructPrompt(input, generateFor, additionalInstructions string) string {

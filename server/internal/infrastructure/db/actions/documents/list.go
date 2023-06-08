@@ -20,7 +20,7 @@ func (p *PGDocumentRepository) GetAllDocuments(userID uint, pagination helper.Pa
 		db = db.Where("title ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}
 
-	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Find(&documents).Error
+	err := db.Count(&total).Offset(offset).Limit(pagination.Limit).Order("created_at DESC").Find(&documents).Error
 	if err != nil {
 		return nil, 0, err
 	}
