@@ -83,10 +83,10 @@ export const PersonaChat = () => {
         successToast("Chat delete successfully");
       })
       .then(() => {
-        getPersonaChatsByUserID(id, paginationChatHistory).then((data) => {
+        getPersonaChatsByUserID(id, paginationChatHistory).then((res) => {
           const sorted = res.chats.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
           setChatHistory(sorted);
-          setChatCount(data.count);
+          setChatCount(res.count);
         });
       })
       .catch(() => {
@@ -465,8 +465,8 @@ export const PersonaChat = () => {
                       <div className={`w-full flex gap-4`}>
                         <div
                           className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${item.role === "user"
-                              ? "bg-green-600 ring-green-600"
-                              : "ring-red-600 bg-red-600"
+                            ? "bg-green-600 ring-green-600"
+                            : "ring-red-600 bg-red-600"
                             } text-white mr-2`}
                         >
                           {item.role === "user" ? (
@@ -531,10 +531,10 @@ export const PersonaChat = () => {
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeMathjax]}
                             className={`prose ${isMobileScreen
-                                ? "max-w-[17rem]"
-                                : chatSiderCollapse
-                                  ? "max-w-4xl"
-                                  : "max-w-2xl"
+                              ? "max-w-[17rem]"
+                              : chatSiderCollapse
+                                ? "max-w-4xl"
+                                : "max-w-2xl"
                               } `}
                             components={{
                               code({
