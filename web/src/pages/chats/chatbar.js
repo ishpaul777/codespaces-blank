@@ -120,7 +120,7 @@ export default function ChatBar({
             </div>
           </>
         ) : (
-          <div className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}>
+          <div className={`sticky ${isMobileScreen ? "px-4" :"px-8"} py-4 top-0 w-full mb-1 z-40 bg-body`}>
             {/* chat header */}
             {/* <BiChevronLeft size={28} /> */}
             {/* <span className="text-lg font-bold">
@@ -147,9 +147,6 @@ export default function ChatBar({
                   cursor={"pointer"}
                 />
               </div>
-              {isMobileScreen ? (
-                <p className="text-lg font-bold">Tagore AI</p>
-              ) : null}
               <button
                 onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
                 style={{ width: "fit-content", height: "fit-content" }}
@@ -159,11 +156,10 @@ export default function ChatBar({
             </div>
 
             <div
-              className={`bg-body ease-in-out duration-300 ${
-                isSettingVisible
-                  ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
-                  : "h-0 translate-y-0"
-              }`}
+              className={`bg-body ease-in-out duration-300 ${isSettingVisible
+                ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
+                : "h-0 translate-y-0"
+                }`}
             >
               {isSettingVisible && (
                 <>
@@ -179,7 +175,6 @@ export default function ChatBar({
                       onChange={(e) => {
                         setModel(e.target.value);
                       }}
-                      placeholder={"select model"}
                       initialValue={model}
                       disabled={true}
                     ></Select>
@@ -208,24 +203,20 @@ export default function ChatBar({
             return (
               <div
                 key={index}
-                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
-                  item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
-                }`}
+                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between ${isMobileScreen ? "px-4" :"px-7"} py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
+                  }`}
               >
                 <div className={`w-full flex gap-4`}>
-                  <div
-                    className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
-                      item.role === "user"
-                        ? "bg-green-600 ring-green-600"
-                        : "ring-red-600 bg-red-600"
-                    } text-white mr-2`}
-                  >
-                    {item.role === "user" ? (
-                      <span className="text-lg"> U </span>
-                    ) : (
-                      <FactlyLogo />
-                    )}
-                  </div>
+                  {
+                    item.role === "user" ?
+                      <div
+                        className={`flex justify-center items-center h-8 w-8 rounded-full ring-2
+                        ${item.role === "user" ? "bg-green-600 ring-green-600" : ""} text-white mr-2`}
+                      >
+                        <span className="text-lg"> U </span>
+                      </div>
+                      : <FactlyLogo />
+                  }
                   {isEditing.status && isEditing.id === index ? (
                     <div className="w-[85%] flex flex-col justigy-center">
                       <textarea
@@ -277,13 +268,12 @@ export default function ChatBar({
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeMathjax]}
-                      className={`prose ${
-                        isMobileScreen
-                          ? "max-w-[17rem]"
-                          : chatSiderCollapse || promptSiderCollapse
+                      className={`prose ${isMobileScreen
+                        ? "max-w-[15rem]"
+                        : chatSiderCollapse || promptSiderCollapse
                           ? "w-[80%]"
                           : "max-w-2xl"
-                      } `}
+                        } `}
                       components={{
                         code({ node, inline, className, children, ...props }) {
                           const match = /language-(\w+)/.exec(className || "");
