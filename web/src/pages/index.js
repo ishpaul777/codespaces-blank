@@ -90,10 +90,10 @@ export function HomePage() {
 
   return (
     <div className="my-16 mx-10 ">
-      <div className="flex flex-row md:justify-between justify-center items-center p-5 ">
+      <div className="flex flex-row lg:justify-between lg:p-0 p-4 justify-center items-center ">
         <h2 className="text-3xl font-medium">Dashboard</h2>
       </div>
-      <div className="w-full grid grid-cols-1 mt-12 gap-4 sm:grid-cols-2">
+      <div className="w-full grid grid-cols-1 lg:mt-12 mt-8 gap-4 sm:grid-cols-2">
         {menuOptions.map((option) => (
           <Link
             to={option.link}
