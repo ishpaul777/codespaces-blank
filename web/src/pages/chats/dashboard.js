@@ -20,17 +20,17 @@ export default function ChatPage() {
   const [stream, setStream] = useState(true);
   const [initialPrompt, setIntialPrompt] = useState("");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
-  const [promptSiderCollapse, setPromptSiderCollapse] = useState(
-    isMobileScreen ? true : false
-  );
-  const [chatSiderCollapse, setChatSiderCollapse] = useState(
-    isMobileScreen ? true : false
-  );
+  const [promptSiderCollapse, setPromptSiderCollapse] = useState(!isMobileScreen);
+  const [chatSiderCollapse, setChatSiderCollapse] = useState(!isMobileScreen)
+
+  console.log(isMobileScreen, promptSiderCollapse, chatSiderCollapse)
   const [chatTitle, setChatTitle] = useState("");
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
         setIsMobileScreen(true);
+        setPromptSiderCollapse(true);
+        setChatSiderCollapse(true);
       } else {
         setIsMobileScreen(false);
         setPromptSiderCollapse(false);
@@ -581,29 +581,26 @@ export default function ChatPage() {
 
       {/* prompt bar */}
       <aside
-        className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${
-          promptSiderCollapse
+        className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${promptSiderCollapse
             ? "translate-x-0 w-0"
             : `${isMobileScreen ? "w-3/4 " : "w-[20vw] "}`
-        } flex flex-row ease-in-out duration-300 gap-4 z-50`}
+          } flex flex-row ease-in-out duration-300 gap-4 z-50`}
       >
         <div
-          className={`bg-white w-full relative shadow-md ${
-            promptSiderCollapse || "pt-4 pl-4"
-          }`}
+          className={`bg-white w-full relative shadow-md ${promptSiderCollapse || "pt-4 pl-4"
+            }`}
         >
           <PromptBar open={!promptSiderCollapse} />
         </div>
       </aside>
       <div
         className={`
-        ${
-          isMobileScreen
+        ${isMobileScreen
             ? promptSiderCollapse
               ? "d-none "
               : "flex "
             : "d-none"
-        }
+          }
         fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
       `}
         onClick={() => {
@@ -623,9 +620,8 @@ export default function ChatPage() {
         </button>
       </div>
       <div
-        className={` ${
-          isMobileScreen ? (chatSiderCollapse ? "d-none " : "flex ") : "d-none"
-        }
+        className={` ${isMobileScreen ? (chatSiderCollapse ? "d-none " : "flex ") : "d-none"
+          }
         fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
       `}
         onClick={() => {

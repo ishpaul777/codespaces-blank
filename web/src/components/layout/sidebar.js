@@ -132,7 +132,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
         (!isMobileScreen || sideBarOpen) &&
         <>
           <div
-            className={`${isMobileScreen ? "w-[80vw] z-50" : "w-full"} p-5 pt-8 w-fit bg-background-sidebar h-screen flex flex-col`}
+            className={`${isMobileScreen ? "w-[80vw] z-50" : "w-full"} p-5 pt-8 bg-background-sidebar h-screen flex flex-col`}
           >
             <div className={`flex gap-x-2 items-center justify-center w-fit`}>
               <img
@@ -207,8 +207,8 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
             </div>
           </div>
           {isMobileScreen
-            && <div className="fixed inset-0 bg-black bg-opacity-50 z-40 w-[20vw] h-screen ">
-              <AiOutlineMenuUnfold className="w-6 h-6 m-4 text-white" onClick={() => setSidebarOpen(false)} />
+            && <div className="z-40 w-full h-screen fixed inset-0 bg-black bg-opacity-50">
+              <AiOutlineMenuUnfold className="w-6 h-6 m-4 ml-8 text-white" onClick={() => setSidebarOpen(false)} />
             </div>}
         </>
       }

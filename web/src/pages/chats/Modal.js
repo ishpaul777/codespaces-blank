@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import userWindowSize from "../../hooks/useWindowSize"
+
 function Modal(props) {
   const handleOk = () => {
     props.onOk();
   };
+  const {isMobileScreen} = userWindowSize()
 
   const handleCancel = () => {
     props.onCancel();
@@ -10,7 +13,7 @@ function Modal(props) {
   const overlayClasses =
     "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
   const modalClasses =
-    "fixed z-50 left-1/2 w-2/6 top-1/2 transform -translate-x-1/2 flex flex-col justify-between -translate-y-1/2 bg-white rounded-md shadow-lg p-4 minh-2/5 transition-all duration-300 ease-in-out";
+    `fixed z-50 left-1/2 ${isMobileScreen ? "w-[90vw]" : "w-2/6" } top-1/2 transform -translate-x-1/2 flex flex-col justify-between -translate-y-1/2 bg-white rounded-md shadow-lg p-4 minh-2/5 transition-all duration-300 ease-in-out`;
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       handleCancel();
