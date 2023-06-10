@@ -22,7 +22,7 @@ const useWindowSize = () => {
     };
   }, []);
 
-  const isMobileScreen = windowSize.width <= 768; // Adjust the breakpoint as needed
+  const isMobileScreen = windowSize.width <= 1024; // Adjust the breakpoint as needed
 
   return { isMobileScreen };
 };
