@@ -1,8 +1,10 @@
 import { CiSearch } from "react-icons/ci";
 import SearchButton from "../buttons/SearchButton";
+import useWindowSize from '../../hooks/useWindowSize'
 export default function Search({ placeholder, onChange, handleSearch }) {
+  const {isMobileScreen}=useWindowSize();
   return (
-    <div className="w-8/12 rounded-lg border border-border-primary flex flex-row items-center py-1 px-2">
+    <div className={`${isMobileScreen ? "w-full" : "w-8/12 min-w-[200px]" } rounded-lg border border-border-primary flex flex-row items-center justify-between py-1 px-2`}>
       <div className="flex items-center gap-2 w-5/6">
         <CiSearch size={"20px"} color="#667085" />
         <input

@@ -7,6 +7,7 @@ import { deleteDocument, getDocuments } from "../../actions/text";
 import moment from "moment";
 import { errorToast, successToast } from "../../util/toasts";
 import { getKratosSessionDetails } from "../../actions/kratos";
+import useWindowSize from '../../hooks/useWindowSize'
 export default function DocumentPage() {
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
@@ -100,15 +101,35 @@ export default function DocumentPage() {
         errorToast(error?.message);
       });
   };
+  const { isMobileScreen } = useWindowSize();
   return (
     // this is the main page container
-    <div className="my-16 mx-10">
+    <div className="my-16 mx-10  min-w-[375px]">
       {/* This is the page header */}
-      <div className="flex flex-row justify-between items-center">
-        <h2 className="text-3xl font-medium">Documents</h2>
+      <div className="flex flex-col min-w-[375px] ">
+        <div className="w-full flex flex-row  items-center justify-between gap-5">
+          <div className="w-fit text-3xl font-medium ">Documents</div>
+          <div className={`w-[50%]  flex flex-row justify-end gap-5 items-center`}>
+           {!isMobileScreen && <Search
+              placeholder={"search documents"}
+              onChange={(e) => {
+                setPagination({
+                  ...pagination,
+                  search_query: e.target.value,
+                });
+              }}
+            />}
 
-        <div className="flex flex-row w-1/2 items-center gap-2">
-          <Search
+            {/* create document button */}
+            
+              <Link to="/documents/create">
+                <CreateButton text={"Create Document"} />
+              </Link>
+           
+          </div>
+        </div>
+        <div className="mt-5 flex justify-center items-center ">
+          {isMobileScreen && <Search
             placeholder={"search documents"}
             onChange={(e) => {
               setPagination({
@@ -116,15 +137,12 @@ export default function DocumentPage() {
                 search_query: e.target.value,
               });
             }}
-          />
-          {/* create document button */}
-          <Link to="/documents/create">
-            <CreateButton text={"Create Document"} />
-          </Link>
+          />}
         </div>
+
       </div>
       {/* This is the page body */}
-      <div className="mt-6">
+      <div className="mt-6 min-w-[700px]">
         <table className="w-full">
           {tableHeader.map((header, index) => {
             return (
@@ -190,9 +208,8 @@ export default function DocumentPage() {
         // this is the pagination
         documentPageData.count > pagination.limit && (
           <div
-            className={`flex justify-between mt-6 ${
-              pagination.page == 1 && "flex-row-reverse"
-            }`}
+            className={`flex justify-between mt-6 ${pagination.page == 1 && `${isMobileScreen} ? "flex-row" : "flex-row-reverse "`
+              }`}
           >
             {/* previous button */}
             {pagination.page > 1 && (

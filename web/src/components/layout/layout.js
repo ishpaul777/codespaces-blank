@@ -8,7 +8,7 @@ import MenuIcon from "../MenuIcon";
 
 export default function Layout() {
   const { isMobileScreen } = useWindowSize()
-  const [sideBarOpen, setSidebarOpen] = useState(!isMobileScreen)
+  const [sideBarOpen, setSidebarOpen] = useState(false)
 
   return (
     <div className={`${isMobileScreen ? "w-full flex-wrap" : ""} flex flex-row h-screen max-h-screen overflow-y-auto`}>
