@@ -107,10 +107,10 @@ export default function DocumentPage() {
     <div className="my-16 mx-10  min-w-[375px]">
       {/* This is the page header */}
       <div className="flex flex-col min-w-[375px] ">
-        <div className="w-full flex flex-row  items-center justify-between gap-5">
+        <div className="w-full flex flex-row  items-center justify-between gap-5 mt-8 md:mt-0">
           <div className="w-fit text-3xl font-medium ">Documents</div>
           <div className={`w-[50%]  flex flex-row justify-end gap-5 items-center`}>
-           {!isMobileScreen && <Search
+           {!(window.innerWidth<1000) && <Search
               placeholder={"search documents"}
               onChange={(e) => {
                 setPagination({
@@ -129,7 +129,7 @@ export default function DocumentPage() {
           </div>
         </div>
         <div className="mt-5 flex justify-center items-center ">
-          {isMobileScreen && <Search
+          {(window.innerWidth<1000) && <Search
             placeholder={"search documents"}
             onChange={(e) => {
               setPagination({

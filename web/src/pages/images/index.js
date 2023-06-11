@@ -196,7 +196,7 @@ export default function ImagePage() {
   }
 
   return (
-    <div className={`my-16 ${isMobileScreen ? "mx-6" : "mx-10"}`}>
+    <div className={`my-16 ${isMobileScreen ? "mx-6 my-24" : "mx-10"}`}>
       <h2 className="text-3xl font-medium mb-4">Generate Images</h2>
       <ImageSearch
         isMobileScreen={isMobileScreen}

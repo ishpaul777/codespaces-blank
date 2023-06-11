@@ -12,7 +12,7 @@ export default function Layout() {
 
   return (
     <div className={`${isMobileScreen ? "w-full flex-wrap" : ""} flex flex-row h-screen max-h-screen overflow-y-auto`}>
-      <div className="w-1/6">
+      <div className="">
         {
           isMobileScreen &&
           <nav className="w-screen flex justify-between items-end fixed top-0 bg-[#DCE4E7] px-8 pb-4 pt-10 z-30">
