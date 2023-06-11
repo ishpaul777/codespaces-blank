@@ -47,7 +47,7 @@ export default function Personas() {
   return (
     <div className="m-10">
       {/* This is Page header */}
-      <div className="flex flex-row justify-between items-center my-24 md:my-16">
+      <div className="flex flex-row justify-between items-center my-24 md:my-0">
         <h2 className="text-3xl font-medium  ">Personas</h2>
 
         <div className="flex flex-row w-1/2 items-center gap-2">
