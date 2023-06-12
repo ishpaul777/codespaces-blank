@@ -84,8 +84,7 @@ export const PersonaChat = () => {
       })
       .then(() => {
         getPersonaChatsByUserID(id, paginationChatHistory).then((res) => {
-          const sorted = res.chats.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-          setChatHistory(sorted);
+          setChatHistory(res.chats);
           setChatCount(res.count);
         });
       })
@@ -158,9 +157,7 @@ export const PersonaChat = () => {
     setLoading(true);
     getPersonaChatsByUserID(id, paginationChatHistory)
       .then((res) => {
-        const sorted = res.chats.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-
-        setChatHistory(sorted);
+        setChatHistory(res.chats);
         setChatCount(res.count);
       })
       .catch((err) => {
