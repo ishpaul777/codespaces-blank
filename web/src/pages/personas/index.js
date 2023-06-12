@@ -7,6 +7,7 @@ import avtarImg from "../../assets/avatar.png";
 import Pagination from "./pagination";
 import { getPersona } from "../../actions/persona";
 import { errorToast } from "../../util/toasts";
+import useWindowSize from "../../hooks/useWindowSize";
 
 export default function Personas() {
   const [tab, setTab] = useState("All");
@@ -44,13 +45,36 @@ export default function Personas() {
     });
   }, [pagination.search_query]);
 
+  const { isMobileScreen } = useWindowSize();
+
   return (
     <div className="m-10">
       {/* This is Page header */}
-      <div className="flex flex-row justify-between items-center my-24 md:my-0">
+      <div className="flex flex-row justify-between items-center mt-24 mb-10 md:mt-0 gap-2">
         <h2 className="text-3xl font-medium  ">Personas</h2>
 
-        <div className="flex flex-row w-1/2 items-center gap-2">
+        <div className="flex flex-row items-center gap-2">
+          {window.innerWidth >= 900 && (
+            <Search
+              placeholder={"search Personas"}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
+              handleSearch={() => {
+                setPagination({
+                  ...pagination,
+                  search_query: searchQuery,
+                });
+              }}
+            />
+          )}
+          <Link to="/personas/create">
+            <CreateButton text={"Create Personas"} />
+          </Link>
+        </div>
+      </div>
+      <div>
+        {window.innerWidth < 900 && (
           <Search
             placeholder={"search Personas"}
             onChange={(e) => {
@@ -63,10 +87,7 @@ export default function Personas() {
               });
             }}
           />
-          <Link to="/personas/create">
-            <CreateButton text={"Create Personas"} />
-          </Link>
-        </div>
+        )}
       </div>
       <div className="flex flex-row justify-between items-center mt-8 mx-1">
         <div className="flex flex-row font-semibold text-[18px] gap-4 border-b border-solid border-[#D9E7DA]">
@@ -104,7 +125,11 @@ export default function Personas() {
         </select> */}
       </div>
       {/* This is Page Items */}
-      <div className="grid grid-cols-5 grid-rows-2 gap-6 my-10">
+      <div
+        className={`grid grid-rows-2 gap-6 my-10 grid-cols-2 ${
+          window.innerWidth < 1000 ? "sm:grid-cols-4" : "sm:grid-cols-5"
+        } `}
+      >
         {personaData.map((persona, index) => (
           <PersonaCard
             key={index}
