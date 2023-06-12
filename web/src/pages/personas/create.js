@@ -205,7 +205,7 @@ export default function CreatePersona() {
   return (
     <form onSubmit={handleSubmit}>
       <div className="my-5 mx-10">
-        <div className="flex flex-row justify-between my-3">
+        <div className="flex flex-row justify-between md:my-3 mt-[100px]">
           <h1 className="text-[24px] font-semibold">Create Persona</h1>
           <button
             type="submit"
@@ -216,8 +216,8 @@ export default function CreatePersona() {
           </button>
         </div>
         <div className="w-full mt-6 p-4">
-          <div className="grid grid-cols-[1fr_1fr]">
-            <div className="flex flex-col gap-4 py-7 border-b border-b-[#EAECF0]">
+          <div className="grid 2sm:grid-cols-[1fr_1fr] grid-cols-1">
+            <div className="flex flex-col gap-4 2sm:py-7 pb-0 pt-7 2sm:border-b 2sm:border-b-[#EAECF0] border-0">
               <h1 className="text-[18px] font-semibold">Name</h1>
               <p className="text-[12px] font-normal text-[#6C6C6C]">
                 Give your persona a name that you can easily remember
@@ -237,7 +237,7 @@ export default function CreatePersona() {
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-4 py-7 border-b border-b-[#EAECF0]">
+            <div className="flex flex-col gap-4 2sm:py-7 pb-0 pt-7 2sm:border-b 2sm:border-b-[#EAECF0] border-0">
               <h1 className="text-[18px] font-semibold">Description</h1>
               <p className="text-[12px] font-normal text-[#6C6C6C] ">
                 Describe your persona in a few words so that you can easily find
@@ -258,7 +258,7 @@ export default function CreatePersona() {
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-4 py-7 border-b border-b-[#EAECF0]">
+            <div className="flex flex-col gap-4 2sm:py-7 pb-0 pt-7 2sm:border-b 2sm:border-b-[#EAECF0] border-0">
               <h1 className="text-[18px] font-semibold">Prompt</h1>
               <p className="text-[12px] font-normal text-[#6C6C6C] w-[70%]">
                 All conversations with this bot will start with your prompt but
@@ -287,7 +287,7 @@ export default function CreatePersona() {
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-4 py-7 border-b border-b-[#EAECF0]">
+            <div className="flex flex-col gap-4 2sm:py-7 pb-0 pt-7 2sm:border-b 2sm:border-b-[#EAECF0] border-0">
               <h1 className="text-[18px] font-semibold">Visibility</h1>
               <p className="text-[12px] font-normal text-[#6C6C6C] ">
                 Choose who can see this persona
@@ -312,7 +312,7 @@ export default function CreatePersona() {
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-4 py-7 border-b border-b-[#EAECF0]">
+            <div className="flex flex-col gap-4 2sm:py-7 pb-0 pt-7 2sm:border-b 2sm:border-b-[#EAECF0] border-0">
               <h1 className="text-[18px] font-semibold">Avatar</h1>
               <p className="text-[12px] font-normal text-[#6C6C6C] ">
                 Upload an image to represent your persona
