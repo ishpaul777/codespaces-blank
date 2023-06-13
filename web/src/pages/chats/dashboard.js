@@ -527,6 +527,7 @@ export default function ChatPage() {
         paginationChatHistory={paginationChatHistory}
         setPaginationChatHistory={setPaginationChatHistory}
         chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
         setChat={setChat}
         setChatID={setChatID}
         setChatTitle={setChatTitle}
@@ -538,7 +539,7 @@ export default function ChatPage() {
         handleHistoryDeleteClick={handleHistoryDeleteClick}
         chatCount={chatCount}
         chatOptionsList={chatOptionsList}
-        isFolderVisible={false}
+        isFolderVisible={true}
       />
 
       {/* chat */}
@@ -591,7 +592,7 @@ export default function ChatPage() {
           className={`bg-white w-full relative shadow-md ${promptSiderCollapse || "pt-4 pl-4"
             }`}
         >
-          <PromptBar open={!promptSiderCollapse} />
+          <PromptBar open={!promptSiderCollapse} isFolderVisible={true} />
         </div>
       </aside>
     </div>

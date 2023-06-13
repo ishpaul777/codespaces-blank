@@ -1,4 +1,5 @@
-import { AiOutlineMenuUnfold, AiOutlineMenuFold } from "react-icons/ai";
+import React from "react";
+import { AiOutlineMenuUnfold,AiOutlineMenuFold } from "react-icons/ai";
 import FactlyLogo from "../../assets/icons/factlyLogo";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BiChevronLeft } from 'react-icons/bi'
@@ -54,6 +55,9 @@ export default function ChatBar({
   handleRegenerate,
   handleStop,
 }) {
+  const [isPromptModalVisible, setIsPromptModalVisible] = React.useState(false);
+  const [isInitialPromptModalVisible, setIsInitialPromptModalVisible] = React.useState(false);
+
   return (
     <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-[80%] ">
       <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
@@ -122,14 +126,19 @@ export default function ChatBar({
                   placeholder={"select model"}
                   initialValue={model}
                 ></Select>
-                <Input
-                  initialValue={initialPrompt}
-                  label={"System Prompt"}
-                  onChange={(e) => {
-                    setIntialPrompt(e.target.value);
-                  }}
-                  placeholder={"Enter your system prompt"}
-                ></Input>
+                <div className="bg-transparent h-1/2 w-full rounded-lg p-2 border border-[#D0D5DD] relative">
+                  <PromptInput
+                    initialValue={initialPrompt}
+                    label={"System Prompt"}
+                    position={"bottom"}
+                    onChange={setIntialPrompt}
+                    value={initialPrompt}
+                    placeholder={"Enter your system prompt"}
+                    onEnter={() => { }}
+                    isPromptModalVisible={isInitialPromptModalVisible}
+                    setIsPromptModalVisible={setIsInitialPromptModalVisible}
+                  />
+                </div>
                 <SelectTemperature
                   label={"Conversation Style"}
                   onChange={(e) => {
@@ -202,10 +211,11 @@ export default function ChatBar({
             </div>
 
             <div
-              className={`bg-white ease-in-out duration-300 ${isSettingVisible
-                ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
-                : "h-0 translate-y-0"
-                }`}
+              className={`bg-body ease-in-out duration-300 ${
+                isSettingVisible
+                  ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
+                  : "h-0 translate-y-0"
+              }`}
             >
               {isSettingVisible && (
                 <>
@@ -235,6 +245,9 @@ export default function ChatBar({
                     ></Input>
                     <SelectTemperature
                       label={"Conversation Style"}
+                      onChange={(e) => {
+                        setTemperature(parseFloat(e.target.value));
+                      }}
                       value={temperature}
                     />
                   </div>
@@ -315,7 +328,7 @@ export default function ChatBar({
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeMathjax]}
                       className={`prose ${isMobileScreen
-                        ? "max-w-[15rem]"
+                        ? "max-w-[17rem]"
                         : chatSiderCollapse || promptSiderCollapse
                           ? "w-[80%]"
                           : "max-w-2xl"
@@ -382,7 +395,9 @@ export default function ChatBar({
         )}
       </div>
       {/* chat input container */}
-      <div className="py-4 w-full flex flex-col gap-2 justify-center items-center">
+      <div className="py-4 w-full flex justify-center items-center z-20"
+        style={{ zIndex: isInitialPromptModalVisible ? -1 : 0 }}
+      >
         {/* input division */}
         {loading && (
           <button
@@ -410,6 +425,9 @@ export default function ChatBar({
             className="outline-none text-base border-none focus:ring-0"
             placeholder="Type a message"
             onChange={handlePromptChange}
+            isPromptModalVisible={isPromptModalVisible}
+            setIsPromptModalVisible={(value) => setIsPromptModalVisible(value)}
+            position={"top"}
             onEnter={handleKeypress}
           ></PromptInput>
           <div className="flex flex-row-reverse">
