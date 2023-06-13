@@ -526,6 +526,7 @@ export default function ChatPage() {
         paginationChatHistory={paginationChatHistory}
         setPaginationChatHistory={setPaginationChatHistory}
         chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
         setChat={setChat}
         setChatID={setChatID}
         setChatTitle={setChatTitle}
@@ -537,7 +538,7 @@ export default function ChatPage() {
         handleHistoryDeleteClick={handleHistoryDeleteClick}
         chatCount={chatCount}
         chatOptionsList={chatOptionsList}
-        isFolderVisible={false}
+        isFolderVisible={true}
       />
 
       {/* chat */}
