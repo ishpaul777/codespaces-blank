@@ -7,6 +7,8 @@ import { isURL } from "../../util/validateRegex";
 import { createPersona } from "../../actions/persona";
 import { errorToast, successToast } from "../../util/toasts";
 import { useNavigate } from "react-router-dom";
+import GenerateModal from "./GenerateModal";
+
 
 function Link({ to, children, className, onDelete }) {
   return (
@@ -30,6 +32,7 @@ function Link({ to, children, className, onDelete }) {
 
 export default function CreatePersona() {
   const [open, setOpen] = useState(false);
+  const [genOpen, setGenOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -89,6 +92,7 @@ export default function CreatePersona() {
     setOpen(false);
   };
   const handleModalClose = () => {
+    setGenOpen(false);
     setOpen(false);
   };
 
@@ -202,6 +206,8 @@ export default function CreatePersona() {
   };
 
   const promptExampleLink = "https://poe.com/prompt_examples";
+
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="my-5 mx-10">
@@ -318,9 +324,19 @@ export default function CreatePersona() {
                 Upload an image to represent your persona
               </p>
             </div>
-            <div className="w-full flex flex-col gap-2 py-7 border-b border-b-[#EAECF0]">
+            <div className="w-full flex gap-3 items-center py-7 border-b border-b-[#EAECF0]">
               {!requestBody.avatar.value ? (
                 <div className="flex flex-row gap-5 items-center">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setGenOpen(true);
+                    }}
+                    className="flex w-[30%] justify-center items-center text-sm font-semibold text-[#1e1e1e] border border-[#1e1e1e] rounded-lg h-[40px] p-[10px]"
+                  >
+                    Generate Avatar
+                  </button>
+                  <span className="text-[#667085]">or</span>
                   <input
                     onClick={(e) => {
                       e.preventDefault();
@@ -351,6 +367,7 @@ export default function CreatePersona() {
         <Modal open={open} onClose={handleModalClose}>
           <UppyUploader onUpload={handleUpload}></UppyUploader>
         </Modal>
+        <GenerateModal open={genOpen} onClose={handleModalClose}/>
       </div>
     </form>
   );

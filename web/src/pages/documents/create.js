@@ -73,7 +73,7 @@ export default function Document() {
   const [promptData, setPromptData] = useState(``);
 
   // language stores the language of the document
-  const [language, setLanguage] = useState("english");
+  const [language, setLanguage] = useState("english (uk)");
 
   const handleGoBack = () => {
     navigate("/documents");
@@ -362,7 +362,7 @@ export default function Document() {
                 className={`appearance-none w-[98%] cursor-pointer focus:outline-none`}
                 onChange={(e) => setLanguage(e.target.value)}
               >
-                <option value="english">English</option>
+                <option value="english (uk)">English</option>
                 <option value="hindi">Hindi</option>
                 <option value="telugu">Telugu</option>
               </select>
@@ -552,7 +552,7 @@ export default function Document() {
                         stream: true,
                         model: "gpt-3.5-turbo", //"gpt-3.5-turbo",
                         additional_instructions:
-                          "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+                          "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text. The content should be generated in ENGLISH(UK)",
                         max_tokens: 2000,
                       }),
                     }
@@ -568,7 +568,7 @@ export default function Document() {
                     stream: false,
                     model: "gpt-3.5-turbo",
                     additional_instructions:
-                      "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+                      "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text. The content should be generated in ENGLISH(UK)",
                   };
 
                   const response = await generateTextFromPrompt(requestBody);
