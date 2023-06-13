@@ -3,7 +3,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdOutlineHistory } from 'react-icons/md';
 import { VscSettings } from 'react-icons/vsc'
 import { AiOutlinePlus } from 'react-icons/ai'
-const Dropdown = ({ setChatSiderCollapse }) => {
+const Dropdown = ({ setChatSiderCollapse, handleNewChatClick }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -48,7 +48,9 @@ const Dropdown = ({ setChatSiderCollapse }) => {
               />
             </li>
             <hr className="h-px w-[80%] mx-auto bg-gray-300  border-0"></hr>
-            <li className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100 ">
+            <li className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100 "
+              onClick={() => { handleNewChatClick() }}
+            >
               <span>
                 New Chat
               </span>

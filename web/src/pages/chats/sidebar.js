@@ -259,31 +259,32 @@ export default function SideBar({
         >
           {
             !isMobileScreen &&
-            <button
-              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? "d-none" : "flex"
-                } `}
-              onClick={() => handleNewChatClick()}
-            >
-              <HiPlus size={styles.iconSize} />
-              <span className="text-lg">New Chat</span>
-            </button>
+            <>
+              <button
+                className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? "d-none" : "flex"
+                  } `}
+                onClick={() => handleNewChatClick()}
+              >
+                <HiPlus size={styles.iconSize} />
+                <span className="text-lg">New Chat</span>
+              </button>
+              {isFolderVisible ? (
+                <button
+                  className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center"
+                  onClick={() => {
+                    setCollectionCreateFormVisible(true);
+                  }}
+                >
+                  <MdOutlineCreateNewFolder size={styles.fileIconSize} />
+                  {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
+                </button>
+              ) : (
+                <div>
+                  <ToastContainer />
+                </div>
+              )}
+            </>
           }
-          {isFolderVisible ? (
-            <button
-              className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center"
-              onClick={() => {
-                setCollectionCreateFormVisible(true);
-              }}
-            >
-              <MdOutlineCreateNewFolder size={styles.fileIconSize} />
-              {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
-              <ToastContainer />
-            </button>
-          ) : (
-            <div>
-              <ToastContainer />
-            </div>
-          )}
         </div>
         <div className={`${chatSiderCollapse || "pr-4"}`}>
           <input

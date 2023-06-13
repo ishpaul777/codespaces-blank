@@ -547,6 +547,7 @@ export default function ChatPage() {
         chat={chat}
         setChatSiderCollapse={setChatSiderCollapse}
         chatSiderCollapse={chatSiderCollapse}
+        handleNewChatClick={handleNewChatClick}
         isMobileScreen={isMobileScreen}
         setPromptSiderCollapse={setPromptSiderCollapse}
         styles={styles}

@@ -1,5 +1,5 @@
 import React from "react";
-import { AiOutlineMenuUnfold,AiOutlineMenuFold } from "react-icons/ai";
+import { AiOutlineMenuUnfold, AiOutlineMenuFold } from "react-icons/ai";
 import FactlyLogo from "../../assets/icons/factlyLogo";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BiChevronLeft } from 'react-icons/bi'
@@ -35,6 +35,7 @@ export default function ChatBar({
   setIntialPrompt,
   chatTitle,
   AlwaysScrollToBottom,
+  handleNewChatClick,
   modelIDToLabel,
   setIsSettingVisible,
   isSettingVisible,
@@ -75,8 +76,9 @@ export default function ChatBar({
                     </button>
                     {/* <BsThreeDotsVertical size={20} /> */}
                     <Dropdown
-                     setChatSiderCollapse={setChatSiderCollapse}
-                     />
+                      handleNewChatClick={handleNewChatClick}
+                      setChatSiderCollapse={setChatSiderCollapse}
+                    />
                   </div>
                 </div>)
                 : <>
@@ -181,7 +183,8 @@ export default function ChatBar({
                     {/* <BsThreeDotsVertical size={20} /> */}
                     <Dropdown
                       setChatSiderCollapse={setChatSiderCollapse}
-                     />
+                      handleNewChatClick={handleNewChatClick}
+                    />
                   </>)
                   :
                   <>
@@ -211,11 +214,10 @@ export default function ChatBar({
             </div>
 
             <div
-              className={`bg-body ease-in-out duration-300 ${
-                isSettingVisible
+              className={`bg-body ease-in-out duration-300 ${isSettingVisible
                   ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
                   : "h-0 translate-y-0"
-              }`}
+                }`}
             >
               {isSettingVisible && (
                 <>
