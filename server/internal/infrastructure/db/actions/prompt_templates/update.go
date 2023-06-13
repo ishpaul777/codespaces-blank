@@ -6,17 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemplateID uint, title, description, prompt string, collection_id *uint) (*models.PromptTemplate, error) {
-
-	if collection_id != nil {
-		// check if collection exists
-		collectionExists := p.PromptTemplateCollectionExists(*collection_id)
-
-		if !collectionExists {
-			return nil, custom_errors.PromptTemplateCollectionNotFound
-		}
-	}
-
+func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemplateID uint, title, description, prompt string) (*models.PromptTemplate, error) {
 
 	updateMap := map[string]interface{}{}
 
@@ -30,10 +20,6 @@ func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemp
 
 	if prompt != "" {
 		updateMap["prompt"] = prompt
-	}
-
-	if collection_id != nil {
-		updateMap["prompt_template_collection_id"] = collection_id
 	}
 
 	promptTemplate := &models.PromptTemplate{}
