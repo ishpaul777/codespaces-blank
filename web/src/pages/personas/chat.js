@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import FactlyLogo from "../../assets/icons/factlyLogo";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineMenuUnfold } from "react-icons/ai";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "../../components/codeblock";
 import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
@@ -437,10 +437,8 @@ export const PersonaChat = () => {
             isFolderVisible={false}
           />
           <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-full">
-            <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
-              <div
-                className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}
-              >
+            <div className="relative w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
+              <div className={`sticky px-8 py-4 top-0 w-full mb-1 bg-body`}>
                 {/* chat header */}
                 {/* <BiChevronLeft size={28} /> */}
                 <span className="text-lg font-bold px-8">
@@ -449,6 +447,41 @@ export const PersonaChat = () => {
                     : `${persona?.name?.slice(0, 60) + "..."}
                         `}
                 </span>
+              </div>
+              <div className="absolute top-[20px] left-[15px] z-9">
+                <button onClick={() => setChatSiderCollapse((prev) => !prev)}>
+                  <AiOutlineMenuUnfold
+                    size={styles.fileIconSize}
+                    color="#1e1e1e"
+                  />
+                </button>
+              </div>
+              <div
+                className={` ${
+                  isMobileScreen
+                    ? chatSiderCollapse
+                      ? "d-none "
+                      : "flex "
+                    : "d-none"
+                }
+        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
+      `}
+                onClick={() => {
+                  setChatSiderCollapse(!chatSiderCollapse);
+                }}
+              >
+                <button
+                  className="absolute top-4 left-3/4 pl-4"
+                  onClick={() => {
+                    setChatSiderCollapse(!chatSiderCollapse);
+                  }}
+                  style={{ width: "fit-content", height: "fit-content" }}
+                >
+                  <AiOutlineMenuUnfold
+                    size={styles.fileIconSize}
+                    color="#fff"
+                  />
+                </button>
               </div>
               {chat
                 .filter((item) => item.role !== "system")
