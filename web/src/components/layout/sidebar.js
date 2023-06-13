@@ -13,6 +13,8 @@ import Logout from "../../assets/icons/logout.svg";
 import Profile from "../../assets/icons/profile.svg";
 import Templates from "../../assets/icons/templates.svg";
 import Usage from "../../assets/icons/usage.svg";
+import { logout } from "../../actions/kratos";
+import { errorToast } from "../../util/toasts";
 
 // import FactlyLogo from '../../assets/factly-logo.svg';
 
@@ -48,33 +50,45 @@ export function Sidebar() {
     },
   ];
 
+  const handleLogout = () => {
+    logout()
+      .then((res) => {
+        window.location.href = res.logout_url;
+      })
+      .catch(() => {
+        errorToast("error logging out");
+      });
+  };
+
+  
   const manageProfileOptions = [
-    {
-      name: "View Profile",
-      icon: Profile,
-      linkTo: "/profile",
-    },
-    {
-      name: "History",
-      icon: History,
-      linkTo: "/history",
-      arrow: ArrowLeft,
-    },
-    {
-      name: "Favorites",
-      icon: Bookmark,
-      linkTo: "/favorites",
-      arrow: ArrowLeft,
-    },
-    {
-      name: "Usage",
-      icon: Usage,
-      linkTo: "/usage",
-    },
+    // {
+    //   name: "View Profile",
+    //   icon: Profile,
+    //   linkTo: "/profile",
+    // },
+    // {
+    //   name: "History",
+    //   icon: History,
+    //   linkTo: "/history",
+    //   arrow: ArrowLeft,
+    // },
+    // {
+    //   name: "Favorites",
+    //   icon: Bookmark,
+    //   linkTo: "/favorites",
+    //   arrow: ArrowLeft,
+    // },
+    // {
+    //   name: "Usage",
+    //   icon: Usage,
+    //   linkTo: "/usage",
+    // },
     {
       name: "Logout",
       icon: Logout,
       linkTo: "/logout",
+      onClick: handleLogout,
     },
   ];
 
@@ -87,15 +101,14 @@ export function Sidebar() {
     return name;
   };
 
-
   useEffect(() => {
     const path = window.location.pathname;
 
     let index = 0;
-    if(process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       // find index of the menu option based on the path
       menuOptions.forEach((option, currentIndex) => {
-        if(`/.factly/tagore/web${option}` === path){
+        if (`/.factly/tagore/web${option}` === path) {
           index = currentIndex;
           return;
         }
@@ -103,12 +116,13 @@ export function Sidebar() {
     } else {
       index = menuOptions.findIndex((option) => option.linkTo === path);
     }
-    if(index > -1) {
+    if (index > -1) {
       setActiveTab(index);
     } else {
       setActiveTab(0);
     }
-  }, [])
+  }, []);
+
   return (
     <div
       className={`p-5 pt-8 w-fit bg-background-sidebar h-screen flex flex-col`}
@@ -151,8 +165,13 @@ export function Sidebar() {
                   className={`flex flex-row items-center gap-4 p-2 ${
                     option.name !== "Logout"
                       ? "hover:bg-button-primary"
-                      : "hover:bg-red-600 hover:text-white border-t"
+                      : "hover:bg-red-600 hover:text-white"
                   } cursor-pointer`}
+                  onClick={() => {
+                    if (option?.onClick) {
+                      option.onClick();
+                    }
+                  }}
                 >
                   {option.name === "View Profile" ? (
                     <div className="bg-red-400 rounded-full text-white text-center  h-6 w-6 ">

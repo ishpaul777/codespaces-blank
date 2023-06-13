@@ -31,9 +31,9 @@ export const getPersonaChatsByUserID = (personaID, pagination) => {
         page: pagination.page,
         search_query: pagination.search_query,
       }),
-      {
-        credentials: "include",
-      }
+    {
+      credentials: "include",
+    }
   )
     .then((response) => {
       if (response.status === 200) {

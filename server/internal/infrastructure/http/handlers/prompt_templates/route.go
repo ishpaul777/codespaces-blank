@@ -20,6 +20,8 @@ func (h *httpHandler) promptTemplateRoutes() chi.Router {
 		r.Put("/", h.updatePrompTemplateByID)
 		r.Delete("/", h.deletePromptTemplateByID)
 	})
+	router.Put("/add/{prompt_template_id}", h.addPromptTemplateToCollection)
+	router.Put("/remove/{prompt_template_id}", h.removePromptTemplateFromCollection)
 	return router
 }
 
@@ -39,5 +41,5 @@ func (h *httpHandler) templateCollectionRoutes() chi.Router {
 func InitRoutes(router *chi.Mux, documentService services.PromptTemplateService, logger logger.ILogger) {
 	httpHandler := &httpHandler{documentService, logger}
 	router.Mount("/prompt_templates", httpHandler.promptTemplateRoutes())
-	router.Mount("/prompt_template_collection", httpHandler.templateCollectionRoutes())
+	router.Mount("/prompt_template_collections", httpHandler.templateCollectionRoutes())
 }

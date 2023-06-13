@@ -1,8 +1,6 @@
 package persona
 
 import (
-	"fmt"
-
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 )
@@ -27,7 +25,6 @@ func (p *PGPersonaRepository) GetAllPersonas(userID uint, pagination helper.Pagi
 		Visibility: "private",
 	})
 
-	fmt.Println("this is visibility", pagination.Queries["visibility"])
 	if pagination.Queries["visibility"] == "private" {
 		db = db.Or(&models.Persona{
 			Base: models.Base{
