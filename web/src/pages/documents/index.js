@@ -104,12 +104,12 @@ export default function DocumentPage() {
   const { isMobileScreen } = useWindowSize();
   return (
     // this is the main page container
-    <div className="my-16 mx-10  min-w-[375px]">
+    <div className="my-16 mx-10 min-w-[230px] ">
       {/* This is the page header */}
-      <div className="flex flex-col min-w-[375px] ">
+      <div className="flex flex-col  ">
         <div className="w-full flex flex-row  items-center justify-between gap-5 mt-8 md:mt-0">
           <div className="w-fit text-3xl font-medium ">Documents</div>
-          <div className={`w-[50%]  flex flex-row justify-end gap-5 items-center`}>
+          <div className={`w-[50%]  flex flex-row justify-end gap-[3%] items-center`}>
            {!(window.innerWidth<1000) && <Search
               placeholder={"search documents"}
               onChange={(e) => {
@@ -123,12 +123,12 @@ export default function DocumentPage() {
             {/* create document button */}
             
               <Link to="/documents/create">
-                <CreateButton text={"Create Document"} />
+                <CreateButton text={`${window.innerWidth<420 ? "" : "Create Document"}`} />
               </Link>
            
           </div>
         </div>
-        <div className="mt-5 flex justify-center items-center ">
+        <div className="mt-5 flex justify-center items-center min-w-[230px] ">
           {(window.innerWidth<1000) && <Search
             placeholder={"search documents"}
             onChange={(e) => {
@@ -142,8 +142,8 @@ export default function DocumentPage() {
 
       </div>
       {/* This is the page body */}
-      <div className="mt-6 min-w-[700px]">
-        <table className="w-full">
+      <div className="mt-6 overflow-x-auto max-w-screen">
+        <table className="w-full min-w-[700px]">
           {tableHeader.map((header, index) => {
             return (
               <th
@@ -208,9 +208,10 @@ export default function DocumentPage() {
         // this is the pagination
         documentPageData.count > pagination.limit && (
           <div
-            className={`flex justify-between mt-6 ${pagination.page == 1 && `${isMobileScreen} ? "flex-row" : "flex-row-reverse "`
-              }`}
-          >
+          className={`flex justify-between mt-6 ${
+            pagination.page == 1 && "flex-row-reverse"
+          }`}
+        >
             {/* previous button */}
             {pagination.page > 1 && (
               <div

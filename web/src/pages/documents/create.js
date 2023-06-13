@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import ArrowIcon from "../../assets/icons/arrow.svg";
 import InfoIcon from "../../assets/icons/info-icon.svg";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
+import Clear from "../../assets/icons/clear.svg";
+import Share from "../../assets/icons/share.svg";
+import Tick from "../../assets/icons/tick.svg";
 import Button from "../../components/buttons/SearchButton";
 import { ScooterCore } from "@factly/scooter-core";
 // import { IoShareSocialOutline } from "react-icons/io5";
@@ -19,6 +22,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { SSE } from "sse.js";
 import { ToastContainer } from "react-toastify";
 import { errorToast, successToast } from "../../util/toasts";
+import useWindowSize from "../../hooks/useWindowSize";
+import MenuIcon from "../../components/MenuIcon";
+import { AiOutlineMenuUnfold } from "react-icons/ai"
+
 export default function Document() {
   const [searchParams] = useSearchParams();
 
@@ -278,11 +285,17 @@ export default function Document() {
     setSseClient(null);
   }
 
+  const { isMobileScreen } = useWindowSize();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     // container for new/edit document page
     <div className="h-screen w-full flex">
       {/* this is control section, it will have a prompt input, keyword input, language input and output length */}
-      <div className={`w-1/4 bg-background-sidebar`}>
+      {!isMobileScreen ? <div className="w-1/4 bg-background-sidebar h-fit">
         {/* actions container */}
         <div className="p-10 cursor-pointer flex flex-col gap-11">
           {/* image container */}
@@ -412,7 +425,7 @@ export default function Document() {
                 <DocActionButton
                   text={"Stop"}
                   clickAction={() => handleStop()}
-              ></DocActionButton>
+                ></DocActionButton>
               )
             }
             {continueButtonState.visibility && (
@@ -430,14 +443,42 @@ export default function Document() {
             ></DocActionButton>
           </div>
         </div>
-      </div>
-      <div className={`w-3/4 grid  grid-rows-[1fr_14fr]`}>
+      </div> :
+        <nav className="w-full bg-background-sidebar fixed top-0 z-50 ">
+          <div className="p-4 flex justify-between items-center">
+            <div className="flex gap-3">
+              {/* backbutton icon */}
+              <img src={ArrowLeft} onClick={handleGoBack} alt="arrow-left"></img>
+              <h2 className="text-2xl font-medium">{documentName==="" ? "Untitled Document" : documentName}</h2>
+            </div>
+            <button
+              className="text-white text-2xl focus:outline-none "
+              onClick={toggleMobileMenu}
+            >
+              <MenuIcon className="w-8 h-8" />
+            </button>
+          </div>
+          <div className="flex justify-end pb-4 w-full ">
+            <div className="flex w-fit gap-2 mr-6" >
+              <button className="w-[40px]  h-[40px] bg-[#E7EAF0] rounded-lg  flex justify-center items-center">
+                <img src={Tick} alt="tick" onClick={()=>actionList[0].onClick()} />
+              </button>
+              <button className="w-[40px]  h-[40px] bg-[#E7EAF0] rounded-lg  flex justify-center items-center">
+                <img src={Share} alt="clear" />
+              </button>
+              <button className="w-[40px]  h-[40px] bg-[#E7EAF0] rounded-lg  flex justify-center items-center">
+                <img src={Clear} alt="clear" onClick={()=>actionList[1].onClick()} />
+              </button>
+            </div>
+          </div>
+        </nav>}
+
+      <div className={` ${!isMobileScreen ? "w-3/4 grid  grid-rows-[1fr_14fr]" : "w-full"}`}>
         {/* this is the header section in create document page. It has mainly 2 elements - 1. File Name input box and 2. actions - [share, delete, save]*/}
-        <div className="w-full py-3 px-6 flex justify-between border-b border-border-secondary">
+        {!isMobileScreen && <div className="w-full py-3 px-6 flex justify-between border-b border-border-secondary">
           <div
-            className={`w-3/5 flex flex-row items-center ${
-              !isSubmitVisible && "gap-4"
-            }`}
+            className={`w-3/5 flex flex-row items-center ${!isSubmitVisible && "gap-4"
+              }`}
           >
             {isSubmitVisible ? (
               <>
@@ -481,9 +522,9 @@ export default function Document() {
               );
             })}
           </div>
-        </div>
-        <div className="w-full flex justify-center">
-          <div className="w-[60%] py-1">
+        </div>}
+        <div className={`w-full flex justify-center ${isMobileScreen ? "mt-40" : ""}`}>
+          <div className="w-[90%] py-1 ">
             <ScooterCore
               placeholder="Write your content here. Press / for commands and /generate for AI commands"
               editorInstance={(editor) => setEditor(editor)}
@@ -535,9 +576,226 @@ export default function Document() {
                 },
               }}
             />
+            {isMobileScreen && <div className="w-[90%] flex justify-center items-center gap-2 absolute bottom-10">
+                  <DocActionButton
+                    isLoading={loading}
+                    text={"Compose"}
+                    clickAction={() => handleCompose()}
+                    isPrimary={true}
+                  ></DocActionButton>
+                  {
+                    loading && (
+                      <DocActionButton
+                        text={"Stop"}
+                        clickAction={() => handleStop()}
+                      ></DocActionButton>
+                    )
+                  }
+                  {continueButtonState.visibility && (
+                    <DocActionButton
+                      isLoading={false}
+                      text={"Continue Generating"}
+                      clickAction={() => handleCompose()}
+                      isPrimary={true}
+                    ></DocActionButton>
+                  )}
+                  <DocActionButton
+                    text={"Reset"}
+                    clickAction={() => editor?.commands?.setContent("")}
+                    isPrimary={false}
+                  ></DocActionButton>
+                </div>}
           </div>
+          
         </div>
       </div>
+      {isMobileScreen && isMobileMenuOpen && (
+        // Mobile Menu Overlay
+        <div
+          className="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 z-50"
+          onClick={toggleMobileMenu}
+        ></div>
+      )}
+
+      {isMobileScreen && (
+        // Mobile Menu Content
+        <div
+          className={` w-3/4 fixed top-0 right-0 h-screen bg-background-sidebar z-50 transition-transform transform ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+            } duration-300`}
+        >
+          <button
+            className="text-white text-2xl focus:outline-none absolute top-3 right-3 "
+            onClick={toggleMobileMenu}
+          >
+            <AiOutlineMenuUnfold className="w-8 h-8 text-black" />
+
+          </button>
+          <div className="w-full flex justify-center items-center h-full ">
+            {/* Mobile menu content goes here */}
+            {/* ... */}
+            <div className="w-[80%] ">
+            {isSubmitVisible ? (
+              <div className="flex justify-between p-3">
+                <input
+                  defaultValue={documentName}
+                  placeholder="enter title for the document"
+                  className={`${isMobileScreen ? "w-[80%] outline-none p-2" : "outline-none w-2/5 p-2"}`}
+                  onChange={(e) => onNameChange(e.target.value)}
+                ></input>
+                <Button text="Submit" onClick={onNameSubmit}></Button>
+              </div>
+            ) : (
+              <div className="flex justify-between p-3">
+                <h3 className="text-lg font-semibold">{documentName}</h3>
+                <Button text="Edit" onClick={onNameEdit} />
+              </div>)}
+              {/* actions container */}
+              <div className="p-3 cursor-pointer flex flex-col gap-11">
+                {/* image container */}
+                {/* input division - each input division will have label, a form input type and input-length counter */}
+                {/* prompt section */}
+                <div className={`flex flex-col gap-2 p-2`}>
+                  {/* label division*/}
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="contentDescription"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      Content description / brief
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <textarea
+                    className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg resize-none h-32 placeholder:[${styles.input.placeholderColor}]`}
+                    placeholder="Write an article about..."
+                    maxLength={600}
+                    onChange={(e) => handlePromptChange(e.target.value)}
+                  ></textarea>
+                  <div className="flex flex-row-reverse">
+                    <p
+                      className={`text-[${styles.countColor}]`}
+                    >{`${prompt?.length}/600`}</p>
+                  </div>
+                </div>
+                {/* keywords section */}
+                <div className={`flex flex-col gap-2 p-2`}>
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="keywords"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      {" "}
+                      Keywords{" "}
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <input
+                    className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg placeholder:[${styles.input.placeholderColor}]`}
+                    placeholder={"enter keywords"}
+                    onChange={(e) => setKeywords(e.target.value)}
+                  ></input>
+                </div>
+                {/* languages section */}
+                <div className={`flex flex-col gap-2 p-2`}>
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="languages"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      Select language
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <div className="flex w-full pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg bg-white">
+                    <select
+                      className={`appearance-none w-[98%] cursor-pointer focus:outline-none`}
+                      onChange={(e) => setLanguage(e.target.value)}
+                    >
+                      <option value="english">English</option>
+                      <option value="hindi">Hindi</option>
+                      <option value="telugu">Telugu</option>
+                    </select>
+                    <img src={ArrowIcon} />
+                  </div>
+                </div>
+                {/* languages section */}
+                <div className={`flex flex-col gap-2`}>
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="languages"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      Output length
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <div className="flex gap-1">
+                    {outputLengthList.map((item, index) => {
+                      let isCustom = item.title === "Custom";
+                      return (
+                        <SizeButton
+                          clickAction={handleChangeInOutputSize}
+                          key={index}
+                          title={item.title}
+                          isSelected={
+                            isCustom
+                              ? customLength === selectedOutputLength.length
+                              : item.maxLength === selectedOutputLength.length
+                          }
+                          maxSize={isCustom ? customLength : item.maxLength}
+                          isCustom={isCustom}
+                        />
+                      );
+                    })}
+                  </div>
+                  {selectedOutputLength.name === "Custom" && (
+                    <input
+                      className="p-2 rounded border"
+                      type="number"
+                      placeholder="enter custom output length"
+                      onChange={(e) => handleCustomLengthChange(e.target.value)}
+                      defaultValue={customLength}
+                    />
+                  )}
+                </div>
+                {/* document actions buttons - 
+            1.compose - it will create a request to tagore-server to get the details 
+            2.reset - it will reset the document to the initial state    
+        */}
+                {/* <div className="w-full flex flex-col gap-2">
+                  <DocActionButton
+                    isLoading={loading}
+                    text={"Compose"}
+                    clickAction={() => handleCompose()}
+                    isPrimary={true}
+                  ></DocActionButton>
+                  {
+                    loading && (
+                      <DocActionButton
+                        text={"Stop"}
+                        clickAction={() => handleStop()}
+                      ></DocActionButton>
+                    )
+                  }
+                  {continueButtonState.visibility && (
+                    <DocActionButton
+                      isLoading={false}
+                      text={"Continue Generating"}
+                      clickAction={() => handleCompose()}
+                      isPrimary={true}
+                    ></DocActionButton>
+                  )}
+                  <DocActionButton
+                    text={"Reset"}
+                    clickAction={() => editor?.commands?.setContent("")}
+                    isPrimary={false}
+                  ></DocActionButton>
+                </div> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <ToastContainer />
     </div>
   );
