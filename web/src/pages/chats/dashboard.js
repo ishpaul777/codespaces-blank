@@ -21,7 +21,7 @@ export default function ChatPage() {
   const [initialPrompt, setIntialPrompt] = useState("");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
   const [promptSiderCollapse, setPromptSiderCollapse] = useState(!isMobileScreen);
-  const [chatSiderCollapse, setChatSiderCollapse] = useState(!isMobileScreen)
+  const [chatSiderCollapse, setChatSiderCollapse] = useState(!isMobileScreen);
 
   console.log(isMobileScreen, promptSiderCollapse, chatSiderCollapse)
   const [chatTitle, setChatTitle] = useState("");
@@ -522,6 +522,7 @@ export default function ChatPage() {
       <SideBar
         isMobileScreen={isMobileScreen}
         chatSiderCollapse={chatSiderCollapse}
+        setChatSiderCollapse={setChatSiderCollapse}
         handleNewChatClick={handleNewChatClick}
         paginationChatHistory={paginationChatHistory}
         setPaginationChatHistory={setPaginationChatHistory}
@@ -593,51 +594,6 @@ export default function ChatPage() {
           <PromptBar open={!promptSiderCollapse} />
         </div>
       </aside>
-      <div
-        className={`
-        ${isMobileScreen
-            ? promptSiderCollapse
-              ? "d-none "
-              : "flex "
-            : "d-none"
-          }
-        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
-      `}
-        onClick={() => {
-          setPromptSiderCollapse(!promptSiderCollapse);
-          isMobileScreen && setPromptSiderCollapse(true);
-        }}
-      >
-        <button
-          className="absolute top-4 right-3/4 pr-4"
-          onClick={() => {
-            setPromptSiderCollapse(!promptSiderCollapse);
-            isMobileScreen && setPromptSiderCollapse(true);
-          }}
-          style={{ width: "fit-content", height: "fit-content" }}
-        >
-          <AiOutlineMenuUnfold size={styles.fileIconSize} color="#fff" />
-        </button>
-      </div>
-      <div
-        className={` ${isMobileScreen ? (chatSiderCollapse ? "d-none " : "flex ") : "d-none"
-          }
-        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
-      `}
-        onClick={() => {
-          setChatSiderCollapse(!chatSiderCollapse);
-        }}
-      >
-        <button
-          className="absolute top-4 left-3/4 pl-4"
-          onClick={() => {
-            setChatSiderCollapse(!chatSiderCollapse);
-          }}
-          style={{ width: "fit-content", height: "fit-content" }}
-        >
-          <AiOutlineMenuUnfold size={styles.fileIconSize} color="#fff" />
-        </button>
-      </div>
     </div>
   );
 }

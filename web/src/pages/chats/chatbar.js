@@ -1,12 +1,13 @@
 import { AiOutlineMenuUnfold, AiOutlineMenuFold } from "react-icons/ai";
 import FactlyLogo from "../../assets/icons/factlyLogo";
 import { AiOutlineEdit } from "react-icons/ai";
+import { BiChevronLeft } from 'react-icons/bi'
 import { Select, SelectTemperature } from "../../components/inputs/select";
 import { Input } from "../../components/inputs/Input";
 import { IoMdSettings } from "react-icons/io";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "../../components/codeblock";
-import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
+import { BsClipboard, BsClipboard2Check, BsThreeDotsVertical } from "react-icons/bs";
 import { BeatLoader, ClipLoader } from "react-spinners";
 import PromptInput from "./PromptInput";
 import rehypeMathjax from "rehype-mathjax";
@@ -14,6 +15,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { IoReloadOutline } from "react-icons/io5";
 import { GrStop } from "react-icons/gr";
+import Dropdown from "../../components/Dropdown";
 
 export default function ChatBar({
   chat,
@@ -57,34 +59,53 @@ export default function ChatBar({
       <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
         {chat.length === 0 ? (
           <>
-            <div className="flex flex-row justify-between w-full px-3 pt-4">
-              <button
-                onClick={() => {
-                  setChatSiderCollapse(!chatSiderCollapse);
-                  isMobileScreen && setPromptSiderCollapse(true);
-                }}
-                style={{ width: "fit-content", height: "fit-content" }}
-              >
-                {chatSiderCollapse ? (
-                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
-                ) : (
-                  <AiOutlineMenuFold size={styles.fileIconSize} />
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  setPromptSiderCollapse(!promptSiderCollapse);
-                  isMobileScreen && setChatSiderCollapse(true);
-                }}
-                style={{ width: "fit-content", height: "fit-content" }}
-              >
-                {promptSiderCollapse ? (
-                  <AiOutlineMenuFold size={styles.fileIconSize} />
-                ) : (
-                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
-                )}
-              </button>
-            </div>
+            {
+              isMobileScreen ? (
+                <div className={`sticky ${isMobileScreen ? "px-4" : "px-8"} py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7]`}>
+                  <div
+                    className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-4" : "py-4"} px-4  gap-4 flex justify-between`}
+                  >
+                    <button className="flex items-center">
+                      <BiChevronLeft size={24} />
+                      <span className="text-lg">Back to Dashboard</span>
+                    </button>
+                    {/* <BsThreeDotsVertical size={20} /> */}
+                    <Dropdown
+                     setChatSiderCollapse={setChatSiderCollapse}
+                     />
+                  </div>
+                </div>)
+                : <>
+                  <div className="flex flex-row justify-between w-full px-3 pt-4">
+                    <button
+                      onClick={() => {
+                        setChatSiderCollapse(!chatSiderCollapse);
+                        isMobileScreen && setPromptSiderCollapse(true);
+                      }}
+                      style={{ width: "fit-content", height: "fit-content" }}
+                    >
+                      {chatSiderCollapse ? (
+                        <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                      ) : (
+                        <AiOutlineMenuFold size={styles.fileIconSize} />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setPromptSiderCollapse(!promptSiderCollapse);
+                        isMobileScreen && setChatSiderCollapse(true);
+                      }}
+                      style={{ width: "fit-content", height: "fit-content" }}
+                    >
+                      {promptSiderCollapse ? (
+                        <AiOutlineMenuFold size={styles.fileIconSize} />
+                      ) : (
+                        <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                      )}
+                    </button>
+                  </div>
+                </>
+            }
             <div className="border-none w-full flex flex-col items-center p-4 gap-4">
               <div
                 className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4"
@@ -120,7 +141,7 @@ export default function ChatBar({
             </div>
           </>
         ) : (
-          <div className={`sticky ${isMobileScreen ? "px-4" :"px-8"} py-4 top-0 w-full mb-1 z-40 bg-body`}>
+          <div className={`sticky ${isMobileScreen ? "px-4" : "px-8"} py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7]`}>
             {/* chat header */}
             {/* <BiChevronLeft size={28} /> */}
             {/* <span className="text-lg font-bold">
@@ -130,33 +151,58 @@ export default function ChatBar({
                         `}
             </span> */}
             <div
-              className={`border-none bg-body w-full px-4 py-2 gap-4 flex justify-between`}
+              className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-4" : "py-4"} px-4  gap-4 flex justify-between`}
             >
-              <button
-                onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
-                style={{ width: "fit-content", height: "fit-content" }}
-              >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
-              </button>
-              <div>
-                <span>Model: {modelIDToLabel[model]}</span>
-                <IoMdSettings
-                  size={styles.iconSize}
-                  className="inline ml-4"
-                  onClick={() => setIsSettingVisible((prevState) => !prevState)}
-                  cursor={"pointer"}
-                />
-              </div>
-              <button
-                onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
-                style={{ width: "fit-content", height: "fit-content" }}
-              >
-                <AiOutlineMenuUnfold size={styles.fileIconSize} />
-              </button>
+              {
+                isMobileScreen ? (
+                  <>
+                    <button className="flex">
+                      <BiChevronLeft size={20} />
+                      <span className="text-sm">Back</span>
+                    </button>
+                    <div>
+                      <span>Model: {modelIDToLabel[model]}</span>
+                      <IoMdSettings
+                        size={styles.iconSize}
+                        className="inline ml-4"
+                        onClick={() => setIsSettingVisible((prevState) => !prevState)}
+                        cursor={"pointer"}
+                      />
+                    </div>
+                    {/* <BsThreeDotsVertical size={20} /> */}
+                    <Dropdown
+                      setChatSiderCollapse={setChatSiderCollapse}
+                     />
+                  </>)
+                  :
+                  <>
+                    <button
+                      onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
+                      style={{ width: "fit-content", height: "fit-content" }}
+                    >
+                      <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                    </button>
+                    <div>
+                      <span>Model: {modelIDToLabel[model]}</span>
+                      <IoMdSettings
+                        size={styles.iconSize}
+                        className="inline ml-4"
+                        onClick={() => setIsSettingVisible((prevState) => !prevState)}
+                        cursor={"pointer"}
+                      />
+                    </div>
+                    <button
+                      onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
+                      style={{ width: "fit-content", height: "fit-content" }}
+                    >
+                      <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                    </button>
+                  </>
+              }
             </div>
 
             <div
-              className={`bg-body ease-in-out duration-300 ${isSettingVisible
+              className={`bg-white ease-in-out duration-300 ${isSettingVisible
                 ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
                 : "h-0 translate-y-0"
                 }`}
@@ -203,7 +249,7 @@ export default function ChatBar({
             return (
               <div
                 key={index}
-                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between ${isMobileScreen ? "px-4" :"px-7"} py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
+                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between ${isMobileScreen ? "px-4" : "px-7"} py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
                   }`}
               >
                 <div className={`w-full flex gap-4`}>

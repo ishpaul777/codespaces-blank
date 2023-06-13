@@ -2,6 +2,7 @@ import { HiPlus } from "react-icons/hi";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { ToastContainer } from "react-toastify";
 import { BiMessageDetail } from "react-icons/bi";
+import { RxCross1 } from "react-icons/rx";
 import {
   AiOutlineDelete,
   AiOutlineCheck,
@@ -11,6 +12,7 @@ import {
 export default function SideBar({
   isMobileScreen,
   chatSiderCollapse,
+  setChatSiderCollapse,
   handleNewChatClick,
   paginationChatHistory,
   setPaginationChatHistory,
@@ -28,7 +30,7 @@ export default function SideBar({
   chatOptionsList,
   isFolderVisible = true,
 }) {
-  const maxListChars = 15;
+  const maxListChars = isMobileScreen ? 30 : 15;
   const styles = {
     fileIconSize: "24px",
     iconSize: "20px",
@@ -36,31 +38,39 @@ export default function SideBar({
 
   return (
     <aside
-      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${
-        chatSiderCollapse
-          ? "translate-x-0 w-0"
-          : `${isMobileScreen ? "w-3/4 " : "w-[20vw] "}bg-black-100`
-      } flex flex-row  ease-in-out duration-300 gap-4`}
+      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
+        ? "translate-x-0 w-0"
+        : `${isMobileScreen ? "w-full " : "w-[20vw] "}`
+        } flex flex-row  ease-in-out duration-300 gap-4`}
     >
       <div
-        className={`bg-white relative w-full shadow-md ${
-          chatSiderCollapse || "pt-4 pl-4"
-        }`}
+        className={`bg-white relative w-full shadow-md ${chatSiderCollapse || "pt-4 pl-4"
+          }`}
       >
+        {isMobileScreen && !chatSiderCollapse && (
+          <div className="flex flex-wrap justify-between items-center pr-6 mt-8">
+            <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+            <h2 className="text-xl font-semibold">History</h2>
+            <RxCross1 size={24}
+              onClick={() => setChatSiderCollapse(true)}
+            />
+          </div>
+        )}
         <div
-          className={`my-4 w-full text-center justify-between gap-2 ${
-            chatSiderCollapse ? "d-none" : "flex pr-4"
-          } `}
-        >
-          <button
-            className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${
-              chatSiderCollapse ? "d-none" : "flex"
+          className={`${isMobileScreen ? "my-2" : "my-4"} w-full text-center justify-between gap-2 ${chatSiderCollapse ? "d-none" : "flex pr-4"
             } `}
-            onClick={() => handleNewChatClick()}
-          >
-            <HiPlus size={styles.iconSize} />
-            <span className="text-lg">New Chat</span>
-          </button>
+        >
+          {
+            !isMobileScreen &&
+            <button
+              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? "d-none" : "flex"
+                } `}
+              onClick={() => handleNewChatClick()}
+            >
+              <HiPlus size={styles.iconSize} />
+              <span className="text-lg">New Chat</span>
+            </button>
+          }
           {isFolderVisible ? (
             <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
               <MdOutlineCreateNewFolder size={styles.fileIconSize} />
@@ -75,9 +85,8 @@ export default function SideBar({
         </div>
         <div className={`${chatSiderCollapse || "pr-4"}`}>
           <input
-            className={`w-full p-3 border border-gray-300 rounded-md  ${
-              chatSiderCollapse ? "d-none" : "flex"
-            } `}
+            className={`w-full p-3 border border-gray-300 rounded-md  ${chatSiderCollapse ? "d-none" : "flex"
+              } `}
             placeholder="Search prompt"
             onChange={(e) =>
               setPaginationChatHistory({
@@ -98,25 +107,36 @@ export default function SideBar({
                 draggable={true}
                 key={index}
                 className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+                    ${isMobileScreen && " border-gray-300 border-b-2"}
                     ${chatID === item?.id && "bg-hover-on-white"}
                   `}
               >
                 <div
-                  className="flex items-center gap-3"
+                  className={`flex ${isMobileScreen ? "flex-col items-start" : "flex-row items-center"} gap-3`}
                   onClick={() => {
                     setChat(item?.messages);
                     setChatID(item?.id);
                     setChatTitle(item?.title);
                     setIsEditing({ status: false, id: null });
+                    if (isMobileScreen) setChatSiderCollapse(true);
                   }}
                 >
-                  <BiMessageDetail size={styles.iconSize} />
-                  <span>
-                    {item?.title < maxListChars
+                  {!isMobileScreen && (
+                    <BiMessageDetail size={styles.iconSize} />
+                  )}
+                  {console.log(item)}
+                  <span className="text-[#1E1E1E]">
+                    {item?.title.length < maxListChars
                       ? item?.title
                       : `${item?.title?.slice(0, maxListChars) + "..."}
                         `}
                   </span>
+                  {isMobileScreen && <span className="text-sm text-[#667085]">
+                    {item?.messages[2]?.content.length < maxListChars+10
+                      ? item?.messages[2]?.content
+                      : `${item?.messages[2]?.content?.slice(0, maxListChars+10) + "..."}
+                        `}
+                  </span>}
                 </div>
 
                 <div className="flex gap-2">
@@ -146,13 +166,11 @@ export default function SideBar({
             );
           })}
           <div
-            className={`flex ${
-              paginationChatHistory.page === 1 ? "flex-row-reverse" : "flex-row"
-            } ${
-              paginationChatHistory.offset !== 0 &&
+            className={`flex ${paginationChatHistory.page === 1 ? "flex-row-reverse" : "flex-row"
+              } ${paginationChatHistory.offset !== 0 &&
               chatCount > paginationChatHistory.limit &&
               "justify-between"
-            } p-2 text-base cursor-pointer mt-4`}
+              } p-2 text-base cursor-pointer mt-4`}
           >
             {paginationChatHistory.page > 1 && (
               <span
@@ -179,9 +197,8 @@ export default function SideBar({
           </div>
         </ul>
         <div
-          className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${
-            chatSiderCollapse ? "d-none" : "flex"
-          } `}
+          className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? "d-none" : "flex"
+            } `}
         >
           <ul className="flex justify-center flex-col">
             {chatOptionsList.map((item, index) => (
@@ -200,3 +217,5 @@ export default function SideBar({
     </aside>
   );
 }
+
+
