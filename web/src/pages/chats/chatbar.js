@@ -33,7 +33,6 @@ export default function ChatBar({
   setTemperature,
   initialPrompt,
   setIntialPrompt,
-  chatTitle,
   AlwaysScrollToBottom,
   handleNewChatClick,
   modelIDToLabel,
@@ -181,7 +180,6 @@ export default function ChatBar({
                         cursor={"pointer"}
                       />
                     </div>
-                    {/* <BsThreeDotsVertical size={20} /> */}
                     <Dropdown
                       setChatSiderCollapse={setChatSiderCollapse}
                       handleNewChatClick={handleNewChatClick}

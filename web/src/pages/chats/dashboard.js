@@ -586,14 +586,15 @@ export default function ChatPage() {
       <aside
         className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${promptSiderCollapse
             ? "translate-x-0 w-0"
-            : `${isMobileScreen ? "w-3/4 " : "w-[20vw] "}`
+            : `${isMobileScreen ? "w-full " : "w-[22vw] "}`
           } flex flex-row ease-in-out duration-300 gap-4 z-50`}
       >
         <div
           className={`bg-white w-full relative shadow-md ${promptSiderCollapse || "pt-4 pl-4"
             }`}
         >
-          <PromptBar open={!promptSiderCollapse} isFolderVisible={true} />
+          <PromptBar open={!promptSiderCollapse} isFolderVisible={true} setPromptSiderCollapse={setPromptSiderCollapse}
+          />
         </div>
       </aside>
     </div>

@@ -153,8 +153,8 @@ export default function SideBar({
               handleDrop();
             }
           }}
-          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 border-b  border-gray-300
-          ${chatID === chat?.id && "bg-hover-on-white"}`}
+          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          ${chatID === chat?.id && "bg-hover-on-white"} ${ isMobileScreen && "border-b border-gray-300"}`}
         >
           <div
             className="flex items-center gap-3"
@@ -166,7 +166,7 @@ export default function SideBar({
             }}
           >
             {!isMobileScreen && <BiMessageDetail size={styles.iconSize} />}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
               <span className="md:font-normal font-semibold">
                 {chat?.title < maxListChars
                   ? chat?.title
@@ -313,7 +313,7 @@ export default function SideBar({
           <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
         </div>
         <ul
-          className={`overflow-y-auto  scrollbar-custom  ${chatSiderCollapse && "d-none"}  mt-3`}
+          className={`overflow-y-auto overflow-x-hidden  ${chatSiderCollapse && "d-none"}  mt-3`}
           style={{ maxHeight: "67vh" }}
         >
           {collectionCreateFormVisible && (

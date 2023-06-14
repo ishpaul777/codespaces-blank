@@ -14,6 +14,7 @@ import {
   AiOutlineDelete,
 } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
+import { RxCross1 } from 'react-icons/rx'
 import {
   createPrompt,
   deletePrompt,
@@ -22,7 +23,7 @@ import {
 } from "../../redux/actions/promptsActions";
 import { createPromptCollection, deletePromptCollection, getAllPromptCollections, addPromptToCollection, removePromptFromCollection } from "../../redux/actions/promptCollections";
 import { BsCaretRightFill, BsCaretDownFill } from "react-icons/bs";
-
+import ModalContent from "./createPrompt/modalContent";
 
 
 import { HiPlus } from "react-icons/hi";
@@ -34,12 +35,14 @@ import {
   getAllPromptTemplates,
   updatePromptTemplate,
 } from "../../actions/prompts";
+import useWindowSize from "../../hooks/useWindowSize";
 
-function PromptBar({ open, isFolderVisible }) {
+function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
   const styles = {
     fileIconSize: "24px",
     iconSize: "20px",
   };
+  const { isMobileScreen } = useWindowSize()
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [updatePromptIndex, setUpdatePromptIndex] = useState(null);
@@ -234,7 +237,6 @@ function PromptBar({ open, isFolderVisible }) {
     if (prompt_id === null) return
     dispatch(removePromptFromCollection(prompt_id, prompts))
   }
-  console.log(prompts)
   const renderPrompt = (prompt, index, isInFolder) => (
     <li
       key={index}
@@ -249,7 +251,7 @@ function PromptBar({ open, isFolderVisible }) {
           handleDrop();
         }
       }}
-      className="mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 justify-between"
+      className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 ${ isMobileScreen && "border-b border-gray-300"}`}
       onClick={() => {
         setUpdatePromptIndex(prompt.id);
         setPromptValues(prompt);
@@ -257,8 +259,17 @@ function PromptBar({ open, isFolderVisible }) {
       }}
     >
       <div className="flex justify-start gap-4 items-center">
-        <BiBulb size={styles.iconSize} />
-        <h3 className="text-lg">{prompt.title}</h3>
+        <div className={`flex ${isMobileScreen ? "flex-col" : "flex-row items-center gap-2"}`}>
+          {!isMobileScreen && <BiBulb size={styles.iconSize} />}
+          <h3 className="font-semibold md:font-normal">{prompt.title}</h3>
+          {isMobileScreen &&
+            <span className="text-gray-500">
+            {prompt.description.length < maxListChars
+              ? prompt.description
+              : `${prompt.description.slice(0, maxListChars) + "..."}
+          `}
+          </span>}
+        </div>
       </div>
       <div className="flex justify-end gap-2 items-center">
         {
@@ -326,51 +337,62 @@ function PromptBar({ open, isFolderVisible }) {
     }));
   };
 
-  const maxListChars = 15;
+  const maxListChars = isMobileScreen ? 40 : 15
 
   return (
     <>
-      <div
-        className={`my-4 w-full text-center justify-between gap-2 ${!open ? "d-none" : "flex pr-4"
-          } `}
-      >
-        <button
-          className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${!open ? "d-none" : "flex"
-            } `}
-          onClick={() => {
-            setShowModal(true);
-            setPromptValues({
-              title: "",
-              description: "",
-              prompt: "",
-            });
-          }}
-        >
-          <HiPlus size={styles.iconSize} />
-          <span className="text-lg">New Prompt</span>
-        </button>
-        {/* <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
+      {
+        isMobileScreen ?
+          <div className="flex flex-wrap justify-between items-center pr-6 mt-8 mb-4">
+            <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+            <h2 className="text-xl font-semibold">Prompts</h2>
+            <RxCross1 size={24}
+              onClick={() => setPromptSiderCollapse(true)}
+            />
+          </div>
+          :
+          <div
+            className={`my-4 w-full text-center justify-between gap-2 ${!open ? "d-none" : "flex pr-4"
+              } `}
+          >
+            <button
+              className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${!open ? "d-none" : "flex"
+                } `}
+              onClick={() => {
+                setShowModal(true);
+                setPromptValues({
+                  title: "",
+                  description: "",
+                  prompt: "",
+                });
+              }}
+            >
+              <HiPlus size={styles.iconSize} />
+              <span className="text-lg">New Prompt</span>
+            </button>
+            {/* <button className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center">
           <MdOutlineCreateNewFolder size={styles.fileIconSize} />
           {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
 
-        {/* </button> */}
-        {isFolderVisible ? (
-          <button
-            className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center"
-            onClick={() => {
-              setPromptCollectionCreateFormVisible(true);
-            }}
-          >
-            <MdOutlineCreateNewFolder size={styles.fileIconSize} />
-            {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
-            <ToastContainer />
-          </button>
-        ) : (
-          <div>
-            <ToastContainer />
+            {/* </button> */}
+            {isFolderVisible ? (
+              <button
+                className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center"
+                onClick={() => {
+                  setPromptCollectionCreateFormVisible(true);
+                }}
+              >
+                <MdOutlineCreateNewFolder size={styles.fileIconSize} />
+                {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
+                <ToastContainer />
+              </button>
+            ) : (
+              <div>
+                <ToastContainer />
+              </div>
+            )}
           </div>
-        )}
-      </div>
+      }
 
       {/* create modal */}
       <Modal
@@ -577,63 +599,3 @@ function PromptBar({ open, isFolderVisible }) {
 }
 
 export default PromptBar;
-
-const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
-  return (
-    <form className="flex flex-col w-full gap-4">
-      <div className="flex flex-col w-ful gap-2">
-        <label className="font-medium text-gray-700 text-base">Title</label>
-        <input
-          placeholder="Name of the prompt"
-          className="p-2 border border-[#CED0D4] rounded-md bg-transparent"
-          type="input"
-          name="title"
-          value={promptValues.title}
-          onChange={handleValueChange}
-        />
-        <p
-          className={`mt-1 ${showerror.title ? "block" : "d-none"
-            } text-pink-600 text-sm`}
-        >
-          Please provide a title for prompt.
-        </p>
-      </div>
-      <div className="flex flex-col w-ful gap-2">
-        <label className="font-medium text-gray-700 text-base">
-          Description
-        </label>
-        <textarea
-          name={"description"}
-          placeholder="A short description of the prompt"
-          className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
-          value={promptValues.description}
-          rows={4}
-          onChange={handleValueChange}
-        />
-        <p
-          className={`mt-1 ${showerror.description ? "block" : "d-none"
-            } text-pink-600 text-sm`}
-        >
-          Please provide a description for prompt.
-        </p>
-      </div>
-      <div className="flex flex-col w-ful gap-2">
-        <label className="font-medium text-gray-700 text-base">Prompt</label>
-        <textarea
-          placeholder="Prompt content. Use {{}} to denote a variable. Ex: {{name}} is a {{adjective}} {{noun}}"
-          name={"prompt"}
-          className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
-          value={promptValues.prompt}
-          rows={10}
-          onChange={handleValueChange}
-        />
-        <p
-          className={`mt-1 ${showerror.prompt ? "block" : "d-none"
-            } text-pink-600 text-sm`}
-        >
-          Please provide a template for prompt.
-        </p>
-      </div>
-    </form>
-  );
-};
