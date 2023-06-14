@@ -68,7 +68,7 @@ export default function ChatBar({
               isMobileScreen ? (
                 <div className={`sticky ${isMobileScreen ? "px-4" : "px-8"} py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7]`}>
                   <div
-                    className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-4" : "py-4"} px-4  gap-4 flex justify-between`}
+                    className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-2" : "py-3"} px-4  gap-4 flex justify-between`}
                   >
                     <button className="flex items-center">
                       <BiChevronLeft size={24} />
@@ -77,6 +77,7 @@ export default function ChatBar({
                     {/* <BsThreeDotsVertical size={20} /> */}
                     <Dropdown
                       handleNewChatClick={handleNewChatClick}
+                      setPromptSiderCollapse={setPromptSiderCollapse}
                       setChatSiderCollapse={setChatSiderCollapse}
                     />
                   </div>
@@ -162,7 +163,7 @@ export default function ChatBar({
                         `}
             </span> */}
             <div
-              className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-4" : "py-4"} px-4  gap-4 flex justify-between`}
+              className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-2" : "py-2"} px-4  gap-4 flex justify-between`}
             >
               {
                 isMobileScreen ? (
@@ -184,6 +185,7 @@ export default function ChatBar({
                     <Dropdown
                       setChatSiderCollapse={setChatSiderCollapse}
                       handleNewChatClick={handleNewChatClick}
+                      setPromptSiderCollapse={setPromptSiderCollapse}
                     />
                   </>)
                   :
@@ -214,7 +216,7 @@ export default function ChatBar({
             </div>
 
             <div
-              className={`bg-body ease-in-out duration-300 ${isSettingVisible
+              className={`bg-white ease-in-out duration-300 ${isSettingVisible
                   ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
                   : "h-0 translate-y-0"
                 }`}
@@ -304,7 +306,6 @@ export default function ChatBar({
                               status: !isEditing.status,
                               id: isEditing.status ? null : index,
                             });
-
                             handleChatEdit(chatID, chat, index);
                           }}
                         >

@@ -9,7 +9,7 @@ import {
   AiOutlineCheck,
   AiOutlineClose,
 } from "react-icons/ai";
-import { BsCaretDownFill, BsCaretRightFill } from "react-icons/bs";
+import { BsCaretDownFill, BsCaretRightFill, BsFolder } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import {
   addChatToCollection,
@@ -153,7 +153,7 @@ export default function SideBar({
               handleDrop();
             }
           }}
-          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 border-b  border-gray-300
           ${chatID === chat?.id && "bg-hover-on-white"}`}
         >
           <div
@@ -165,13 +165,25 @@ export default function SideBar({
               setIsEditing({ status: false, id: null });
             }}
           >
-            <BiMessageDetail size={styles.iconSize} />
-            <span>
-              {chat?.title < maxListChars
-                ? chat?.title
-                : `${chat?.title?.slice(0, maxListChars) + "..."}
-      `}
-            </span>
+            {!isMobileScreen && <BiMessageDetail size={styles.iconSize} />}
+            <div className="flex flex-col gap-2">
+              <span className="md:font-normal font-semibold">
+                {chat?.title < maxListChars
+                  ? chat?.title
+                  : `${chat?.title?.slice(0, maxListChars) + "..."}
+                `}
+              </span>
+              {
+                isMobileScreen &&
+                <span className="text-gray-500">
+                  {chat?.messages[2].content.length < maxListChars
+                    ? chat?.messages[2].content
+                    : `${chat?.messages[2].content.slice(0, maxListChars) + "..."}
+                  `}
+                </span>
+              }
+            </div>
+
           </div>
 
           <div className="flex gap-2">
@@ -237,7 +249,7 @@ export default function SideBar({
     <aside
       className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
         ? "translate-x-0 w-0"
-        : `${isMobileScreen ? "w-full " : "w-[20vw] "}`
+        : `${isMobileScreen ? "w-full " : "w-[22vw] "}`
         } flex flex-row  ease-in-out duration-300 gap-4`}
     >
       <div
@@ -301,7 +313,7 @@ export default function SideBar({
           <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
         </div>
         <ul
-          className={`overflow-y-auto  ${chatSiderCollapse && "d-none"}  mt-3`}
+          className={`overflow-y-auto  scrollbar-custom  ${chatSiderCollapse && "d-none"}  mt-3`}
           style={{ maxHeight: "67vh" }}
         >
           {collectionCreateFormVisible && (
@@ -338,83 +350,91 @@ export default function SideBar({
               </div>
             </li>
           )}
-          {collections !== null &&
-            collections.length > 0 &&
-            collections?.map((item, index) => {
-              return (
-                <>
-                  <li
-                    key={index}
-                    onDragEnter={() => {
-                      // e.preventDefault();
-                      handleDragEnter(item.id);
-                    }}
-                    className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          <div className={`flex ${isMobileScreen ? 'flex-row bg-white border border-gray-300 py-3 px-4' : 'flex-col'} flex-wrap mr-4 justify-between`}>
+            {collections !== null &&
+              collections.length > 0 &&
+              collections?.map((item, index) => {
+                return (
+                  <>
+                    <li
+                      key={index}
+                      onDragEnter={() => {
+                        // e.preventDefault();
+                        handleDragEnter(item.id);
+                      }}
+                      className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2 ${isMobileScreen ? "w-[45%] p-1" : "flex p-2  justify-between"}
                     ${dragOverCollectionId === item.id && "bg-hover-on-white"}
                     `}
-                    onClick={() => {
-                      if (currentCollectionIndex === item.id) {
-                        setCurrentCollectionIndex(null);
-                      } else {
-                        setCurrentCollectionIndex(item.id);
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      {currentCollectionIndex === item.id ? (
-                        <BsCaretDownFill size={16} />
-                      ) : (
-                        <BsCaretRightFill size={16} />
-                      )}
-                      <span>
-                        {item?.name < maxListChars
-                          ? item?.name
-                          : `${item?.name?.slice(0, maxListChars) + "..."}
+                      onClick={() => {
+                        if (!isMobileScreen && currentCollectionIndex === item.id) {
+                          setCurrentCollectionIndex(null);
+                        } else {
+                          setCurrentCollectionIndex(item.id);
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-3 w-[1000%]">
+                        {
+                          isMobileScreen ? <BsFolder size={16} />
+                            :
+                            currentCollectionIndex === item.id ? (
+                              <BsCaretDownFill size={16} />
+                            ) : (
+                              <BsCaretRightFill size={16} />
+                            )}
+                        <span>
+                          {item?.name < maxListChars
+                            ? item?.name
+                            : `${item?.name?.slice(0, maxListChars) + "..."}
                         `}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      {
-                        // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
-                        // else show the delete button
-                        deleteCollectionIndex === item.id ? (
-                          <>
-                            <AiOutlineCheck
-                              size={styles.iconSize}
-                              // todo: handle chat delete
-                              onClick={(E) => {
-                                E.stopPropagation();
-                                handleCollectionDelete(item.id);
-                              }}
-                            />
-                            <AiOutlineClose
-                              size={styles.iconSize}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteCollectionIndex(null);
-                              }}
-                            />
-                          </>
-                        ) : (
-                          <AiOutlineDelete
-                            size={styles.iconSize}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeleteCollectionIndex(item.id);
-                            }}
-                          />
-                        )
-                      }
-                    </div>
-                  </li>
-                  <ul className="ml-3 border-l-2 border-gray-300 pl-2">
-                    {currentCollectionIndex === item.id &&
-                      item?.chats?.length > 0 &&
-                      renderChats(item?.chats, true)}
-                  </ul>
-                </>
-              );
-            })}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        {
+                          // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
+                          // else show the delete button
+                          !isMobileScreen
+                            ?
+                            deleteCollectionIndex === item.id ? (
+                              <>
+                                <AiOutlineCheck
+                                  size={styles.iconSize}
+                                  // todo: handle chat delete
+                                  onClick={(E) => {
+                                    E.stopPropagation();
+                                    handleCollectionDelete(item.id);
+                                  }}
+                                />
+                                <AiOutlineClose
+                                  size={styles.iconSize}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeleteCollectionIndex(null);
+                                  }}
+                                />
+                              </>
+                            ) : (
+                              <AiOutlineDelete
+                                size={styles.iconSize}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteCollectionIndex(item.id);
+                                }}
+                              />
+                            )
+                            : null
+                        }
+                      </div>
+                    </li>
+                    {/* <ul className="ml-3 border-l-2 border-gray-300 pl-2">
+                      {currentCollectionIndex === item.id &&
+                        item?.chats?.length > 0 &&
+                        renderChats(item?.chats, true)}
+                    </ul> */}
+                  </>
+                );
+              })}
+          </div>
           <hr className="h-px bg-gray-300 mt-3 border-0 mr-4 mb-3"></hr>
           <ul
             onDragEnter={() => {
@@ -454,23 +474,26 @@ export default function SideBar({
             )}
           </div>
         </ul>
-        <div
-          className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? "d-none" : "flex"
-            } `}
-        >
-          <ul className="flex justify-center flex-col">
-            {chatOptionsList.map((item, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
-                onClick={item.onClick}
-              >
-                {item.icon}
-                <span className="text-base">{item.title}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {!isMobileScreen &&
+          (<div
+            className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? "d-none" : "flex"
+              } `}
+          >
+            <ul className="flex justify-center flex-col">
+              {chatOptionsList.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
+                  onClick={item.onClick}
+                >
+                  {item.icon}
+                  <span className="text-base">{item.title}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          )
+        }
       </div>
     </aside>
   );
