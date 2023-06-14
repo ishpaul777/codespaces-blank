@@ -22,8 +22,6 @@ export default function ChatPage() {
   const [isMobileScreen, setIsMobileScreen] = useState(false);
   const [promptSiderCollapse, setPromptSiderCollapse] = useState(!isMobileScreen);
   const [chatSiderCollapse, setChatSiderCollapse] = useState(!isMobileScreen);
-
-  console.log(isMobileScreen, promptSiderCollapse, chatSiderCollapse)
   const [chatTitle, setChatTitle] = useState("");
   useEffect(() => {
     const handleResize = () => {

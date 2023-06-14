@@ -153,8 +153,8 @@ export default function SideBar({
               handleDrop();
             }
           }}
-          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
-          ${chatID === chat?.id && "bg-hover-on-white"} ${ isMobileScreen && "border-b border-gray-300"}`}
+          className={`p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          ${chatID === chat?.id && "bg-hover-on-white"} ${isMobileScreen && "border-b border-gray-300"}`}
         >
           <div
             className="flex items-center gap-3"
@@ -163,6 +163,7 @@ export default function SideBar({
               setChatID(chat?.id);
               setChatTitle(chat?.title);
               setIsEditing({ status: false, id: null });
+              if(isMobileScreen) setChatSiderCollapse(true)
             }}
           >
             {!isMobileScreen && <BiMessageDetail size={styles.iconSize} />}
@@ -389,13 +390,13 @@ export default function SideBar({
                         `}
                         </span>
                       </div>
-                      <div className="flex gap-2">
-                        {
-                          // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
-                          // else show the delete button
-                          !isMobileScreen
-                            ?
-                            deleteCollectionIndex === item.id ? (
+                      {
+                        // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
+                        // else show the delete button
+                        !isMobileScreen
+                          ?
+                          <div className="flex gap-2">
+                            {deleteCollectionIndex === item.id ? (
                               <>
                                 <AiOutlineCheck
                                   size={styles.iconSize}
@@ -421,22 +422,45 @@ export default function SideBar({
                                   setDeleteCollectionIndex(item.id);
                                 }}
                               />
-                            )
-                            : null
-                        }
-                      </div>
+                            )}
+                          </div>
+                          : null
+                      }
                     </li>
-                    {/* <ul className="ml-3 border-l-2 border-gray-300 pl-2">
-                      {currentCollectionIndex === item.id &&
+                    <ul className={`
+                      sm-fixed sm-left-0 sm-top-0 md:static bg-white ${currentCollectionIndex === item.id &&
+                        item?.chats?.length > 0
+                        ? `${isMobileScreen ? "w-[100vw] h-screen p-4 gap-4" : "border-l-2 ml-4 border-gray-300"}`
+                        : "translate-x-0 w-0"
+                      } flex flex-col ease-in-out duration-300
+                      `}
+                      style={{
+                        zIndex: 100
+                      }}
+                    >
+                      {isMobileScreen && currentCollectionIndex === item.id &&
+                        item?.chats?.length > 0 &&
+                        <div className="flex flex-wrap justify-between items-center my-8">
+                          <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+                          <h2 className="text-xl font-semibold pl-2">
+                            {item?.name}
+                          </h2>
+                          <RxCross1 size={24}
+                            onClick={() => setCurrentCollectionIndex(null)}
+                          />
+                        </div>}
+                      {
+                        currentCollectionIndex === item.id &&
                         item?.chats?.length > 0 &&
                         renderChats(item?.chats, true)}
-                    </ul> */}
+                    </ul>
                   </>
                 );
               })}
           </div>
           <hr className="h-px bg-gray-300 mt-3 border-0 mr-4 mb-3"></hr>
           <ul
+            className="mr-4"
             onDragEnter={() => {
               handleDragEnter(null);
             }}
