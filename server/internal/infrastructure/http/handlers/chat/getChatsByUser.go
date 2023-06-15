@@ -26,7 +26,7 @@ func (h *httpHandler) getAllChatsByUser(w http.ResponseWriter, r *http.Request) 
 	pagination, err := helper.GetPagination(r)
 	if err != nil {
 		h.logger.Error("error in parsing pagination", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid pagination", http.StatusBadRequest)))
+		errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusBadRequest)))
 		return
 	}
 
