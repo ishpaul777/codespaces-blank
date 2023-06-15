@@ -6,6 +6,8 @@ import (
 )
 
 type Pagination struct {
+	// Page, Limit, SearchQuery are mandatory fields for pagination
+	// Queries is a map of optional fields for pagination Ex: sort
 	Page        int
 	Limit       int
 	SearchQuery string
@@ -37,6 +39,14 @@ func GetPagination(r *http.Request) (*Pagination, error) {
 	}
 
 	pagination.SearchQuery = r.URL.Query().Get("search_query")
+	pagination.Queries = map[string]string{}
+
+	sort := r.URL.Query().Get("sort")
+	if sort != "" {
+		pagination.Queries["sort"] = sort
+	} else {
+		pagination.Queries["sort"] = "desc"
+	}
 
 	return pagination, nil
 }
