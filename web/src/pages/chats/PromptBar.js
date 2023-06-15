@@ -497,7 +497,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
                       // e.preventDefault();
                       handleDragEnter(item.id);
                     }}
-                    className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2 ${isMobileScreen ? "w-[45%] p-1" : "flex w-full p-2  justify-between"}`}
+                    className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md items-center mb-2 ${isMobileScreen ? "w-[45%] p-1" : "flex w-full p-2 justify-between"}`}
                     onClick={() => {
                       if (currentPromptCollectionIndex === item.id) {
                         setCurrentPromptCollectionIndex(null);
@@ -561,7 +561,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
                   <ul className={`
                       sm-fixed sm-left-0 sm-top-0 md:static bg-white ${currentPromptCollectionIndex === item.id &&
                       item?.prompt_templates?.length > 0
-                      ? `${isMobileScreen ? "w-[100vw] h-screen p-4 gap-4" : "border-l-2 ml-4 border-gray-300"}`
+                      ? `${isMobileScreen ? "w-[100vw] h-screen p-4 gap-4" : "border-l-2 ml-4 border-gray-300 pl-2 w-full"}`
                       : "translate-x-0 w-0"
                     } flex flex-col ease-in-out duration-300
                       `}

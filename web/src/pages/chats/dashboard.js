@@ -584,7 +584,7 @@ export default function ChatPage() {
       <aside
         className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${promptSiderCollapse
             ? "translate-x-0 w-0"
-            : `${isMobileScreen ? "w-full " : "w-[22vw] "}`
+            : `${isMobileScreen ? "w-full " : "w-[350px] "}`
           } flex flex-row ease-in-out duration-300 gap-4 z-50`}
       >
         <div

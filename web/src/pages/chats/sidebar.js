@@ -250,7 +250,7 @@ export default function SideBar({
     <aside
       className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
         ? "translate-x-0 w-0"
-        : `${isMobileScreen ? "w-full " : "w-[22vw] "}`
+        : `${isMobileScreen ? "w-full " : "w-[350px] "}`
         } flex flex-row  ease-in-out duration-300 gap-4`}
     >
       <div
@@ -315,7 +315,7 @@ export default function SideBar({
         </div>
         <ul
           className={`overflow-y-auto overflow-x-hidden  ${chatSiderCollapse && "d-none"}  mt-3`}
-          style={{ maxHeight: "67vh" }}
+          style={{ maxHeight: "65vh" }}
         >
           {collectionCreateFormVisible && (
             <li
@@ -430,7 +430,7 @@ export default function SideBar({
                     <ul className={`
                       sm-fixed sm-left-0 sm-top-0 md:static bg-white ${currentCollectionIndex === item.id &&
                         item?.chats?.length > 0
-                        ? `${isMobileScreen ? "w-[100vw] h-screen p-4 gap-4" : "border-l-2 ml-4 border-gray-300"}`
+                        ? `${isMobileScreen ? "w-[100vw] h-screen p-4 gap-4" : "border-l-2 ml-4 border-gray-300 pl-2 w-full"}`
                         : "translate-x-0 w-0"
                       } flex flex-col ease-in-out duration-300
                       `}
