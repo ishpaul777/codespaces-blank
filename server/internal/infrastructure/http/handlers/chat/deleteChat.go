@@ -3,6 +3,7 @@ package chat
 import (
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
@@ -55,6 +56,10 @@ func (h *httpHandler) deleteChatCollection(w http.ResponseWriter, r *http.Reques
 	err = h.chatService.DeleteChatCollection(userID, uint(chatID))
 	if err != nil {
 		h.logger.Error("error deleting chat", "error", err.Error())
+		if err == custom_errors.ChatCollectionNotFound {
+			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
+			return
+		}
 		errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusInternalServerError)))
 		return
 	}
