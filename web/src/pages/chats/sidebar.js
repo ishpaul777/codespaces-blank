@@ -235,7 +235,7 @@ export default function SideBar({
     <aside
       className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
         ? "translate-x-0 w-0"
-        : `${isMobileScreen ? "w-3/4 " : "w-[20vw] "}bg-black-100`
+        : `${isMobileScreen ? "w-3/4 " : "w-[350px] "}bg-black-100`
         } flex flex-row  ease-in-out duration-300 gap-4`}
     >
       <div
