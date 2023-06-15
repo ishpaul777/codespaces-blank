@@ -31,6 +31,7 @@ func (h *httpHandler) chatCollectionRoutes() chi.Router {
 		r.Get("/", h.getChatCollectionByID)
 		r.Delete("/", h.deleteChatCollection)
 		r.Put("/", h.updatChatColByID)
+		r.Put("/", h.removeChatFromCol)
 	})
 
 	return router

@@ -35,6 +35,8 @@ type ChatService interface {
 	UpdateChatColByID(userID, chatID uint, name string) error
 	// Add chat to collection
 	AddChatToCollection(userID, chatID, chatCollectionID uint) error
+	// Remove chat from collection
+	RemoveChatFromCol(userID, chatID uint) error
 }
 
 // chatService is a concrete implementation of ChatService interface
@@ -168,6 +170,11 @@ func (c *chatService) DeleteChat(userID, chatID uint) error {
 func (c *chatService) AddChatToCollection(userID, chatCollectionID, chatID uint) error {
 	return c.chatRepository.AddChatToCollection(userID, chatCollectionID, chatID)
 }
+
 func (c *chatService) UpdateChatColByID(userID, chatCollectionID uint, name string) error {
 	return c.chatRepository.UpdateChatColByID(userID, chatCollectionID, name)
+}
+
+func (c *chatService) RemoveChatFromCol(userID, chatID uint) error {
+	return c.chatRepository.RemoveChatFromCol(userID, chatID)
 }
