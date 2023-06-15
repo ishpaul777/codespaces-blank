@@ -109,6 +109,7 @@ const addChatToCollection = (collectionId, chatId, chatHistory) => async (dispat
 			dispatch({
 				type: "ADD_CHAT_TO_COLLECTION",
 				payload: { collectionId, chat },
+
 			});
 		}
 		)
