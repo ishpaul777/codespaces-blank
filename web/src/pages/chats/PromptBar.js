@@ -251,7 +251,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
           handleDrop();
         }
       }}
-      className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 ${ isMobileScreen && "border-b border-gray-300"}`}
+      className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 ${isMobileScreen && "border-b border-gray-300"}`}
       onClick={() => {
         setUpdatePromptIndex(prompt.id);
         setPromptValues(prompt);
@@ -264,11 +264,11 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
           <h3 className="font-semibold md:font-normal">{prompt.title}</h3>
           {isMobileScreen &&
             <span className="text-gray-500">
-            {prompt.description.length < maxListChars
-              ? prompt.description
-              : `${prompt.description.slice(0, maxListChars) + "..."}
+              {prompt.description.length < maxListChars
+                ? prompt.description
+                : `${prompt.description.slice(0, maxListChars) + "..."}
           `}
-          </span>}
+            </span>}
         </div>
       </div>
       <div className="flex justify-end gap-2 items-center">
@@ -483,84 +483,112 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
             </div>
           </li>
         )}
-
-        {/* collections */}
-        {promptCollections !== null &&
-          promptCollections.length > 0 &&
-          promptCollections?.map((item, index) => {
-            return (
-              <>
-                {/* // {handleDragEnter,  dragOverCollectionId } */}
-                <li
-                  key={index}
-                  onDragEnter={() => {
-                    // e.preventDefault();
-                    handleDragEnter(item.id);
-                  }}
-                  className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
-                    ${dragOverCollectionId === item.id && "bg-hover-on-white"}`}
-                  onClick={() => {
-                    if (currentPromptCollectionIndex === item.id) {
-                      setCurrentPromptCollectionIndex(null);
-                    } else {
-                      setCurrentPromptCollectionIndex(item.id);
-                    }
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    {currentPromptCollectionIndex === item.id ? (
-                      <BsCaretDownFill size={16} />
-                    ) : (
-                      <BsCaretRightFill size={16} />
-                    )}
-                    <span>
-                      {item?.name < maxListChars
-                        ? item?.name
-                        : `${item?.name?.slice(0, maxListChars) + "..."}
+        <div className={`flex ${isMobileScreen ? 'flex-row bg-white border border-gray-300 py-3 px-4' : 'flex-col'} flex-wrap mr-4 justify-between`}>
+          {/* collections */}
+          {promptCollections !== null &&
+            promptCollections.length > 0 &&
+            promptCollections?.map((item, index) => {
+              return (
+                <>
+                  {/* // {handleDragEnter,  dragOverCollectionId } */}
+                  <li
+                    key={index}
+                    onDragEnter={() => {
+                      // e.preventDefault();
+                      handleDragEnter(item.id);
+                    }}
+                    className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2 ${isMobileScreen ? "w-[45%] p-1" : "flex w-full p-2  justify-between"}`}
+                    onClick={() => {
+                      if (currentPromptCollectionIndex === item.id) {
+                        setCurrentPromptCollectionIndex(null);
+                      } else {
+                        setCurrentPromptCollectionIndex(item.id);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      {currentPromptCollectionIndex === item.id ? (
+                        <BsCaretDownFill size={16} />
+                      ) : (
+                        <BsCaretRightFill size={16} />
+                      )}
+                      <span>
+                        {item?.name < maxListChars
+                          ? item?.name
+                          : `${item?.name?.slice(0, maxListChars) + "..."}
                         `}
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    {
-                      // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
-                      // else show the delete button
-                      deletePromptCollectionIndex === item.id ? (
-                        <>
-                          <AiOutlineCheck
-                            size={styles.iconSize}
-                            onClick={(E) => {
-                              E.stopPropagation();
-                              dispatch(deletePromptCollection(item.id));
-                            }}
-                          />
-                          <AiOutlineClose
+                      </span>
+                    </div>
+                  { !isMobileScreen &&
+                   <div className="flex gap-2 justify-end">
+                      {
+                        // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
+                        // else show the delete button
+                        deletePromptCollectionIndex === item.id ? (
+                          <>
+                            <AiOutlineCheck
+                              size={styles.iconSize}
+                              onClick={(E) => {
+                                E.stopPropagation();
+                                dispatch(deletePromptCollection(item.id));
+                              }}
+                            />
+                            <AiOutlineClose
+                              size={styles.iconSize}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeletePromptCollectionIndex(null);
+                              }}
+                            />
+                          </>
+                        ) : (
+                          <AiOutlineDelete
                             size={styles.iconSize}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setDeletePromptCollectionIndex(null);
+                              setDeletePromptCollectionIndex(item.id);
                             }}
                           />
-                        </>
-                      ) : (
-                        <AiOutlineDelete
-                          size={styles.iconSize}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeletePromptCollectionIndex(item.id);
-                          }}
+                        )
+                      }
+                    </div>}
+                  </li>
+                  {/* <ul className="ml-3 border-l-2 border-gray-300 pl-2">
+                    {currentPromptCollectionIndex === item.id &&
+                      item?.prompt_templates?.length > 0 &&
+                      item?.prompt_templates?.map((prompt, index) => { return renderPrompt(prompt, index, true) })}
+                  </ul> */}
+                  <ul className={`
+                      sm-fixed sm-left-0 sm-top-0 md:static bg-white ${currentPromptCollectionIndex === item.id &&
+                      item?.prompt_templates?.length > 0
+                      ? `${isMobileScreen ? "w-[100vw] h-screen p-4 gap-4" : "border-l-2 ml-4 border-gray-300"}`
+                      : "translate-x-0 w-0"
+                    } flex flex-col ease-in-out duration-300
+                      `}
+                    style={{
+                      zIndex: isMobileScreen && 100
+                    }}
+                  >
+                    {isMobileScreen && currentPromptCollectionIndex === item.id &&
+                      item?.prompt_templates?.length > 0 &&
+                      <div className="flex flex-wrap justify-between items-center my-8">
+                        <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+                        <h2 className="text-xl font-semibold pl-2">
+                          {item?.name}
+                        </h2>
+                        <RxCross1 size={24}
+                          onClick={() => setCurrentPromptCollectionIndex(null)}
                         />
-                      )
-                    }
-                  </div>
-                </li>
-                <ul className="ml-3 border-l-2 border-gray-300 pl-2">
-                  {currentPromptCollectionIndex === item.id &&
-                    item?.prompt_templates?.length > 0 &&
-                    item?.prompt_templates?.map((prompt, index) => { return renderPrompt(prompt, index, true) })}
-                </ul>
-              </>
-            );
-          })}
+                      </div>}
+                    {
+                      currentPromptCollectionIndex === item.id &&
+                      item?.prompt_templates?.length > 0 &&
+                      item?.prompt_templates?.map((prompt, index) => { return renderPrompt(prompt, index, true) })}
+                  </ul>
+                </>
+              );
+            })}
+        </div>
         <hr className="h-px bg-gray-300 mt-3 border-0 mr-4 mb-3"></hr>
         {prompts?.map((prompt, index) => renderPrompt(prompt, index, false))}
         <div
@@ -599,3 +627,4 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
 }
 
 export default PromptBar;
+
