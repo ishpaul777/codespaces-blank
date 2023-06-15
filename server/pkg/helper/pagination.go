@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 )
@@ -24,7 +25,7 @@ func GetPagination(r *http.Request) (*Pagination, error) {
 	} else {
 		pagination.Page, err = strconv.Atoi(page)
 		if err != nil {
-			return nil, err
+			return nil, errors.New("Invalid page parameter")
 		}
 	}
 
@@ -34,7 +35,7 @@ func GetPagination(r *http.Request) (*Pagination, error) {
 	} else {
 		pagination.Limit, err = strconv.Atoi(limit)
 		if err != nil {
-			return nil, err
+			return nil, errors.New("Invalid limit parameter")
 		}
 	}
 
@@ -43,6 +44,9 @@ func GetPagination(r *http.Request) (*Pagination, error) {
 
 	sort := r.URL.Query().Get("sort")
 	if sort != "" {
+		if sort != "asc" && sort != "desc" {
+			return nil, errors.New("Invalid sort parameter")
+		}
 		pagination.Queries["sort"] = sort
 	} else {
 		pagination.Queries["sort"] = "desc"
