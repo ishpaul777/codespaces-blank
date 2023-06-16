@@ -17,7 +17,7 @@ func (h *httpHandler) removeChatFromCol(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	ccID := helper.GetPathParamByName(r, "chat_collection_id")
+	ccID := helper.GetPathParamByName(r, "chat_id")
 	chatID, err := helper.StringToInt(ccID)
 	if err != nil {
 		h.logger.Error("error in parsing chat id", "error", err.Error())
