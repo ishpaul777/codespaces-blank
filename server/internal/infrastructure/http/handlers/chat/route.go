@@ -22,16 +22,6 @@ func (h *httpHandler) chatRoutes() chi.Router {
 	return router
 }
 
-func InitRoutes(router *chi.Mux, chatService services.ChatService, logger logger.ILogger) {
-	httpHandler := &httpHandler{
-		chatService: chatService,
-		logger:      logger,
-	}
-	router.Mount("/chat", httpHandler.chatRoutes())
-	router.Mount("/chat_collections", httpHandler.chatCollectionRoutes())
-
-}
-
 func (h *httpHandler) chatCollectionRoutes() chi.Router {
 	router := chi.NewRouter()
 
@@ -40,7 +30,19 @@ func (h *httpHandler) chatCollectionRoutes() chi.Router {
 	router.Route("/{chat_collection_id}", func(r chi.Router) {
 		r.Get("/", h.getChatCollectionByID)
 		r.Delete("/", h.deleteChatCollection)
+		r.Put("/", h.updatChatColByID)
+		r.Put("/", h.removeChatFromCol)
 	})
 
 	return router
+}
+
+func InitRoutes(router *chi.Mux, chatService services.ChatService, logger logger.ILogger) {
+	httpHandler := &httpHandler{
+		chatService: chatService,
+		logger:      logger,
+	}
+	router.Mount("/chat", httpHandler.chatRoutes())
+	router.Mount("/chat_collections", httpHandler.chatCollectionRoutes())
+
 }

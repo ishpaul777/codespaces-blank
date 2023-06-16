@@ -6,11 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func (p *PGChatsRepository) DeleteChatCollection(userID, chatCollectionID uint) error {
-	err := p.client.Where("created_by_id = ? AND id = ?", userID, chatCollectionID).Delete(&models.ChatCollection{}).Error
+func (p *PGChatsRepository) RemoveChatFromCol(userID, chatID uint) error {
+	err := p.client.Model(&models.Chat{}).Where("created_by_id = ? AND id = ?", userID, chatID).Update("chat_collection_id", nil).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.ChatCollectionNotFound
+			return custom_errors.ChatNotFound
 		}
 		return err
 	}
