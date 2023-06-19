@@ -16,7 +16,7 @@ func (p *PGPersonaRepository) DeletePersonaByID(userID, personaID uint) error {
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.PersonaNotFound
+			return custom_errors.ErrNotFound
 		}
 		return err
 	}

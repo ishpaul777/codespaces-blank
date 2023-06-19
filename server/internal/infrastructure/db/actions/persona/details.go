@@ -12,7 +12,7 @@ func (p *PGPersonaRepository) GetPersonaByID(userID, personaID uint) (*models.Pe
 		"id = ? AND visibility = ?", personaID, models.VISIBILITY_PUBLIC).First(&persona).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, custom_errors.PersonaNotFound
+			return nil, custom_errors.ErrNotFound
 		}
 		return nil, err
 	}
