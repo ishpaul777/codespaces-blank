@@ -29,7 +29,7 @@ func (h *httpHandler) getPromptTemplateByID(w http.ResponseWriter, r *http.Reque
 	promptTemplate, err := h.promptTemplateService.GetPromptTemplateByID(userID, uint(promptTemplateID))
 	if err != nil {
 		h.logger.Error("error in fetching prompt template by id", "error", err.Error())
-		if err == custom_errors.PromptTemplateNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}

@@ -34,8 +34,8 @@ func (h *httpHandler) createPromptTemplateCollection(w http.ResponseWriter, r *h
 	promptTemplateCollection, err := h.promptTemplateService.CreateNewPromptTemplateCollection(userID, requestBody.Name)
 	if err != nil {
 		h.logger.Error("error creating prompt template collection", "error", err.Error())
-		if err == custom_errors.PromptTemplateCollectionNameExists {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusUnprocessableEntity)))
+		if err == custom_errors.ErrNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusConflict)))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.DBError()))

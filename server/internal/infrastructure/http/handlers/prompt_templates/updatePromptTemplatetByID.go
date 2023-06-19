@@ -44,8 +44,11 @@ func (h *httpHandler) updatePrompTemplateByID(w http.ResponseWriter, r *http.Req
 	updatePromptTemplate, err := h.promptTemplateService.UpdatePromptTemplateByID(userID, uint(promptTemplateID), updateReq.Title, updateReq.Description, updateReq.Prompt)
 	if err != nil {
 		h.logger.Error("error updating prompt template by id", "error", err.Error())
-		if err == custom_errors.PromptTemplateNotFound || err == custom_errors.PromptTemplateCollectionNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
+			return
+		} else if err == custom_errors.ErrNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusConflict)))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusInternalServerError)))

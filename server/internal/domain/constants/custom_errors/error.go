@@ -17,7 +17,8 @@ type CustomError struct {
 type CustomErrorType string
 
 var (
-	InvalidVisibility CustomErrorType = "invalid visibility"
+	InvalidVisibility   CustomErrorType = "invalid visibility"
+	InnerEntityNotFound CustomErrorType = "inner entity not found"
 )
 
 // Error implements error

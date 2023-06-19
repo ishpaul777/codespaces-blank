@@ -42,7 +42,7 @@ func (h *httpHandler) updateTemplateCollectionByID(w http.ResponseWriter, r *htt
 	updateTemplateCollection, err := h.promptTemplateService.UpdatePromptTemplateCollectionByID(userID, uint(templateCollectionID), updateReq.Name)
 	if err != nil {
 		h.logger.Error("error updating template collection by id", "error", err.Error())
-		if err == custom_errors.PromptTemplateCollectionNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}
