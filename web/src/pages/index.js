@@ -75,7 +75,7 @@ export function HomePage() {
     {
       title: "Create Your Own Custom Persona and Chat Away!",
       description:
-        "Unleash your creativity and build a personalized chat persona that reflects your unique style. Dive into the world of customized conversations by creating your own persona and engage in captivating chats tailored to your preferences. Click the card to embark on a journey of self-expression and enjoy meaningful interactions with your very own custom chat persona.",
+        "Unleash your creativity and build a personalized chat persona that reflects your unique style. Dive into the world of customized conversations by creating your own persona and engage in captivating chats tailored to your preferences. Click the card to  enjoy meaningful interactions with your very own custom chat persona.",
       image: CustomPersona,
 
       link: "/personas/create",
@@ -102,11 +102,11 @@ export function HomePage() {
         {menuOptions.map((option) => (
           <Link
             to={option.link}
-            className="p-4 cursor-pointer flex gap-4 transition-all focus:ring-gray-400 focus:shadow-xl duration-150 rounded-lg shadow-sm hover:shadow-lg relative hover:ring-gray-300 hover:ring-2 ring-1 ring-gray-200  bg-white"
+            className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 transition-all focus:ring-gray-400 focus:shadow-xl duration-150 rounded-lg shadow-sm hover:shadow-lg relative hover:ring-gray-300 hover:ring-2 ring-1 ring-gray-200  bg-white"
           >
-            <img className="w-48 h-full"
+            <img className="md:w-48 w-full md:h-52 h-full"
               src={option.image} alt={option.title} />
-            <div className="flex gap-4 flex-col">
+            <div className="flex gap-2 flex-col">
               <h3 class="text-lg font-semibold text-gray-700">
                 {option.title}
               </h3>
