@@ -15,6 +15,7 @@ import {
   createCollection,
   deleteCollection,
   getAllChatCollections,
+  removeChatFromCollections
 } from "../../redux/actions/collections";
 import { useDispatch } from "react-redux";
 
@@ -151,7 +152,7 @@ export default function SideBar({
               handleDrop();
             }
           }}
-          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 group
           ${chatID === chat?.id && "bg-hover-on-white"}`}
         >
           <div
@@ -171,8 +172,7 @@ export default function SideBar({
       `}
             </span>
           </div>
-
-          <div className="flex gap-2">
+          <div className={`flex gap-2`}>
             {
               // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
               // else show the delete button
@@ -198,10 +198,9 @@ export default function SideBar({
                 <>
                   <AiOutlineCheck
                     size={styles.iconSize}
-                  // onClick={() =>
-                  //   TODO HANDLE REMOVE CHAT FROM COLLECTION
-                  //   handleChatRemoveFromCollection(removeChatFromCollection.chat_id, removeChatFromCollection.collection_id)
-                  // }
+                    onClick={() =>
+                      dispatch(removeChatFromCollections(chat.id, chatHistory))
+                    }
                   />
                   <AiOutlineClose
                     size={styles.iconSize}
