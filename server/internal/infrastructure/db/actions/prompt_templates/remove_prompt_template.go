@@ -11,7 +11,7 @@ func (pg *PGPromptTemplateRepository) RemovePromptTemplateFromCollection(userID 
 	promptTemplate := &models.PromptTemplate{}
 	if err := pg.client.Model(&models.PromptTemplate{}).Where("created_by_id = ? AND id = ?", userID, PromptTemplateID).First(promptTemplate).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.PromptTemplateNotFound
+			return custom_errors.ErrNotFound
 		}
 		return err
 	}

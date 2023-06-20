@@ -41,11 +41,15 @@ func (h *httpHandler) create(w http.ResponseWriter, r *http.Request) {
 	persona, err := h.personaService.CreateNewPersona(userID, requestBody.Name, requestBody.Description, requestBody.Prompt, requestBody.Avatar, requestBody.Model, requestBody.Visibility, requestBody.IsDefault)
 	if err != nil {
 		h.logger.Error("error creating persona")
-		if err == custom_errors.PersonaNameExists {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage("persona with same name exists", http.StatusBadRequest)))
+		if err == custom_errors.ErrNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage("persona with same name exists", http.StatusConflict)))
 			return
-		} else if err == custom_errors.PersonaVisibilityInvalid {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid visibility", http.StatusBadRequest)))
+		} else if customError, ok := err.(*custom_errors.CustomError); ok {
+			if customError.Context == custom_errors.InvalidVisibility {
+				errorx.Render(w, errorx.Parser(errorx.GetMessage(customError.Error(), http.StatusBadRequest)))
+				return
+			}
+			errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))

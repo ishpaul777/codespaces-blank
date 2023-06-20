@@ -18,6 +18,20 @@ func (h *httpHandler) chatRoutes() chi.Router {
 	router.Get("/history", h.getAllChatsByUser)
 	router.Delete("/{chat_id}", h.deleteChat)
 	router.Put("/collections", h.addChatToCollection)
+	router.Put("/collections/remove/{chat_id}", h.removeChatFromCol)
+	return router
+}
+
+func (h *httpHandler) chatCollectionRoutes() chi.Router {
+	router := chi.NewRouter()
+
+	router.Post("/", h.createChatCollection)
+	router.Get("/", h.getAllChatCollectionsByUser)
+	router.Route("/{chat_collection_id}", func(r chi.Router) {
+		r.Get("/", h.getChatCollectionByID)
+		r.Delete("/", h.deleteChatCollection)
+		r.Put("/", h.updatChatColByID)
+	})
 
 	return router
 }
@@ -30,17 +44,4 @@ func InitRoutes(router *chi.Mux, chatService services.ChatService, logger logger
 	router.Mount("/chat", httpHandler.chatRoutes())
 	router.Mount("/chat_collections", httpHandler.chatCollectionRoutes())
 
-}
-
-func (h *httpHandler) chatCollectionRoutes() chi.Router {
-	router := chi.NewRouter()
-
-	router.Post("/", h.createChatCollection)
-	router.Get("/", h.getAllChatCollectionsByUser)
-	router.Route("/{chat_collection_id}", func(r chi.Router) {
-		r.Get("/", h.getChatCollectionByID)
-		r.Delete("/", h.deleteChatCollection)
-	})
-
-	return router
 }

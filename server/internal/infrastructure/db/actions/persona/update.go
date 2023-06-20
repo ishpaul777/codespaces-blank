@@ -1,6 +1,8 @@
 package persona
 
 import (
+	"errors"
+
 	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"gorm.io/gorm"
@@ -8,8 +10,8 @@ import (
 
 func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error) {
 
-	if p.PersonaNameExists(name) {
-		return nil, custom_errors.PersonaNameExists
+	if p.PersonaNameExists(name, &personaID) {
+		return nil, custom_errors.ErrNameExists
 	}
 	updateMap := map[string]interface{}{}
 
@@ -40,7 +42,7 @@ func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, de
 	if visibility != nil {
 		valid := models.ValidateVisibility(*visibility)
 		if !valid {
-			return nil, custom_errors.PersonaVisibilityInvalid
+			return nil, &custom_errors.CustomError{Context: custom_errors.InvalidVisibility, Err: errors.New("invalid visibility")}
 		}
 		updateMap["visibility"] = visibility
 	}
@@ -51,7 +53,7 @@ func (p *PGPersonaRepository) UpdatePersonaByID(userID, personaID uint, name, de
 	if err != nil {
 
 		if err == gorm.ErrRecordNotFound {
-			return nil, custom_errors.PersonaNotFound
+			return nil, custom_errors.ErrNotFound
 		}
 		return nil, err
 	}

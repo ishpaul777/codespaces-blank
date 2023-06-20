@@ -1,6 +1,8 @@
 package chats
 
 import (
+	"errors"
+
 	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"gorm.io/gorm"
@@ -13,14 +15,14 @@ func (repo *PGChatsRepository) AddChatToCollection(userID, chatID, chatCollectio
 	err := repo.client.Where("created_by_id = ? AND id = ?", userID, chatID).First(&chat).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.ChatNotFound
+			return custom_errors.ErrNotFound
 		}
 		return err
 	}
 	err = repo.client.Where("created_by_id = ? AND id = ?", userID, chatCollectionID).First(&chatCollection).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.ChatCollectionNotFound
+			return &custom_errors.CustomError{Context: custom_errors.InnerEntityNotFound, Err: errors.New("chat collection not found")}
 		}
 		return err
 	}

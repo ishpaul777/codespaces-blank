@@ -26,7 +26,7 @@ func GetPromptPrefix(generateFor string) string {
 	promptObject := map[string]string{
 		"summary": "```Please summarize the following article. The article provides important insights and analysis that I need to condense into a concise summary. [Article: %s]```",
 
-		"continue-writing": "```The user has started writing a story/article/blog post. Please continue writing the story/article/blog post. Do not repeat what's already written. Here's the beginning: [%s]```",
+		"continue-writing": "```The user has started writing a story/article/blog post. Please continue writing the story/article/blog post. Do not repeat what's already written. The user will provide previous_content and after_content if any. The user input is [%s]```",
 
 		"translate-spanish": "```Translate from English to Spanish. User will provide the word or phrase you want to translate and you will provide the corresponding translation. Try to understand the user input preferences. Let's work together to ensure that the translation is accurate and reflects the original meaning in English. The input text is [%s]```",
 

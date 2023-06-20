@@ -34,8 +34,16 @@ func (h *httpHandler) addChatToCollection(w http.ResponseWriter, r *http.Request
 	err = h.chatService.AddChatToCollection(userID, res.ChatID, res.ChatCollectionID)
 	if err != nil {
 		h.logger.Error("error adding chat to collection", "error", err.Error())
-		if err == custom_errors.ChatNotFound || err == custom_errors.ChatCollectionNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
+			return
+		}
+		if customErr, ok := err.(*custom_errors.CustomError); ok {
+			if customErr.Context == custom_errors.InnerEntityNotFound {
+				errorx.Render(w, errorx.Parser(errorx.GetMessage(customErr.Err.Error(), http.StatusNotFound)))
+				return
+			}
+			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusInternalServerError)))

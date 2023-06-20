@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
@@ -33,6 +34,10 @@ func (h *httpHandler) createNewDocument(w http.ResponseWriter, r *http.Request) 
 	document, err := h.documentService.CreateNewDocument(userID, requestBody.Title, requestBody.Description)
 	if err != nil {
 		h.logger.Error("error creating new document", "error", err.Error())
+		if err == custom_errors.ErrNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage("document with same title already exists", http.StatusUnprocessableEntity)))
+			return
+		}
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}

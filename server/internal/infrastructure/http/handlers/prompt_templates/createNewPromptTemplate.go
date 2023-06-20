@@ -46,12 +46,16 @@ func (h *httpHandler) createPromptTemplate(w http.ResponseWriter, r *http.Reques
 	promptTemplate, err = h.promptTemplateService.CreateNewPromptTemplate(userID, requestBody.Title, requestBody.Description, requestBody.Prompt, requestBody.CollectionID)
 	if err != nil {
 		h.logger.Error("error creating prompt template", "error", err.Error())
-		if err == custom_errors.PromptTemplateTitleExists {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusUnprocessableEntity)))
+		if err == custom_errors.ErrNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusConflict)))
 			return
 		}
-		if err == custom_errors.PromptTemplateCollectionNotFound {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
+		if customErr, ok := err.(*custom_errors.CustomError); ok {
+			if customErr.Context == custom_errors.InnerEntityNotFound {
+				errorx.Render(w, errorx.Parser(errorx.GetMessage(customErr.Error(), http.StatusBadRequest)))
+				return
+			}
+			errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.DBError()))
