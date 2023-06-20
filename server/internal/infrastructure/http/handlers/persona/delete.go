@@ -29,7 +29,7 @@ func (h *httpHandler) delete(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		h.logger.Error("error while deleting persona", "error", err.Error())
-		if err == custom_errors.PersonaNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}

@@ -10,7 +10,7 @@ func (p *PGChatsRepository) RemoveChatFromCol(userID, chatID uint) error {
 	err := p.client.Model(&models.Chat{}).Where("created_by_id = ? AND id = ?", userID, chatID).Update("chat_collection_id", nil).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.ChatNotFound
+			return custom_errors.ErrNotFound
 		}
 		return err
 	}

@@ -74,7 +74,7 @@ func (s *personaService) ChatWithPersonaStream(userID, personaID uint, personaCh
 	}
 
 	if selectPersona == nil {
-		errChan <- custom_errors.PersonaNotFound
+		errChan <- custom_errors.ErrNotFound
 		return
 	}
 

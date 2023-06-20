@@ -28,6 +28,10 @@ func (h *httpHandler) deleteChat(w http.ResponseWriter, r *http.Request) {
 	err = h.chatService.DeleteChat(userID, uint(chatID))
 	if err != nil {
 		h.logger.Error("error deleting chat", "error", err.Error())
+		if err == custom_errors.ErrNotFound {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
+			return
+		}
 		errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusInternalServerError)))
 		return
 	}
@@ -56,7 +60,7 @@ func (h *httpHandler) deleteChatCollection(w http.ResponseWriter, r *http.Reques
 	err = h.chatService.DeleteChatCollection(userID, uint(chatID))
 	if err != nil {
 		h.logger.Error("error deleting chat", "error", err.Error())
-		if err == custom_errors.ChatCollectionNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}

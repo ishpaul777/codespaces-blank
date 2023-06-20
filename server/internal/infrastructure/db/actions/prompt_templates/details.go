@@ -11,7 +11,7 @@ func (p *PGPromptTemplateRepository) GetPromptTemplateByID(userID uint, promptTe
 	err := p.client.Model(&models.PromptTemplate{}).Where("created_by_id = ? AND id = ?", userID, promptTemplateID).Preload("PromptTemplateCollection").First(promptTemplate).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, custom_errors.PromptTemplateNotFound
+			return nil, custom_errors.ErrNotFound
 		}
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func (p *PGPromptTemplateRepository) GetPromptTemplateCollectionByID(userID, tem
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, custom_errors.PromptTemplateCollectionNotFound
+			return nil, custom_errors.ErrNotFound
 		}
 		return nil, err
 	}

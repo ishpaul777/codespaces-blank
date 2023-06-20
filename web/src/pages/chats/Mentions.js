@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const Mentions = (props) => {
-  const { options, onChange, onSearch, onSelect, onKeyDown, onBlur } = props;
+  const { options, onChange, onSearch, onSelect, onKeyDown, onBlur, position } = props;
   const [showPromptsList, setShowPromptsList] = useState(false);
   const [promptsList, setPromptsList] = useState(options);
   const [searchText, setSearchText] = useState("");
@@ -109,22 +109,19 @@ const Mentions = (props) => {
         onChange={(e) => {
           handleChange(e);
         }}
-        className="rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto"
+        className="rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto resize-none"
         // onKeyDown={(e) => { handleKeydown(e) }}
         ref={textareaRef}
         value={props.value}
-        placeholder={"Ask me anything..."}
         onKeyDown={(e) => {
           handlePrefixKeyDown(e);
         }}
-
-        // style={{resize: "vertical"}}
+        placeholder={props.placeholder}
       />
       {showPromptsList && promptsList.length > 0 && (
         <ul
           ref={list}
-          className="absolute bottom-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-56 overflow-y-auto scrollbar-custom "
-        >
+          className={`absolute ${position==="top" ? "bottom" : "top" }-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-56 overflow-y-auto scrollbar-custom`}>
           {promptsList.map((option, index) => {
             return (
               <li
