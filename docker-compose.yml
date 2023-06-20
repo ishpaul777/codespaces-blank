@@ -1,5 +1,4 @@
 version: '3.7'
-
 services:
   ###########################################################################
   #######                  DB SERVICES                                #######
@@ -15,11 +14,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_MULTIPLE_DATABASES=tagore,kavach,kratos,keto
-    healthcheck: 
+    healthcheck:
       interval: 10s
       retries: 10
       test: "pg_isready -U \"$$POSTGRES_USER\" -d \"kavach\""
-      timeout: 2s      
+      timeout: 2s
     networks:
       - tagore
 
@@ -30,7 +29,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.migrate
-    depends_on: 
+    depends_on:
       postgres:
         condition: service_healthy
     environment:
@@ -42,7 +41,7 @@ services:
 
 
   tagore-server:
-    build: 
+    build:
       context: ./server
       dockerfile: Dockerfile.dev
     ports:
@@ -50,7 +49,7 @@ services:
     volumes:
       - ./server:/app
       - ./server/modelData:/app/modelData
-    depends_on: 
+    depends_on:
       - tagore-migrate
     networks:
       - tagore
@@ -72,8 +71,8 @@ services:
     restart: unless-stopped
     stdin_open: true
     networks:
-      - tagore 
-      
+      - tagore
+
   #########################################################################
   #####                        MINIO                                #######
   #########################################################################
@@ -206,7 +205,7 @@ services:
     command: serve proxy -c "/etc/config/oathkeeper/.oathkeeper.yml"
     restart: on-failure
     networks:
-      - tagore      
+      - tagore
 
 
   ###########################################################################
@@ -325,7 +324,7 @@ services:
   ###########################################################################
   mailslurper:
     image: oryd/mailslurper:latest-smtps
-    ports:  
+    ports:
       - "4436:4436"
       - "4437:4437"
     networks:
