@@ -28,7 +28,7 @@ func (h *httpHandler) removeChatFromCol(w http.ResponseWriter, r *http.Request) 
 	err = h.chatService.RemoveChatFromCol(userID, uint(chatID))
 	if err != nil {
 		h.logger.Error("error removing chat from collection", "error", err.Error())
-		if err == custom_errors.ChatNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}

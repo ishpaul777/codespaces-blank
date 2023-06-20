@@ -41,8 +41,11 @@ func (h *httpHandler) updatChatColByID(w http.ResponseWriter, r *http.Request) {
 	err = h.chatService.UpdateChatColByID(userID, uint(chatID), requestBody.Name)
 	if err != nil {
 		h.logger.Error("error updating chat", "error", err.Error())
-		if err == custom_errors.ChatCollectionNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
+			return
+		} else if err == custom_errors.ErrNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage("chat collection name already exists", http.StatusUnprocessableEntity)))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusInternalServerError)))

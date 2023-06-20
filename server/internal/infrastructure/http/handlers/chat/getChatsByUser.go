@@ -3,6 +3,7 @@ package chat
 import (
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
@@ -91,6 +92,10 @@ func (h *httpHandler) getChatCollectionByID(w http.ResponseWriter, r *http.Reque
 	response, err = h.chatService.GetChatCollectionByID(uint(chatColID))
 	if err != nil {
 		h.logger.Error("error getting all chats", "error", err.Error())
+		if err == custom_errors.ErrNotFound {
+			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
+			return
+		}
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return
 	}

@@ -6,9 +6,9 @@ import (
 )
 
 func (p *PGChatsRepository) CreateChatCollection(userID uint, name string) (*models.ChatCollection, error) {
-	exists := p.ChatCollectionNameExists(name)
+	exists := p.ChatCollectionNameExists(name, nil)
 	if exists {
-		return nil, custom_errors.ChatCollectionNameExists
+		return nil, custom_errors.ErrNameExists
 	}
 	chatCollection := models.ChatCollection{
 		Base: models.Base{

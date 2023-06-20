@@ -19,7 +19,7 @@ type ChatRepository interface {
 	GetChatCollectionByID(chatCollectionID uint) (*models.ChatCollection, error)
 	DeleteChatCollection(userID, chatCollectionID uint) error
 	IsUserChatCollectionOwner(userID, chatCollectionID uint) (bool, error)
-	ChatCollectionNameExists(name string) bool
+	ChatCollectionNameExists(name string, id *uint) bool
 	UpdateChatColByID(userID, colID uint, name string) error
 	RemoveChatFromCol(userID, chatID uint) error
 }
