@@ -4,15 +4,12 @@ import { Link } from "react-router-dom";
 import { getDefaultPersona } from "../actions/persona";
 import { errorToast } from "../util/toasts";
 import { BsArrowRightShort } from "react-icons/bs";
-import ChatbotHero from '../assets/ChatbotHero.png'
-import ImageHero from '../assets/ImageHero.png'
-import factcheckexpertHero from '../assets/factcheckexpertHero.png'
-import ContentCreator from '../assets/ContentCreator.png'
-import scriptwriter from '../assets/scriptwriter.png'
-import CustomPersona from '../assets/CustomPersona.png'
-
-
-
+import ChatbotHero from "../assets/ChatbotHero.png";
+import ImageHero from "../assets/ImageHero.png";
+import factcheckexpertHero from "../assets/factcheckexpertHero.png";
+import ContentCreator from "../assets/ContentCreator.png";
+import scriptwriter from "../assets/scriptwriter.png";
+import CustomPersona from "../assets/CustomPersona.png";
 
 export function HomePage() {
   const iconColor = "#AC94FA";
@@ -40,10 +37,11 @@ export function HomePage() {
       image: factcheckexpertHero,
       link:
         defaultPersonas.length > 0
-          ? `/personas/${defaultPersonas?.find(
-            (persona) => persona.slug === "factcheck-writer"
-          )?.id
-          }/chat`
+          ? `/personas/${
+              defaultPersonas?.find(
+                (persona) => persona.slug === "factcheck-writer"
+              )?.id
+            }/chat`
           : "/",
     },
     {
@@ -53,10 +51,11 @@ export function HomePage() {
       image: ContentCreator,
       link:
         defaultPersonas.length > 0
-          ? `/personas/${defaultPersonas?.find(
-            (persona) => persona.slug === "social-media-content-creator"
-          )?.id
-          }/chat`
+          ? `/personas/${
+              defaultPersonas?.find(
+                (persona) => persona.slug === "social-media-content-creator"
+              )?.id
+            }/chat`
           : "/",
     },
     {
@@ -66,10 +65,11 @@ export function HomePage() {
       image: scriptwriter,
       link:
         defaultPersonas.length > 0
-          ? `/personas/${defaultPersonas?.find(
-            (persona) => persona.slug === "script-writer"
-          )?.id
-          }/chat`
+          ? `/personas/${
+              defaultPersonas?.find(
+                (persona) => persona.slug === "script-writer"
+              )?.id
+            }/chat`
           : "/",
     },
     {
@@ -90,7 +90,7 @@ export function HomePage() {
       .catch((error) => {
         errorToast("Something went wrong! Please try again later.");
       })
-      .finally(() => { });
+      .finally(() => {});
   }, []);
 
   return (
@@ -104,8 +104,11 @@ export function HomePage() {
             to={option.link}
             className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 transition-all focus:ring-gray-400 focus:shadow-xl duration-150 rounded-lg shadow-sm hover:shadow-lg relative hover:ring-gray-300 hover:ring-2 ring-1 ring-gray-200  bg-white"
           >
-            <img className="md:w-48 w-full md:h-52 h-full"
-              src={option.image} alt={option.title} />
+            <img
+              className="md:w-48 w-full md:h-52 h-full"
+              src={option.image}
+              alt={option.title}
+            />
             <div className="flex gap-2 flex-col">
               <h3 class="text-lg font-semibold text-gray-700">
                 {option.title}

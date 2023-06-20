@@ -1,4 +1,4 @@
-import useWindowResize from '../../hooks/useWindowSize'
+import useWindowResize from "../../hooks/useWindowSize";
 
 const ExampleModal = ({
   imageUrl,
@@ -9,12 +9,13 @@ const ExampleModal = ({
   setImageRequest,
   imageRequest,
 }) => {
-	const {isMobileScreen} = useWindowResize()
+  const { isMobileScreen } = useWindowResize();
 
   const overlayClasses =
     "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
-  const modalClasses =
-    `fixed z-50 left-1/2 ${isMobileScreen ? "w-[90vw]" : "w-3/12"}  top-1/2 transform -translate-x-1/2 flex flex-col -translate-y-1/2 bg-white rounded-xl shadow-lg transition-alldocke duration-300 ease-in-out h-4/6`;
+  const modalClasses = `fixed z-50 left-1/2 ${
+    isMobileScreen ? "w-[90vw]" : "w-3/12"
+  }  top-1/2 transform -translate-x-1/2 flex flex-col -translate-y-1/2 bg-white rounded-xl shadow-lg transition-alldocke duration-300 ease-in-out h-4/6`;
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {

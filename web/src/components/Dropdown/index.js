@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { MdOutlineHistory } from 'react-icons/md';
+import React, { useState } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { MdOutlineHistory } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { VscSettings } from 'react-icons/vsc'
+import { VscSettings } from "react-icons/vsc";
 import Modal from "../../pages/chats/Modal";
 import ModalContent from "../../pages/chats/createPrompt/modalContent";
-import { AiOutlinePlus } from 'react-icons/ai'
+import { AiOutlinePlus } from "react-icons/ai";
 import {
   createPromptTemplate,
   getAllPromptTemplates,
 } from "../../actions/prompts";
-import { createPrompt } from '../../redux/actions/promptsActions'
+import { createPrompt } from "../../redux/actions/promptsActions";
 import { errorToast, successToast } from "../../util/toasts";
 
-
-const Dropdown = ({ setChatSiderCollapse, handleNewChatClick, setPromptSiderCollapse }) => {
+const Dropdown = ({
+  setChatSiderCollapse,
+  handleNewChatClick,
+  setPromptSiderCollapse,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -53,7 +56,7 @@ const Dropdown = ({ setChatSiderCollapse, handleNewChatClick, setPromptSiderColl
 
     createPromptTemplate(values)
       .then((data) => {
-        dispatch(createPrompt(data))
+        dispatch(createPrompt(data));
       })
       .catch((error) => {
         errorToast(error.message);
@@ -77,74 +80,63 @@ const Dropdown = ({ setChatSiderCollapse, handleNewChatClick, setPromptSiderColl
 
   return (
     <div>
-      <BsThreeDotsVertical
-        size={16}
-        onClick={toggleDropdown}
-      />
+      <BsThreeDotsVertical size={16} onClick={toggleDropdown} />
       {isOpen && (
         <div
           id="dropdown"
           className="absolute right-5 mt-9 z-50 bg-white divide-y divide-gray-100 rounded-lg shadow w-44"
         >
-          <ul className="py-2 text-sm text-gray-700" aria-labelledby="dropdownDefaultButton">
-            <li className="flex justify-between items-center px-4 py-2 hover:bg-gray-100"
+          <ul
+            className="py-2 text-sm text-gray-700"
+            aria-labelledby="dropdownDefaultButton"
+          >
+            <li
+              className="flex justify-between items-center px-4 py-2 hover:bg-gray-100"
               onClick={() => {
-                toggleDropdown()
-                setChatSiderCollapse(false)
+                toggleDropdown();
+                setChatSiderCollapse(false);
               }}
             >
-              <span>
-                History
-              </span>
-              <MdOutlineHistory
-                color={"#667085"}
-                size={20}
-              />
+              <span>History</span>
+              <MdOutlineHistory color={"#667085"} size={20} />
             </li>
             <hr className="h-px w-[80%] mx-auto bg-gray-300  border-0"></hr>
-            <li className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100"
+            <li
+              className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100"
               onClick={() => {
-                toggleDropdown()
-                setPromptSiderCollapse(false)
+                toggleDropdown();
+                setPromptSiderCollapse(false);
               }}
             >
-              <span>
-                Prompts
-              </span>
-              <VscSettings
-                className='rotate-90'
+              <span>Prompts</span>
+              <VscSettings className="rotate-90" color={"#667085"} size={18} />
+            </li>
+            <hr className="h-px w-[80%] mx-auto bg-gray-300  border-0"></hr>
+            <li
+              className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100 "
+              onClick={() => {
+                toggleDropdown();
+                handleNewChatClick();
+              }}
+            >
+              <span>New Chat</span>
+              <AiOutlinePlus
+                className="rotate-90"
                 color={"#667085"}
                 size={18}
               />
             </li>
             <hr className="h-px w-[80%] mx-auto bg-gray-300  border-0"></hr>
-            <li className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100 "
+            <li
+              className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100 "
               onClick={() => {
-                toggleDropdown()
-                handleNewChatClick()
+                toggleDropdown();
+                setShowPromptCreateModal(true);
               }}
             >
-              <span>
-                New Chat
-              </span>
+              <span>New Prompt</span>
               <AiOutlinePlus
-                className='rotate-90'
-                color={"#667085"}
-                size={18}
-              />
-            </li>
-            <hr className="h-px w-[80%] mx-auto bg-gray-300  border-0"></hr>
-            <li className="flex justify-between items-center  px-4 py-2 hover:bg-gray-100 "
-              onClick={() => {
-                toggleDropdown()
-                setShowPromptCreateModal(true)
-              }}
-            >
-              <span>
-                New Prompt
-              </span>
-              <AiOutlinePlus
-                className='rotate-90'
+                className="rotate-90"
                 color={"#667085"}
                 size={18}
               />
@@ -152,9 +144,9 @@ const Dropdown = ({ setChatSiderCollapse, handleNewChatClick, setPromptSiderColl
           </ul>
         </div>
       )}
-      {
-        isOpen && <div className="fixed top-24 h-full inset-0 z-40 backdrop-filter backdrop-blur-md"></div>
-      }
+      {isOpen && (
+        <div className="fixed top-24 h-full inset-0 z-40 backdrop-filter backdrop-blur-md"></div>
+      )}
       <Modal
         centered
         closable={false}

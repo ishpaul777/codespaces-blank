@@ -21,7 +21,7 @@ const collectionsReducer = (state = initialState, action) => {
       const { collectionId, chat } = action.payload;
       // remove chat from current collection
       const newState = state.map((collection) => {
-        collection.chats = collection.chats.filter( (c) => c.id !== chat.id);
+        collection.chats = collection.chats.filter((c) => c.id !== chat.id);
         return collection;
       });
       // add chat to new collection

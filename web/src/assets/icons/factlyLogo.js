@@ -2,9 +2,7 @@ import React from "react";
 
 const FactlyLogo = () => {
   return (
-    <div
-      className="flex justify-center items-center h-8 w-8 rounded-full ring-2 bg-red-600 ring-red-600"
-    >
+    <div className="flex justify-center items-center h-8 w-8 rounded-full ring-2 bg-red-600 ring-red-600">
       <svg
         width="20"
         height="20"

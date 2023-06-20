@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import ArrowWithTail from "../../assets/icons/arrow-with-tail.svg";
 import Arrow from "../../assets/icons/arrow.svg";
-import { AiOutlineMenuUnfold } from "react-icons/ai"
+import { AiOutlineMenuUnfold } from "react-icons/ai";
 import Bookmark from "../../assets/icons/bookmark.svg";
 import Chat from "../../assets/icons/chat.svg";
 import Documents from "../../assets/icons/documents.svg";
@@ -23,7 +23,7 @@ import useWindowSize from "../../hooks/useWindowSize";
 export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   const [openMenu, setOpenMenu] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const { isMobileScreen } = useWindowSize()
+  const { isMobileScreen } = useWindowSize();
 
   const menuOptions = [
     {
@@ -62,7 +62,6 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
         errorToast("error logging out");
       });
   };
-
 
   const manageProfileOptions = [
     // {
@@ -127,12 +126,21 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   }, []);
 
   return (
-    <div className={`${isMobileScreen ? (sideBarOpen ? "w-[100vw] fixed right-0 top-0 z-50 flex flex-row-reverse duration-300" : "w-0") : "w-full"} `}>
-      {
-        (!isMobileScreen || sideBarOpen) &&
+    <div
+      className={`${
+        isMobileScreen
+          ? sideBarOpen
+            ? "w-[100vw] fixed right-0 top-0 z-50 flex flex-row-reverse duration-300"
+            : "w-0"
+          : "w-full"
+      } `}
+    >
+      {(!isMobileScreen || sideBarOpen) && (
         <>
           <div
-            className={`${isMobileScreen ? "w-[80vw] z-50" : "w-full"} p-5 pt-8 bg-background-sidebar h-screen flex flex-col`}
+            className={`${
+              isMobileScreen ? "w-[80vw] z-50" : "w-full"
+            } p-5 pt-8 bg-background-sidebar h-screen flex flex-col`}
           >
             <div className={`flex gap-x-2 items-center justify-center w-fit`}>
               <img
@@ -169,10 +177,11 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                   {manageProfileOptions.map((option) => (
                     <Link to={option.linkTo}>
                       <li
-                        className={`flex flex-row items-center gap-4 p-2 ${option.name !== "Logout"
-                          ? "hover:bg-button-primary"
-                          : "hover:bg-red-600 hover:text-white"
-                          } cursor-pointer`}
+                        className={`flex flex-row items-center gap-4 p-2 ${
+                          option.name !== "Logout"
+                            ? "hover:bg-button-primary"
+                            : "hover:bg-red-600 hover:text-white"
+                        } cursor-pointer`}
                         onClick={() => {
                           if (option?.onClick) {
                             option.onClick();
@@ -199,19 +208,26 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                 onClick={() => setOpenMenu((prevState) => !prevState)}
               >
                 <div className="flex flex-row gap-4 items-center">
-                  <div className="bg-red-400 p-2 rounded-full text-white"> FM </div>
+                  <div className="bg-red-400 p-2 rounded-full text-white">
+                    {" "}
+                    FM{" "}
+                  </div>
                   <span>{getOrgName("Factly Media and Research")}</span>
                 </div>
                 <img src={Arrow} />
               </button>
             </div>
           </div>
-          {isMobileScreen
-            && <div className="z-40 w-full h-screen fixed inset-0 bg-black bg-opacity-50">
-              <AiOutlineMenuUnfold className="w-6 h-6 m-4 ml-8 text-white" onClick={() => setSidebarOpen(false)} />
-            </div>}
+          {isMobileScreen && (
+            <div className="z-40 w-full h-screen fixed inset-0 bg-black bg-opacity-50">
+              <AiOutlineMenuUnfold
+                className="w-6 h-6 m-4 ml-8 text-white"
+                onClick={() => setSidebarOpen(false)}
+              />
+            </div>
+          )}
         </>
-      }
+      )}
     </div>
   );
 }

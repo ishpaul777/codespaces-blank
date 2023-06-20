@@ -12,8 +12,9 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
           onChange={handleValueChange}
         />
         <p
-          className={`mt-1 ${showerror.title ? "block" : "d-none"
-            } text-pink-600 text-sm`}
+          className={`mt-1 ${
+            showerror.title ? "block" : "d-none"
+          } text-pink-600 text-sm`}
         >
           Please provide a title for prompt.
         </p>
@@ -31,8 +32,9 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
           onChange={handleValueChange}
         />
         <p
-          className={`mt-1 ${showerror.description ? "block" : "d-none"
-            } text-pink-600 text-sm`}
+          className={`mt-1 ${
+            showerror.description ? "block" : "d-none"
+          } text-pink-600 text-sm`}
         >
           Please provide a description for prompt.
         </p>
@@ -48,8 +50,9 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
           onChange={handleValueChange}
         />
         <p
-          className={`mt-1 ${showerror.prompt ? "block" : "d-none"
-            } text-pink-600 text-sm`}
+          className={`mt-1 ${
+            showerror.prompt ? "block" : "d-none"
+          } text-pink-600 text-sm`}
         >
           Please provide a template for prompt.
         </p>

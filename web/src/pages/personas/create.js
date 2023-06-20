@@ -9,7 +9,6 @@ import { errorToast, successToast } from "../../util/toasts";
 import { useNavigate } from "react-router-dom";
 import GenerateModal from "./GenerateModal";
 
-
 function Link({ to, children, className, onDelete }) {
   return (
     <div className="flex items-center">
@@ -207,7 +206,6 @@ export default function CreatePersona() {
 
   const promptExampleLink = "https://poe.com/prompt_examples";
 
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="my-5 mx-10">
@@ -367,7 +365,7 @@ export default function CreatePersona() {
         <Modal open={open} onClose={handleModalClose}>
           <UppyUploader onUpload={handleUpload}></UppyUploader>
         </Modal>
-        <GenerateModal open={genOpen} onClose={handleModalClose}/>
+        <GenerateModal open={genOpen} onClose={handleModalClose} />
       </div>
     </form>
   );

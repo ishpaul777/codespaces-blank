@@ -15,13 +15,12 @@ import handDrawnBoat from "../../assets/handrawn-boat.png";
 import foxNight from "../../assets/fox-night.png";
 import catWithHat from "../../assets/cat-with-hat.png";
 import davidWearingHeadphones from "../../assets/david-wearing-headphones.png";
-import ExampleModal from './ExamplesModal'
+import ExampleModal from "./ExamplesModal";
 import useWindowSize from "../../hooks/useWindowSize";
-
 
 export default function ImagePage() {
   const fileInputRef = useRef(null);
-  const { isMobileScreen } = useWindowSize()
+  const { isMobileScreen } = useWindowSize();
 
   const [imageRequest, setImageRequest] = useState({
     prompt: "",
@@ -200,14 +199,24 @@ export default function ImagePage() {
       <h2 className="text-3xl font-medium mb-4">Generate Images</h2>
       <ImageSearch
         isMobileScreen={isMobileScreen}
-        placeholder={isMobileScreen ? "abstract painted.." : `Handmade Unique abstract painting made with charcoal..`}
+        placeholder={
+          isMobileScreen
+            ? "abstract painted.."
+            : `Handmade Unique abstract painting made with charcoal..`
+        }
         onChange={handlePromptChange}
         handleSearch={() => handleSearch(imageRequest)}
         isLoading={loading}
         value={imageRequest.prompt}
         disabled={imageRequest.prompt.length < 1}
       />
-      <div className={`w-full mt-4 flex ${isMobileScreen ? "flex-col gap-y-4 justify-center items-end" : "flex-row justify-between"}`}>
+      <div
+        className={`w-full mt-4 flex ${
+          isMobileScreen
+            ? "flex-col gap-y-4 justify-center items-end"
+            : "flex-row justify-between"
+        }`}
+      >
         <div className="flex gap-2 items-center">
           <button
             onClick={() => onUploadButtonClick()}
@@ -254,61 +263,65 @@ export default function ImagePage() {
             <HashLoader color={"#667085"} loading={true} size={100} />
           </div>
         ) : (
-          <div className={`grid ${isMobileScreen ? "grid-cols-2" : "grid-cols-4"} gap-4`}>
+          <div
+            className={`grid ${
+              isMobileScreen ? "grid-cols-2" : "grid-cols-4"
+            } gap-4`}
+          >
             {images && images.length > 0
               ? images.map((image, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={`w-full rounded-lg relative`}
-                    onMouseEnter={() => onMouseIn(index)}
-                    onMouseLeave={() => onMouseOut(index)}
-                    onClick={() =>
-                      downloadImageFromBase64Url(image?.url, "image.png")
-                    }
-                  >
-                    <img
-                      alt="generated logos"
-                      className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
-                      src={getURL(image?.url)}
-                    ></img>
-                    {image.isHover && (
-                      <div className="absolute bg-black top-0 left-0 w-full h-full opacity-50 rounded-lg hover:block cursor-pointer"></div>
-                    )}
-                  </div>
-                );
-              })
-              : defaultImagePrompts.map((image, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={`w-full rounded-lg relative`}
-                    onMouseEnter={() => onMouseIn(index)}
-                    onMouseLeave={() => onMouseOut(index)}
-                    onClick={() => {
-                      setModalOpen(true);
-                      setModalPrompt(image);
-                    }}
-                  >
-                    <div className="relative">
+                  return (
+                    <div
+                      key={index}
+                      className={`w-full rounded-lg relative`}
+                      onMouseEnter={() => onMouseIn(index)}
+                      onMouseLeave={() => onMouseOut(index)}
+                      onClick={() =>
+                        downloadImageFromBase64Url(image?.url, "image.png")
+                      }
+                    >
                       <img
                         alt="generated logos"
-                        // onClick={() => downloadImage(image?.url, 'image.png')}
                         className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
-                        src={image.url}
+                        src={getURL(image?.url)}
                       ></img>
-                      <div className="absolute top-0 left-0 w-full h-full flex flex-col bg-white justify-between items-start opacity-0 hover:opacity-80 cursor-pointer transition duration-300 ease-in-out">
-                        <p className="text-black font-medium text-xl m-4 font-serif">
-                          {image.prompt}
-                        </p>
-                        <p style={{ color: "#777" }} className=" text-lg m-4">
-                          Click to try{" "}
-                        </p>
+                      {image.isHover && (
+                        <div className="absolute bg-black top-0 left-0 w-full h-full opacity-50 rounded-lg hover:block cursor-pointer"></div>
+                      )}
+                    </div>
+                  );
+                })
+              : defaultImagePrompts.map((image, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`w-full rounded-lg relative`}
+                      onMouseEnter={() => onMouseIn(index)}
+                      onMouseLeave={() => onMouseOut(index)}
+                      onClick={() => {
+                        setModalOpen(true);
+                        setModalPrompt(image);
+                      }}
+                    >
+                      <div className="relative">
+                        <img
+                          alt="generated logos"
+                          // onClick={() => downloadImage(image?.url, 'image.png')}
+                          className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
+                          src={image.url}
+                        ></img>
+                        <div className="absolute top-0 left-0 w-full h-full flex flex-col bg-white justify-between items-start opacity-0 hover:opacity-80 cursor-pointer transition duration-300 ease-in-out">
+                          <p className="text-black font-medium text-xl m-4 font-serif">
+                            {image.prompt}
+                          </p>
+                          <p style={{ color: "#777" }} className=" text-lg m-4">
+                            Click to try{" "}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
           </div>
         )}
         <ExampleModal
@@ -325,6 +338,4 @@ export default function ImagePage() {
   );
 }
 
-  //     {/* image variations division and a selector for choosing the generative model provider */}
-
-
+//     {/* image variations division and a selector for choosing the generative model provider */}

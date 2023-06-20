@@ -427,7 +427,7 @@ export const PersonaChat = () => {
             setChatID={setChatID}
             setIsEditing={setIsEditing}
             chatID={chatID}
-            setChatTitle={() => { }}
+            setChatTitle={() => {}}
             deleteChatHistoryIndex={deleteChatHistoryIndex}
             handleChatDelete={handleChatDelete}
             setDeleteChatHistoryIndex={setDeleteChatHistoryIndex}
@@ -489,15 +489,17 @@ export const PersonaChat = () => {
                   return (
                     <div
                       key={index}
-                      className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
-                        }`}
+                      className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
+                        item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
+                      }`}
                     >
                       <div className={`w-full flex gap-4`}>
                         <div
-                          className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${item.role === "user"
-                            ? "bg-green-600 ring-green-600"
-                            : "ring-red-600 bg-red-600"
-                            } text-white mr-2`}
+                          className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
+                            item.role === "user"
+                              ? "bg-green-600 ring-green-600"
+                              : "ring-red-600 bg-red-600"
+                          } text-white mr-2`}
                         >
                           {item.role === "user" ? (
                             <span className="text-lg"> U </span>
@@ -560,12 +562,13 @@ export const PersonaChat = () => {
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeMathjax]}
-                            className={`prose ${isMobileScreen
-                              ? "max-w-[17rem]"
-                              : chatSiderCollapse
+                            className={`prose ${
+                              isMobileScreen
+                                ? "max-w-[17rem]"
+                                : chatSiderCollapse
                                 ? "max-w-4xl"
                                 : "max-w-2xl"
-                              } `}
+                            } `}
                             components={{
                               code({
                                 node,
