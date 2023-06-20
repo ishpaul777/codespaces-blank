@@ -14,7 +14,7 @@ func (p *PGPersonaRepository) GetAllPersonaChatsByUserID(userID, personaID uint,
 		offset = 0
 	}
 
-	db := p.client.Model(&models.PersonaChat{}).Where("persona_id = ? AND created_by_id = ?", personaID, userID)
+	db := p.client.Model(&models.PersonaChat{}).Where("persona_id = ? AND created_by_id = ?", personaID, userID).Order("updated_at " + pagination.Queries["sort"])
 	if pagination.SearchQuery != "" {
 		db = db.Where("title ILIKE ?", "%"+pagination.SearchQuery+"%")
 	}

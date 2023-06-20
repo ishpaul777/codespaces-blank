@@ -8,6 +8,11 @@ import (
 
 func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemplateID uint, title, description, prompt string) (*models.PromptTemplate, error) {
 
+	exists := p.PromptTemplateTitleExists(title, &promptTemplateID)
+	if exists {
+		return nil, custom_errors.ErrNameExists
+	}
+
 	updateMap := map[string]interface{}{}
 
 	if title != "" {
@@ -26,7 +31,7 @@ func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemp
 	err := p.client.Model(&models.PromptTemplate{}).Where("created_by_id = ? AND id = ?", userID, promptTemplateID).Updates(updateMap).First(promptTemplate).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, custom_errors.PromptTemplateNotFound
+			return nil, custom_errors.ErrNotFound
 		}
 		return nil, err
 	}
@@ -35,6 +40,12 @@ func (p *PGPromptTemplateRepository) UpdatePromptTemplateByID(userID, promptTemp
 }
 
 func (p *PGPromptTemplateRepository) UpdatePromptTemplateCollectionByID(userID, tempColID uint, name string) (*models.PromptTemplateCollection, error) {
+	exists := p.PromptTemplateCollectionNameExists(name, &tempColID)
+
+	if exists {
+		return nil, custom_errors.ErrNameExists
+	}
+
 	updateMap := map[string]interface{}{}
 
 	if name != "" {
@@ -45,7 +56,7 @@ func (p *PGPromptTemplateRepository) UpdatePromptTemplateCollectionByID(userID, 
 	err := p.client.Model(&models.PromptTemplateCollection{}).Where("created_by_id = ? AND id = ?", userID, tempColID).Updates(updateMap).First(tempCol).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, custom_errors.PromptTemplateCollectionNotFound
+			return nil, custom_errors.ErrNotFound
 		}
 		return nil, err
 	}

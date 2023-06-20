@@ -13,13 +13,13 @@ type PromptTemplateRepository interface {
 	GetAllPromptTemplates(userID uint, pagination helper.Pagination) ([]models.PromptTemplate, uint, error)
 	GetPromptTemplateByID(userID uint, PromptTemplateID uint) (*models.PromptTemplate, error)
 	UpdatePromptTemplateByID(userID uint, PromptTemplateID uint, title string, description string, prompt string) (*models.PromptTemplate, error)
-	PromptTemplateTitleExists(title string) bool
+	PromptTemplateTitleExists(title string, id *uint) bool
 	CreatePromptTemplateCollection(userID uint, name string) (*models.PromptTemplateCollection, error)
 	DeletePromptTemplateCollectionByID(userID, PromptTemplateCollectionID uint) error
 	GetAllPromptTemplateCollections(userID uint, pagination helper.Pagination) ([]models.PromptTemplateCollection, uint, error)
 	GetPromptTemplateCollectionByID(userID uint, PromptTemplateCollectionID uint) (*models.PromptTemplateCollection, error)
 	UpdatePromptTemplateCollectionByID(userID uint, PromptTemplateCollectionID uint, name string) (*models.PromptTemplateCollection, error)
-	PromptTemplateCollectionNameExists(name string) bool
+	PromptTemplateCollectionNameExists(name string, id *uint) bool
 	AddPromptTemplateToCollection(userID uint, PromptTemplateID uint, PromptTemplateCollectionID uint) error
 	RemovePromptTemplateFromCollection(userID uint, PromptTemplateID uint) error
 }

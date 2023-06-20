@@ -29,7 +29,7 @@ func (h *httpHandler) getTemplateCollectionByID(w http.ResponseWriter, r *http.R
 	templateCollection, err := h.promptTemplateService.GetPromptTemplateCollectionByID(userID, uint(templateCollectionID))
 	if err != nil {
 		h.logger.Error("error in fetching template collection by id", "error", err.Error())
-		if err == custom_errors.PromptTemplateCollectionNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}

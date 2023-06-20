@@ -1,22 +1,24 @@
 package prompt_templates
 
 import (
+	"errors"
+
 	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 )
 
 func (p *PGPromptTemplateRepository) CreatePromptTemplate(userID uint, title, description, prompt string, collection_id *uint) (*models.PromptTemplate, error) {
-	exists := p.PromptTemplateTitleExists(title)
+	exists := p.PromptTemplateTitleExists(title, nil)
 
 	if exists {
-		return nil, custom_errors.PromptTemplateTitleExists
+		return nil, custom_errors.ErrNameExists
 	}
 
 	if collection_id != nil {
 		// check whether collection exists
 		collectionExists := p.PromptTemplateCollectionExists(*collection_id)
 		if !collectionExists {
-			return nil, custom_errors.PromptTemplateCollectionNotFound
+			return nil, &custom_errors.CustomError{Context: custom_errors.InnerEntityNotFound, Err: errors.New("prompt template collection not found")}
 		}
 	}
 
@@ -45,10 +47,10 @@ func (p *PGPromptTemplateRepository) CreatePromptTemplateCollection(userID uint,
 		Name: name,
 	}
 
-	exists := p.PromptTemplateCollectionNameExists(name)
+	exists := p.PromptTemplateCollectionNameExists(name, nil)
 
 	if exists {
-		return nil, custom_errors.PromptTemplateCollectionNameExists
+		return nil, custom_errors.ErrNameExists
 	}
 
 	err := p.client.Model(&models.PromptTemplateCollection{}).Create(&newPromptTemplateCollection).Error

@@ -627,4 +627,3 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
 }
 
 export default PromptBar;
-

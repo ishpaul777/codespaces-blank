@@ -1,6 +1,8 @@
 package persona
 
 import (
+	"errors"
+
 	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 )
@@ -14,13 +16,13 @@ func (r *PGPersonaRepository) CreatePersona(userID uint, name, description, prom
 	} else {
 		valid := models.ValidateVisibility(*visibility)
 		if !valid {
-			return nil, custom_errors.PersonaVisibilityInvalid
+			return nil, &custom_errors.CustomError{Context: custom_errors.InvalidVisibility, Err: errors.New("invalid visibility")}
 		}
 	}
 
-	exists := r.PersonaNameExists(name)
+	exists := r.PersonaNameExists(name, nil)
 	if exists {
-		return nil, custom_errors.PersonaNameExists
+		return nil, custom_errors.ErrNameExists
 	}
 
 	if model == "" {

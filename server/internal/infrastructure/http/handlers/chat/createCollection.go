@@ -35,8 +35,8 @@ func (h *httpHandler) createChatCollection(w http.ResponseWriter, r *http.Reques
 	chatCollection := &models.ChatCollection{}
 	chatCollection, err = h.chatService.CreateChatCollection(userID, requestBody.Name)
 	if err != nil {
-		if err == custom_errors.ChatCollectionNameExists {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusUnprocessableEntity)))
+		if err == custom_errors.ErrNameExists {
+			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusConflict)))
 			return
 		}
 		h.logger.Error("error creating chat collection", "error", err.Error())

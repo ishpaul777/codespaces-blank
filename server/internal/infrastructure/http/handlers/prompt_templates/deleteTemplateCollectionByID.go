@@ -30,7 +30,7 @@ func (h *httpHandler) deleteTemplateCollectionByID(w http.ResponseWriter, r *htt
 
 	if err != nil {
 		h.logger.Error("error in deleting prompt template", "error", err.Error())
-		if err == custom_errors.PromptTemplateCollectionNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage(err.Error(), http.StatusNotFound)))
 			return
 		}

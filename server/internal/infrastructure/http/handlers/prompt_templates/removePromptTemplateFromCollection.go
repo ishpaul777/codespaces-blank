@@ -31,7 +31,7 @@ func (h *httpHandler) removePromptTemplateFromCollection(w http.ResponseWriter, 
 
 	if err != nil {
 		h.logger.Error("error while removing prompt_template from collection", "error", err.Error())
-		if err == custom_errors.PromptTemplateNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage("prompt_template not found", http.StatusNotFound)))
 			return
 		}

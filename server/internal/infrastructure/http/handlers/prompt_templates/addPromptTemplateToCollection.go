@@ -44,11 +44,16 @@ func (h *httpHandler) addPromptTemplateToCollection(w http.ResponseWriter, r *ht
 
 	if err != nil {
 		h.logger.Error("error add prompt_template to collection", "error", err.Error())
-		if err == custom_errors.PromptTemplateNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.GetMessage("prompt_template not found", http.StatusNotFound)))
 			return
-		} else if err == custom_errors.PromptTemplateCollectionNotFound {
-			errorx.Render(w, errorx.Parser(errorx.GetMessage("collection not found", http.StatusNotFound)))
+		}
+		if customErr, ok := err.(*custom_errors.CustomError); ok {
+			if customErr.Context == custom_errors.InnerEntityNotFound {
+				errorx.Render(w, errorx.Parser(errorx.GetMessage(customErr.Error(), http.StatusNotFound)))
+				return
+			}
+			errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 			return
 		}
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))

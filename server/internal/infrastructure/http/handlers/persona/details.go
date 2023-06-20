@@ -29,7 +29,7 @@ func (h *httpHandler) details(w http.ResponseWriter, r *http.Request) {
 	persona, err := h.personaService.GetPersonaByID(userID, uint(personaID))
 	if err != nil {
 		h.logger.Error("error getting persona by id", "error", err.Error())
-		if err == custom_errors.PersonaNotFound {
+		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
 		}

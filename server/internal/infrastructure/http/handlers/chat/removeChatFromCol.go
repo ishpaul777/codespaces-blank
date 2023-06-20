@@ -1,4 +1,4 @@
-package persona
+package chat
 
 import (
 	"net/http"
@@ -9,26 +9,25 @@ import (
 	"github.com/factly/x/renderx"
 )
 
-func (h *httpHandler) delete(w http.ResponseWriter, r *http.Request) {
-	usedID, err := helper.GetUserID(r)
+func (h *httpHandler) removeChatFromCol(w http.ResponseWriter, r *http.Request) {
+	userID, err := helper.GetUserID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-User header", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
 		return
 	}
 
-	pID := helper.GetPathParamByName(r, "persona_id")
-	personaID, err := helper.StringToInt(pID)
+	ccID := helper.GetPathParamByName(r, "chat_id")
+	chatID, err := helper.StringToInt(ccID)
 	if err != nil {
-		h.logger.Error("error in parsing persona id", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid persona id", http.StatusBadRequest)))
+		h.logger.Error("error in parsing chat id", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid chat id", http.StatusBadRequest)))
 		return
 	}
 
-	err = h.personaService.DeletePersonaByID(usedID, uint(personaID))
-
+	err = h.chatService.RemoveChatFromCol(userID, uint(chatID))
 	if err != nil {
-		h.logger.Error("error while deleting persona", "error", err.Error())
+		h.logger.Error("error removing chat from collection", "error", err.Error())
 		if err == custom_errors.ErrNotFound {
 			errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 			return
@@ -38,6 +37,6 @@ func (h *httpHandler) delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	renderx.JSON(w, http.StatusOK, map[string]interface{}{
-		"message": "Persona deleted successfully",
+		"message": "Chat removed from collection successfully",
 	})
 }

@@ -1,6 +1,8 @@
 package prompt_templates
 
 import (
+	"errors"
+
 	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"gorm.io/gorm"
@@ -13,7 +15,7 @@ func (pg *PGPromptTemplateRepository) AddPromptTemplateToCollection(userID uint,
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.PromptTemplateNotFound
+			return custom_errors.ErrNotFound
 		}
 		return err
 	}
@@ -27,7 +29,7 @@ func (pg *PGPromptTemplateRepository) AddPromptTemplateToCollection(userID uint,
 	}
 
 	if count == 0 {
-		return custom_errors.PromptTemplateCollectionNotFound
+		return &custom_errors.CustomError{Context: custom_errors.InnerEntityNotFound, Err: errors.New("Prompt Template Collection Not Found")}
 	}
 
 	// update prompt template collection id
