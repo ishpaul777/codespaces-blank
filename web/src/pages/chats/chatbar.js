@@ -396,7 +396,7 @@ export default function ChatBar({
         )}
       </div>
       {/* chat input container */}
-      <div className="py-4 w-full flex justify-center items-center z-20"
+      <div className="py-4 w-full flex flex-col justify-center items-center z-20 gap-4"
         style={{ zIndex: isInitialPromptModalVisible ? -1 : 0 }}
       >
         {/* input division */}
