@@ -8,6 +8,7 @@ import { ScooterCore } from "@factly/scooter-core";
 // import { MdDeleteOutline } from "react-icons/md";
 import { DocActionButton } from "../../components/buttons/DocActionButton";
 import { SizeButton } from "../../components/buttons/SizeButton";
+import { AiOutlineCheck } from 'react-icons/ai'
 import {
   createDocument,
   deleteDocument,
@@ -26,9 +27,6 @@ export default function Document() {
 
   // documentName maintains the state of name of the document
   const [documentName, setDocumentName] = useState("");
-
-  // isSubmitVisible is a boolean variable that determines whether the submit button is visible or not
-  const [isSubmitVisible, setIsSubmitVisible] = useState(true);
 
   // keywords maintains the state of keywords for the prompt
   const [keywords, setKeywords] = useState("");
@@ -76,15 +74,6 @@ export default function Document() {
     setPrompt(value);
   };
 
-  //onNameEdit is a callback function that is called when the user clicks on the edit button
-  const onNameEdit = () => {
-    setIsSubmitVisible(true);
-  };
-
-  // onNameSubmit is a callback function that is called when the user clicks on the submit button
-  const onNameSubmit = () => {
-    setIsSubmitVisible(false);
-  };
 
   // onNameChange is a callback function that is called when the user changes the name of the document
   const onNameChange = (value) => {
@@ -131,25 +120,6 @@ export default function Document() {
         }
       },
       name: "Save",
-    },
-    {
-      onClick: () => {
-        if (id && isEdit) {
-          deleteDocument(id)
-            .then(() => {
-              successToast("document deleted successfully");
-              setTimeout(() => {
-                navigate("/documents");
-              }, 1000);
-            })
-            .catch(() => {
-              errorToast("error in deleting document");
-            });
-        } else {
-          errorToast("document not created yet");
-        }
-      },
-      name: "Delete",
     },
   ];
 
@@ -257,7 +227,6 @@ export default function Document() {
       getDocumentByID(id)
         .then((response) => {
           setDocumentName(response?.title);
-          setIsSubmitVisible(false);
           setPromptData(response?.description);
         })
         .catch((error) => {
@@ -396,9 +365,9 @@ export default function Document() {
               />
             )}
           </div>
-          {/* document actions buttons - 
-            1.compose - it will create a request to tagore-server to get the details 
-            2.reset - it will reset the document to the initial state    
+          {/* document actions buttons -
+            1.compose - it will create a request to tagore-server to get the details
+            2.reset - it will reset the document to the initial state
         */}
           <div className="w-full flex flex-col gap-2">
             <DocActionButton
@@ -412,7 +381,7 @@ export default function Document() {
                 <DocActionButton
                   text={"Stop"}
                   clickAction={() => handleStop()}
-              ></DocActionButton>
+                ></DocActionButton>
               )
             }
             {continueButtonState.visibility && (
@@ -435,26 +404,17 @@ export default function Document() {
         {/* this is the header section in create document page. It has mainly 2 elements - 1. File Name input box and 2. actions - [share, delete, save]*/}
         <div className="w-full py-3 px-6 flex justify-between border-b border-border-secondary">
           <div
-            className={`w-3/5 flex flex-row items-center ${
-              !isSubmitVisible && "gap-4"
-            }`}
+            className={`w-3/5 flex flex-row items-center `}
           >
-            {isSubmitVisible ? (
-              <>
-                <input
-                  defaultValue={documentName}
-                  placeholder="enter title for the document"
-                  className="outline-none w-2/5"
-                  onChange={(e) => onNameChange(e.target.value)}
-                ></input>
-                <Button text="Submit" onClick={onNameSubmit}></Button>
-              </>
-            ) : (
-              <>
-                <h3 className="text-lg font-semibold">{documentName}</h3>
-                <Button text="Edit" onClick={onNameEdit} />
-              </>
-            )}
+            <div className="w-2/5 border-2 p-2 border-border-secondary flex items-center">
+              <input
+                defaultValue={documentName}
+                placeholder="enter title for the document text-lg font-semibold"
+                className="outline-none w-full"
+                onChange={(e) => onNameChange(e.target.value)}
+              ></input>
+              {/* <button className="text-xl" onClick={onNameSubmit}><AiOutlineCheck /></button> */}
+            </div>
           </div>
           {/* action div */}
           <div className="flex flex-row items-center gap-4">
