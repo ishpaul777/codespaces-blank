@@ -3,12 +3,13 @@ import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { useState, useRef, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { BiMessageDetail } from "react-icons/bi";
+import { RxCross1 } from "react-icons/rx";
 import {
   AiOutlineDelete,
   AiOutlineCheck,
   AiOutlineClose,
 } from "react-icons/ai";
-import { BsCaretDownFill, BsCaretRightFill } from "react-icons/bs";
+import { BsCaretDownFill, BsCaretRightFill, BsFolder } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import {
   addChatToCollection,
@@ -16,12 +17,13 @@ import {
   deleteCollection,
   getAllChatCollections,
   removeChatFromCollections
-} from "../../redux/actions/collections";
+} from "../../redux/actions/chatcollections";
 import { useDispatch } from "react-redux";
 
 export default function SideBar({
   isMobileScreen,
   chatSiderCollapse,
+  setChatSiderCollapse,
   handleNewChatClick,
   paginationChatHistory,
   setPaginationChatHistory,
@@ -40,7 +42,7 @@ export default function SideBar({
   chatOptionsList,
   isFolderVisible = true,
 }) {
-  const maxListChars = 15;
+  const maxListChars = isMobileScreen ? 30 : 15;
   const styles = {
     fileIconSize: "24px",
     iconSize: "20px",
@@ -78,10 +80,14 @@ export default function SideBar({
   const handleDrop = () => {
     if (draggingChatId && dragOverCollectionId) {
       // if the chat is not already in the collection add it
-      const collection = collections.find((collection) => collection.id === dragOverCollectionId);
+      const collection = collections.find(
+        (collection) => collection.id === dragOverCollectionId
+      );
       const chat = collection.chats.find((chat) => chat.id === draggingChatId);
       if (!chat) {
-        dispatch(addChatToCollection(dragOverCollectionId, draggingChatId, chatHistory));
+        dispatch(
+          addChatToCollection(dragOverCollectionId, draggingChatId, chatHistory)
+        );
       }
     }
 
@@ -152,8 +158,10 @@ export default function SideBar({
               handleDrop();
             }
           }}
-          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 group
-          ${chatID === chat?.id && "bg-hover-on-white"}`}
+          className={`p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          ${chatID === chat?.id && "bg-hover-on-white"} ${
+            isMobileScreen && "border-b border-gray-300"
+          }`}
         >
           <div
             className="flex items-center gap-3"
@@ -162,15 +170,28 @@ export default function SideBar({
               setChatID(chat?.id);
               setChatTitle(chat?.title);
               setIsEditing({ status: false, id: null });
+              if (isMobileScreen) setChatSiderCollapse(true);
             }}
           >
-            <BiMessageDetail size={styles.iconSize} />
-            <span>
-              {chat?.title < maxListChars
-                ? chat?.title
-                : `${chat?.title?.slice(0, maxListChars) + "..."}
-      `}
-            </span>
+            {!isMobileScreen && <BiMessageDetail size={styles.iconSize} />}
+            <div className="flex flex-col">
+              <span className="md:font-normal font-semibold">
+                {chat?.title < maxListChars
+                  ? chat?.title
+                  : `${chat?.title?.slice(0, maxListChars) + "..."}
+                `}
+              </span>
+              {isMobileScreen && (
+                <span className="text-gray-500">
+                  {chat?.messages[2].content.length < maxListChars
+                    ? chat?.messages[2].content
+                    : `${
+                        chat?.messages[2].content.slice(0, maxListChars) + "..."
+                      }
+                  `}
+                </span>
+              )}
+            </div>
           </div>
           <div className={`flex gap-2`}>
             {
@@ -232,48 +253,65 @@ export default function SideBar({
 
   return (
     <aside
-      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
-        ? "translate-x-0 w-0"
-        : `${isMobileScreen ? "w-3/4 " : "w-[350px] "}bg-black-100`
-        } flex flex-row  ease-in-out duration-300 gap-4`}
+      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${
+        chatSiderCollapse
+          ? "translate-x-0 w-0"
+          : `${isMobileScreen ? "w-full " : "w-[350px] "}`
+      } flex flex-row  ease-in-out duration-300 gap-4`}
     >
       <div
-        className={`bg-white relative w-full shadow-md ${chatSiderCollapse || "pt-4 pl-4"
-          }`}
+        className={`bg-white relative w-full shadow-md ${
+          chatSiderCollapse || "pt-4 pl-4"
+        }`}
       >
+        {isMobileScreen && !chatSiderCollapse && (
+          <div className="flex flex-wrap justify-between items-center pr-6 mt-8">
+            <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+            <h2 className="text-xl font-semibold">History</h2>
+            <RxCross1 size={24} onClick={() => setChatSiderCollapse(true)} />
+          </div>
+        )}
         <div
-          className={`my-4 w-full text-center justify-between gap-2 ${chatSiderCollapse ? "d-none" : "flex pr-4"
-            } `}
+          className={`${
+            isMobileScreen ? "my-2" : "my-4"
+          } w-full text-center justify-between gap-2 ${
+            chatSiderCollapse ? "d-none" : "flex pr-4"
+          } `}
         >
-          <button
-            className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? "d-none" : "flex"
-              } `}
-            onClick={() => handleNewChatClick()}
-          >
-            <HiPlus size={styles.iconSize} />
-            <span className="text-lg">New Chat</span>
-          </button>
-          {isFolderVisible ? (
-            <button
-              className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center"
-              onClick={() => {
-                setCollectionCreateFormVisible(true);
-              }}
-            >
-              <MdOutlineCreateNewFolder size={styles.fileIconSize} />
-              {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
-              <ToastContainer />
-            </button>
-          ) : (
-            <div>
-              <ToastContainer />
-            </div>
+          {!isMobileScreen && (
+            <>
+              <button
+                className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${
+                  chatSiderCollapse ? "d-none" : "flex"
+                } `}
+                onClick={() => handleNewChatClick()}
+              >
+                <HiPlus size={styles.iconSize} />
+                <span className="text-lg">New Chat</span>
+              </button>
+              {isFolderVisible ? (
+                <button
+                  className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center"
+                  onClick={() => {
+                    setCollectionCreateFormVisible(true);
+                  }}
+                >
+                  <MdOutlineCreateNewFolder size={styles.fileIconSize} />
+                  {/* added the toast container here because had already developed layout without taking toast in consideration, toast container will be hidden */}
+                </button>
+              ) : (
+                <div>
+                  <ToastContainer />
+                </div>
+              )}
+            </>
           )}
         </div>
         <div className={`${chatSiderCollapse || "pr-4"}`}>
           <input
-            className={`w-full p-3 border border-gray-300 rounded-md  ${chatSiderCollapse ? "d-none" : "flex"
-              } `}
+            className={`w-full p-3 border border-gray-300 rounded-md  ${
+              chatSiderCollapse ? "d-none" : "flex"
+            } `}
             placeholder="Search prompt"
             onChange={(e) =>
               setPaginationChatHistory({
@@ -285,8 +323,10 @@ export default function SideBar({
           <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
         </div>
         <ul
-          className={`overflow-y-auto  ${chatSiderCollapse && "d-none"}  mt-3`}
-          style={{ maxHeight: "67vh" }}
+          className={`overflow-y-auto overflow-x-hidden  ${
+            chatSiderCollapse && "d-none"
+          }  mt-3`}
+          style={{ maxHeight: "65vh" }}
         >
           {collectionCreateFormVisible && (
             <li
@@ -315,92 +355,142 @@ export default function SideBar({
                     size={styles.iconSize}
                     onClick={() => {
                       setCollectionName("");
-                      setCollectionCreateFormVisible(false)
+                      setCollectionCreateFormVisible(false);
                     }}
                   />
                 </div>
               </div>
             </li>
           )}
-          {collections !== null &&
-            collections.length > 0 &&
-            collections?.map((item, index) => {
-              return (
-                <>
-                  <li
-                    key={index}
-                    onDragEnter={() => {
-                      // e.preventDefault();
-                      handleDragEnter(item.id);
-                    }}
-                    className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          <div
+            className={`flex ${
+              isMobileScreen
+                ? "flex-row bg-white border border-gray-300 py-3 px-4"
+                : "flex-col"
+            } flex-wrap mr-4 justify-between`}
+          >
+            {collections !== null &&
+              collections.length > 0 &&
+              collections?.map((item, index) => {
+                return (
+                  <>
+                    <li
+                      key={index}
+                      onDragEnter={() => {
+                        // e.preventDefault();
+                        handleDragEnter(item.id);
+                      }}
+                      className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2 ${
+                        isMobileScreen
+                          ? "w-[45%] p-1"
+                          : "flex p-2  justify-between"
+                      }
                     ${dragOverCollectionId === item.id && "bg-hover-on-white"}
                     `}
-                    onClick={() => {
-                      if (currentCollectionIndex === item.id) {
-                        setCurrentCollectionIndex(null);
-                      } else {
-                        setCurrentCollectionIndex(item.id);
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      {currentCollectionIndex === item.id ? (
-                        <BsCaretDownFill size={16} />
-                      ) : (
-                        <BsCaretRightFill size={16} />
-                      )}
-                      <span>
-                        {item?.name < maxListChars
-                          ? item?.name
-                          : `${item?.name?.slice(0, maxListChars) + "..."}
+                      onClick={() => {
+                        if (
+                          !isMobileScreen &&
+                          currentCollectionIndex === item.id
+                        ) {
+                          setCurrentCollectionIndex(null);
+                        } else {
+                          setCurrentCollectionIndex(item.id);
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-3 w-[1000%]">
+                        {isMobileScreen ? (
+                          <BsFolder size={16} />
+                        ) : currentCollectionIndex === item.id ? (
+                          <BsCaretDownFill size={16} />
+                        ) : (
+                          <BsCaretRightFill size={16} />
+                        )}
+                        <span>
+                          {item?.name < maxListChars
+                            ? item?.name
+                            : `${item?.name?.slice(0, maxListChars) + "..."}
                         `}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
+                        </span>
+                      </div>
                       {
                         // if the deleteIndex is equal to the index of the chat then show the checked and close buttons
                         // else show the delete button
-                        deleteCollectionIndex === item.id ? (
-                          <>
-                            <AiOutlineCheck
-                              size={styles.iconSize}
-                              // todo: handle chat delete
-                              onClick={(E) => {
-                                E.stopPropagation();
-                                handleCollectionDelete(item.id);
-                              }}
-                            />
-                            <AiOutlineClose
-                              size={styles.iconSize}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteCollectionIndex(null);
-                              }}
-                            />
-                          </>
-                        ) : (
-                          <AiOutlineDelete
-                            size={styles.iconSize}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeleteCollectionIndex(item.id);
-                            }}
-                          />
-                        )
+                        !isMobileScreen ? (
+                          <div className="flex gap-2">
+                            {deleteCollectionIndex === item.id ? (
+                              <>
+                                <AiOutlineCheck
+                                  size={styles.iconSize}
+                                  // todo: handle chat delete
+                                  onClick={(E) => {
+                                    E.stopPropagation();
+                                    handleCollectionDelete(item.id);
+                                  }}
+                                />
+                                <AiOutlineClose
+                                  size={styles.iconSize}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeleteCollectionIndex(null);
+                                  }}
+                                />
+                              </>
+                            ) : (
+                              <AiOutlineDelete
+                                size={styles.iconSize}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteCollectionIndex(item.id);
+                                }}
+                              />
+                            )}
+                          </div>
+                        ) : null
                       }
-                    </div>
-                  </li>
-                  <ul className="ml-3 border-l-2 border-gray-300 pl-2">
-                    {currentCollectionIndex === item.id &&
-                      item?.chats?.length > 0 &&
-                      renderChats(item?.chats, true)}
-                  </ul>
-                </>
-              );
-            })}
+                    </li>
+                    <ul
+                      className={`
+                      sm-fixed sm-left-0 sm-top-0 md:static bg-white ${
+                        currentCollectionIndex === item.id &&
+                        item?.chats?.length > 0
+                          ? `${
+                              isMobileScreen
+                                ? "w-[100vw] h-screen p-4 gap-4"
+                                : "border-l-2 ml-4 border-gray-300 pl-2 w-full"
+                            }`
+                          : "translate-x-0 w-0"
+                      } flex flex-col ease-in-out duration-300
+                      `}
+                      style={{
+                        zIndex: 100,
+                      }}
+                    >
+                      {isMobileScreen &&
+                        currentCollectionIndex === item.id &&
+                        item?.chats?.length > 0 && (
+                          <div className="flex flex-wrap justify-between items-center my-8">
+                            <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+                            <h2 className="text-xl font-semibold pl-2">
+                              {item?.name}
+                            </h2>
+                            <RxCross1
+                              size={24}
+                              onClick={() => setCurrentCollectionIndex(null)}
+                            />
+                          </div>
+                        )}
+                      {currentCollectionIndex === item.id &&
+                        item?.chats?.length > 0 &&
+                        renderChats(item?.chats, true)}
+                    </ul>
+                  </>
+                );
+              })}
+          </div>
           <hr className="h-px bg-gray-300 mt-3 border-0 mr-4 mb-3"></hr>
           <ul
+            className="mr-4"
             onDragEnter={() => {
               handleDragEnter(null);
             }}
@@ -408,11 +498,13 @@ export default function SideBar({
             {renderChats(chatHistory, false)}
           </ul>
           <div
-            className={`flex ${paginationChatHistory.page === 1 ? "flex-row-reverse" : "flex-row"
-              } ${paginationChatHistory.offset !== 0 &&
+            className={`flex ${
+              paginationChatHistory.page === 1 ? "flex-row-reverse" : "flex-row"
+            } ${
+              paginationChatHistory.offset !== 0 &&
               chatCount > paginationChatHistory.limit &&
               "justify-between"
-              } p-2 text-base cursor-pointer mt-4`}
+            } p-2 text-base cursor-pointer mt-4`}
           >
             {paginationChatHistory.page > 1 && (
               <span
@@ -438,23 +530,26 @@ export default function SideBar({
             )}
           </div>
         </ul>
-        <div
-          className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? "d-none" : "flex"
+        {!isMobileScreen && (
+          <div
+            className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${
+              chatSiderCollapse ? "d-none" : "flex"
             } `}
-        >
-          <ul className="flex justify-center flex-col">
-            {chatOptionsList.map((item, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
-                onClick={item.onClick}
-              >
-                {item.icon}
-                <span className="text-base">{item.title}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+          >
+            <ul className="flex justify-center flex-col">
+              {chatOptionsList.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
+                  onClick={item.onClick}
+                >
+                  {item.icon}
+                  <span className="text-base">{item.title}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </aside>
   );

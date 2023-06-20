@@ -15,9 +15,12 @@ import handDrawnBoat from "../../assets/handrawn-boat.png";
 import foxNight from "../../assets/fox-night.png";
 import catWithHat from "../../assets/cat-with-hat.png";
 import davidWearingHeadphones from "../../assets/david-wearing-headphones.png";
+import ExampleModal from "./ExamplesModal";
+import useWindowSize from "../../hooks/useWindowSize";
 
 export default function ImagePage() {
   const fileInputRef = useRef(null);
+  const { isMobileScreen } = useWindowSize();
 
   const [imageRequest, setImageRequest] = useState({
     prompt: "",
@@ -192,20 +195,28 @@ export default function ImagePage() {
   }
 
   return (
-    <div className={`my-16 mx-10`}>
-      <h2 className="text-3xl font-medium">Generate Images</h2>
-      <div className={`mt-8 mr-4`}>
-        <ImageSearch
-          placeholder={`Handmade Unique abstract painting made with charcoal..`}
-          onChange={handlePromptChange}
-          handleSearch={() => handleSearch(imageRequest)}
-          isLoading={loading}
-          value={imageRequest.prompt}
-          disabled={imageRequest.prompt.length < 1}
-        />
-      </div>
-      {/* image variations division and a selector for choosing the generative model provider */}
-      <div className="w-full mt-4 flex justify-between">
+    <div className={`my-16 ${isMobileScreen ? "mx-6 my-24" : "mx-10"}`}>
+      <h2 className="text-3xl font-medium mb-4">Generate Images</h2>
+      <ImageSearch
+        isMobileScreen={isMobileScreen}
+        placeholder={
+          isMobileScreen
+            ? "abstract painted.."
+            : `Handmade Unique abstract painting made with charcoal..`
+        }
+        onChange={handlePromptChange}
+        handleSearch={() => handleSearch(imageRequest)}
+        isLoading={loading}
+        value={imageRequest.prompt}
+        disabled={imageRequest.prompt.length < 1}
+      />
+      <div
+        className={`w-full mt-4 flex ${
+          isMobileScreen
+            ? "flex-col gap-y-4 justify-center items-end"
+            : "flex-row justify-between"
+        }`}
+      >
         <div className="flex gap-2 items-center">
           <button
             onClick={() => onUploadButtonClick()}
@@ -221,19 +232,19 @@ export default function ImagePage() {
           </button>
           <span>to generate variations</span>
         </div>
+        <div className="flex flex-row items-center space-x-2 ml-2">
+          <label className="text-gray-600 text-sm">Image Count </label>
+          <input
+            type="range"
+            min={1}
+            max={8}
+            value={imageRequest.n}
+            onChange={handleRangeChange}
+            className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
+          />
+          <span className="text-gray-600">{imageRequest.n}</span>
+        </div>
         <div className="mr-4 flex gap-2">
-          <div className="flex flex-row items-center space-x-2">
-            <label className="text-gray-600">Image Count </label>
-            <input
-              type="range"
-              min={1}
-              max={8}
-              value={imageRequest.n}
-              onChange={handleRangeChange}
-              className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
-            />
-            <span className="text-gray-600">{imageRequest.n}</span>
-          </div>
           <select
             name="provider"
             className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
@@ -244,7 +255,7 @@ export default function ImagePage() {
           </select>
         </div>
         {/* <SearchButton textColor="black" text="Upload an Image" background="button-primary">
-        </SearchButton> */}
+</SearchButton> */}
       </div>
       <div className={`mt-8`}>
         {loading ? (
@@ -252,7 +263,11 @@ export default function ImagePage() {
             <HashLoader color={"#667085"} loading={true} size={100} />
           </div>
         ) : (
-          <div className={`grid grid-cols-4 gap-4`}>
+          <div
+            className={`grid ${
+              isMobileScreen ? "grid-cols-2" : "grid-cols-4"
+            } gap-4`}
+          >
             {images && images.length > 0
               ? images.map((image, index) => {
                   return (
@@ -323,51 +338,4 @@ export default function ImagePage() {
   );
 }
 
-const ExampleModal = ({
-  imageUrl,
-  prompt,
-  onClose,
-  visible,
-  handleSearch,
-  setImageRequest,
-  imageRequest,
-}) => {
-  const overlayClasses =
-    "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
-  const modalClasses =
-    "fixed z-50 left-1/2 w-3/12 top-1/2 transform -translate-x-1/2 flex flex-col -translate-y-1/2 bg-white rounded-xl shadow-lg transition-alldocke duration-300 ease-in-out h-4/6";
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-  return (
-    <div
-      className={visible ? overlayClasses : " w-0 h-0"}
-      onClick={handleOverlayClick}
-    >
-      <div className={visible ? modalClasses : " w-0 h-0"}>
-        <img src={imageUrl} className="h-full rounded-t-xl" />
-        {visible && prompt && (
-          <div className="bg-white text-lg my-4 text-center font-medium rounded-b-xl border-b py-3 px-4 border-gray-300">
-            {prompt}
-            <button
-              onClick={() => {
-                onClose();
-                setImageRequest((prevRequest) => ({
-                  ...prevRequest,
-                  prompt: prompt,
-                }));
-                handleSearch({ ...imageRequest, prompt: prompt });
-              }}
-              className="w-full bg-gray-200 py-2 px-4 my-4 rounded-md hover:opacity-75"
-            >
-              Try this out
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+//     {/* image variations division and a selector for choosing the generative model provider */}

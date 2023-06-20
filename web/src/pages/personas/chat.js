@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import FactlyLogo from "../../assets/icons/factlyLogo";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineMenuUnfold } from "react-icons/ai";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "../../components/codeblock";
 import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
@@ -427,7 +427,7 @@ export const PersonaChat = () => {
             setChatID={setChatID}
             setIsEditing={setIsEditing}
             chatID={chatID}
-            setChatTitle={() => { }}
+            setChatTitle={() => {}}
             deleteChatHistoryIndex={deleteChatHistoryIndex}
             handleChatDelete={handleChatDelete}
             setDeleteChatHistoryIndex={setDeleteChatHistoryIndex}
@@ -437,10 +437,8 @@ export const PersonaChat = () => {
             isFolderVisible={false}
           />
           <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-full">
-            <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
-              <div
-                className={`sticky px-8 py-4 top-0 w-full mb-1 z-40 bg-body`}
-              >
+            <div className="relative w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
+              <div className={`sticky px-8 py-4 top-0 w-full mb-1 bg-body`}>
                 {/* chat header */}
                 {/* <BiChevronLeft size={28} /> */}
                 <span className="text-lg font-bold px-8">
@@ -450,21 +448,58 @@ export const PersonaChat = () => {
                         `}
                 </span>
               </div>
+              <div className="absolute top-[20px] left-[15px] z-9">
+                <button onClick={() => setChatSiderCollapse((prev) => !prev)}>
+                  <AiOutlineMenuUnfold
+                    size={styles.fileIconSize}
+                    color="#1e1e1e"
+                  />
+                </button>
+              </div>
+              <div
+                className={` ${
+                  isMobileScreen
+                    ? chatSiderCollapse
+                      ? "d-none "
+                      : "flex "
+                    : "d-none"
+                }
+        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
+      `}
+                onClick={() => {
+                  setChatSiderCollapse(!chatSiderCollapse);
+                }}
+              >
+                <button
+                  className="absolute top-4 left-3/4 pl-4"
+                  onClick={() => {
+                    setChatSiderCollapse(!chatSiderCollapse);
+                  }}
+                  style={{ width: "fit-content", height: "fit-content" }}
+                >
+                  <AiOutlineMenuUnfold
+                    size={styles.fileIconSize}
+                    color="#fff"
+                  />
+                </button>
+              </div>
               {chat
                 .filter((item) => item.role !== "system")
                 .map((item, index) => {
                   return (
                     <div
                       key={index}
-                      className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
-                        }`}
+                      className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
+                        item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
+                      }`}
                     >
                       <div className={`w-full flex gap-4`}>
                         <div
-                          className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${item.role === "user"
-                            ? "bg-green-600 ring-green-600"
-                            : "ring-red-600 bg-red-600"
-                            } text-white mr-2`}
+                          className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
+                            item.role === "user"
+                              ? "bg-green-600 ring-green-600"
+                              : "ring-red-600 bg-red-600"
+                          } text-white mr-2`}
                         >
                           {item.role === "user" ? (
                             <span className="text-lg"> U </span>
@@ -527,12 +562,13 @@ export const PersonaChat = () => {
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeMathjax]}
-                            className={`prose ${isMobileScreen
-                              ? "max-w-[17rem]"
-                              : chatSiderCollapse
+                            className={`prose ${
+                              isMobileScreen
+                                ? "max-w-[17rem]"
+                                : chatSiderCollapse
                                 ? "max-w-4xl"
                                 : "max-w-2xl"
-                              } `}
+                            } `}
                             components={{
                               code({
                                 node,

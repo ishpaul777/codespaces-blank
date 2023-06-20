@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const Mentions = (props) => {
-  const { options, onChange, onSearch, onSelect, onKeyDown, onBlur, position } = props;
+  const { options, onChange, onSearch, onSelect, onKeyDown, onBlur, position } =
+    props;
   const [showPromptsList, setShowPromptsList] = useState(false);
   const [promptsList, setPromptsList] = useState(options);
   const [searchText, setSearchText] = useState("");
@@ -121,7 +122,10 @@ const Mentions = (props) => {
       {showPromptsList && promptsList.length > 0 && (
         <ul
           ref={list}
-          className={`absolute ${position==="top" ? "bottom" : "top" }-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-56 overflow-y-auto scrollbar-custom`}>
+          className={`absolute ${
+            position === "top" ? "bottom" : "top"
+          }-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-56 overflow-y-auto scrollbar-custom`}
+        >
           {promptsList.map((option, index) => {
             return (
               <li

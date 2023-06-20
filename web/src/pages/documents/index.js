@@ -7,6 +7,7 @@ import { deleteDocument, getDocuments } from "../../actions/text";
 import moment from "moment";
 import { errorToast, successToast } from "../../util/toasts";
 import { getKratosSessionDetails } from "../../actions/kratos";
+import useWindowSize from "../../hooks/useWindowSize";
 export default function DocumentPage() {
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
@@ -100,32 +101,55 @@ export default function DocumentPage() {
         errorToast(error?.message);
       });
   };
+  const { isMobileScreen } = useWindowSize();
   return (
     // this is the main page container
-    <div className="my-16 mx-10">
+    <div className="my-16 mx-10 min-w-[230px] ">
       {/* This is the page header */}
-      <div className="flex flex-row justify-between items-center">
-        <h2 className="text-3xl font-medium">Documents</h2>
+      <div className="flex flex-col  ">
+        <div className="w-full flex flex-row  items-center justify-between gap-5 mt-8 md:mt-0">
+          <div className="w-fit text-3xl font-medium ">Documents</div>
+          <div
+            className={`w-[50%]  flex flex-row justify-end gap-[3%] items-center`}
+          >
+            {!(window.innerWidth < 1000) && (
+              <Search
+                placeholder={"search documents"}
+                onChange={(e) => {
+                  setPagination({
+                    ...pagination,
+                    search_query: e.target.value,
+                  });
+                }}
+              />
+            )}
 
-        <div className="flex flex-row w-1/2 items-center gap-2">
-          <Search
-            placeholder={"search documents"}
-            onChange={(e) => {
-              setPagination({
-                ...pagination,
-                search_query: e.target.value,
-              });
-            }}
-          />
-          {/* create document button */}
-          <Link to="/documents/create">
-            <CreateButton text={"Create Document"} />
-          </Link>
+            {/* create document button */}
+
+            <Link to="/documents/create">
+              <CreateButton
+                text={`${window.innerWidth < 420 ? "" : "Create Document"}`}
+              />
+            </Link>
+          </div>
+        </div>
+        <div className="mt-5 flex justify-center items-center min-w-[230px] ">
+          {window.innerWidth < 1000 && (
+            <Search
+              placeholder={"search documents"}
+              onChange={(e) => {
+                setPagination({
+                  ...pagination,
+                  search_query: e.target.value,
+                });
+              }}
+            />
+          )}
         </div>
       </div>
       {/* This is the page body */}
-      <div className="mt-6">
-        <table className="w-full">
+      <div className="mt-6 overflow-x-auto max-w-screen">
+        <table className="w-full min-w-[700px]">
           {tableHeader.map((header, index) => {
             return (
               <th

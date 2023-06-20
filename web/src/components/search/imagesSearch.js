@@ -5,13 +5,18 @@ export function ImageSearch({
   onChange,
   handleSearch,
   isLoading,
+  isMobileScreen,
   disabled,
   value,
 }) {
   return (
-    <div className="flex flex-row justify-between shadow-primary py-3 px-4 border border-primary rounded-lg">
+    <div
+      className={`flex ${
+        isMobileScreen && value.split("").length > 15 ? "flex-col" : "flex-row"
+      }  justify-between shadow-primary py-3 px-4 border border-[#EAECF0] rounded-lg`}
+    >
       <input
-        className="w-[90%] outline-none text-base"
+        className="w-[90%] outline-none text-base resize-none h-auto"
         placeholder={placeholder}
         onChange={onChange}
         value={value}

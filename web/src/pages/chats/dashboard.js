@@ -21,16 +21,16 @@ export default function ChatPage() {
   const [initialPrompt, setIntialPrompt] = useState("");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
   const [promptSiderCollapse, setPromptSiderCollapse] = useState(
-    isMobileScreen ? true : false
+    !isMobileScreen
   );
-  const [chatSiderCollapse, setChatSiderCollapse] = useState(
-    isMobileScreen ? true : false
-  );
+  const [chatSiderCollapse, setChatSiderCollapse] = useState(!isMobileScreen);
   const [chatTitle, setChatTitle] = useState("");
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
         setIsMobileScreen(true);
+        setPromptSiderCollapse(true);
+        setChatSiderCollapse(true);
       } else {
         setIsMobileScreen(false);
         setPromptSiderCollapse(false);
@@ -522,6 +522,7 @@ export default function ChatPage() {
       <SideBar
         isMobileScreen={isMobileScreen}
         chatSiderCollapse={chatSiderCollapse}
+        setChatSiderCollapse={setChatSiderCollapse}
         handleNewChatClick={handleNewChatClick}
         paginationChatHistory={paginationChatHistory}
         setPaginationChatHistory={setPaginationChatHistory}
@@ -546,6 +547,7 @@ export default function ChatPage() {
         chat={chat}
         setChatSiderCollapse={setChatSiderCollapse}
         chatSiderCollapse={chatSiderCollapse}
+        handleNewChatClick={handleNewChatClick}
         isMobileScreen={isMobileScreen}
         setPromptSiderCollapse={setPromptSiderCollapse}
         styles={styles}
@@ -585,7 +587,7 @@ export default function ChatPage() {
         className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${
           promptSiderCollapse
             ? "translate-x-0 w-0"
-            : `${isMobileScreen ? "w-3/4 " : "w-[350px] "}`
+            : `${isMobileScreen ? "w-full " : "w-[350px] "}`
         } flex flex-row ease-in-out duration-300 gap-4 z-50`}
       >
         <div
@@ -593,56 +595,13 @@ export default function ChatPage() {
             promptSiderCollapse || "pt-4 pl-4"
           }`}
         >
-          <PromptBar open={!promptSiderCollapse} isFolderVisible={true} />
+          <PromptBar
+            open={!promptSiderCollapse}
+            isFolderVisible={true}
+            setPromptSiderCollapse={setPromptSiderCollapse}
+          />
         </div>
       </aside>
-      <div
-        className={`
-        ${
-          isMobileScreen
-            ? promptSiderCollapse
-              ? "d-none "
-              : "flex "
-            : "d-none"
-        }
-        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
-      `}
-        onClick={() => {
-          setPromptSiderCollapse(!promptSiderCollapse);
-          isMobileScreen && setPromptSiderCollapse(true);
-        }}
-      >
-        <button
-          className="absolute top-4 right-3/4 pr-4"
-          onClick={() => {
-            setPromptSiderCollapse(!promptSiderCollapse);
-            isMobileScreen && setPromptSiderCollapse(true);
-          }}
-          style={{ width: "fit-content", height: "fit-content" }}
-        >
-          <AiOutlineMenuUnfold size={styles.fileIconSize} color="#fff" />
-        </button>
-      </div>
-      <div
-        className={` ${
-          isMobileScreen ? (chatSiderCollapse ? "d-none " : "flex ") : "d-none"
-        }
-        fixed top-2 left-0 right-0 bottom-0 bg-black bg-opacity-50 z-40 cursor-pointer
-      `}
-        onClick={() => {
-          setChatSiderCollapse(!chatSiderCollapse);
-        }}
-      >
-        <button
-          className="absolute top-4 left-3/4 pl-4"
-          onClick={() => {
-            setChatSiderCollapse(!chatSiderCollapse);
-          }}
-          style={{ width: "fit-content", height: "fit-content" }}
-        >
-          <AiOutlineMenuUnfold size={styles.fileIconSize} color="#fff" />
-        </button>
-      </div>
     </div>
   );
 }
