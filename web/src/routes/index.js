@@ -12,6 +12,7 @@ import Compare from "../pages/natdev/Compare";
 import Personas from "../pages/personas";
 import CreatePersona from "../pages/personas/create";
 import { PersonaChat } from "../pages/personas/chat";
+import FactcheckWorkflow from "../pages/workflow/factcheck";
 
 export const routes = [
   {
@@ -76,4 +77,8 @@ export const routes = [
     path: "/compare",
     element: <Compare />,
   },
+  {
+    path: "/workflow/fact-check",
+    element: <FactcheckWorkflow />,
+  }
 ];

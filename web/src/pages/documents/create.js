@@ -250,14 +250,13 @@ export default function Document() {
     sseClient.close();
     setLoading(false);
     setSseClient(null);
-  };
+  }
 
   const { isMobileScreen } = useWindowSize();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
   return (
     // container for new/edit document page
     <div className="h-screen w-full flex">
