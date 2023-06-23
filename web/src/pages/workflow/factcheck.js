@@ -8,8 +8,6 @@ import { SSE } from "sse.js";
 import { ExistingFactcheck } from "../../components/workflow/factcheck/existing-factcheck";
 import { Methodology } from "../../components/workflow/factcheck/methodology";
 import { FactcheckConclusion } from "../../components/workflow/factcheck/conclusion";
-import VerticalLine from "../../components/workflow/vertical-line";
-import { AiOutlinePlus } from "react-icons/ai";
 
 export default function FactcheckWorkflow() {
   // editor instance for the workflow
@@ -22,6 +20,8 @@ export default function FactcheckWorkflow() {
 
   const [methodology, setMethodology] = useState([]);
 
+  const [factcheckTitle, setFactcheckTitle] = useState("");
+
   function handleNext() {
     if (activeState !== workflowProcess.length - 1) {
       setActiveState((prev) => {
@@ -33,7 +33,12 @@ export default function FactcheckWorkflow() {
     }
   }
 
-  function handleCompose() {}
+  async function handleCompose(output) {
+    setEditorData((prevData) => {
+      editor?.commands?.setContent(prevData + output);
+      return prevData + output;
+    });
+  }
 
   const handleAddNewMethodology = () => {
     const reference = createRef();
@@ -46,7 +51,8 @@ export default function FactcheckWorkflow() {
         <Methodology
           handleAddNewMethodology={() => handleAddNewMethodology()}
           handleNext={() => handleNext()}
-          handleCompose={() => handleCompose()}
+          handleCompose={(data) => handleCompose(data)}
+          editor={editor}
         />
       ),
     };
@@ -64,14 +70,8 @@ export default function FactcheckWorkflow() {
       component: (
         <IntroductionForm
           handleSubmit={(response) => {
-            let h2Element = document.createElement("h2");
-            h2Element.textContent = response?.title;
-            let pElement = document.createElement("p");
-            // pElement.style.fontSize = '1rem'
-            pElement.textContent = response?.output;
-            editor?.commands?.insertContent(h2Element.outerHTML);
-            editor?.commands?.insertContent(pElement.outerHTML);
-            // setEditorData(editor?.getHTML());
+            setFactcheckTitle(response?.title);
+            editor?.commands?.insertContent(response?.output);
             if (activeState !== workflowProcess.length - 1) {
               workflowProcess[activeState + 1]?.ref.current?.scrollIntoView({
                 behavior: "smooth",
@@ -97,6 +97,8 @@ export default function FactcheckWorkflow() {
             });
             setActiveState((prev) => prev + 1);
           }}
+          title={factcheckTitle}
+          editor={editor}
         />
       ),
       ref: useRef(null),
@@ -105,7 +107,16 @@ export default function FactcheckWorkflow() {
     {
       index: "4",
       title: "Fact check conclusion paragraph",
-      component: <FactcheckConclusion />,
+      component: 
+      <FactcheckConclusion 
+        handleSubmit={(output) => {
+          setEditorData((prevData) => {
+            editor?.commands?.setContent(prevData + output);
+            return prevData + output;
+          });
+        }}
+        editor={editor}
+      />,
       ref: useRef(null),
     },
   ];
@@ -124,9 +135,10 @@ export default function FactcheckWorkflow() {
             handleAddNewMethodology={() => {
               handleAddNewMethodology();
             }}
-            handleCompose={() => {
-              console.log({ editor });
+            handleCompose={(data) => {
+              handleCompose(data);
             }}
+            editor={editor}
           />
         ),
       },
@@ -154,23 +166,6 @@ export default function FactcheckWorkflow() {
                   isActive={activeState === index}
                 >
                   {eachElement.component}
-                  {/* {
-                    (index === workflowProcess.length - 2) && (
-                      <>
-                      <VerticalLine></VerticalLine>
-                        <button 
-                          className="bg-[#D6D6D6] text-black w-1/2 p-2 font-medium flex items-center justify-center gap-2 rounded-md"
-                          onClick={() => {
-                            handleAddNewMethodology();
-                          }}
-                        >
-                          <AiOutlinePlus className="mr-2" 
-                          />
-                          Add Methodology
-                        </button>
-                      </>
-                    )
-                  } */}
                 </WorkFlowComponent>
               </div>
             );

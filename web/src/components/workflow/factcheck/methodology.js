@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import { Input } from "../../inputs/Input";
+import { useState } from "react";
 import { OutputLength } from "../../length/output_length";
 import { RxCross2 } from "react-icons/rx";
 import { isURL } from "../../../util/validateRegex";
 import { AiOutlinePlus } from "react-icons/ai";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { SearchableInput } from "../../inputs/searchableInput";
+import { factcheckMethodologyPrompt } from "../../../constants/factcheck";
+import { generateTextFromPrompt } from "../../../actions/text";
 
 export const Methodology = ({
   handleCompose,
   handleNext,
   handleAddNewMethodology,
+  editor,
 }) => {
-  const handleChange = () => {};
-
   const [maxTokens, setMaxTokens] = useState(200);
 
   const [reviewSources, setReviewSources] = useState([]);
@@ -29,6 +29,42 @@ export const Methodology = ({
     setOptions(newOptions);
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = async () => {
+    setLoading(true);
+    let methodologyPrompt = factcheckMethodologyPrompt;
+
+    methodologyPrompt = methodologyPrompt.replace(
+      "{article_written_till_now}",
+      editor?.getHTML()
+    );
+
+    methodologyPrompt = methodologyPrompt.replace("{methodology}", methodology);
+
+    methodologyPrompt = methodologyPrompt.replace(
+      "{review_sources}",
+      reviewSources
+        ?.map((review_source) => review_source.review_source)
+        .join(", ")
+    );
+
+    const request = {
+      input: methodologyPrompt,
+      provider: "openai",
+      max_tokens: maxTokens,
+      model: "gpt-3.5-turbo",
+      stream: false,
+      additional_instructions:
+        "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+    };
+
+    const response = await generateTextFromPrompt(request);
+
+    handleCompose(response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""));
+    setLoading(false);
+  };
+
   const availableOptions = [
     "Reverse image search",
     "Extracted key frames from the viral video and did a reverse image search on the keyframes",
@@ -41,12 +77,6 @@ export const Methodology = ({
   const [options, setOptions] = useState(availableOptions);
   return (
     <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
-      {/* <Input
-        label={"Methodology"}
-        onChange={handleChange}
-        placeholder={"Methodology goes here..."}
-        type={"input"}
-      ></Input> */}
       <SearchableInput
         label={"Methodology"}
         onChange={handleMethodologyChange}
@@ -66,17 +96,17 @@ export const Methodology = ({
                 <input
                   className="p-2 border border-[#D0D5DD] rounded-md bg-transparent outline-none"
                   placeholder="Review source goes here..."
-                  value={reviewSource.claim_source}
+                  value={reviewSource.review_source}
                   onChange={(e) => {
-                    const newClaimSources = [...reviewSources];
-                    newClaimSources[index].claim_source = e.target.value;
+                    const newReviewSource = [...reviewSources];
+                    newReviewSource[index].review_source = e.target.value;
                     if (!isURL(e.target.value)) {
-                      newClaimSources[index].error = "Please enter a valid URL";
+                      newReviewSource[index].error = "Please enter a valid URL";
                     } else {
-                      newClaimSources[index].error = "";
+                      newReviewSource[index].error = "";
                     }
 
-                    setReviewSources(newClaimSources);
+                    setReviewSources(newReviewSource);
                   }}
                 ></input>
                 <RxCross2
@@ -132,9 +162,10 @@ export const Methodology = ({
         <DocActionButton
           isPrimary={true}
           text={"Compose"}
+          isLoading={loading}
           width={"w-1/2"}
           clickAction={() => {
-            handleCompose();
+            handleClick();
           }}
         ></DocActionButton>
         <DocActionButton

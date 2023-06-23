@@ -26,9 +26,6 @@ export const IntroductionForm = ({ handleSubmit }) => {
 
   const [maxTokens, setMaxTokens] = useState(200);
 
-  const [output, setOutput] = useState("");
-  const [showOutput, setShowOutput] = useState(false);
-
   const [loadingForm, setLoadingForm] = useState(false);
 
   const validateForm = () => {
@@ -66,7 +63,6 @@ export const IntroductionForm = ({ handleSubmit }) => {
     }
 
     setLoadingForm(true);
-    setShowOutput(false);
     let factCheckIntro = factcheckIntroPrompt;
     factCheckIntro = factCheckIntro.replace(
       "{factcheck_title}",
@@ -104,14 +100,16 @@ export const IntroductionForm = ({ handleSubmit }) => {
       max_tokens: maxTokens,
       model: "gpt-3.5-turbo",
       stream: false,
-      // additional_instructions:
-      //   "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+      additional_instructions:
+        "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
     };
 
     const response = await generateTextFromPrompt(requestBody);
-    setOutput(response?.output);
-    setShowOutput(true);
     setLoadingForm(false);
+    handleSubmit({
+      output: response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""),
+      title: formObject.fact_check_title.value,
+    });
   };
 
   const [formObject, setFormObject] = useState({
@@ -266,7 +264,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
           handleCompose();
         }}
       ></DocActionButton>
-      {showOutput && (
+      {/* {showOutput && (
         <Input
           label={"Output"}
           placeholder={"Generated output"}
@@ -278,8 +276,8 @@ export const IntroductionForm = ({ handleSubmit }) => {
             setOutput(e.target.value);
           }}
         ></Input>
-      )}
-      {showOutput && (
+      )} */}
+      {/* {showOutput && (
         <div className="flex gap-2 items-center">
           <DocActionButton
             isPrimary={true}
@@ -296,15 +294,15 @@ export const IntroductionForm = ({ handleSubmit }) => {
             isPrimary={false}
             text={"Next"}
             width={"w-1/2"}
-          ></DocActionButton>
-          {/* <button className="bg-black-50 text-white p-2">
+          ></DocActionButton> */}
+      {/* <button className="bg-black-50 text-white p-2">
               Add Content
             </button>
             <button className="bg-black-50 text-white p-2">
               Skip
             </button> */}
-        </div>
-      )}
+      {/* </div> */}
+      {/* )} */}
     </div>
   );
 };
