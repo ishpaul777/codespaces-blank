@@ -26,7 +26,9 @@ export const ExistingFactcheck = ({ handleSubmit, handleSkip }) => {
           isPrimary={true}
           text={"Search and Compose"}
           width={"w-1/2"}
-          clickAction={() => {}}
+          clickAction={() => {
+            handleSubmit("o");
+          }}
         ></DocActionButton>
         <DocActionButton
           isPrimary={false}

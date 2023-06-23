@@ -7,12 +7,11 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { SearchableInput } from "../../inputs/searchableInput";
 
-export const Methodology = ({ 
-  handleAddMethodology,
+export const Methodology = ({
   handleCompose,
   handleNext,
- }) => {
-
+  handleAddNewMethodology,
+}) => {
   const handleChange = () => {};
 
   const [maxTokens, setMaxTokens] = useState(200);
@@ -21,7 +20,7 @@ export const Methodology = ({
 
   const [methodology, setMethodology] = useState("");
 
-  const handleMethodologyChange = (option) => { 
+  const handleMethodologyChange = (option) => {
     setMethodology(option);
     // only show matching strings in the dropdown
     const newOptions = availableOptions.filter((availableOption) => {
@@ -31,7 +30,14 @@ export const Methodology = ({
   };
 
   const availableOptions = [
-    'Reverse image search', 'Extracted key frames from the viral video and did a reverse image search on the keyframes',  'Google search with relevant keywords', 'Youtube search with relevant keywords', 'Lok sabha website search', 'Rajya sabha website search', ' Official website search ']
+    "Reverse image search",
+    "Extracted key frames from the viral video and did a reverse image search on the keyframes",
+    "Google search with relevant keywords",
+    "Youtube search with relevant keywords",
+    "Lok sabha website search",
+    "Rajya sabha website search",
+    " Official website search ",
+  ];
   const [options, setOptions] = useState(availableOptions);
   return (
     <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
@@ -116,7 +122,7 @@ export const Methodology = ({
         <label className="font-medium text-base">More Methodologies</label>
         <button
           className="flex justify-center items-center gap-2 border border-dashed border-[#d2d7df] p-2 rounded-md"
-          onClick={() => handleAddMethodology()}
+          onClick={() => handleAddNewMethodology()}
         >
           <AiOutlinePlus className="text-black-50 text-base" />
           <span className="text-black-50 text-base">Add Methodology</span>
@@ -128,7 +134,7 @@ export const Methodology = ({
           text={"Compose"}
           width={"w-1/2"}
           clickAction={() => {
-            handleCompose()
+            handleCompose();
           }}
         ></DocActionButton>
         <DocActionButton
@@ -136,7 +142,7 @@ export const Methodology = ({
           text={"Next"}
           width={"w-1/2"}
           clickAction={() => {
-            handleNext()
+            handleNext();
           }}
         ></DocActionButton>
       </div>
