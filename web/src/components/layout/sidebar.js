@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ArrowLeft from "../../assets/icons/arrow-left.svg";
-import ArrowWithTail from "../../assets/icons/arrow-with-tail.svg";
 import Arrow from "../../assets/icons/arrow.svg";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
-import Bookmark from "../../assets/icons/bookmark.svg";
 import Chat from "../../assets/icons/chat.svg";
 import Documents from "../../assets/icons/documents.svg";
 import Home from "../../assets/icons/home.svg";

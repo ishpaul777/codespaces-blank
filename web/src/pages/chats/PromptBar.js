@@ -28,13 +28,7 @@ import {
   addPromptToCollection,
   removePromptFromCollection,
 } from "../../redux/actions/promptCollections";
-import {
-  createPromptCollection,
-  deletePromptCollection,
-  getAllPromptCollections,
-  addPromptToCollection,
-  removePromptFromCollection,
-} from "../../redux/actions/promptCollections";
+
 import { BsCaretRightFill, BsCaretDownFill } from "react-icons/bs";
 import ModalContent from "./createPrompt/modalContent";
 

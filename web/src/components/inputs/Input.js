@@ -5,12 +5,24 @@ export function Input({
   placeholder,
   type,
   disabled,
+  error,
+  name,
+  labelSize,
+  labelFontWeight,
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label>{label}</label>
+      <label
+        className={`
+          ${labelSize || "text-sm"}
+          ${labelFontWeight || "font-normal"}
+          `}
+      >
+        {label}
+      </label>
       {type === "input" ? (
         <input
+          name={name}
           className={`p-2 border border-[#D0D5DD] rounded-md bg-transparent outline-none ${
             disabled && "disabled:cursor-not-allowed"
           }`}
@@ -29,8 +41,10 @@ export function Input({
           onChange={onChange}
           rows={4}
           disabled={disabled || false}
+          name={name}
         ></textarea>
       )}
+      {error && <span className="text-red-500 text-xs">{error}</span>}
     </div>
   );
 }

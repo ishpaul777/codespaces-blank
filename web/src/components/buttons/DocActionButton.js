@@ -9,6 +9,7 @@ export const DocActionButton = ({
   clickAction,
   isPrimary,
   isLoading,
+  width,
 }) => {
   return (
     <button
@@ -16,7 +17,9 @@ export const DocActionButton = ({
         isPrimary ? "bg-black" : "bg-[#D6D6D6]"
       }  px-3 py-2 rounded-md ${
         isPrimary ? "text-white" : "text-black"
-      } font-medium`}
+      } font-medium
+      ${width ? width : ""}
+      `}
       onClick={(e) => clickAction(e)}
     >
       {isLoading ? (

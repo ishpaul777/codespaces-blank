@@ -80,5 +80,5 @@ export const routes = [
   {
     path: "/workflow/fact-check",
     element: <FactcheckWorkflow />,
-  }
+  },
 ];

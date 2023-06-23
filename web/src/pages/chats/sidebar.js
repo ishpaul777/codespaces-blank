@@ -16,7 +16,7 @@ import {
   createCollection,
   deleteCollection,
   getAllChatCollections,
-  removeChatFromCollections
+  removeChatFromCollections,
 } from "../../redux/actions/chatcollections";
 import { useDispatch } from "react-redux";
 
@@ -83,9 +83,7 @@ export default function SideBar({
       const collection = collections.find(
         (collection) => collection.id === dragOverCollectionId
       );
-      const collection = collections.find(
-        (collection) => collection.id === dragOverCollectionId
-      );
+
       const chat = collection.chats.find((chat) => chat.id === draggingChatId);
       if (!chat) {
         dispatch(
