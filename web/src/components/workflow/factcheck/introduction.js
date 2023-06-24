@@ -147,6 +147,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
         labelFontWeight={"font-medium"}
         labelSize={"text-base"}
         initialValue={formObject.fact_check_title.value}
+        required={true}
       ></Input>
       <Input
         label={"Claim"}
@@ -158,6 +159,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
         name={"fact_check_claim"}
         labelFontWeight={"font-medium"}
         labelSize={"text-base"}
+        required={true}
       ></Input>
       <Input
         label={"Claimant"}
@@ -169,6 +171,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
         labelFontWeight={"font-medium"}
         labelSize={"text-base"}
         initialValue={formObject.fact_check_claimant.value}
+        required={true}
       ></Input>
       <div className="flex flex-col gap-2">
         <label className="font-medium text-base">Claim sources</label>
@@ -236,6 +239,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
         labelFontWeight={"font-medium"}
         labelSize={"text-base"}
         initialValue={formObject.fact_check_fact.value}
+        required={true}
       ></Input>
       <Input
         label={"Rating"}
@@ -247,6 +251,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
         name={"fact_check_rating"}
         labelFontWeight={"font-medium"}
         labelSize={"text-base"}
+        required={true}
       ></Input>
       <OutputLength
         label={"Output length"}
@@ -264,45 +269,6 @@ export const IntroductionForm = ({ handleSubmit }) => {
           handleCompose();
         }}
       ></DocActionButton>
-      {/* {showOutput && (
-        <Input
-          label={"Output"}
-          placeholder={"Generated output"}
-          type={"textarea"}
-          labelFontWeight={"font-medium"}
-          labelSize={"text-base"}
-          initialValue={output}
-          onChange={(e) => {
-            setOutput(e.target.value);
-          }}
-        ></Input>
-      )} */}
-      {/* {showOutput && (
-        <div className="flex gap-2 items-center">
-          <DocActionButton
-            isPrimary={true}
-            text={"Add Content"}
-            width={"w-1/2"}
-            clickAction={() => {
-              handleSubmit({
-                output: output,
-                title: formObject.fact_check_title.value,
-              });
-            }}
-          ></DocActionButton>
-          <DocActionButton
-            isPrimary={false}
-            text={"Next"}
-            width={"w-1/2"}
-          ></DocActionButton> */}
-      {/* <button className="bg-black-50 text-white p-2">
-              Add Content
-            </button>
-            <button className="bg-black-50 text-white p-2">
-              Skip
-            </button> */}
-      {/* </div> */}
-      {/* )} */}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { ScooterCore } from "@factly/scooter-core";
 import { BiArrowBack } from "react-icons/bi";
 import { WorkFlowComponent } from "../../components/workflow/each-workflow-component";
-import { IntroductionForm } from "../../components/workflow/factcheck/introduction";
+
 import {
   createDocument,
   generateTextFromPrompt,
@@ -9,16 +9,20 @@ import {
 } from "../../actions/text";
 import { createRef, useEffect, useState } from "react";
 import { SSE } from "sse.js";
-import { ExistingFactcheck } from "../../components/workflow/factcheck/existing-factcheck";
-import { Methodology } from "../../components/workflow/factcheck/methodology";
-import { FactcheckConclusion } from "../../components/workflow/factcheck/conclusion";
+
 import { Link } from "react-router-dom";
 import { generateUUID } from "../../util/uuid";
 import { errorToast, successToast } from "../../util/toasts";
 import { ClipLoader } from "react-spinners";
 import { ToastContainer } from "react-toastify";
+import { Input } from "../../components/inputs/Input";
+import VerticalLine from "../../components/workflow/vertical-line";
+import { Introduction } from "../../components/workflow/blogpost/introduction";
+import { Outline } from "../../components/workflow/blogpost/outline";
+import { Conclusion } from "../../components/workflow/blogpost/conclusion";
+import { ParagraphGenerator } from "../../components/workflow/blogpost/paragraph_generator";
 
-export default function FactcheckWorkflow() {
+export default function BlogPostWorkflow() {
   // editor instance for the workflow
   const [editor, setEditor] = useState(null);
 
@@ -27,116 +31,129 @@ export default function FactcheckWorkflow() {
   // editorData for the workflow
   const [editorData, setEditorData] = useState(``);
 
-  const [factcheckTitle, setFactcheckTitle] = useState("");
+  const [outlineForms, setOutlineForms] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  function handleNext() {
-    if (activeState !== workflowProcess.length - 1) {
-      setActiveState((prev) => {
-        workflowProcess[prev + 1]?.ref.current?.scrollIntoView({
-          behavior: "smooth",
-        });
-        return prev + 1;
+  const [content, setContent] = useState({
+    value: "",
+    error: "",
+  });
+
+  const [outline, setOutline] = useState("");
+
+  const handleContentChange = (value) => {
+    if (value.length > 0) {
+      if (content.value.length >= 600) {
+        return;
+      }
+      setContent({
+        value: value,
+        error: "",
+      });
+    } else {
+      setContent({
+        value: value,
+        error: "Content is required",
       });
     }
-  }
-
-  async function handleCompose(output) {
-    setEditorData((prevData) => {
-      editor?.commands?.setContent(prevData + output);
-      return prevData + output;
-    });
-    if (activeState !== workflowProcess.length - 1) {
-      setActiveState((prev) => {
-        workflowProcess[prev + 1]?.ref.current?.scrollIntoView({
-          behavior: "smooth",
-        });
-        return prev + 1;
-      });
-    }
-  }
+  };
 
   const workflowProcess = [
     {
       component: (
-        <IntroductionForm
-          handleSubmit={(response) => {
-            setFactcheckTitle(response?.title);
-            editor?.commands?.insertContent(response?.output);
-            if (activeState !== workflowProcess.length - 1) {
-              workflowProcess[activeState + 1]?.ref.current?.scrollIntoView({
+        <Introduction
+          handleCompose={(output) => {
+            setEditorData((prevState) => {
+              editor?.commands.setContent(prevState + output);
+              return prevState + output;
+            });
+
+            setActiveState((prevState) => {
+              workflowProcess[prevState + 1].ref.current.scrollIntoView({
                 behavior: "smooth",
               });
-              setActiveState((prev) => prev + 1);
-            }
+              return prevState + 1;
+            });
           }}
-        ></IntroductionForm>
+        />
       ),
-      title: "Factcheck Introduction Paragraph",
+      title: "Blog Introduction Paragraph",
       index: "1",
-      ref: createRef(null),
-    },
-    {
-      index: "2",
-      title: "Search Existing Factcheck",
-      component: (
-        <ExistingFactcheck
-          handleCompose={(output) => {
-            let pTag = `<p>${output}</p>`;
-            setEditorData((prevData) => {
-              editor?.commands?.setContent(prevData + pTag);
-              return prevData + pTag;
-            });
-            workflowProcess[activeState + 1]?.ref.current?.scrollIntoView({
-              behavior: "smooth",
-            });
-            setActiveState((prev) => prev + 1);
-          }}
-          handleSkip={() => {
-            workflowProcess[activeState + 1]?.ref.current?.scrollIntoView({
-              behavior: "smooth",
-            });
-            setActiveState((prev) => prev + 1);
-          }}
-          title={factcheckTitle}
-          editor={editor}
-        />
-      ),
-      ref: createRef(null),
-    },
-    {
-      index: "3",
-      title: "Review Methodology",
       ref: createRef(),
-      component: (
-        <Methodology
-          // handleNext={() => {
-          //   handleNext();
-          // }}
-          handleCompose={(data) => {
-            handleCompose(data);
-          }}
-          // editor={editor}
-        />
-      ),
     },
     {
-      index: "4",
-      title: "Fact check conclusion paragraph",
       component: (
-        <FactcheckConclusion
-          handleSubmit={(output) => {
-            setEditorData((prevData) => {
-              editor?.commands?.setContent(prevData + output);
-              return prevData + output;
+        <Outline
+          handleCompose={(outline) => {
+            setOutline(outline);
+            // outline_points is the list of points generated from the outline component
+            const elements = outline.split(/\n/);
+            const cleanedElements = elements.map((element) => {
+              element = element.replace(/\d+\./g, "");
+              return element.trim();
             });
-            setActiveState((prev) => prev + 1);
+
+            let outlineArray = cleanedElements.map((element, index) => {
+              return {
+                component: (
+                  <ParagraphGenerator
+                    topic={element}
+                    handleCompose={(output) => {
+                      setEditorData((prevState) => {
+                        editor?.commands.setContent(prevState + output);
+                        return prevState + output;
+                      });
+                      setActiveState((prevState) => {
+                        // TODO: scroll to the next component
+                        return prevState + 1;
+                      });
+                    }}
+                  />
+                ),
+                title: element,
+                index: `3.${index + 1}`,
+                ref: createRef(),
+              };
+            });
+
+            setOutlineForms(outlineArray);
+            setActiveState((prevState) => {
+              workflowProcess[prevState + 1].ref.current.scrollIntoView({
+                behavior: "smooth",
+              });
+              return prevState + 1;
+            });
           }}
-          editor={editor}
         />
       ),
-      ref: createRef(null),
+      title: "Blog post outline",
+      index: "2",
+      ref: createRef(),
+    },
+    ...outlineForms,
+    {
+      title: "Blog Conclusion Paragraph",
+      component: (
+        <Conclusion
+          outline={outline}
+          handleCompose={(output) => {
+            setEditorData((prevState) => {
+              editor?.commands.setContent(prevState + output);
+              return prevState + output;
+            });
+
+            setActiveState((prevState) => {
+              // workflowProcess[prevState + 1].ref.current.scrollIntoView({
+              //   behavior: "smooth",
+              // });
+              return prevState + 1;
+            });
+          }}
+        />
+      ),
+      index: "4",
+      ref: createRef(),
     },
   ];
 
@@ -163,31 +180,35 @@ export default function FactcheckWorkflow() {
 
   const [docDetails, setDocDetails] = useState({
     title: "",
-    id: "",
+    id: -1,
+    isFileCreated: false,
   });
 
   useEffect(() => {
-    setLoading(true);
-    let title = "Untitled-" + generateUUID(8);
+    if (!docDetails.isFileCreated) {
+      setLoading(true);
+      let title = "Untitled-" + generateUUID(8);
 
-    let requestBody = {
-      title: title,
-      description: "",
-    };
-    createDocument(requestBody)
-      .then((response) => {
-        setDocDetails({
-          id: response.id,
-          title: response.title,
+      let requestBody = {
+        title: title,
+        description: "",
+      };
+      createDocument(requestBody)
+        .then((response) => {
+          setDocDetails({
+            id: response.id,
+            title: response.title,
+            isFileCreated: true,
+          });
+          successToast("document created successfully");
+        })
+        .catch((err) => {
+          errorToast("error in creating document");
+        })
+        .finally(() => {
+          setLoading(false);
         });
-        successToast("document created successfully");
-      })
-      .catch((err) => {
-        errorToast("error in creating document");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    }
   }, []);
 
   return (
@@ -205,6 +226,28 @@ export default function FactcheckWorkflow() {
             </Link>
 
             <div className="mt-10">
+              <div className="px-10 flex flex-col gap-2 relative">
+                {activeState > 0 && (
+                  <div className="absolute bg-white bg-opacity-50 top-0 left-0 w-full h-full"></div>
+                )}
+                <Input
+                  placeholder={
+                    "Enter a brief description of your blog topic..."
+                  }
+                  label={"Content Description / Brief"}
+                  labelFontWeight={"font-medium"}
+                  labelFontSize={"text-base"}
+                  onChange={(e) => {
+                    handleContentChange(e.target.value);
+                  }}
+                ></Input>
+                <div className="flex flex-row-reverse">
+                  <span>{`${content.value.length}/600`}</span>
+                </div>
+              </div>
+              <div className="px-10">
+                <VerticalLine />
+              </div>
               {workflowProcess.map((eachElement, index) => {
                 return (
                   <div ref={eachElement.ref}>
@@ -220,7 +263,7 @@ export default function FactcheckWorkflow() {
                         setActiveState((prevState) => {
                           workflowProcess[
                             prevState - 1
-                          ]?.ref?.current?.scrollIntoView({
+                          ].ref.current.scrollIntoView({
                             behavior: "smooth",
                           });
                           return prevState - 1;
