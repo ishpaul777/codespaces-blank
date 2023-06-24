@@ -5,16 +5,13 @@ import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import Clear from "../../assets/icons/clear.svg";
 import Share from "../../assets/icons/share.svg";
 import Tick from "../../assets/icons/tick.svg";
-import Button from "../../components/buttons/SearchButton";
 import { ScooterCore } from "@factly/scooter-core";
 // import { IoShareSocialOutline } from "react-icons/io5";
 // import { MdDeleteOutline } from "react-icons/md";
 import { DocActionButton } from "../../components/buttons/DocActionButton";
 import { SizeButton } from "../../components/buttons/SizeButton";
-import { AiOutlineCheck } from "react-icons/ai";
 import {
   createDocument,
-  deleteDocument,
   generateTextFromPrompt,
   getDocumentByID,
   updateDocument,
@@ -257,7 +254,6 @@ export default function Document() {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
   return (
     // container for new/edit document page
     <div className="h-screen w-full flex">
@@ -467,15 +463,11 @@ export default function Document() {
         {/* this is the header section in create document page. It has mainly 2 elements - 1. File Name input box and 2. actions - [share, delete, save]*/}
         {!isMobileScreen && (
           <div className="w-full py-3 px-6 flex justify-between border-b border-border-secondary">
-            <div
-              className={`w-3/5 flex flex-row items-center ${
-                !isSubmitVisible && "gap-4"
-              }`}
-            >
+            <div className={`w-3/5 flex flex-row items-center`}>
               <div className="w-2/5 border-2 p-2 border-border-secondary flex items-center">
                 <input
                   defaultValue={documentName}
-                  placeholder="enter title for the document text-lg font-semibold"
+                  placeholder="enter title for the document"
                   className="outline-none w-full"
                   onChange={(e) => onNameChange(e.target.value)}
                 ></input>
@@ -514,7 +506,7 @@ export default function Document() {
             isMobileScreen ? "mt-40" : ""
           }`}
         >
-          <div className="w-[90%] py-1 ">
+          <div className="w-[60%] py-1 ">
             <ScooterCore
               placeholder="Write your content here. Press / for commands and /generate for AI commands"
               editorInstance={(editor) => setEditor(editor)}
@@ -623,26 +615,18 @@ export default function Document() {
             {/* Mobile menu content goes here */}
             {/* ... */}
             <div className="w-[80%] ">
-              {isSubmitVisible ? (
-                <div className="flex justify-between p-3">
-                  <input
-                    defaultValue={documentName}
-                    placeholder="enter title for the document"
-                    className={`${
-                      isMobileScreen
-                        ? "w-[80%] outline-none p-2"
-                        : "outline-none w-2/5 p-2"
-                    }`}
-                    onChange={(e) => onNameChange(e.target.value)}
-                  ></input>
-                  <Button text="Submit" onClick={onNameSubmit}></Button>
-                </div>
-              ) : (
-                <div className="flex justify-between p-3">
-                  <h3 className="text-lg font-semibold">{documentName}</h3>
-                  <Button text="Edit" onClick={onNameEdit} />
-                </div>
-              )}
+              <div className="flex justify-between p-3">
+                <input
+                  defaultValue={documentName}
+                  placeholder="enter title for the document"
+                  className={`${
+                    isMobileScreen
+                      ? "w-[80%] outline-none p-2"
+                      : "outline-none w-2/5 p-2"
+                  }`}
+                  onChange={(e) => onNameChange(e.target.value)}
+                ></input>
+              </div>
               {/* actions container */}
               <div className="p-3 cursor-pointer flex flex-col gap-11">
                 {/* image container */}

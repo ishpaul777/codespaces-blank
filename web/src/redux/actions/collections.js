@@ -114,41 +114,9 @@ const addChatToCollection =
       });
   };
 
-const removeChatFromCollections = (chatId, chatHistory) => async (dispatch) => {
-  return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/chat/collections/remove/${chatId}`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    }
-  )
-    .then(async (response) => {
-      if (response.status === 200) {
-        return response.json();
-      } else {
-        return response.json().then((data) => {
-          throw Error(data.errors);
-        });
-      }
-    })
-    .then((data) => {
-      const chat = chatHistory.find((c) => c.id === chatId);
-      const collectionId = chat.chat_collection_id;
-      dispatch({
-        type: "REMOVE_CHAT_FROM_CHAT_COLLECTION",
-        payload: { collectionId, chatId },
-      });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
-
 export {
   createCollection,
   deleteCollection,
   getAllChatCollections,
   addChatToCollection,
-  removeChatFromCollections,
 };

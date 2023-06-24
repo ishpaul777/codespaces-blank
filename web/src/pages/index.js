@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { MdImage, MdOutlineFactCheck } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { getDefaultPersona } from "../actions/persona";
 import { errorToast } from "../util/toasts";
@@ -12,8 +11,6 @@ import scriptwriter from "../assets/scriptwriter.png";
 import CustomPersona from "../assets/CustomPersona.png";
 
 export function HomePage() {
-  const iconColor = "#AC94FA";
-
   const [defaultPersonas, setDefaultPersonas] = useState([]);
   const menuOptions = [
     {

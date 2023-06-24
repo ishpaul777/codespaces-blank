@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { CreateButton } from "../../components/buttons/CreateButton";
 import Search from "../../components/search";
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+// import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { deleteDocument, getDocuments } from "../../actions/text";
 import moment from "moment";
