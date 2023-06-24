@@ -5,31 +5,25 @@ import { DocActionButton } from "../../buttons/DocActionButton";
 import { factcheckConclusionPrompt } from "../../../constants/factcheck";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const FactcheckConclusion = ({
-  handleSubmit,
-  editor
-}) => {
+export const FactcheckConclusion = ({ handleSubmit, editor }) => {
   const [maxTokens, setMaxTokens] = useState(200);
-  const [highlights, setHighlights] = useState('');
+  const [highlights, setHighlights] = useState("");
 
   const handleChange = (e) => {
-    setHighlights(e.target.value)
+    setHighlights(e.target.value);
   };
 
   const [loading, setLoading] = useState();
 
   const handleClick = async () => {
-    setLoading(true)
+    setLoading(true);
     let conclusionPrompt = factcheckConclusionPrompt;
     conclusionPrompt = conclusionPrompt.replace(
       "{article_written_till_now}",
       editor?.getHTML()
-    )
+    );
 
-    conclusionPrompt = conclusionPrompt.replace(
-      "{highlights}",
-      highlights
-    )
+    conclusionPrompt = conclusionPrompt.replace("{highlights}", highlights);
 
     const request = {
       input: conclusionPrompt,
@@ -45,7 +39,6 @@ export const FactcheckConclusion = ({
 
     handleSubmit(response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""));
     setLoading(false);
-
   };
 
   return (
@@ -55,7 +48,7 @@ export const FactcheckConclusion = ({
           "What are the points that you want to highlight in the conclusion?"
         }
         onChange={handleChange}
-        name={'highlights'}
+        name={"highlights"}
         placeholder={"enter the highlights here..."}
       ></Input>
       <OutputLength
@@ -68,7 +61,7 @@ export const FactcheckConclusion = ({
         isPrimary={true}
         text={"Compose"}
         clickAction={() => {
-          handleClick()
+          handleClick();
         }}
         isLoading={loading}
       ></DocActionButton>

@@ -14,6 +14,7 @@ export function SearchableInput({
   labelSize,
   labelFontWeight,
   listOptions,
+  error,
 }) {
   const [showList, setShowList] = useState(false);
 
@@ -68,6 +69,7 @@ export function SearchableInput({
           </div>
         )}
       </div>
+      {error && <span className="text-red-500 text-xs">{error}</span>}
     </div>
   );
 }

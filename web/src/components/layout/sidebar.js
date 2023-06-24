@@ -5,12 +5,10 @@ import { AiOutlineMenuUnfold } from "react-icons/ai";
 import Chat from "../../assets/icons/chat.svg";
 import Documents from "../../assets/icons/documents.svg";
 import Home from "../../assets/icons/home.svg";
-import History from "../../assets/icons/history.svg";
 import Images from "../../assets/icons/images.svg";
 import Logout from "../../assets/icons/logout.svg";
-import Profile from "../../assets/icons/profile.svg";
 import Templates from "../../assets/icons/templates.svg";
-import Usage from "../../assets/icons/usage.svg";
+import Workflow from "../../assets/icons/workflow.svg";
 import { logout } from "../../actions/kratos";
 import { errorToast } from "../../util/toasts";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -42,6 +40,11 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       name: "Personas",
       icon: Templates,
       linkTo: "/personas",
+    },
+    {
+      name: "Workflows",
+      icon: Workflow,
+      linkTo: "/workflows",
     },
     {
       name: "Chat",

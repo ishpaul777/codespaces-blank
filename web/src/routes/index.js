@@ -13,6 +13,7 @@ import Personas from "../pages/personas";
 import CreatePersona from "../pages/personas/create";
 import { PersonaChat } from "../pages/personas/chat";
 import FactcheckWorkflow from "../pages/workflow/factcheck";
+import { Workflow } from "../pages/workflow";
 
 export const routes = [
   {
@@ -42,6 +43,10 @@ export const routes = [
       {
         path: "/personas/create",
         element: <CreatePersona />,
+      },
+      {
+        path: "/workflows",
+        element: <Workflow />,
       },
     ],
   },
@@ -78,7 +83,7 @@ export const routes = [
     element: <Compare />,
   },
   {
-    path: "/workflow/fact-check",
+    path: "/workflows/fact-check",
     element: <FactcheckWorkflow />,
   },
 ];
