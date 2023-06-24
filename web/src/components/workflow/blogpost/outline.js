@@ -64,7 +64,7 @@ export const Outline = ({ handleCompose }) => {
       return;
     }
     setLoading(true);
-    let prompt = `You are writing a blog post on [${outlineForm.topic.value}] targeting [${outlineForm.audience.value}]. The tone of the blog should be [${outlineForm.tone.value}]. Please generate an outline for the blog post, providing relevant points. The outline should be a numbered list with only 2 items and each item should have at max 10-15 words. The output format would be  - 1.<outline point>, 2.<outline point>, etc. it should strictly not contain any other text then the numbered list. It should not contain points like introduction, conclusion, etc.`;
+    let prompt = `You are writing a blog post on [${outlineForm.topic.value}] targeting [${outlineForm.audience.value}]. The tone of the blog should be [${outlineForm.tone.value}]. Please generate an outline for the blog post, providing relevant points. The outline should be a numbered list with 3-6 items and each item should have at max 10-15 words. The output format would be  - 1.<outline point>, 2.<outline point>, etc. it should strictly not contain any other text then the numbered list. It should not contain points like introduction, conclusion, etc.`;
 
     const requestBody = {
       input: prompt,

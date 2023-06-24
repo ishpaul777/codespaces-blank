@@ -4,7 +4,7 @@ import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const Conclusion = ({ outline, handleCompose }) => {
+export const Conclusion = ({ outline, handleCompose, editor }) => {
   const [maxTokens, setMaxTokens] = useState(200);
 
   const [loading, setLoading] = useState(false);
@@ -57,13 +57,15 @@ export const Conclusion = ({ outline, handleCompose }) => {
 
     setLoading(true);
 
-    let prompt = `Generate a conclusion having 100 to 150 words that wraps up the outline - ${conclusionForm.outline.value} discussed in the blog post. The tone of voice should be [${conclusionForm.tone.value}]`;
+    let prompt = `Generate a conclusion having 100 to 150 words that wraps up the outline - ${conclusionForm.outline.value} discussed in the blog post. The tone of voice should be [${conclusionForm.tone.value}]. The previous content is ${editor?.getHTML()}`;
     const requestBody = {
       input: prompt,
       provider: "openai",
       max_tokens: maxTokens,
       model: "gpt-3.5-turbo",
       stream: false,
+      additional_instructions:
+      "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
     };
 
     const response = await generateTextFromPrompt(requestBody);

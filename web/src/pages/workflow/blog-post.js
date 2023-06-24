@@ -98,6 +98,7 @@ export default function BlogPostWorkflow() {
               return {
                 component: (
                   <ParagraphGenerator
+                    editor={editor}
                     topic={element}
                     handleCompose={(output) => {
                       setEditorData((prevState) => {
@@ -136,6 +137,7 @@ export default function BlogPostWorkflow() {
       title: "Blog Conclusion Paragraph",
       component: (
         <Conclusion
+          editor={editor}
           outline={outline}
           handleCompose={(output) => {
             setEditorData((prevState) => {
