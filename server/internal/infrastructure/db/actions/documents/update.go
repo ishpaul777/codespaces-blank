@@ -9,7 +9,7 @@ import (
 
 func (p *PGDocumentRepository) UpdateDocumentByID(userID uint, documentID uint, title string, description string) (*models.Document, error) {
 	var count int64
-	err := p.client.Model(&models.Document{}).Where(&models.Document{Title: title}).Count(&count).Error
+	err := p.client.Model(&models.Document{}).Where(&models.Document{Title: title}).Not("id = ?", documentID).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}

@@ -60,7 +60,13 @@ export const ParagraphGenerator = ({ topic, handleCompose, editor }) => {
     }
 
     setLoading(true);
-    let prompt = `You are writing a blog post with the following subheading: [${outlineForm.about.value}]. The keywords for the blog post are [${outlineForm.keywords.value}]. The tone of voice should be [${outlineForm.tone.value}]. The previous content of the blog is ${editor?.getHTML()}. Generate a paragraph that elaborates on the subheading using the provided keywords and tone of voice. Your response should include the subheading as h2 tag and generated paragraph as p tag.`;
+    let prompt = `You are writing a blog post with the following subheading: [${
+      outlineForm.about.value
+    }]. The keywords for the blog post are [${
+      outlineForm.keywords.value
+    }]. The tone of voice should be [${
+      outlineForm.tone.value
+    }]. The previous content of the blog is ${editor?.getHTML()}. Generate a paragraph that elaborates on the subheading using the provided keywords and tone of voice. Your response should include the subheading as h2 tag and generated paragraph as p tag.`;
 
     const requestBody = {
       input: prompt,

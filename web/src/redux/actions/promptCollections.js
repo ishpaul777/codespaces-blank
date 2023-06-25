@@ -1,3 +1,5 @@
+import { errorToast } from "../../util/toasts";
+
 const createPromptCollection = (promptCollection) => async (dispatch) => {
   return fetch(
     `${process.env.REACT_APP_TAGORE_API_URL}/prompt_template_collections`,
@@ -115,7 +117,7 @@ const addPromptToCollection =
         });
       })
       .catch((error) => {
-        console.log(error);
+        errorToast(error?.message);
       });
   };
 

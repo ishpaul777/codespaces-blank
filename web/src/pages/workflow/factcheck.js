@@ -279,10 +279,8 @@ export default function FactcheckWorkflow() {
                       successToast("document updated successfully");
                     })
                     .catch((err) => {
-                      errorToast(
-                        "Unable to update document. Please try again.",
-                        err?.message
-                      );
+                      console.log(err?.message);
+                      errorToast("Unable to update document. " + err?.message);
                     });
                 }}
               >
