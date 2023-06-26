@@ -15,80 +15,85 @@ import { PersonaChat } from "../pages/personas/chat";
 import FactcheckWorkflow from "../pages/workflow/factcheck";
 import { Workflow } from "../pages/workflow";
 import BlogPostWorkflow from "../pages/workflow/blog-post";
+import { PersonaSachChat } from "../pages/personas/sach";
 
 export const routes = [
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        path: "/",
-        element: <HomePage />,
-      },
-      {
-        path: "/documents",
-        element: <DocumentPage />,
-      },
-      {
-        path: "*",
-        element: <>error</>,
-      },
-      {
-        path: "/images",
-        element: <ImagePage />,
-      },
-      {
-        path: "/personas",
-        element: <Personas />,
-      },
-      {
-        path: "/personas/create",
-        element: <CreatePersona />,
-      },
-      {
-        path: "/workflows",
-        element: <Workflow />,
-      },
-    ],
-  },
-  {
-    path: "/",
-    element: <LayoutAlt />,
-    children: [
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-      { path: "/history", element: <History /> },
-    ],
-  },
-  {
-    path: "/documents/create",
-    element: <Document />,
-  },
+	{
+		path: "/",
+		element: <Layout />,
+		children: [
+			{
+				path: "/",
+				element: <HomePage />,
+			},
+			{
+				path: "/documents",
+				element: <DocumentPage />,
+			},
+			{
+				path: "*",
+				element: <>error</>,
+			},
+			{
+				path: "/images",
+				element: <ImagePage />,
+			},
+			{
+				path: "/personas",
+				element: <Personas />,
+			},
+			{
+				path: "/personas/create",
+				element: <CreatePersona />,
+			},
+			{
+				path: "/workflows",
+				element: <Workflow />,
+			},
+		],
+	},
+	{
+		path: "/",
+		element: <LayoutAlt />,
+		children: [
+			{
+				path: "/profile",
+				element: <Profile />,
+			},
+			{ path: "/history", element: <History /> },
+		],
+	},
+	{
+		path: "/documents/create",
+		element: <Document />,
+	},
 
-  {
-    path: "/chats/dashboard",
-    element: <ChatPage />,
-  },
-  {
-    path: "personas/:id/chat",
-    element: <PersonaChat />,
-  },
-  {
-    path: "/playground",
-    element: <Playground />,
-  },
-  {
-    path: "/compare",
-    element: <Compare />,
-  },
-  {
-    path: "/workflows/fact-check",
-    element: <FactcheckWorkflow />,
-  },
-  {
-    path: "/workflows/blogpost",
-    element: <BlogPostWorkflow />,
-  },
+	{
+		path: "/chats/dashboard",
+		element: <ChatPage />,
+	},
+	{
+		path: "personas/:id/chat",
+		element: <PersonaChat />,
+	},
+	{
+		path: "personas/factly/sach/chat",
+		element: <PersonaSachChat />,
+	},
+	{
+		path: "/playground",
+		element: <Playground />,
+	},
+	{
+		path: "/compare",
+		element: <Compare />,
+	},
+	{
+		path: "/workflows/fact-check",
+		element: <FactcheckWorkflow />,
+	},
+	{
+		path: "/workflows/blogpost",
+		element: <BlogPostWorkflow />,
+	},
 ];
