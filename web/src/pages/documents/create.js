@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import ArrowIcon from '../../assets/icons/arrow.svg';
 import InfoIcon from '../../assets/icons/info-icon.svg';
 import ArrowLeft from '../../assets/icons/arrow-left.svg';
-import Button from '../../components/buttons/SearchButton';
+import Clear from '../../assets/icons/clear.svg';
+import Share from '../../assets/icons/share.svg';
+import Tick from '../../assets/icons/tick.svg';
 import { ScooterCore } from '@factly/scooter-core';
 // import { IoShareSocialOutline } from "react-icons/io5";
 // import { MdDeleteOutline } from "react-icons/md";
@@ -10,7 +12,6 @@ import { DocActionButton } from '../../components/buttons/DocActionButton';
 import { SizeButton } from '../../components/buttons/SizeButton';
 import {
   createDocument,
-  deleteDocument,
   generateTextFromPrompt,
   getDocumentByID,
   updateDocument,
@@ -19,7 +20,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SSE } from 'sse.js';
 import { ToastContainer } from 'react-toastify';
 import { errorToast, successToast } from '../../util/toasts';
+import useWindowSize from '../../hooks/useWindowSize';
+import MenuIcon from '../../components/MenuIcon';
+import { AiOutlineMenuUnfold } from 'react-icons/ai';
 import useDarkMode from '../../hooks/useDarkMode';
+
 export default function Document() {
   const [searchParams] = useSearchParams();
 
@@ -27,9 +32,6 @@ export default function Document() {
 
   // documentName maintains the state of name of the document
   const [documentName, setDocumentName] = useState('');
-
-  // isSubmitVisible is a boolean variable that determines whether the submit button is visible or not
-  const [isSubmitVisible, setIsSubmitVisible] = useState(true);
 
   // keywords maintains the state of keywords for the prompt
   const [keywords, setKeywords] = useState('');
@@ -51,9 +53,7 @@ export default function Document() {
   const [continueButtonState, setContinueButtonState] = useState({
     visibility: false,
   });
-
   const { darkMode } = useDarkMode();
-
   // documentData holds the state of prompts, document data, finish reason, etc.
   const styles = {
     input: {
@@ -77,16 +77,6 @@ export default function Document() {
 
   const handlePromptChange = (value) => {
     setPrompt(value);
-  };
-
-  //onNameEdit is a callback function that is called when the user clicks on the edit button
-  const onNameEdit = () => {
-    setIsSubmitVisible(true);
-  };
-
-  // onNameSubmit is a callback function that is called when the user clicks on the submit button
-  const onNameSubmit = () => {
-    setIsSubmitVisible(false);
   };
 
   // onNameChange is a callback function that is called when the user changes the name of the document
@@ -133,26 +123,7 @@ export default function Document() {
             });
         }
       },
-      name: 'Save',
-    },
-    {
-      onClick: () => {
-        if (id && isEdit) {
-          deleteDocument(id)
-            .then(() => {
-              successToast('document deleted successfully');
-              setTimeout(() => {
-                navigate('/documents');
-              }, 1000);
-            })
-            .catch(() => {
-              errorToast('error in deleting document');
-            });
-        } else {
-          errorToast('document not created yet');
-        }
-      },
-      name: 'Delete',
+      name: "Save",
     },
   ];
 
@@ -260,7 +231,6 @@ export default function Document() {
       getDocumentByID(id)
         .then((response) => {
           setDocumentName(response?.title);
-          setIsSubmitVisible(false);
           setPromptData(response?.description);
         })
         .catch((error) => {
@@ -279,198 +249,248 @@ export default function Document() {
     setLoading(false);
     setSseClient(null);
   };
+  const { isMobileScreen } = useWindowSize();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
     // container for new/edit document page
     <div className="h-screen w-full flex">
       {/* this is control section, it will have a prompt input, keyword input, language input and output length */}
-      <div
-        className={`w-1/4 bg-background-sidebar ${
-          darkMode && 'bg-background-sidebar-alt'
-        }`}
-      >
-        {/* actions container */}
-        <div className="p-10 cursor-pointer flex flex-col gap-11">
-          {/* image container */}
-          <div>
-            {/* backbutton icon */}
-            <img src={ArrowLeft} onClick={handleGoBack} alt="arrow-left"></img>
-          </div>
-          {/* input division - each input division will have label, a form input type and input-length counter */}
-          {/* prompt section */}
-          <div className={`flex flex-col gap-2`}>
-            {/* label division*/}
-            <div className="flex gap-2">
-              <label
-                htmlFor="contentDescription"
-                className={`font-medium ${
-                  darkMode ? 'text-dark-text' : 'text-form-label'
-                } text-sm`}
-              >
-                Content description / brief
-              </label>
-              <img src={InfoIcon} alt="info-icon" />
+      {!isMobileScreen ? (
+        <div
+          className={`w-1/4 bg-background-sidebar h-fit ${
+            darkMode && 'bg-background-sidebar-alt'
+          }`}
+        >
+          {/* actions container */}
+          <div className="p-10 cursor-pointer flex flex-col gap-11">
+            {/* image container */}
+            <div>
+              {/* backbutton icon */}
+              <img
+                src={ArrowLeft}
+                onClick={handleGoBack}
+                alt="arrow-left"
+              ></img>
             </div>
-            <textarea
-              className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg resize-none h-32 placeholder:[${styles.input.placeholderColor}]`}
-              placeholder="Write an article about..."
-              maxLength={600}
-              onChange={(e) => handlePromptChange(e.target.value)}
-            ></textarea>
-            <div className="flex flex-row-reverse">
-              <p
-                className={`text-[${styles.countColor}]`}
-              >{`${prompt?.length}/600`}</p>
+            {/* input division - each input division will have label, a form input type and input-length counter */}
+            {/* prompt section */}
+            <div className={`flex flex-col gap-2`}>
+              {/* label division*/}
+              <div className="flex gap-2">
+                <label
+                  htmlFor="contentDescription"
+                  className={`font-medium ${
+                    darkMode ? 'text-dark-text' : 'text-form-label'
+                  } text-sm`}
+                >
+                  Content description / brief
+                </label>
+                <img src={InfoIcon} alt="info-icon" />
+              </div>
+              <textarea
+                className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg resize-none h-32 placeholder:[${styles.input.placeholderColor}]`}
+                placeholder="Write an article about..."
+                maxLength={600}
+                onChange={(e) => handlePromptChange(e.target.value)}
+              ></textarea>
+              <div className="flex flex-row-reverse">
+                <p
+                  className={`text-[${styles.countColor}]`}
+                >{`${prompt?.length}/600`}</p>
+              </div>
             </div>
-          </div>
-          {/* keywords section */}
-          <div className={`flex flex-col gap-2`}>
-            <div className="flex gap-2">
-              <label
-                htmlFor="keywords"
-                className={`font-medium ${
-                  darkMode ? 'text-dark-text' : 'text-form-label'
-                } text-sm`}
-              >
-                {' '}
-                Keywords{' '}
-              </label>
-              <img src={InfoIcon} alt="info-icon" />
-            </div>
-            <input
-              className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg placeholder:[${styles.input.placeholderColor}]`}
-              placeholder={'enter keywords'}
-              onChange={(e) => setKeywords(e.target.value)}
-            ></input>
-          </div>
-          {/* languages section */}
-          <div className={`flex flex-col gap-2`}>
-            <div className="flex gap-2">
-              <label
-                htmlFor="languages"
-                className={`font-medium ${
-                  darkMode ? 'text-dark-text' : 'text-form-label'
-                } text-sm`}
-              >
-                Select language
-              </label>
-              <img src={InfoIcon} alt="info-icon" />
-            </div>
-            <div className="flex w-full pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg bg-white">
-              <select
-                className={`appearance-none w-[98%] cursor-pointer focus:outline-none`}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option value="english (uk)">English</option>
-                <option value="hindi">Hindi</option>
-                <option value="telugu">Telugu</option>
-              </select>
-              <img src={ArrowIcon} />
-            </div>
-          </div>
-          {/* languages section */}
-          <div className={`flex flex-col gap-2`}>
-            <div className="flex gap-2">
-              <label
-                htmlFor="languages"
-                className={`font-medium ${
-                  darkMode ? 'text-dark-text' : 'text-form-label'
-                } text-sm`}
-              >
-                Output length
-              </label>
-              <img src={InfoIcon} alt="info-icon" />
-            </div>
-            <div className="flex gap-1">
-              {outputLengthList.map((item, index) => {
-                let isCustom = item.title === 'Custom';
-                return (
-                  <SizeButton
-                    clickAction={handleChangeInOutputSize}
-                    key={index}
-                    title={item.title}
-                    isSelected={
-                      isCustom
-                        ? customLength === selectedOutputLength.length
-                        : item.maxLength === selectedOutputLength.length
-                    }
-                    maxSize={isCustom ? customLength : item.maxLength}
-                    isCustom={isCustom}
-                  />
-                );
-              })}
-            </div>
-            {selectedOutputLength.name === 'Custom' && (
+            {/* keywords section */}
+            <div className={`flex flex-col gap-2`}>
+              <div className="flex gap-2">
+                <label
+                  htmlFor="keywords"
+                  className={`font-medium ${
+                    darkMode ? 'text-dark-text' : 'text-form-label'
+                  } text-sm`}
+                >
+                  {' '}
+                  Keywords{' '}
+                </label>
+                <img src={InfoIcon} alt="info-icon" />
+              </div>
               <input
-                className="p-2 rounded border"
-                type="number"
-                placeholder="enter custom output length"
-                onChange={(e) => handleCustomLengthChange(e.target.value)}
-                defaultValue={customLength}
-              />
-            )}
-          </div>
-          {/* document actions buttons - 
-            1.compose - it will create a request to tagore-server to get the details 
-            2.reset - it will reset the document to the initial state    
+                className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg placeholder:[${styles.input.placeholderColor}]`}
+                placeholder={'enter keywords'}
+                onChange={(e) => setKeywords(e.target.value)}
+              ></input>
+            </div>
+            {/* languages section */}
+            <div className={`flex flex-col gap-2`}>
+              <div className="flex gap-2">
+                <label
+                  htmlFor="languages"
+                  className={`font-medium ${
+                    darkMode ? 'text-dark-text' : 'text-form-label'
+                  } text-sm`}
+                >
+                  Select language
+                </label>
+                <img src={InfoIcon} alt="info-icon" />
+              </div>
+              <div className={`flex w-full pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg bg-white`}>
+                <select
+                  className={`appearance-none w-[98%] cursor-pointer focus:outline-none`}
+                  onChange={(e) => setLanguage(e.target.value)}
+                >
+                  <option value="english (uk)">English</option>
+                  <option value="hindi">Hindi</option>
+                  <option value="telugu">Telugu</option>
+                </select>
+                <img src={ArrowIcon} />
+              </div>
+            </div>
+            {/* languages section */}
+            <div className={`flex flex-col gap-2`}>
+              <div className="flex gap-2">
+                <label
+                  htmlFor="languages"
+                  className={`font-medium ${
+                    darkMode ? 'text-dark-text' : 'text-form-label'
+                  } text-sm`}
+                >
+                  Output length
+                </label>
+                <img src={InfoIcon} alt="info-icon" />
+              </div>
+              <div className="flex gap-1">
+                {outputLengthList.map((item, index) => {
+                  let isCustom = item.title === 'Custom';
+                  return (
+                    <SizeButton
+                      clickAction={handleChangeInOutputSize}
+                      key={index}
+                      title={item.title}
+                      isSelected={
+                        isCustom
+                          ? customLength === selectedOutputLength.length
+                          : item.maxLength === selectedOutputLength.length
+                      }
+                      maxSize={isCustom ? customLength : item.maxLength}
+                      isCustom={isCustom}
+                    />
+                  );
+                })}
+              </div>
+              {selectedOutputLength.name === 'Custom' && (
+                <input
+                  className="p-2 rounded border"
+                  type="number"
+                  placeholder="enter custom output length"
+                  onChange={(e) => handleCustomLengthChange(e.target.value)}
+                  defaultValue={customLength}
+                />
+              )}
+            </div>
+            {/* document actions buttons -
+            1.compose - it will create a request to tagore-server to get the details
+            2.reset - it will reset the document to the initial state
         */}
-          <div className="w-full flex flex-col gap-2">
-            <DocActionButton
-              isLoading={loading}
-              text={'Compose'}
-              clickAction={() => handleCompose()}
-              isPrimary={true}
-            ></DocActionButton>
-            {loading && (
+            <div className="w-full flex flex-col gap-2">
               <DocActionButton
-                text={'Stop'}
-                clickAction={() => handleStop()}
-              ></DocActionButton>
-            )}
-            {continueButtonState.visibility && (
-              <DocActionButton
-                isLoading={false}
-                text={'Continue Generating'}
+                isLoading={loading}
+                text={'Compose'}
                 clickAction={() => handleCompose()}
                 isPrimary={true}
               ></DocActionButton>
-            )}
-            <DocActionButton
-              text={'Reset'}
-              clickAction={() => editor?.commands?.setContent('')}
-              isPrimary={false}
-            ></DocActionButton>
+              {loading && (
+                <DocActionButton
+                  text={'Stop'}
+                  clickAction={() => handleStop()}
+                ></DocActionButton>
+              )}
+              {continueButtonState.visibility && (
+                <DocActionButton
+                  isLoading={false}
+                  text={'Continue Generating'}
+                  clickAction={() => handleCompose()}
+                  isPrimary={true}
+                ></DocActionButton>
+              )}
+              <DocActionButton
+                text={'Reset'}
+                clickAction={() => editor?.commands?.setContent('')}
+                isPrimary={false}
+              ></DocActionButton>
+            </div>
           </div>
         </div>
-      </div>
-      <div className={`w-3/4 grid  grid-rows-[1fr_14fr]`}>
+      ) : (
+        <nav className="w-full bg-background-sidebar fixed top-0 z-50 ">
+          <div className="p-4 flex justify-between items-center">
+            <div className="flex gap-3">
+              {/* backbutton icon */}
+              <img
+                src={ArrowLeft}
+                onClick={handleGoBack}
+                alt="arrow-left"
+              ></img>
+              <h2 className="text-2xl font-medium">
+                {documentName === '' ? 'Untitled Document' : documentName}
+              </h2>
+            </div>
+            <button
+              className="text-white text-2xl focus:outline-none "
+              onClick={toggleMobileMenu}
+            >
+              <MenuIcon className="w-8 h-8" />
+            </button>
+          </div>
+          <div className="flex justify-end pb-4 w-full ">
+            <div className="flex w-fit gap-2 mr-6">
+              <button className="w-[40px]  h-[40px] bg-[#E7EAF0] rounded-lg  flex justify-center items-center">
+                <img
+                  src={Tick}
+                  alt="tick"
+                  onClick={() => actionList[0].onClick()}
+                />
+              </button>
+              <button className="w-[40px]  h-[40px] bg-[#E7EAF0] rounded-lg  flex justify-center items-center">
+                <img src={Share} alt="clear" />
+              </button>
+              <button className="w-[40px]  h-[40px] bg-[#E7EAF0] rounded-lg  flex justify-center items-center">
+                <img
+                  src={Clear}
+                  alt="clear"
+                  onClick={() => actionList[1].onClick()}
+                />
+              </button>
+            </div>
+          </div>
+        </nav>
+      )}
+
+      <div
+        className={` ${
+          !isMobileScreen ? 'w-3/4 grid  grid-rows-[1fr_14fr]' : 'w-full'
+        }`}
+      >
         {/* this is the header section in create document page. It has mainly 2 elements - 1. File Name input box and 2. actions - [share, delete, save]*/}
         <div
           className={`w-full py-3 px-6 flex justify-between border-b ${
             darkMode ? 'bg-background-sidebar-alt' : 'border-border-secondary'
           }`}
         >
-          <div
-            className={`w-3/5 flex flex-row items-center ${
-              !isSubmitVisible && 'gap-4'
-            }`}
-          >
-            {isSubmitVisible ? (
-              <>
-                <input
-                  defaultValue={documentName}
-                  placeholder="enter title for the document"
-                  className={`outline-none w-2/5 ${darkMode && 'bg-background-sidebar-alt text-white'}`}
-                  onChange={(e) => onNameChange(e.target.value)}
-                ></input>
-                <Button text="Submit" onClick={onNameSubmit}></Button>
-              </>
-            ) : (
-              <>
-                <h3 className="text-lg font-semibold">{documentName}</h3>
-                <Button text="Edit" onClick={onNameEdit} />
-              </>
-            )}
+          <div className={`w-3/5 flex flex-row items-center`}>
+           <div className="w-2/5 border-2 p-2 border-border-secondary flex items-center">
+              <input
+                defaultValue={documentName}
+                placeholder="enter title for the document"
+                className={`outline-none w-full ${
+                  darkMode && 'bg-background-sidebar-alt text-white'
+                }`}
+                onChange={(e) => onNameChange(e.target.value)}
+              ></input>
+              {/* <button className="text-xl" onClick={onNameSubmit}><AiOutlineCheck /></button> */}
+            </div>
           </div>
           {/* action div */}
           <div className="flex flex-row items-center gap-4">

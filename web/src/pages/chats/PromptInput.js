@@ -9,7 +9,15 @@ import useDarkMode from "../../hooks/useDarkMode";
 // onChange={handlePromptChange}
 // onKeyDown={handleKeypressStream}
 function PromptInput(props) {
-  const { value, onChange, placeholder, onEnter } = props;
+  const {
+    value,
+    onChange,
+    placeholder,
+    onEnter,
+    isPromptModalVisible,
+    setIsPromptModalVisible,
+    position,
+  } = props;
   const prompts = useSelector((state) => state.prompts);
   const options = prompts?.map((prompt) => {
     return {
@@ -21,7 +29,6 @@ function PromptInput(props) {
   const [isSelectingPrompt, setIsSelectingPrompt] = React.useState(false);
 
   const [promptVars, setPromptVars] = React.useState([]);
-  const [isPromptModalVisible, setIsPromptModalVisible] = React.useState(false);
 
   const handlePromptSelect = (option, prefix) => {
     const { value } = option;
@@ -104,7 +111,10 @@ function PromptInput(props) {
   return (
     <div>
       <Mentions
-        style={{ maxHeight: "400px" }}
+        style={{
+          maxHeight: "400px",
+          zIndex: isPromptModalVisible ? "-1" : "0",
+        }}
         onChange={onChange}
         placeholder={placeholder}
         value={value}
@@ -113,6 +123,7 @@ function PromptInput(props) {
         onKeyDown={(e) => {
           handleKeydown(e);
         }}
+        position={position}
         onSearch={() => setIsSelectingPrompt(true)}
         onBlur={() => setIsSelectingPrompt(false)}
       />

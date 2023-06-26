@@ -15,7 +15,7 @@ func (p *PGPromptTemplateRepository) GetAllPromptTemplates(userID uint, paginati
 		offset = 0
 	}
 
-	db := p.client.Model(&models.PromptTemplate{}).Where("created_by_id = ?", userID)
+	db := p.client.Model(&models.PromptTemplate{}).Where("created_by_id = ?", userID).Order("updated_at " + pagination.Queries["sort"])
 
 	if pagination.SearchQuery != "" {
 		db = db.Where("title ILIKE ?", "%"+pagination.SearchQuery+"%")

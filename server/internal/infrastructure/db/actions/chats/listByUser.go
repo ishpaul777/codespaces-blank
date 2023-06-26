@@ -14,7 +14,7 @@ func (p *PGChatsRepository) GetAllChatsByUser(userID uint, pagination helper.Pag
 		offset = 0
 	}
 
-	db := p.client.Model(&models.Chat{}).Where("created_by_id = ?", userID).Order("created_at DESC")
+	db := p.client.Model(&models.Chat{}).Where("created_by_id = ?", userID).Order("updated_at " + pagination.Queries["sort"])
 
 	if pagination.SearchQuery != "" {
 		db = db.Where("title ILIKE ?", "%"+pagination.SearchQuery+"%")

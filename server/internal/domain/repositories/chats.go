@@ -8,7 +8,7 @@ import (
 )
 
 type ChatRepository interface {
-	SaveChat(userID uint, chatID *uint, model string, messages []models.Message, usage models.Usage) (*models.Chat, error)
+	SaveChat(title string, userID uint, chatID *uint, model string, messages []models.Message, usage models.Usage) (*models.Chat, error)
 	AddChatToCollection(userID, chatID, chatCollectionID uint) error
 	GetAllChatsByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error)
 	DeleteChat(userID, chatID uint) error
@@ -19,7 +19,9 @@ type ChatRepository interface {
 	GetChatCollectionByID(chatCollectionID uint) (*models.ChatCollection, error)
 	DeleteChatCollection(userID, chatCollectionID uint) error
 	IsUserChatCollectionOwner(userID, chatCollectionID uint) (bool, error)
-	ChatCollectionNameExists(name string) bool
+	ChatCollectionNameExists(name string, id *uint) bool
+	UpdateChatColByID(userID, colID uint, name string) error
+	RemoveChatFromCol(userID, chatID uint) error
 }
 
 func NewChatRepository(database db.IDatabaseService) (ChatRepository, error) {

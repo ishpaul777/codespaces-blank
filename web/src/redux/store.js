@@ -1,30 +1,22 @@
-// store.js
-
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import promptsReducer from "./reducers/prompts";
 import thunk from "redux-thunk";
-import collectionsReducer from "./reducers/collections";
+import collectionsReducer from "./reducers/chatcollections";
 import darkModeReducer from "./reducers/darkMode";
-
-// Middleware to save state to local storage after every action
-const saveStateToLocalStorage = (store) => (next) => (action) => {
-  const result = next(action);
-  localStorage.setItem("prompts", JSON.stringify(store.getState()));
-  return result;
-};
+import promptCollectionsReducer from "./reducers/promptCollections";
 
 const rootReducer = combineReducers({
   prompts: promptsReducer,
   collections: collectionsReducer,
+  promptCollections: promptCollectionsReducer,
   darkMode: darkModeReducer,
 });
 
 // Create store with promptsReducer and middleware using configureStore
 const store = configureStore({
   reducer: rootReducer,
-  preloadedState: JSON.parse(localStorage.getItem("prompts")) || [],
-  middleware: [saveStateToLocalStorage, thunk],
+  middleware: [thunk],
 });
 
 export default store;

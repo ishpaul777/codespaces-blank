@@ -1,15 +1,9 @@
 package documents
 
 import (
-	"errors"
-
+	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"gorm.io/gorm"
-)
-
-var (
-	// ErrDocumentNotFound is returned when the document is not found
-	ErrDocumentNotFound = errors.New("document not found")
 )
 
 func (p *PGDocumentRepository) DeleteDocumentByID(userID, documentID uint) error {
@@ -23,7 +17,7 @@ func (p *PGDocumentRepository) DeleteDocumentByID(userID, documentID uint) error
 	err := p.client.Model(&models.Document{}).Where("created_by_id = ? AND id = ?", userID, documentID).First(&documentToBeDeleted).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return ErrDocumentNotFound
+			return custom_errors.ErrNotFound
 		} else {
 			return err
 		}

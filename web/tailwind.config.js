@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      screens: {
+        "2sm": "1000px", // Add a new breakpoint for 1000px screens
+      },
       colors: {
         primary: "#F0F1F4",
         "light-white": "rgba(255, 255, 255, 0.17)",

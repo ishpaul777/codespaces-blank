@@ -21,18 +21,30 @@ const collectionsReducer = (state = initialState, action) => {
       const { collectionId, chat } = action.payload;
       // remove chat from current collection
       const newState = state.map((collection) => {
-        collection.chats = collection.chats.filter( (c) => c.id !== chat.id);
+        collection.chats = collection?.chats?.filter((c) => c.id !== chat.id);
         return collection;
       });
       // add chat to new collection
       return newState.map((collection) => {
         if (collection.id === collectionId) {
-          return { ...collection, chats: [chat, ...collection.chats] };
+          if (collection.chats) return { ...collection, chats: [chat, ...collection.chats] };
+          else return { ...collection, chats: [chat] }
         } else {
           return collection;
         }
       });
-
+    case "REMOVE_CHAT_FROM_CHAT_COLLECTION":
+      let { chatId } = action.payload;
+      console.log(chatId, action.payload)
+      return state.map((collection) => {
+        if (collection.id === action.payload.collectionId) {
+          return {
+            ...collection,
+            chats: collection.chats?.filter((c) => c.id !== chatId),
+          }
+        }
+        return collection;
+      });
     default:
       return state;
   }

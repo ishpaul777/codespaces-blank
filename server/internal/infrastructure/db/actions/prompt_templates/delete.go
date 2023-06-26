@@ -17,7 +17,7 @@ func (p *PGPromptTemplateRepository) DeletePromptTemplateByID(userID, promptTemp
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.PromptTemplateNotFound
+			return custom_errors.ErrNotFound
 		} else {
 			return err
 		}
@@ -44,7 +44,7 @@ func (p *PGPromptTemplateRepository) DeletePromptTemplateCollectionByID(userID, 
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return custom_errors.PromptTemplateCollectionNotFound
+			return custom_errors.ErrNotFound
 		} else {
 			return err
 		}

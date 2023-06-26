@@ -31,8 +31,12 @@ type ChatService interface {
 	GetChatCollectionByID(chatCollectionID uint) (*models.ChatCollection, error)
 	// Delete chat collection
 	DeleteChatCollection(userID, chatCollectionID uint) error
-
+	//Update chat collection
+	UpdateChatColByID(userID, chatID uint, name string) error
+	// Add chat to collection
 	AddChatToCollection(userID, chatID, chatCollectionID uint) error
+	// Remove chat from collection
+	RemoveChatFromCol(userID, chatID uint) error
 }
 
 // chatService is a concrete implementation of ChatService interface
@@ -56,6 +60,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 
 	var responseMessage []models.Message
 	var usage *models.Usage
+	title := ""
 
 	if chatID != nil {
 		isOwner, err := c.chatRepository.IsUserChatOwner(userID, *chatID)
@@ -72,6 +77,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		if err != nil {
 			return nil, err
 		}
+
 	} else {
 		newMessage := make([]models.Message, 0)
 		systemMessage := models.Message{}
@@ -94,9 +100,22 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		if err != nil {
 			return nil, err
 		}
+
+		var usrMsgs []models.Message
+		for _, msg := range messages {
+			if msg.Role == "user" {
+				usrMsgs = append(usrMsgs, msg)
+			}
+		}
+		if len(usrMsgs) > 0 {
+			title, err = generativeModel.GenerateChatTitle(usrMsgs[0])
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 
-	chat, err := c.chatRepository.SaveChat(userID, chatID, model, responseMessage, *usage)
+	chat, err := c.chatRepository.SaveChat(title, userID, chatID, model, responseMessage, *usage)
 	if err != nil {
 		return nil, err
 	}
@@ -165,4 +184,12 @@ func (c *chatService) DeleteChat(userID, chatID uint) error {
 
 func (c *chatService) AddChatToCollection(userID, chatCollectionID, chatID uint) error {
 	return c.chatRepository.AddChatToCollection(userID, chatCollectionID, chatID)
+}
+
+func (c *chatService) UpdateChatColByID(userID, chatCollectionID uint, name string) error {
+	return c.chatRepository.UpdateChatColByID(userID, chatCollectionID, name)
+}
+
+func (c *chatService) RemoveChatFromCol(userID, chatID uint) error {
+	return c.chatRepository.RemoveChatFromCol(userID, chatID)
 }
