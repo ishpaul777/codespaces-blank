@@ -42,6 +42,20 @@ func (o *OpenAIAdapter) LoadConfig() error {
 	return nil
 }
 
+func (o *OpenAIAdapter) GenerateChatTitle(message models.Message) (string, error) {
+	req := openai.CompletionRequest{
+		Prompt: "Generate Chat Title for the following messsage: " + message.Content,
+		Model:  openai.GPT3TextDavinci003,
+	}
+	ctx := context.Background()
+	resp, err := o.Client.CreateCompletion(ctx, req)
+	if err != nil {
+		return "", err
+	}
+
+	return resp.Choices[0].Text, nil
+}
+
 func (o *OpenAIAdapter) GenerateTextUsingTextModel(prompt, model string, maxTokens uint) (interface{}, string, error) {
 	req := openai.CompletionRequest{
 		Prompt:    prompt,
@@ -314,9 +328,28 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, mod
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
-			// fullChatData is the the chat object with all the details
+			// generate title for the chat
 			var dbErr error
-			chat, dbErr = chatRepo.SaveChat(userID, chatID, model, messages, models.Usage{})
+			var title string
+			var userMsgs []models.Message
+			for _, msg := range messages {
+				if msg.Role == "user" {
+					userMsgs = append(userMsgs, msg)
+				}
+			}
+
+			if len(userMsgs) > 0 && chatID == nil {
+				title, dbErr = o.GenerateChatTitle(userMsgs[0])
+				if dbErr != nil {
+					errChan <- dbErr
+					return
+				}
+			} else {
+				title = ""
+			}
+
+			// fullChatData is the the chat object with all the details
+			chat, dbErr = chatRepo.SaveChat(title, userID, chatID, model, messages, models.Usage{})
 			if dbErr != nil {
 				errChan <- dbErr
 				return

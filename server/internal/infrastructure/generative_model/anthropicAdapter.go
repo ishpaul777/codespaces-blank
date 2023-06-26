@@ -40,6 +40,10 @@ type anthropicChatResponse struct {
 
 var anthropicDataFile = "./modelData/anthropic.json"
 
+func (o *AnthropicAdapter) GenerateChatTitle(message models.Message) (string, error) {
+	return "", errors.New("not implemented")
+}
+
 func (a *AnthropicAdapter) LoadConfig() error {
 	configFile, err := os.Open(anthropicDataFile)
 	if err != nil {

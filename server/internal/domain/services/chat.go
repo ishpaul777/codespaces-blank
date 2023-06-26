@@ -60,6 +60,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 
 	var responseMessage []models.Message
 	var usage *models.Usage
+	title := ""
 
 	if chatID != nil {
 		isOwner, err := c.chatRepository.IsUserChatOwner(userID, *chatID)
@@ -76,6 +77,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		if err != nil {
 			return nil, err
 		}
+
 	} else {
 		newMessage := make([]models.Message, 0)
 		systemMessage := models.Message{}
@@ -98,9 +100,22 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		if err != nil {
 			return nil, err
 		}
+
+		var usrMsgs []models.Message
+		for _, msg := range messages {
+			if msg.Role == "user" {
+				usrMsgs = append(usrMsgs, msg)
+			}
+		}
+		if len(usrMsgs) > 0 {
+			title, err = generativeModel.GenerateChatTitle(usrMsgs[0])
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 
-	chat, err := c.chatRepository.SaveChat(userID, chatID, model, responseMessage, *usage)
+	chat, err := c.chatRepository.SaveChat(title, userID, chatID, model, responseMessage, *usage)
 	if err != nil {
 		return nil, err
 	}

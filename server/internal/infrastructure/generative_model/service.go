@@ -32,6 +32,7 @@ type ChatGenerativeModel interface {
 	GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, *models.Usage, error)
 	GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 	GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error)
+	GenerateChatTitle(message models.Message) (string, error)
 	// GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 }
 
