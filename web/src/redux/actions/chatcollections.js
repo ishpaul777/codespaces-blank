@@ -1,5 +1,5 @@
 const createCollection = (collection) => async (dispatch) => {
-  return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/chat_collections`, {
+  return fetch(`${window.REACT_APP_TAGORE_API_URL}/chat_collections`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -28,7 +28,7 @@ const createCollection = (collection) => async (dispatch) => {
 // delete collection
 const deleteCollection = (collectionId) => async (dispatch) => {
   return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/chat_collections/${collectionId}`,
+    `${window.REACT_APP_TAGORE_API_URL}/chat_collections/${collectionId}`,
     {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -57,7 +57,7 @@ const deleteCollection = (collectionId) => async (dispatch) => {
 
 // GER ALL CHAT COLLECTIONS
 const getAllChatCollections = () => async (dispatch) => {
-  return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/chat_collections`, {
+  return fetch(`${window.REACT_APP_TAGORE_API_URL}/chat_collections`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -84,7 +84,7 @@ const getAllChatCollections = () => async (dispatch) => {
 
 const addChatToCollection =
   (collectionId, chatId, chatHistory) => async (dispatch) => {
-    return fetch(`${process.env.REACT_APP_TAGORE_API_URL}/chat/collections`, {
+    return fetch(`${window.REACT_APP_TAGORE_API_URL}/chat/collections`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -117,7 +117,7 @@ const addChatToCollection =
 const removeChatFromCollections = (chatId, collectionId) => async (dispatch) => {
 
   return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/chat/collections/remove/${chatId}`,
+    `${window.REACT_APP_TAGORE_API_URL}/chat/collections/remove/${chatId}`,
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
