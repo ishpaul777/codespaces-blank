@@ -1,19 +1,20 @@
-import { AiOutlineMenuUnfold, AiOutlineMenuFold } from "react-icons/ai";
-import FactlyLogo from "../../assets/icons/factlyLogo";
-import { AiOutlineEdit } from "react-icons/ai";
-import { Select, SelectTemperature } from "../../components/inputs/select";
-import { Input } from "../../components/inputs/Input";
-import { IoMdSettings } from "react-icons/io";
-import ReactMarkdown from "react-markdown";
-import { CodeBlock } from "../../components/codeblock";
-import { BsClipboard, BsClipboard2Check } from "react-icons/bs";
-import { BeatLoader, ClipLoader } from "react-spinners";
-import PromptInput from "./PromptInput";
-import rehypeMathjax from "rehype-mathjax";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import { IoReloadOutline } from "react-icons/io5";
-import { GrStop } from "react-icons/gr";
+import { AiOutlineMenuUnfold, AiOutlineMenuFold } from 'react-icons/ai';
+import FactlyLogo from '../../assets/icons/factlyLogo';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { Select, SelectTemperature } from '../../components/inputs/select';
+import { Input } from '../../components/inputs/Input';
+import { IoMdSettings } from 'react-icons/io';
+import ReactMarkdown from 'react-markdown';
+import { CodeBlock } from '../../components/codeblock';
+import { BsClipboard, BsClipboard2Check } from 'react-icons/bs';
+import { BeatLoader, ClipLoader } from 'react-spinners';
+import PromptInput from './PromptInput';
+import rehypeMathjax from 'rehype-mathjax';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import { IoReloadOutline } from 'react-icons/io5';
+import { GrStop } from 'react-icons/gr';
+import useDarkMode from '../../hooks/useDarkMode';
 
 export default function ChatBar({
   chat,
@@ -52,8 +53,13 @@ export default function ChatBar({
   handleRegenerate,
   handleStop,
 }) {
+  const { darkMode } = useDarkMode();
   return (
-    <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-[80%] ">
+    <main
+      className={`main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-[80%] ${
+        darkMode && 'bg-button-primary-alt'
+      }`}
+    >
       <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
         {chat.length === 0 ? (
           <>
@@ -63,12 +69,18 @@ export default function ChatBar({
                   setChatSiderCollapse(!chatSiderCollapse);
                   isMobileScreen && setPromptSiderCollapse(true);
                 }}
-                style={{ width: "fit-content", height: "fit-content" }}
+                style={{ width: 'fit-content', height: 'fit-content' }}
               >
                 {chatSiderCollapse ? (
-                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                  <AiOutlineMenuUnfold
+                    className={`${darkMode && 'text-white'}`}
+                    size={styles.fileIconSize}
+                  />
                 ) : (
-                  <AiOutlineMenuFold size={styles.fileIconSize} />
+                  <AiOutlineMenuFold
+                    className={`${darkMode && 'text-white'}`}
+                    size={styles.fileIconSize}
+                  />
                 )}
               </button>
               <button
@@ -76,12 +88,18 @@ export default function ChatBar({
                   setPromptSiderCollapse(!promptSiderCollapse);
                   isMobileScreen && setChatSiderCollapse(true);
                 }}
-                style={{ width: "fit-content", height: "fit-content" }}
+                style={{ width: 'fit-content', height: 'fit-content' }}
               >
                 {promptSiderCollapse ? (
-                  <AiOutlineMenuFold size={styles.fileIconSize} />
+                  <AiOutlineMenuFold
+                    className={`${darkMode && 'text-white'}`}
+                    size={styles.fileIconSize}
+                  />
                 ) : (
-                  <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                  <AiOutlineMenuUnfold
+                    className={`${darkMode && 'text-white'}`}
+                    size={styles.fileIconSize}
+                  />
                 )}
               </button>
             </div>
@@ -89,28 +107,28 @@ export default function ChatBar({
               <div
                 className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4"
                 style={{
-                  maxWidth: isMobileScreen ? "80vw" : "400px",
-                  width: isMobileScreen ? "80vw" : "",
+                  maxWidth: isMobileScreen ? '80vw' : '400px',
+                  width: isMobileScreen ? '80vw' : '',
                 }}
               >
                 <Select
-                  label={"Model"}
+                  label={'Model'}
                   onChange={(e) => {
                     setModel(e.target.value);
                   }}
-                  placeholder={"select model"}
+                  placeholder={'select model'}
                   initialValue={model}
                 ></Select>
                 <Input
                   initialValue={initialPrompt}
-                  label={"System Prompt"}
+                  label={'System Prompt'}
                   onChange={(e) => {
                     setIntialPrompt(e.target.value);
                   }}
-                  placeholder={"Enter your system prompt"}
+                  placeholder={'Enter your system prompt'}
                 ></Input>
                 <SelectTemperature
-                  label={"Conversation Style"}
+                  label={'Conversation Style'}
                   onChange={(e) => {
                     setTemperature(parseFloat(e.target.value));
                   }}
@@ -134,7 +152,7 @@ export default function ChatBar({
             >
               <button
                 onClick={() => setChatSiderCollapse(!chatSiderCollapse)}
-                style={{ width: "fit-content", height: "fit-content" }}
+                style={{ width: 'fit-content', height: 'fit-content' }}
               >
                 <AiOutlineMenuUnfold size={styles.fileIconSize} />
               </button>
@@ -144,7 +162,7 @@ export default function ChatBar({
                   size={styles.iconSize}
                   className="inline ml-4"
                   onClick={() => setIsSettingVisible((prevState) => !prevState)}
-                  cursor={"pointer"}
+                  cursor={'pointer'}
                 />
               </div>
               {isMobileScreen ? (
@@ -152,7 +170,7 @@ export default function ChatBar({
               ) : null}
               <button
                 onClick={() => setPromptSiderCollapse(!promptSiderCollapse)}
-                style={{ width: "fit-content", height: "fit-content" }}
+                style={{ width: 'fit-content', height: 'fit-content' }}
               >
                 <AiOutlineMenuUnfold size={styles.fileIconSize} />
               </button>
@@ -161,8 +179,8 @@ export default function ChatBar({
             <div
               className={`bg-body ease-in-out duration-300 ${
                 isSettingVisible
-                  ? "h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4"
-                  : "h-0 translate-y-0"
+                  ? 'h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4'
+                  : 'h-0 translate-y-0'
               }`}
             >
               {isSettingVisible && (
@@ -170,30 +188,30 @@ export default function ChatBar({
                   <div
                     className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4"
                     style={{
-                      maxWidth: isMobileScreen ? "80vw" : "400px",
-                      width: isMobileScreen ? "80vw" : "",
+                      maxWidth: isMobileScreen ? '80vw' : '400px',
+                      width: isMobileScreen ? '80vw' : '',
                     }}
                   >
                     <Select
-                      label={"Model"}
+                      label={'Model'}
                       onChange={(e) => {
                         setModel(e.target.value);
                       }}
-                      placeholder={"select model"}
+                      placeholder={'select model'}
                       initialValue={model}
                       disabled={true}
                     ></Select>
                     <Input
                       initialValue={initialPrompt}
-                      label={"System Prompt"}
+                      label={'System Prompt'}
                       onChange={(e) => {
                         setIntialPrompt(e.target.value);
                       }}
-                      placeholder={"Enter your system prompt"}
+                      placeholder={'Enter your system prompt'}
                       disabled={true}
                     ></Input>
                     <SelectTemperature
-                      label={"Conversation Style"}
+                      label={'Conversation Style'}
                       value={temperature}
                     />
                   </div>
@@ -203,24 +221,30 @@ export default function ChatBar({
           </div>
         )}
         {chat
-          .filter((item) => item.role !== "system")
+          .filter((item) => item.role !== 'system')
           .map((item, index) => {
             return (
               <div
                 key={index}
                 className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
-                  item.role === "user" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
+                  item.role === 'user'
+                    ? darkMode
+                      ? 'text-white'
+                      : 'bg-[#ECEDF1]'
+                    : darkMode
+                    ? 'bg-[#4A4A4A] text-white'
+                    : 'bg-[#E4E7ED]'
                 }`}
               >
                 <div className={`w-full flex gap-4`}>
                   <div
                     className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
-                      item.role === "user"
-                        ? "bg-green-600 ring-green-600"
-                        : "ring-red-600 bg-red-600"
+                      item.role === 'user'
+                        ? 'bg-green-600 ring-green-600'
+                        : 'ring-red-600 bg-red-600'
                     } text-white mr-2`}
                   >
-                    {item.role === "user" ? (
+                    {item.role === 'user' ? (
                       <span className="text-lg"> U </span>
                     ) : (
                       <FactlyLogo />
@@ -233,7 +257,7 @@ export default function ChatBar({
                         className="bg-transparent p-2 outline-none text-base border-none focus:ring-0 h-auto scrollbar-hide pt-1"
                         autoFocus={true}
                         style={{
-                          borderBottom: "1px solid #000",
+                          borderBottom: '1px solid #000',
                         }}
                         defaultValue={item.content}
                         onChange={(e) => {
@@ -256,7 +280,7 @@ export default function ChatBar({
                             handleChatEdit(chatID, chat, index);
                           }}
                         >
-                          {" "}
+                          {' '}
                           Save & Submit
                         </button>
                         <button
@@ -279,20 +303,20 @@ export default function ChatBar({
                       rehypePlugins={[rehypeMathjax]}
                       className={`prose ${
                         isMobileScreen
-                          ? "max-w-[17rem]"
+                          ? 'max-w-[17rem]'
                           : chatSiderCollapse || promptSiderCollapse
-                          ? "w-[80%]"
-                          : "max-w-2xl"
-                      } `}
+                          ? 'w-[80%]'
+                          : 'max-w-2xl'
+                      } ${darkMode ? 'text-white' : ''}`}
                       components={{
                         code({ node, inline, className, children, ...props }) {
-                          const match = /language-(\w+)/.exec(className || "");
+                          const match = /language-(\w+)/.exec(className || '');
 
                           return !inline ? (
                             <CodeBlock
                               key={index}
-                              language={(match && match[1]) || ""}
-                              value={String(children).replace(/\n$/, "")}
+                              language={(match && match[1]) || ''}
+                              value={String(children).replace(/\n$/, '')}
                               {...props}
                             />
                           ) : (
@@ -308,7 +332,7 @@ export default function ChatBar({
                   )}
                 </div>
                 <div className={`self-start`}>
-                  {item.role !== "user" ? (
+                  {item.role !== 'user' ? (
                     <button
                       className="flex items-center justify-center text-lg"
                       onClick={(e) => {
@@ -316,7 +340,7 @@ export default function ChatBar({
                         handleCopyClick(item.content);
                       }}
                     >
-                      {" "}
+                      {' '}
                       {isCopied ? <BsClipboard2Check /> : <BsClipboard />}
                     </button>
                   ) : !(isEditing.status && isEditing.id === index) ? (
@@ -341,7 +365,7 @@ export default function ChatBar({
         {loading && (
           <div className="flex justify-center mt-4">
             <AlwaysScrollToBottom />
-            <BeatLoader size={styles.iconSize} color={"#CED0D4"} />
+            <BeatLoader size={styles.iconSize} color={'#CED0D4'} />
           </div>
         )}
       </div>
@@ -353,7 +377,7 @@ export default function ChatBar({
             className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
             onClick={handleStop}
           >
-            <GrStop color="#000" size={"16px"} />
+            <GrStop color="#000" size={'16px'} />
             Stop Generating
           </button>
         )}
@@ -362,7 +386,7 @@ export default function ChatBar({
             className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
             onClick={handleRegenerate}
           >
-            <IoReloadOutline color="#000" size={"16px"} />
+            <IoReloadOutline color="#000" size={'16px'} />
             Regenerate Response
           </button>
         )}
@@ -386,7 +410,7 @@ export default function ChatBar({
               {!loading ? (
                 <img src={sendButton} />
               ) : (
-                <ClipLoader size={20} color={"#000"} />
+                <ClipLoader size={20} color={'#000'} />
               )}
             </button>
           </div>

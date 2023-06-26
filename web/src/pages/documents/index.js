@@ -7,7 +7,9 @@ import { deleteDocument, getDocuments } from "../../actions/text";
 import moment from "moment";
 import { errorToast, successToast } from "../../util/toasts";
 import { getKratosSessionDetails } from "../../actions/kratos";
+import useDarkMode from "../../hooks/useDarkMode";
 export default function DocumentPage() {
+  const { darkMode } = useDarkMode();
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
     data: [],
@@ -105,7 +107,7 @@ export default function DocumentPage() {
     <div className="my-16 mx-10">
       {/* This is the page header */}
       <div className="flex flex-row justify-between items-center">
-        <h2 className="text-3xl font-medium">Documents</h2>
+        <h2 className={`text-3xl font-medium ${darkMode && 'text-white'}`}>Documents</h2>
 
         <div className="flex flex-row w-1/2 items-center gap-2">
           <Search
@@ -130,7 +132,7 @@ export default function DocumentPage() {
             return (
               <th
                 key={index}
-                className={`${header.width} ${tableStyles.headerPadding} text-sm bg-background-sidebar font-medium text-text-primary text-left rounded-t-lg text-table-text`}
+                className={`${header.width} ${tableStyles.headerPadding} text-sm ${darkMode ? '':'bg-background-sidebar'} font-medium text-text-primary text-left rounded-t-lg text-table-text ${darkMode && 'text-white'}`}
               >
                 {header.name}
               </th>
@@ -144,25 +146,25 @@ export default function DocumentPage() {
                   key={index}
                 >
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm ${darkMode ? 'bg-background-sidebar-alt text-white': 'bg-white'} font-medium text-text-primary text-left rounded-t-lg text-black`}
                   >
                     {value.title}
                   </td>
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm ${darkMode ? 'bg-background-sidebar-alt text-white': 'bg-white'} font-medium text-text-primary text-left rounded-t-lg text-black`}
                   >
                     {email}
                   </td>
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm ${darkMode ? 'bg-background-sidebar-alt text-white': 'bg-white'} font-medium text-text-primary text-left rounded-t-lg text-black`}
                   >
                     {moment(value.updated_at).format("MMMM Do YYYY, h:mm:ss a")}
                   </td>
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black flex items-center gap-2`}
+                    className={`${tableStyles.valuesPadding} text-sm ${darkMode ? 'bg-background-sidebar-alt text-white': 'bg-white'} font-medium text-text-primary text-left rounded-t-lg text-black flex items-center gap-2`}
                   >
                     <div
-                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#007BFF] hover:text-white`}
+                      className={`${darkMode ? '':'bg-background-secondary'} py-2 px-4 rounded-md cursor-pointer hover:bg-[#007BFF] hover:text-white`}
                       onClick={() => {
                         navigate(
                           `/documents/create?id=${value.id}&isEdit=true`
@@ -172,7 +174,7 @@ export default function DocumentPage() {
                       Edit
                     </div>
                     <div
-                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#FF0000] hover:text-white`}
+                      className={`${darkMode ? '':'bg-background-secondary'} py-2 px-4 rounded-md cursor-pointer hover:bg-[#FF0000] hover:text-white`}
                       onClick={() => {
                         handleDelete(value?.id);
                       }}

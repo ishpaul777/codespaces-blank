@@ -2,6 +2,7 @@ import Mentions from "./Mentions";
 import React from "react";
 import Modal from "./Modal";
 import { useSelector } from "react-redux";
+import useDarkMode from "../../hooks/useDarkMode";
 //  value={currentPrompt}
 // className="outline-none text-base border-none focus:ring-0"
 // placeholder="Type a message"
@@ -16,6 +17,7 @@ function PromptInput(props) {
       label: prompt.title,
     };
   });
+  const { darkMode } = useDarkMode()
   const [isSelectingPrompt, setIsSelectingPrompt] = React.useState(false);
 
   const [promptVars, setPromptVars] = React.useState([]);
@@ -158,7 +160,7 @@ function PromptInput(props) {
                     id={key}
                     placeholder="Name of the prompt"
                     rows={4}
-                    className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
+                    className={`p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none`}
                     type="input"
                     name={key}
                     value={variable[key]}

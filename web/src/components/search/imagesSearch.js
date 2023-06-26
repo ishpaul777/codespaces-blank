@@ -1,3 +1,4 @@
+import useDarkMode from "../../hooks/useDarkMode";
 import SearchButton from "../buttons/SearchButton";
 
 export function ImageSearch({
@@ -8,8 +9,9 @@ export function ImageSearch({
   disabled,
   value,
 }) {
+  const { darkMode } = useDarkMode();
   return (
-    <div className="flex flex-row justify-between shadow-primary py-3 px-4 border border-primary rounded-lg">
+    <div className={`flex flex-row justify-between shadow-primary py-3 px-4 border border-primary rounded-lg ${darkMode && 'bg-white'}`}>
       <input
         className="w-[90%] outline-none text-base"
         placeholder={placeholder}

@@ -1,28 +1,29 @@
-import { useEffect, useRef, useState } from "react";
-import { ImageSearch } from "../../components/search/imagesSearch";
+import { useEffect, useRef, useState } from 'react';
+import { ImageSearch } from '../../components/search/imagesSearch';
 import {
   generateVariationsOfImage,
   getGeneratedImages,
-} from "../../actions/images";
-import { HashLoader } from "react-spinners";
-import { isURL } from "../../util/validateRegex";
-import { errorToast } from "../../util/toasts";
-import sunflowerImage from "../../assets/sunflower.png";
-import astronautImage from "../../assets/astronaut.png";
-import brightCity from "../../assets/bright-city.png";
-import madPanda from "../../assets/mad-panda.png";
-import handDrawnBoat from "../../assets/handrawn-boat.png";
-import foxNight from "../../assets/fox-night.png";
-import catWithHat from "../../assets/cat-with-hat.png";
-import davidWearingHeadphones from "../../assets/david-wearing-headphones.png";
+} from '../../actions/images';
+import { HashLoader } from 'react-spinners';
+import { isURL } from '../../util/validateRegex';
+import { errorToast } from '../../util/toasts';
+import sunflowerImage from '../../assets/sunflower.png';
+import astronautImage from '../../assets/astronaut.png';
+import brightCity from '../../assets/bright-city.png';
+import madPanda from '../../assets/mad-panda.png';
+import handDrawnBoat from '../../assets/handrawn-boat.png';
+import foxNight from '../../assets/fox-night.png';
+import catWithHat from '../../assets/cat-with-hat.png';
+import davidWearingHeadphones from '../../assets/david-wearing-headphones.png';
+import useDarkMode from '../../hooks/useDarkMode';
 
 export default function ImagePage() {
   const fileInputRef = useRef(null);
-
+  const { darkMode } = useDarkMode();
   const [imageRequest, setImageRequest] = useState({
-    prompt: "",
+    prompt: '',
     n: 4,
-    provider: "stableDiffusion",
+    provider: 'stableDiffusion',
   });
 
   const handleRangeChange = (event) => {
@@ -91,14 +92,14 @@ export default function ImagePage() {
     generateVariationsOfImage(
       e.target.files[0],
       imageRequest.n,
-      "stable-diffusion-v1-5",
-      "stableDiffusion"
+      'stable-diffusion-v1-5',
+      'stableDiffusion'
     )
       .then((response) => {
         setImages(response?.map((image) => ({ ...image, isHover: false })));
       })
       .catch((err) => {
-        errorToast("error in generating variations of image " + err?.message);
+        errorToast('error in generating variations of image ' + err?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -128,15 +129,15 @@ export default function ImagePage() {
   const defaultImagePrompts = [
     {
       url: foxNight,
-      prompt: "A painting of a fox in the style of Starry Night",
+      prompt: 'A painting of a fox in the style of Starry Night',
     },
     {
       url: astronautImage,
-      prompt: "An astronaut lounging in a tropical resort in space, vaporwave",
+      prompt: 'An astronaut lounging in a tropical resort in space, vaporwave',
     },
     {
       url: catWithHat,
-      prompt: "A photo of a cat with a hat on",
+      prompt: 'A photo of a cat with a hat on',
     },
     {
       url: davidWearingHeadphones,
@@ -146,20 +147,20 @@ export default function ImagePage() {
     {
       url: brightCity,
       prompt:
-        "a pencil and watercolor drawing of a bright city in the future with flying cars",
+        'a pencil and watercolor drawing of a bright city in the future with flying cars',
     },
     {
       url: handDrawnBoat,
-      prompt: "A hand-drawn sailboat circled by birds on the sea at sunrise",
+      prompt: 'A hand-drawn sailboat circled by birds on the sea at sunrise',
     },
     {
       url: sunflowerImage,
       prompt:
-        "A photograph of a sunflower with sunglasses on in the middle of the flower in a field on a bright sunny day",
+        'A photograph of a sunflower with sunglasses on in the middle of the flower in a field on a bright sunny day',
     },
     {
       url: madPanda,
-      prompt: "panda mad scientist mixing sparkling chemicals, digital art",
+      prompt: 'panda mad scientist mixing sparkling chemicals, digital art',
     },
   ];
 
@@ -168,7 +169,7 @@ export default function ImagePage() {
     const blob = b64toBlob(base64Url);
 
     // Create a temporary link element
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
 
@@ -188,12 +189,14 @@ export default function ImagePage() {
     }
 
     const byteArray = new Uint8Array(byteArrays);
-    return new Blob([byteArray], { type: "image/png" }); // Modify the MIME type if needed
+    return new Blob([byteArray], { type: 'image/png' }); // Modify the MIME type if needed
   }
 
   return (
     <div className={`my-16 mx-10`}>
-      <h2 className="text-3xl font-medium">Generate Images</h2>
+      <h2 className={`text-3xl font-medium ${darkMode && 'text-white'}`}>
+        Generate Images
+      </h2>
       <div className={`mt-8 mr-4`}>
         <ImageSearch
           placeholder={`Handmade Unique abstract painting made with charcoal..`}
@@ -209,7 +212,11 @@ export default function ImagePage() {
         <div className="flex gap-2 items-center">
           <button
             onClick={() => onUploadButtonClick()}
-            className={`bg-button-primary text-black px-4 py-2 rounded-lg`}
+            className={`text-black px-4 py-2 rounded-lg ${
+              darkMode
+                ? 'bg-background-sidebar-alt text-white'
+                : 'bg-button-primary'
+            } `}
           >
             Upload Image
             <input
@@ -219,11 +226,17 @@ export default function ImagePage() {
               onChange={(e) => handleUploadFile(e)}
             ></input>
           </button>
-          <span>to generate variations</span>
+          <span className={`${darkMode && 'text-[#BEBEBE]'}`}>
+            to generate variations
+          </span>
         </div>
         <div className="mr-4 flex gap-2">
           <div className="flex flex-row items-center space-x-2">
-            <label className="text-gray-600">Image Count </label>
+            <label
+              className={`${darkMode ? 'text-[#BEBEBE]' : 'text-gray-600'}`}
+            >
+              Image Count{' '}
+            </label>
             <input
               type="range"
               min={1}
@@ -232,7 +245,11 @@ export default function ImagePage() {
               onChange={handleRangeChange}
               className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
             />
-            <span className="text-gray-600">{imageRequest.n}</span>
+            <span
+              className={`${darkMode ? 'text-[#BEBEBE]' : 'text-gray-600'}`}
+            >
+              {imageRequest.n}
+            </span>
           </div>
           <select
             name="provider"
@@ -249,7 +266,7 @@ export default function ImagePage() {
       <div className={`mt-8`}>
         {loading ? (
           <div className={`flex justify-center mt-[20vh]`}>
-            <HashLoader color={"#667085"} loading={true} size={100} />
+            <HashLoader color={'#667085'} loading={true} size={100} />
           </div>
         ) : (
           <div className={`grid grid-cols-4 gap-4`}>
@@ -262,7 +279,7 @@ export default function ImagePage() {
                       onMouseEnter={() => onMouseIn(index)}
                       onMouseLeave={() => onMouseOut(index)}
                       onClick={() =>
-                        downloadImageFromBase64Url(image?.url, "image.png")
+                        downloadImageFromBase64Url(image?.url, 'image.png')
                       }
                     >
                       <img
@@ -299,8 +316,8 @@ export default function ImagePage() {
                           <p className="text-black font-medium text-xl m-4 font-serif">
                             {image.prompt}
                           </p>
-                          <p style={{ color: "#777" }} className=" text-lg m-4">
-                            Click to try{" "}
+                          <p style={{ color: '#777' }} className=" text-lg m-4">
+                            Click to try{' '}
                           </p>
                         </div>
                       </div>
@@ -333,9 +350,9 @@ const ExampleModal = ({
   imageRequest,
 }) => {
   const overlayClasses =
-    "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
+    'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
   const modalClasses =
-    "fixed z-50 left-1/2 w-3/12 top-1/2 transform -translate-x-1/2 flex flex-col -translate-y-1/2 bg-white rounded-xl shadow-lg transition-alldocke duration-300 ease-in-out h-4/6";
+    'fixed z-50 left-1/2 w-3/12 top-1/2 transform -translate-x-1/2 flex flex-col -translate-y-1/2 bg-white rounded-xl shadow-lg transition-alldocke duration-300 ease-in-out h-4/6';
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -344,10 +361,10 @@ const ExampleModal = ({
   };
   return (
     <div
-      className={visible ? overlayClasses : " w-0 h-0"}
+      className={visible ? overlayClasses : ' w-0 h-0'}
       onClick={handleOverlayClick}
     >
-      <div className={visible ? modalClasses : " w-0 h-0"}>
+      <div className={visible ? modalClasses : ' w-0 h-0'}>
         <img src={imageUrl} className="h-full rounded-t-xl" />
         {visible && prompt && (
           <div className="bg-white text-lg my-4 text-center font-medium rounded-b-xl border-b py-3 px-4 border-gray-300">

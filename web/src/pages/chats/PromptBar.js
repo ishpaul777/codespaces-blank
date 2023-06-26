@@ -4,36 +4,37 @@
 // after clicking the button, modal will pop up and ask the user to enter a prompt name, description, and main text --- DONE
 // user can name use {{}} to create a variable that user can fill in later when they are creating a story --- DONE
 // later when prompt seleted by user will be asked to fill the empty variables
-import React, { useEffect, useState } from "react";
-import Modal from "./Modal";
-import { errorToast, successToast } from "../../util/toasts";
-import { MdOutlineCreateNewFolder } from "react-icons/md";
+import React, { useEffect, useState } from 'react';
+import Modal from './Modal';
+import { errorToast, successToast } from '../../util/toasts';
+import { MdOutlineCreateNewFolder } from 'react-icons/md';
 import {
   AiOutlineCheck,
   AiOutlineClose,
   AiOutlineDelete,
-} from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
+} from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   createPrompt,
   deletePrompt,
   getAllPrompts,
   updatePrompt,
-} from "../../redux/actions/promptsActions";
-import { HiPlus } from "react-icons/hi";
-import { ToastContainer } from "react-toastify";
-import { BiBulb } from "react-icons/bi";
+} from '../../redux/actions/promptsActions';
+import { HiPlus } from 'react-icons/hi';
+import { ToastContainer } from 'react-toastify';
+import { BiBulb } from 'react-icons/bi';
 import {
   createPromptTemplate,
   deletePromptTemplate,
   getAllPromptTemplates,
   updatePromptTemplate,
-} from "../../actions/prompts";
+} from '../../actions/prompts';
+import useDarkMode from '../../hooks/useDarkMode';
 
 function PromptBar({ open }) {
   const styles = {
-    fileIconSize: "24px",
-    iconSize: "20px",
+    fileIconSize: '24px',
+    iconSize: '20px',
   };
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -43,17 +44,17 @@ function PromptBar({ open }) {
     description: false,
     prompt: false,
   });
-
+  const { darkMode } = useDarkMode();
   const [pagination, setPagination] = useState({
     limit: 12,
     page: 1,
-    search_query: "",
+    search_query: '',
   });
 
   const [promptValues, setPromptValues] = useState({
-    title: "",
-    description: "",
-    prompt: "",
+    title: '',
+    description: '',
+    prompt: '',
   });
   const [deletePromptIndex, setDeletePromptIndex] = useState(null);
   const dispatch = useDispatch();
@@ -67,17 +68,17 @@ function PromptBar({ open }) {
 
   function handleFormSubmit(values) {
     var error = false;
-    if (!values.title || values.title === "") {
+    if (!values.title || values.title === '') {
       setShowerror((prevValues) => ({ ...prevValues, title: true }));
       error = true;
     }
 
-    if (!values.prompt || values.prompt === "") {
+    if (!values.prompt || values.prompt === '') {
       setShowerror((prevValues) => ({ ...prevValues, prompt: true }));
       error = true;
     }
 
-    if (!values.description || values.description === "") {
+    if (!values.description || values.description === '') {
       setShowerror((prevValues) => ({ ...prevValues, description: true }));
       error = true;
     }
@@ -95,7 +96,7 @@ function PromptBar({ open }) {
             errorToast(error.message);
           });
         setShowModal(false);
-        setPromptValues({ title: "", description: "", content: "" });
+        setPromptValues({ title: '', description: '', content: '' });
         setShowerror(false);
       })
       .catch((error) => {
@@ -119,7 +120,7 @@ function PromptBar({ open }) {
       .then(() => {
         dispatch(deletePrompt(deletePromptIndex));
         setDeletePromptIndex(null);
-        successToast("Prompt template deleted successfully");
+        successToast('Prompt template deleted successfully');
       })
       .catch((error) => {
         errorToast(error.message);
@@ -132,17 +133,17 @@ function PromptBar({ open }) {
 
   const handleUpdateFormSubmit = (values) => {
     var error = false;
-    if (!values.title || values.title === "") {
+    if (!values.title || values.title === '') {
       setShowerror((prevValues) => ({ ...prevValues, title: true }));
       error = true;
     }
 
-    if (!values.prompt || values.prompt === "") {
+    if (!values.prompt || values.prompt === '') {
       setShowerror((prevValues) => ({ ...prevValues, prompt: true }));
       error = true;
     }
 
-    if (!values.description || values.description === "") {
+    if (!values.description || values.description === '') {
       setShowerror((prevValues) => ({ ...prevValues, description: true }));
       error = true;
     }
@@ -152,7 +153,7 @@ function PromptBar({ open }) {
     updatePromptTemplate({ ...values, id: updatePromptIndex }).then(() => {
       setShowUpdateModal(false);
       setUpdatePromptIndex(null);
-      setPromptValues({ title: "", description: "", content: "" });
+      setPromptValues({ title: '', description: '', content: '' });
       setShowerror(false);
       getAllPromptTemplates(pagination)
         .then((data) => {
@@ -221,19 +222,19 @@ function PromptBar({ open }) {
     <>
       <div
         className={`my-4 w-full text-center justify-between gap-2 ${
-          !open ? "d-none" : "flex pr-4"
-        } `}
+          !open ? 'd-none' : 'flex pr-4'
+        }`}
       >
         <button
-          className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${
-            !open ? "d-none" : "flex"
-          } `}
+          className={`p-2 w-full border rounded-md flex items-center cursor-pointer gap-3  ${
+            !open ? 'd-none' : 'flex'
+          } ${darkMode ? 'bg-background-sidebar-alt hover:bg-background-secondary-alt text-white' : 'hover:bg-light-gray'}`}
           onClick={() => {
             setShowModal(true);
             setPromptValues({
-              title: "",
-              description: "",
-              prompt: "",
+              title: '',
+              description: '',
+              prompt: '',
             });
           }}
         >
@@ -253,13 +254,13 @@ function PromptBar({ open }) {
         centered
         closable={false}
         visible={showModal}
-        okButtonProps={{ style: { backgroundColor: "#000" } }}
+        okButtonProps={{ style: { backgroundColor: '#000' } }}
         onOk={(e) => handleFormSubmit(promptValues)}
         okText="Save"
         onCancel={() => {
           setShowerror(false);
           setShowModal(false);
-          setPromptValues({ title: "", description: "", content: "" });
+          setPromptValues({ title: '', description: '', content: '' });
         }}
       >
         <ModalContent
@@ -273,14 +274,14 @@ function PromptBar({ open }) {
         centered
         closable={false}
         visible={showUpdateModal}
-        okButtonProps={{ style: { backgroundColor: "#000" } }}
+        okButtonProps={{ style: { backgroundColor: '#000' } }}
         onOk={(e) => handleUpdateFormSubmit(promptValues)}
         okText="Save"
         onCancel={() => {
           setShowUpdateModal(false);
           setShowerror(false);
           setUpdatePromptIndex(null);
-          setPromptValues({ title: "", description: "", content: "" });
+          setPromptValues({ title: '', description: '', content: '' });
         }}
       >
         <ModalContent
@@ -290,10 +291,10 @@ function PromptBar({ open }) {
         />
       </Modal>
 
-      <div className={`${!open || "pr-4"}`}>
+      <div className={`${!open || 'pr-4'}`}>
         <input
           className={`w-full p-3 border border-gray-300 rounded-md  ${
-            !open ? "d-none" : "flex"
+            !open ? 'd-none' : 'flex'
           } `}
           placeholder="Search prompt"
           onChange={handlePromptSearch}
@@ -301,17 +302,17 @@ function PromptBar({ open }) {
         <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
       </div>
       <ul
-        className={`overflow-y-auto  ${!open && "d-none"}  mt-3`}
-        style={{ maxHeight: "70vh" }}
+        className={`overflow-y-auto  ${!open && 'd-none'}  mt-3`}
+        style={{ maxHeight: '70vh' }}
       >
         {prompts?.map((prompt, index) => renderPrompt(prompt, index))}
         <div
           className={`flex ${
-            pagination.page === 1 ? "flex-row-reverse" : "flex-row"
+            pagination.page === 1 ? 'flex-row-reverse' : 'flex-row'
           } ${
             pagination.offset !== 0 &&
             promptCount > pagination.limit &&
-            "justify-between"
+            'justify-between'
           } p-2 text-base cursor-pointer mt-4`}
         >
           {pagination.page > 1 && (
@@ -359,7 +360,7 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
         />
         <p
           className={`mt-1 ${
-            showerror.title ? "block" : "d-none"
+            showerror.title ? 'block' : 'd-none'
           } text-pink-600 text-sm`}
         >
           Please provide a title for prompt.
@@ -370,7 +371,7 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
           Description
         </label>
         <textarea
-          name={"description"}
+          name={'description'}
           placeholder="A short description of the prompt"
           className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
           value={promptValues.description}
@@ -379,7 +380,7 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
         />
         <p
           className={`mt-1 ${
-            showerror.description ? "block" : "d-none"
+            showerror.description ? 'block' : 'd-none'
           } text-pink-600 text-sm`}
         >
           Please provide a description for prompt.
@@ -389,7 +390,7 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
         <label className="font-medium text-gray-700 text-base">Prompt</label>
         <textarea
           placeholder="Prompt content. Use {{}} to denote a variable. Ex: {{name}} is a {{adjective}} {{noun}}"
-          name={"prompt"}
+          name={'prompt'}
           className="p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none"
           value={promptValues.prompt}
           rows={10}
@@ -397,7 +398,7 @@ const ModalContent = ({ handleValueChange, promptValues, showerror }) => {
         />
         <p
           className={`mt-1 ${
-            showerror.prompt ? "block" : "d-none"
+            showerror.prompt ? 'block' : 'd-none'
           } text-pink-600 text-sm`}
         >
           Please provide a template for prompt.

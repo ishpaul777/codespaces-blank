@@ -1,22 +1,23 @@
-import { HiPlus } from "react-icons/hi";
-import { MdOutlineCreateNewFolder } from "react-icons/md";
-import { useState, useRef, useEffect } from "react";
-import { ToastContainer } from "react-toastify";
-import { BiMessageDetail } from "react-icons/bi";
+import { HiPlus } from 'react-icons/hi';
+import { MdOutlineCreateNewFolder } from 'react-icons/md';
+import { useState, useRef, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { BiMessageDetail } from 'react-icons/bi';
 import {
   AiOutlineDelete,
   AiOutlineCheck,
   AiOutlineClose,
-} from "react-icons/ai";
-import { BsCaretDownFill, BsCaretRightFill } from "react-icons/bs";
-import { useSelector } from "react-redux";
+} from 'react-icons/ai';
+import { BsCaretDownFill, BsCaretRightFill } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 import {
   addChatToCollection,
   createCollection,
   deleteCollection,
   getAllChatCollections,
-} from "../../redux/actions/collections";
-import { useDispatch } from "react-redux";
+} from '../../redux/actions/collections';
+import { useDispatch } from 'react-redux';
+import useDarkMode from '../../hooks/useDarkMode';
 
 export default function SideBar({
   isMobileScreen,
@@ -41,14 +42,14 @@ export default function SideBar({
 }) {
   const maxListChars = 15;
   const styles = {
-    fileIconSize: "24px",
-    iconSize: "20px",
+    fileIconSize: '24px',
+    iconSize: '20px',
   };
   const dispatch = useDispatch();
-
+  const { darkMode } = useDarkMode();
   const [collectionCreateFormVisible, setCollectionCreateFormVisible] =
     useState(false);
-  const [collectionName, setCollectionName] = useState("");
+  const [collectionName, setCollectionName] = useState('');
   const collections = useSelector((state) => state.collections);
 
   const createCollectionRef = useRef(null);
@@ -75,13 +76,17 @@ export default function SideBar({
   };
 
   const handleDrop = () => {
-    console.log("drop", draggingChatId, dragOverCollectionId);
+    console.log('drop', draggingChatId, dragOverCollectionId);
     if (draggingChatId && dragOverCollectionId) {
       // if the chat is not already in the collection add it
-      const collection = collections.find((collection) => collection.id === dragOverCollectionId);
+      const collection = collections.find(
+        (collection) => collection.id === dragOverCollectionId
+      );
       const chat = collection.chats.find((chat) => chat.id === draggingChatId);
       if (!chat) {
-        dispatch(addChatToCollection(dragOverCollectionId, draggingChatId, chatHistory));
+        dispatch(
+          addChatToCollection(dragOverCollectionId, draggingChatId, chatHistory)
+        );
       }
     }
 
@@ -128,7 +133,7 @@ export default function SideBar({
   const handleCollectionCreate = () => {
     if (collectionName) {
       dispatch(createCollection({ name: collectionName }));
-      setCollectionName("");
+      setCollectionName('');
       setCollectionCreateFormVisible(false);
     }
   };
@@ -153,8 +158,12 @@ export default function SideBar({
               handleDrop();
             }
           }}
-          className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
-          ${chatID === chat?.id && "bg-hover-on-white"}`}
+          className={`mr-4 p-2 text-lg cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          ${chatID === chat?.id && (darkMode ? '' : 'bg-hover-on-white')} ${
+            darkMode
+              ? 'hover:bg-button-primary-alt text-white'
+              : 'hover:bg-hover-on-white'
+          }`}
         >
           <div
             className="flex items-center gap-3"
@@ -169,7 +178,7 @@ export default function SideBar({
             <span>
               {chat?.title < maxListChars
                 ? chat?.title
-                : `${chat?.title?.slice(0, maxListChars) + "..."}
+                : `${chat?.title?.slice(0, maxListChars) + '...'}
       `}
             </span>
           </div>
@@ -200,10 +209,10 @@ export default function SideBar({
                 <>
                   <AiOutlineCheck
                     size={styles.iconSize}
-                  // onClick={() =>
-                  //   TODO HANDLE REMOVE CHAT FROM COLLECTION
-                  //   handleChatRemoveFromCollection(removeChatFromCollection.chat_id, removeChatFromCollection.collection_id)
-                  // }
+                    // onClick={() =>
+                    //   TODO HANDLE REMOVE CHAT FROM COLLECTION
+                    //   handleChatRemoveFromCollection(removeChatFromCollection.chat_id, removeChatFromCollection.collection_id)
+                    // }
                   />
                   <AiOutlineClose
                     size={styles.iconSize}
@@ -235,22 +244,32 @@ export default function SideBar({
 
   return (
     <aside
-      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
-          ? "translate-x-0 w-0"
-          : `${isMobileScreen ? "w-3/4 " : "w-[20vw] "}bg-black-100`
-        } flex flex-row  ease-in-out duration-300 gap-4`}
+      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${
+        chatSiderCollapse
+          ? 'translate-x-0 w-0'
+          : `${isMobileScreen ? 'w-3/4 ' : 'w-[20vw] '}bg-black-100`
+      } flex flex-row  ease-in-out duration-300 gap-4 ${
+        darkMode && 'bg-background-sidebar-alt'
+      }`}
     >
       <div
-        className={`bg-white relative w-full shadow-md ${chatSiderCollapse || "pt-4 pl-4"
-          }`}
+        className={`${
+          darkMode ? 'bg-background-sidebar-alt' : 'bg-white'
+        } relative w-full shadow-md ${chatSiderCollapse || 'pt-4 pl-4'}`}
       >
         <div
-          className={`my-4 w-full text-center justify-between gap-2 ${chatSiderCollapse ? "d-none" : "flex pr-4"
-            } `}
+          className={`my-4 w-full text-center justify-between gap-2 ${
+            chatSiderCollapse ? 'd-none' : 'flex pr-4'
+          } ${darkMode && 'text-white'} `}
         >
           <button
-            className={`p-2 w-full hover:bg-light-gray border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? "d-none" : "flex"
-              } `}
+            className={`p-2 w-full ${
+              darkMode
+                ? 'hover:bg-background-secondary-alt'
+                : 'hover:bg-light-gray'
+            } border rounded-md flex items-center cursor-pointer gap-3  ${
+              chatSiderCollapse ? 'd-none' : 'flex'
+            } `}
             onClick={() => handleNewChatClick()}
           >
             <HiPlus size={styles.iconSize} />
@@ -258,7 +277,9 @@ export default function SideBar({
           </button>
           {isFolderVisible ? (
             <button
-              className="p-2 border hover:bg-light-gray rounded-md cursor-pointer flex justify-center items-center"
+              className={`p-2 border rounded-md cursor-pointer flex justify-center items-center ${
+                darkMode ? 'hover:bg-button-primary-alt' : 'hover:bg-light-gray'
+              }`}
               onClick={() => {
                 setCollectionCreateFormVisible(true);
               }}
@@ -273,10 +294,11 @@ export default function SideBar({
             </div>
           )}
         </div>
-        <div className={`${chatSiderCollapse || "pr-4"}`}>
+        <div className={`${chatSiderCollapse || 'pr-4'}`}>
           <input
-            className={`w-full p-3 border border-gray-300 rounded-md  ${chatSiderCollapse ? "d-none" : "flex"
-              } `}
+            className={`w-full p-3 border border-gray-300 rounded-md  ${
+              chatSiderCollapse ? 'd-none' : 'flex'
+            } `}
             placeholder="Search prompt"
             onChange={(e) =>
               setPaginationChatHistory({
@@ -288,8 +310,8 @@ export default function SideBar({
           <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
         </div>
         <ul
-          className={`overflow-y-auto  ${chatSiderCollapse && "d-none"}  mt-3`}
-          style={{ maxHeight: "67vh" }}
+          className={`overflow-y-auto  ${chatSiderCollapse && 'd-none'}  mt-3`}
+          style={{ maxHeight: '67vh' }}
         >
           {collectionCreateFormVisible && (
             <li
@@ -299,7 +321,7 @@ export default function SideBar({
                 <BsCaretRightFill size={16} />
                 <input
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+                    if (e.key === 'Enter') {
                       handleCollectionCreate();
                     }
                   }}
@@ -334,7 +356,7 @@ export default function SideBar({
                       handleDragEnter(item.id);
                     }}
                     className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
-                    ${dragOverCollectionId === item.id && "bg-hover-on-white"}
+                    ${dragOverCollectionId === item.id && 'bg-hover-on-white'}
                     `}
                     onClick={() => {
                       if (currentCollectionIndex === item.id) {
@@ -353,7 +375,7 @@ export default function SideBar({
                       <span>
                         {item?.name < maxListChars
                           ? item?.name
-                          : `${item?.name?.slice(0, maxListChars) + "..."}
+                          : `${item?.name?.slice(0, maxListChars) + '...'}
                         `}
                       </span>
                     </div>
@@ -408,11 +430,13 @@ export default function SideBar({
             {renderChats(chatHistory, false)}
           </ul>
           <div
-            className={`flex ${paginationChatHistory.page === 1 ? "flex-row-reverse" : "flex-row"
-              } ${paginationChatHistory.offset !== 0 &&
+            className={`flex ${
+              paginationChatHistory.page === 1 ? 'flex-row-reverse' : 'flex-row'
+            } ${
+              paginationChatHistory.offset !== 0 &&
               chatCount > paginationChatHistory.limit &&
-              "justify-between"
-              } p-2 text-base cursor-pointer mt-4`}
+              'justify-between'
+            } p-2 text-base cursor-pointer mt-4`}
           >
             {paginationChatHistory.page > 1 && (
               <span
@@ -439,14 +463,19 @@ export default function SideBar({
           </div>
         </ul>
         <div
-          className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? "d-none" : "flex"
-            } `}
+          className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${
+            chatSiderCollapse ? 'd-none' : 'flex'
+          } `}
         >
           <ul className="flex justify-center flex-col">
             {chatOptionsList.map((item, index) => (
               <li
                 key={index}
-                className="flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md hover:bg-button-primary"
+                className={`flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md ${
+                  darkMode
+                    ? 'text-white hover:bg-button-primary-alt'
+                    : 'hover:bg-button-primary '
+                }`}
                 onClick={item.onClick}
               >
                 {item.icon}

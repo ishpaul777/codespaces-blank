@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import useDarkMode from "../../hooks/useDarkMode";
 
 const Mentions = (props) => {
   const { options, onChange, onSearch, onSelect, onKeyDown, onBlur } = props;
@@ -6,7 +7,7 @@ const Mentions = (props) => {
   const [promptsList, setPromptsList] = useState(options);
   const [searchText, setSearchText] = useState("");
   const [activePromptIndex, setActivePromptIndex] = useState(-1);
-
+  const { darkMode } = useDarkMode()
   const list = useRef(null); // add this line to create a ref
 
   const handlePrefixKeyDown = (e) => {
@@ -109,7 +110,7 @@ const Mentions = (props) => {
         onChange={(e) => {
           handleChange(e);
         }}
-        className="rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto"
+        className={`rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto ${darkMode && 'bg-background-sidebar-alt'}`}
         // onKeyDown={(e) => { handleKeydown(e) }}
         ref={textareaRef}
         value={props.value}

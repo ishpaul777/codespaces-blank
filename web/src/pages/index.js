@@ -7,9 +7,10 @@ import { SlSocialInstagram } from "react-icons/sl";
 import { SiChatbot } from "react-icons/si";
 import { TfiWrite } from "react-icons/tfi";
 import { RxAvatar } from "react-icons/rx";
+import useDarkMode from "../hooks/useDarkMode";
 export function HomePage() {
   const iconColor = "#AC94FA";
-
+  const darkMode = useDarkMode();
   const [defaultPersonas, setDefaultPersonas] = useState([]);
   const menuOptions = [
     {
@@ -91,7 +92,7 @@ export function HomePage() {
   return (
     <div className="my-16 mx-10 ">
       <div className="flex flex-row justify-between items-center">
-        <h2 className="text-3xl font-medium">Dashboard</h2>
+        <h2 className={`text-3xl font-medium ${darkMode && 'text-white'}`}>Dashboard</h2>
       </div>
       <div className="w-full grid grid-cols-2 mt-12 gap-4">
         {menuOptions.map((option) => (

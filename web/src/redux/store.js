@@ -5,6 +5,7 @@ import { combineReducers } from "redux";
 import promptsReducer from "./reducers/prompts";
 import thunk from "redux-thunk";
 import collectionsReducer from "./reducers/collections";
+import darkModeReducer from "./reducers/darkMode";
 
 // Middleware to save state to local storage after every action
 const saveStateToLocalStorage = (store) => (next) => (action) => {
@@ -16,6 +17,7 @@ const saveStateToLocalStorage = (store) => (next) => (action) => {
 const rootReducer = combineReducers({
   prompts: promptsReducer,
   collections: collectionsReducer,
+  darkMode: darkModeReducer,
 });
 
 // Create store with promptsReducer and middleware using configureStore

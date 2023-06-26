@@ -1,52 +1,57 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import ArrowLeft from "../../assets/icons/arrow-left.svg";
-import ArrowWithTail from "../../assets/icons/arrow-with-tail.svg";
-import Arrow from "../../assets/icons/arrow.svg";
-import Bookmark from "../../assets/icons/bookmark.svg";
-import Chat from "../../assets/icons/chat.svg";
-import Documents from "../../assets/icons/documents.svg";
-import Home from "../../assets/icons/home.svg";
-import History from "../../assets/icons/history.svg";
-import Images from "../../assets/icons/images.svg";
-import Logout from "../../assets/icons/logout.svg";
-import Profile from "../../assets/icons/profile.svg";
-import Templates from "../../assets/icons/templates.svg";
-import Usage from "../../assets/icons/usage.svg";
-import { logout } from "../../actions/kratos";
-import { errorToast } from "../../util/toasts";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import ArrowLeft from '../../assets/icons/arrow-left.svg';
+import ArrowWithTail from '../../assets/icons/arrow-with-tail.svg';
+import Arrow from '../../assets/icons/arrow.svg';
+import Bookmark from '../../assets/icons/bookmark.svg';
+import Chat from '../../assets/icons/chat.svg';
+import Documents from '../../assets/icons/documents.svg';
+import Home from '../../assets/icons/home.svg';
+import History from '../../assets/icons/history.svg';
+import Images from '../../assets/icons/images.svg';
+import Logout from '../../assets/icons/logout.svg';
+import Profile from '../../assets/icons/profile.svg';
+import Templates from '../../assets/icons/templates.svg';
+import Usage from '../../assets/icons/usage.svg';
+import DocumentsDark from '../../assets/icons/documents_dark.svg';
+import ImagesDark from '../../assets/icons/images_dark.svg';
+import DashboardDark from '../../assets/icons/dashboard_dark.svg';
+import { logout } from '../../actions/kratos';
+import { errorToast } from '../../util/toasts';
+import useDarkMode from '../../hooks/useDarkMode';
 
 // import FactlyLogo from '../../assets/factly-logo.svg';
 
 export function Sidebar() {
   const [openMenu, setOpenMenu] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const { darkMode } = useDarkMode();
 
   const menuOptions = [
     {
-      name: "Dashboard",
-      icon: Home,
-      linkTo: "/",
+      name: 'Dashboard',
+      icon: darkMode ? DashboardDark : Home,
+      linkTo: '/',
     },
     {
-      name: "Documents",
-      icon: Documents,
-      linkTo: "/documents",
+      name: 'Documents',
+      icon: darkMode ? DocumentsDark : Documents,
+      linkTo: '/documents',
     },
     {
-      name: "Images",
-      icon: Images,
-      linkTo: "/images",
+      name: 'Images',
+      icon: darkMode ? ImagesDark : Images,
+      linkTo: '/images',
     },
     {
-      name: "Personas",
+      name: 'Personas',
       icon: Templates,
-      linkTo: "/personas",
+      linkTo: '/personas',
     },
     {
-      name: "Chat",
+      name: 'Chat',
       icon: Chat,
-      linkTo: "/chats/dashboard",
+      linkTo: '/chats/dashboard',
     },
   ];
 
@@ -56,11 +61,10 @@ export function Sidebar() {
         window.location.href = res.logout_url;
       })
       .catch(() => {
-        errorToast("error logging out");
+        errorToast('error logging out');
       });
   };
 
-  
   const manageProfileOptions = [
     // {
     //   name: "View Profile",
@@ -85,9 +89,9 @@ export function Sidebar() {
     //   linkTo: "/usage",
     // },
     {
-      name: "Logout",
+      name: 'Logout',
       icon: Logout,
-      linkTo: "/logout",
+      linkTo: '/logout',
       onClick: handleLogout,
     },
   ];
@@ -105,7 +109,7 @@ export function Sidebar() {
     const path = window.location.pathname;
 
     let index = 0;
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       // find index of the menu option based on the path
       menuOptions.forEach((option, currentIndex) => {
         if (`/.factly/tagore/web${option}` === path) {
@@ -125,7 +129,9 @@ export function Sidebar() {
 
   return (
     <div
-      className={`p-5 pt-8 w-fit bg-background-sidebar h-screen flex flex-col`}
+      className={`p-5 pt-8 w-fit bg-background-sidebar h-screen flex flex-col ${
+        darkMode ? 'bg-background-sidebar-alt' : ''
+      }`}
     >
       <div className={`flex gap-x-2 items-center justify-center w-fit`}>
         <img
@@ -141,9 +147,17 @@ export function Sidebar() {
             <li
               key={index}
               className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg 
-                ${activeTab !== index && "hover:bg-button-primary"} 
-                ${activeTab === index && "bg-button-primary"} 
-                mt-2`}
+                ${
+                  activeTab !== index &&
+                  (darkMode
+                    ? 'hover:bg-button-primary-alt'
+                    : 'hover:bg-button-primary')
+                } 
+                ${
+                  activeTab === index &&
+                  (darkMode ? 'bg-button-primary-alt' : 'bg-button-primary')
+                } 
+                mt-2 ${darkMode && 'text-white'}`}
               onClick={() => setActiveTab(index)}
             >
               <div className="flex gap-x-4">
@@ -163,9 +177,9 @@ export function Sidebar() {
               <Link to={option.linkTo}>
                 <li
                   className={`flex flex-row items-center gap-4 p-2 ${
-                    option.name !== "Logout"
-                      ? "hover:bg-button-primary"
-                      : "hover:bg-red-600 hover:text-white"
+                    option.name !== 'Logout'
+                      ? 'hover:bg-button-primary'
+                      : 'hover:bg-red-600 hover:text-white'
                   } cursor-pointer`}
                   onClick={() => {
                     if (option?.onClick) {
@@ -173,10 +187,10 @@ export function Sidebar() {
                     }
                   }}
                 >
-                  {option.name === "View Profile" ? (
+                  {option.name === 'View Profile' ? (
                     <div className="bg-red-400 rounded-full text-white text-center  h-6 w-6 ">
-                      {" "}
-                      F{" "}
+                      {' '}
+                      F{' '}
                     </div>
                   ) : (
                     <img src={option.icon} />
@@ -189,12 +203,16 @@ export function Sidebar() {
         )}
         {/* manage profile button */}
         <button
-          className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary rounded pr-4 pl-4 pt-2 pb-2`}
+          className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${
+            darkMode && 'bg-button-primary-alt'
+          } rounded pr-4 pl-4 pt-2 pb-2`}
           onClick={() => setOpenMenu((prevState) => !prevState)}
         >
           <div className="flex flex-row gap-4 items-center">
-            <div className="bg-red-400 p-2 rounded-full text-white"> FM </div>
-            <span>{getOrgName("Factly Media and Research")}</span>
+            <div className={`bg-red-400 p-2 rounded-full text-white`}> FM </div>
+            <span className={`${darkMode && 'text-white'}`}>
+              {getOrgName('Factly Media and Research')}
+            </span>
           </div>
           <img src={Arrow} />
         </button>

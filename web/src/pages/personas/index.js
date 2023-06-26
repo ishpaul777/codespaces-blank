@@ -7,6 +7,7 @@ import avtarImg from "../../assets/avatar.png";
 import Pagination from "./pagination";
 import { getPersona } from "../../actions/persona";
 import { errorToast } from "../../util/toasts";
+import useDarkMode from "../../hooks/useDarkMode";
 
 export default function Personas() {
   const [tab, setTab] = useState("All");
@@ -16,7 +17,7 @@ export default function Personas() {
     search_query: "",
     count: 0,
   });
-
+  const { darkMode } = useDarkMode();
   const [searchQuery, setSearchQuery] = useState("");
   // personData is the data of the persona on the current page
   const [personaData, setPersonaData] = useState([]);
@@ -48,7 +49,7 @@ export default function Personas() {
     <div className="m-10">
       {/* This is Page header */}
       <div className="flex flex-row justify-between items-center">
-        <h2 className="text-3xl font-medium">Personas</h2>
+        <h2 className={`text-3xl font-medium ${darkMode && 'text-white'}`}>Personas</h2>
 
         <div className="flex flex-row w-1/2 items-center gap-2">
           <Search

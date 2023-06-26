@@ -13,10 +13,11 @@ import { errorToast, successToast } from "../../util/toasts";
 import PromptBar from "./PromptBar";
 import SideBar from "./sidebar.js";
 import ChatBar from "./chatbar.js";
+import useDarkMode from "../../hooks/useDarkMode";
 
 export default function ChatPage() {
   const navigate = useNavigate();
-
+  const { darkMode } = useDarkMode();
   const [stream, setStream] = useState(true);
   const [initialPrompt, setIntialPrompt] = useState("");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
@@ -589,7 +590,7 @@ export default function ChatPage() {
         } flex flex-row ease-in-out duration-300 gap-4 z-50`}
       >
         <div
-          className={`bg-white w-full relative shadow-md ${
+          className={`${darkMode ? 'bg-background-sidebar-alt':'bg-white'} w-full relative shadow-md ${
             promptSiderCollapse || "pt-4 pl-4"
           }`}
         >
