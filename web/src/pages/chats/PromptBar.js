@@ -227,7 +227,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
     const collection = promptCollections.find(
       (collection) => collection.id === dragOverCollectionId
     );
-    const prompt = collection.prompt_templates.find(
+    const prompt = collection?.prompt_templates?.find(
       (prompt) => prompt.id === draggingPromptId
     );
     // console.log("dragOverCollectionId", collection);

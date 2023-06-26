@@ -84,7 +84,7 @@ export default function SideBar({
         (collection) => collection.id === dragOverCollectionId
       );
 
-      const chat = collection.chats.find((chat) => chat.id === draggingChatId);
+      const chat = collection?.chats?.find((chat) => chat.id === draggingChatId);
       if (!chat) {
         dispatch(
           addChatToCollection(dragOverCollectionId, draggingChatId, chatHistory)
@@ -159,7 +159,7 @@ export default function SideBar({
               handleDrop();
             }
           }}
-          className={`p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
+          className={`p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 mr-4
           ${chatID === chat?.id && "bg-hover-on-white"} ${
             isMobileScreen && "border-b border-gray-300"
           }`}
@@ -381,7 +381,7 @@ export default function SideBar({
                         // e.preventDefault();
                         handleDragEnter(item.id);
                       }}
-                      className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2 ${
+                      className={`mr-4 text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2 ${
                         isMobileScreen
                           ? "w-[45%] p-1"
                           : "flex p-2  justify-between"
