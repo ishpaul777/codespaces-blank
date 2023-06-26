@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Input } from "../../inputs/Input";
 import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
-import { factcheckConclusionPrompt } from "../../../constants/factcheck";
 import { generateTextFromPrompt } from "../../../actions/text";
 
 export const FactcheckConclusion = ({ handleSubmit, editor }) => {
@@ -17,11 +16,10 @@ export const FactcheckConclusion = ({ handleSubmit, editor }) => {
 
   const handleClick = async () => {
     setLoading(true);
-    let conclusionPrompt = factcheckConclusionPrompt;
-    conclusionPrompt = conclusionPrompt.replace(
-      "{article_written_till_now}",
-      editor?.getHTML()
-    );
+    let conclusionPrompt = `Generate a conclusion having exactly ${getWordsForConclusion(
+      maxTokens
+    )} words that wraps up the whole article written till now - ${editor?.getText()}.
+      It should mainly focus on the following highlights - ${highlights}. Don't add any new information in the conclusion or start with "Conclusion: ".`;
 
     conclusionPrompt = conclusionPrompt.replace("{highlights}", highlights);
 
@@ -31,9 +29,7 @@ export const FactcheckConclusion = ({ handleSubmit, editor }) => {
       max_tokens: maxTokens,
       model: "gpt-3.5-turbo",
       stream: false,
-      additional_instructions: `The generated text should have exactly ${getWordsForConclusion(
-        maxTokens
-      )} be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.`,
+      additional_instructions: `The generated text should have e valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.`,
     };
 
     const response = await generateTextFromPrompt(request);
