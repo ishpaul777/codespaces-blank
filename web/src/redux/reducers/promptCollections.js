@@ -29,10 +29,8 @@ const promptCollectionsReducer = (state = initialState, action) => {
       // add chat to new collection
       return newState.map((collection) => {
         if (collection.id === collectionId) {
-          return {
-            ...collection,
-            prompt_templates: [prompt, ...collection.prompt_templates],
-          };
+          if (collection.prompt_templates) return {...collection, prompt_templates: [prompt, ...collection.prompt_templates],};
+          else return {...collection, prompt_templates: [prompt]}
         } else {
           return collection;
         }

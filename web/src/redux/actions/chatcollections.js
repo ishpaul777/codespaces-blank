@@ -114,7 +114,8 @@ const addChatToCollection =
       });
   };
 
-const removeChatFromCollections = (chatId, chatHistory) => async (dispatch) => {
+const removeChatFromCollections = (chatId, collectionId) => async (dispatch) => {
+
   return fetch(
     `${process.env.REACT_APP_TAGORE_API_URL}/chat/collections/remove/${chatId}`,
     {
@@ -133,8 +134,6 @@ const removeChatFromCollections = (chatId, chatHistory) => async (dispatch) => {
       }
     })
     .then((data) => {
-      const chat = chatHistory.find((c) => c.id === chatId);
-      const collectionId = chat.chat_collection_id;
       dispatch({
         type: "REMOVE_CHAT_FROM_CHAT_COLLECTION",
         payload: { collectionId, chatId },
