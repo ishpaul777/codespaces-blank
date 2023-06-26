@@ -7,19 +7,19 @@ export const OutputLength = ({
   labelSize,
   labelFontWeight,
 }) => {
-  const [customLength, setCustomLength] = useState(100);
+  const [customLength, setCustomLength] = useState(50);
 
   let outputLengthList = [
     {
-      maxLength: 200,
+      maxLength: 100,
       title: "S",
     },
     {
-      maxLength: 400,
+      maxLength: 200,
       title: "M",
     },
     {
-      maxLength: 600,
+      maxLength: 300,
       title: "L",
     },
     {
@@ -29,7 +29,7 @@ export const OutputLength = ({
   ];
 
   const [selectedOutputLength, setSelectedOutputLength] = useState({
-    length: 200,
+    length: 100,
     name: "S",
   });
 

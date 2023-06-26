@@ -5,7 +5,7 @@ import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
 export const ParagraphGenerator = ({ topic, handleCompose, editor }) => {
-  const [maxTokens, setMaxTokens] = useState(200);
+  const [maxTokens, setMaxTokens] = useState(100);
 
   const [loading, setLoading] = useState(false);
 
@@ -66,7 +66,7 @@ export const ParagraphGenerator = ({ topic, handleCompose, editor }) => {
       outlineForm.keywords.value
     }]. The tone of voice should be [${
       outlineForm.tone.value
-    }]. The previous content of the blog is ${editor?.getHTML()}. Generate a paragraph that elaborates on the subheading using the provided keywords and tone of voice. Your response should include the subheading as h2 tag and generated paragraph as p tag.`;
+    }]. The previous content of the blog is ${editor?.getHTML()}. Generate a paragraph that elaborates on the subheading using the provided keywords and tone of voice. Your response should have exactly ${maxTokens} words and should include the subheading as h2 tag and generated paragraph as p tag.`;
 
     const requestBody = {
       input: prompt,

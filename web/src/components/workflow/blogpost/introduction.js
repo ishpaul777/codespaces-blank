@@ -5,7 +5,7 @@ import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
 export const Introduction = ({ contentBrief, handleCompose }) => {
-  const [maxTokens, setMaxTokens] = useState(200);
+  const [maxTokens, setMaxTokens] = useState(100);
   const [loading, setLoading] = useState(false);
   const [introductionForm, setIntroductionForm] = useState({
     title: {
@@ -64,7 +64,7 @@ export const Introduction = ({ contentBrief, handleCompose }) => {
     Audience: [${introductionForm.audience.value}]
     Tone of Voice: [${introductionForm.tone.value}}]
     Tone of Voice: [${contentBrief}]
-    Generate an introduction for your blog that captures the attention of your target audience and sets the tone for the rest of the content. Ensure it aligns with the given title, reflects the interests of the audience, conveys the desired tone of voice and incorporates the key points from the provided content brief.
+    Generate an introduction for your blog that captures the attention of your target audience and sets the tone for the rest of the content. Ensure it aligns with the given title, reflects the interests of the audience, conveys the desired tone of voice and incorporates the key points from the provided content brief. It should have exactly ${maxTokens} words.
     `;
 
     const requestBody = {

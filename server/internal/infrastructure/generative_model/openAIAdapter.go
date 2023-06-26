@@ -88,9 +88,9 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModel(prompt, model, additionalInst
 	messages = append(messages, textGenerationMessage)
 	ctx := context.Background()
 	req := openai.ChatCompletionRequest{
-		Messages:  messages,
-		Model:     model,
-		MaxTokens: int(maxTokens),
+		Messages: messages,
+		Model:    model,
+		// MaxTokens: int(maxTokens),
 	}
 
 	resp, err := o.Client.CreateChatCompletion(ctx, req)

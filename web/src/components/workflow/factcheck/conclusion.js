@@ -6,7 +6,7 @@ import { factcheckConclusionPrompt } from "../../../constants/factcheck";
 import { generateTextFromPrompt } from "../../../actions/text";
 
 export const FactcheckConclusion = ({ handleSubmit, editor }) => {
-  const [maxTokens, setMaxTokens] = useState(200);
+  const [maxTokens, setMaxTokens] = useState(100);
   const [highlights, setHighlights] = useState("");
 
   const handleChange = (e) => {
@@ -31,8 +31,9 @@ export const FactcheckConclusion = ({ handleSubmit, editor }) => {
       max_tokens: maxTokens,
       model: "gpt-3.5-turbo",
       stream: false,
-      additional_instructions:
-        "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
+      additional_instructions: `The generated text should have exactly ${getWordsForConclusion(
+        maxTokens
+      )} be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.`,
     };
 
     const response = await generateTextFromPrompt(request);
@@ -40,6 +41,19 @@ export const FactcheckConclusion = ({ handleSubmit, editor }) => {
     handleSubmit(response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""));
     setLoading(false);
   };
+
+  function getWordsForConclusion(max) {
+    switch (max) {
+      case 100:
+        return 30;
+      case 200:
+        return 60;
+      case 300:
+        return 90;
+      default:
+        return Math.floor(max / 4);
+    }
+  }
 
   return (
     <div className="p-7 bg-white rounded-lg flex flex-col gap-8">

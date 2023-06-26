@@ -5,7 +5,7 @@ import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
 export const Conclusion = ({ outline, handleCompose, editor }) => {
-  const [maxTokens, setMaxTokens] = useState(200);
+  const [maxTokens, setMaxTokens] = useState(100);
 
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +57,9 @@ export const Conclusion = ({ outline, handleCompose, editor }) => {
 
     setLoading(true);
 
-    let prompt = `Generate a conclusion having 100 to 150 words that wraps up the outline - ${
+    let prompt = `Generate a conclusion having exactly ${getWordsForConclusion(
+      maxTokens
+    )} words that wraps up the outline - ${
       conclusionForm.outline.value
     } discussed in the blog post. The tone of voice should be [${
       conclusionForm.tone.value
@@ -65,7 +67,6 @@ export const Conclusion = ({ outline, handleCompose, editor }) => {
     const requestBody = {
       input: prompt,
       provider: "openai",
-      max_tokens: maxTokens,
       model: "gpt-3.5-turbo",
       stream: false,
       additional_instructions:
@@ -76,6 +77,19 @@ export const Conclusion = ({ outline, handleCompose, editor }) => {
     handleCompose(response.output.replace(/\n|\t|(?<=>)\s*/g, ""));
     setLoading(false);
   };
+
+  function getWordsForConclusion(max) {
+    switch (max) {
+      case 100:
+        return 30;
+      case 200:
+        return 60;
+      case 300:
+        return 90;
+      default:
+        return Math.floor(max / 4);
+    }
+  }
 
   return (
     <div className="p-7 bg-white rounded-lg flex flex-col gap-8">

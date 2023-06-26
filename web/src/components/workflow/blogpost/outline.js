@@ -5,7 +5,7 @@ import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
 export const Outline = ({ handleCompose }) => {
-  const [maxTokens, setMaxTokens] = useState(200);
+  const [maxTokens, setMaxTokens] = useState(3);
 
   const [output, setOutput] = useState({
     output: "",
@@ -64,12 +64,11 @@ export const Outline = ({ handleCompose }) => {
       return;
     }
     setLoading(true);
-    let prompt = `You are writing a blog post on [${outlineForm.topic.value}] targeting [${outlineForm.audience.value}]. The tone of the blog should be [${outlineForm.tone.value}]. Please generate an outline for the blog post, providing relevant points. The outline should be a numbered list with 3-6 items and each item should have at max 10-15 words. The output format would be  - 1.<outline point>, 2.<outline point>, etc. it should strictly not contain any other text then the numbered list. It should not contain points like introduction, conclusion, etc.`;
+    let prompt = `You are writing a blog post on [${outlineForm.topic.value}] targeting [${outlineForm.audience.value}]. The tone of the blog should be [${outlineForm.tone.value}]. Please generate an outline for the blog post, providing relevant points. The outline should be a numbered list with exactly ${maxTokens} items and each item should have at max 10-15 words. The output format would be  - 1.<outline point>, 2.<outline point>, etc. it should strictly not contain any other text then the numbered list. It should not contain points like introduction, conclusion, etc.`;
 
     const requestBody = {
       input: prompt,
       provider: "openai",
-      max_tokens: maxTokens,
       model: "gpt-3.5-turbo",
       stream: false,
     };
@@ -87,6 +86,19 @@ export const Outline = ({ handleCompose }) => {
   const handleNext = () => {
     handleCompose(output.output);
   };
+
+  function getOutlinePointsFromNumberofTokens(numberOfTokens) {
+    switch (numberOfTokens) {
+      case 100:
+        return 3;
+      case 200:
+        return 5;
+      case 300:
+        return 7;
+      default:
+        return Math.floor(numberOfTokens / 45);
+    }
+  }
 
   return (
     <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
@@ -127,7 +139,8 @@ export const Outline = ({ handleCompose }) => {
       <OutputLength
         label={"Output length"}
         setValue={(output) => {
-          setMaxTokens(output);
+          const nOfPoints = getOutlinePointsFromNumberofTokens(output);
+          setMaxTokens(nOfPoints);
         }}
         labelFontWeight={"font-medium"}
         labelSize={"text-base"}
