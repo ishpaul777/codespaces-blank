@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 
 const useSocket = (url) => {
-	const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(null);
 
-	useEffect(() => {
-		const socketInstance = new WebSocket(url);
-		setSocket(socketInstance);
+  useEffect(() => {
+    const socketInstance = new WebSocket(url);
+    setSocket(socketInstance);
 
-		// Clean up the socket connection on unmount
-		return () => {
-			socketInstance.close();
-		};
-	}, [url]);
+    // Clean up the socket connection on unmount
+    return () => {
+      socketInstance.close();
+    };
+  }, [url]);
 
-	return socket;
+  return socket;
 };
 
 export default useSocket;

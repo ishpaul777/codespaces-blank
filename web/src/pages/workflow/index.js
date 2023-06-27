@@ -13,9 +13,9 @@ export const Workflow = () => {
       link: "/workflows/blogpost",
     },
     {
-      title: "Write a factcheck",
+      title: "Write a fact check",
       description:
-        "Introducing our FactCheck Article Writer Chatbot, your go-to companion for crafting meticulously researched and reliable fact-check articles.",
+        "Introducing our Fact Check Article Writer Chatbot, your go-to companion for crafting meticulously researched and reliable fact-check articles.",
       image: Factcheck,
       link: "/workflows/fact-check",
     },
@@ -38,7 +38,7 @@ export const Workflow = () => {
               alt={option.title}
             />
             <div className="flex gap-2 flex-col">
-              <h3 class="text-lg font-semibold text-gray-700">
+              <h3 className="text-lg font-semibold text-gray-700">
                 {option.title}
               </h3>
               <p className="text-gray-500 flex-1 line-clamp-6 text-base">

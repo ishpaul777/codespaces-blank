@@ -73,13 +73,13 @@ export default function FactcheckWorkflow() {
           }}
         ></IntroductionForm>
       ),
-      title: "Factcheck Introduction Paragraph",
+      title: "Fact check Introduction Paragraph",
       index: "1",
       ref: createRef(null),
     },
     {
       index: "2",
-      title: "Search Existing Factcheck",
+      title: "Search Existing Fact check",
       component: (
         <ExistingFactcheck
           handleCompose={(output) => {

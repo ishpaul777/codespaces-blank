@@ -114,35 +114,35 @@ const addChatToCollection =
       });
   };
 
-const removeChatFromCollections = (chatId, collectionId) => async (dispatch) => {
-
-  return fetch(
-    `${window.REACT_APP_TAGORE_API_URL}/chat/collections/remove/${chatId}`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    }
-  )
-    .then(async (response) => {
-      if (response.status === 200) {
-        return response.json();
-      } else {
-        return response.json().then((data) => {
-          throw Error(data.errors);
-        });
+const removeChatFromCollections =
+  (chatId, collectionId) => async (dispatch) => {
+    return fetch(
+      `${window.REACT_APP_TAGORE_API_URL}/chat/collections/remove/${chatId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
       }
-    })
-    .then((data) => {
-      dispatch({
-        type: "REMOVE_CHAT_FROM_CHAT_COLLECTION",
-        payload: { collectionId, chatId },
+    )
+      .then(async (response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          return response.json().then((data) => {
+            throw Error(data.errors);
+          });
+        }
+      })
+      .then((data) => {
+        dispatch({
+          type: "REMOVE_CHAT_FROM_CHAT_COLLECTION",
+          payload: { collectionId, chatId },
+        });
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
+  };
 
 export {
   createCollection,
