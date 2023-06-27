@@ -4,7 +4,13 @@ import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const ParagraphGenerator = ({ topic, handleCompose, editor }) => {
+export const ParagraphGenerator = ({
+  topic,
+  handleCompose,
+  editor,
+  tone,
+  audience,
+}) => {
   const [maxTokens, setMaxTokens] = useState(100);
 
   const [loading, setLoading] = useState(false);
@@ -18,12 +24,9 @@ export const ParagraphGenerator = ({ topic, handleCompose, editor }) => {
       value: "",
       error: "",
     },
-    tone: {
-      value: "",
-      error: "",
-    },
   });
 
+  console.log();
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newFormObject = { ...outlineForm };
@@ -64,9 +67,8 @@ export const ParagraphGenerator = ({ topic, handleCompose, editor }) => {
       outlineForm.about.value
     }]. The keywords for the blog post are [${
       outlineForm.keywords.value
-    }]. The tone of voice should be [${
-      outlineForm.tone.value
-    }]. The previous content of the blog is ${editor?.getHTML()}. Generate a paragraph that elaborates on the subheading using the provided keywords and tone of voice. Your response should have exactly ${maxTokens} words and should include the subheading as h2 tag and generated paragraph as p tag.`;
+    }]. The tone of voice is [${tone}] and the targeted audience is [${audience}]. The previous content of the blog is ${editor?.getHTML()}. Generate a paragraph that elaborates on the subheading using the provided keywords and tone of voice. Your response should have exactly ${maxTokens} words and should include the subheading as h2 tag and generated paragraph as p tag. The paragraph should not mention what tone of voice is used and the audience targeted(!IMPORTANT).
+    `;
 
     const requestBody = {
       input: prompt,
@@ -108,17 +110,6 @@ export const ParagraphGenerator = ({ topic, handleCompose, editor }) => {
         initialValue={outlineForm.keywords.value}
         onChange={handleChange}
         error={outlineForm.keywords.error}
-      ></Input>
-      <Input
-        type={"input"}
-        label={"Tone of voice"}
-        placeholder={"describe this point"}
-        labelFontWeight={"font-medium"}
-        labelFontSize={"text-base"}
-        name={"tone"}
-        initialValue={outlineForm.tone.value}
-        onChange={handleChange}
-        error={outlineForm.tone.error}
       ></Input>
       <OutputLength
         label={"Output length"}

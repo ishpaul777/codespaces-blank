@@ -79,7 +79,12 @@ export const Introduction = ({ contentBrief, handleCompose }) => {
 
     const response = await generateTextFromPrompt(requestBody);
     setLoading(false);
-    handleCompose(response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""));
+    handleCompose(
+      response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""),
+      introductionForm.title.value,
+      introductionForm.tone.value,
+      introductionForm.audience.value
+    );
   };
   return (
     <div className="p-7 bg-white rounded-lg flex flex-col gap-8">

@@ -32,14 +32,14 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       linkTo: "/documents",
     },
     {
+      name: "Chat",
+      icon: Chat,
+      linkTo: "/chats/dashboard",
+    },
+    {
       name: "Images",
       icon: Images,
       linkTo: "/images",
-    },
-    {
-      name: "Personas",
-      icon: Templates,
-      linkTo: "/personas",
     },
     {
       name: "Workflows",
@@ -47,9 +47,9 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       linkTo: "/workflows",
     },
     {
-      name: "Chat",
-      icon: Chat,
-      linkTo: "/chats/dashboard",
+      name: "Personas",
+      icon: Templates,
+      linkTo: "/personas",
     },
   ];
 
