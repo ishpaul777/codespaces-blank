@@ -5,6 +5,7 @@ export let factcheckIntroPrompt = `Using the information below, write a focused 
 - Claim sources: {claimsources}
 - Fact: {fact}
 - Rating: {rating}
+The content claimed by [Claimant] through [Claim Sources] mentioned above is [rating].
 Mention the claim source link in the introduction paragraph using the link html tags(!IMPORTANT). Don't mention the whole link itself (!IMPORTANT). 
 Don't mention the rating in introduction paragraph(!IMPORTANT).
 After the introduction paragraph add a <blockquote></blockquote>, inside that mention exactly 2 things 1-Claim: {claim provided above}, 2-Fact:{fact provided above and the rating is {rating provided above}}(!IMPORTANT).
