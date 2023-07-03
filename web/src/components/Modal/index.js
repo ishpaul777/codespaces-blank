@@ -20,7 +20,7 @@ function Modal({ open, onClose, children, closeButton = true }) {
     <>
       {open && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ">
-          <div className="bg-white rounded-lg shadow-lg p-4">
+          <div className="bg-white rounded-lg shadow-lg px-4 py-2">
             {closeButton && (
               <div className="pb-5" onClick={onClose}>
                 <AiOutlineClose className="ml-auto" size={20} />
