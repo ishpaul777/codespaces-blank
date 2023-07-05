@@ -2,14 +2,17 @@ import { Outlet } from "react-router-dom";
 import { Sidebar } from "./sidebar";
 import { SidebarAlt } from "./sidebarAlt";
 import { useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer} from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";
 import MenuIcon from "../MenuIcon";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Layout() {
   const { isMobileScreen } = useWindowSize();
   const [sideBarOpen, setSidebarOpen] = useState(false);
 
+
+    
   return (
     <div
       className={`${
@@ -38,7 +41,18 @@ export default function Layout() {
       >
         <Outlet></Outlet>
       </main>
-      <ToastContainer />
+      <ToastContainer
+         toastClassName={ ({ type }) =>
+          type === "error"
+            ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
+            : type === "success"
+            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+            : type === "warning"
+            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+            : ""
+        }
+        className="space-y-4  "
+      />
     </div>
   );
 }

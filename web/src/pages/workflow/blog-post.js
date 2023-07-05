@@ -232,7 +232,18 @@ export default function BlogPostWorkflow() {
 
   return (
     <div className="w-full h-screen flex">
-      <ToastContainer />
+     <ToastContainer
+         toastClassName={ ({ type }) =>
+          type === "error"
+            ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
+            : type === "success"
+            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+            : type === "warning"
+            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+            : ""
+        }
+        className="space-y-4  "
+      />
       {loading ? (
         <div className="w-full h-full justify-center items-center flex">
           <ClipLoader size={"20px"} />
