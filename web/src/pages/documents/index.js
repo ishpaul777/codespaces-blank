@@ -173,7 +173,12 @@ export default function DocumentPage() {
                   key={index}
                 >
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black cursor-pointer`}
+                    onClick={() => {
+                      navigate(
+                        `/documents/create?id=${value.id}&isEdit=true`
+                      );
+                    }}
                   >
                     {value.title}
                   </td>
