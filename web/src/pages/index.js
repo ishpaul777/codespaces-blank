@@ -94,7 +94,7 @@ export function HomePage() {
   }, []);
 
   return (
-    <div className="my-16 mx-10 ">
+    <div className="my-16 mx-10 scrollbar-hide">
       <div className="flex flex-row justify-between  items-center ">
         <h2 className={`text-3xl  mt-8 md:mt-0 font-medium ${darkMode && 'text-white'}`}>Dashboard</h2>
       </div>
@@ -102,21 +102,21 @@ export function HomePage() {
         {menuOptions.map((option) => (
           <Link
             to={option.link}
-            className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 transition-all focus:ring-gray-400 focus:shadow-xl duration-150 rounded-lg shadow-sm hover:shadow-lg relative hover:ring-gray-300 hover:ring-2 ring-1 ring-gray-200  bg-white"
+            className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 transition-all focus:ring-gray-400 focus:shadow-xl duration-150 rounded-lg shadow-sm hover:shadow-lg relative hover:ring-gray-300 hover:ring-2 ring-1 ring-gray-200  bg-white dark:bg-background-sidebar-alt dark:text-white dark:ring-background-secondary-alt"
           >
             <img
-              className="md:w-48 w-full md:h-52 h-full"
+              className="md:w-48 w-full h-full"
               src={option.image}
               alt={option.title}
             />
             <div className="flex gap-2 flex-col">
-              <h3 className="text-lg font-semibold text-gray-700">
+              <h3 className="text-lg font-semibold text-gray-700 dark:text-white">
                 {option.title}
               </h3>
-              <p className="text-gray-500 flex-1 line-clamp-6 text-base">
+              <p className="text-gray-500 flex-1 line-clamp-6 text-base dark:text-gray-200">
                 {option.description}
               </p>
-              <BsArrowRightShort className="w-8 h-8 text-gray-700 ml-auto" />
+              <BsArrowRightShort className="w-8 h-8 text-gray-700 ml-auto dark:text-white" />
             </div>
           </Link>
         ))}

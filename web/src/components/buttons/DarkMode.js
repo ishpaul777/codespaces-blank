@@ -5,7 +5,7 @@ export default function DarkMode() {
 
   return (
     <button
-      className="fixed top-10 right-10 bg-white z-50 p-4"
+      className={`fixed top-10 right-10 z-50 bg-transparent p-4 dark:text-white rounded-md shadow-lg`}
       onClick={toggleDarkMode}
     >
       Switch Theme
