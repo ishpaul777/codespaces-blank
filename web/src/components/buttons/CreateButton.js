@@ -1,7 +1,5 @@
 import { AiOutlinePlus } from "react-icons/ai";
-import useWindowSize from "../../hooks/useWindowSize";
 export function CreateButton({ text = "Create", onClick = () => {} }) {
-  const { isMobileScreen } = useWindowSize();
   return (
     <button
       type="button"
@@ -11,7 +9,7 @@ export function CreateButton({ text = "Create", onClick = () => {} }) {
       onClick={onClick}
     >
       <AiOutlinePlus className="w-fit text-base" color="white" />
-      <p className=" whitespace-nowrap text-base text-white">{text}</p>
+      <p className=" whitespace-nowrap text-base text-white hidden sm:inline">{text}</p>
     </button>
   );
 }

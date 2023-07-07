@@ -71,7 +71,9 @@ export default function Personas() {
             />
           )}
           <Link to="/personas/create">
-            <CreateButton text={"Create Personas"} />
+            <CreateButton text={
+              isMobileScreen ? "" :
+              "Create Personas"} />
           </Link>
         </div>
       </div>
@@ -128,7 +130,7 @@ export default function Personas() {
       </div>
       {/* This is Page Items */}
       <div
-        className={`grid grid-rows-2 gap-6 my-10 grid-cols-2 ${
+        className={`grid grid-rows-2 gap-6 my-10 grid-cols-1 ${
           window.innerWidth < 1000 ? "sm:grid-cols-4" : "sm:grid-cols-5"
         } `}
       >
