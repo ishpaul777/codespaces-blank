@@ -9,6 +9,7 @@ import { getPersona } from "../../actions/persona";
 import { errorToast } from "../../util/toasts";
 import useWindowSize from "../../hooks/useWindowSize";
 import useDarkMode from "../../hooks/useDarkMode";
+import sachLogo from "../../assets/sach_logo.svg";
 
 export default function Personas() {
   const [tab, setTab] = useState("All");
@@ -131,6 +132,15 @@ export default function Personas() {
           window.innerWidth < 1000 ? "sm:grid-cols-4" : "sm:grid-cols-5"
         } `}
       >
+        <PersonaCard
+          key={-1}
+          image={sachLogo}
+          name={"SACH Fact Check"}
+          desc={
+            "Searches for existing Fact Checks in SACH and generate content accordingly. SACH (Search Application for Claims & Hoaxes) is a web based search application that enables one to search for fact-checks published by organizations around the world using text."
+          }
+          id={-1}
+        />
         {personaData.map((persona, index) => (
           <PersonaCard
             key={index}

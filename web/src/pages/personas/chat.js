@@ -438,7 +438,7 @@ export const PersonaChat = () => {
           />
           <main className="main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-full">
             <div className="relative w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
-              <div className={`sticky px-8 py-4 top-0 w-full mb-1 bg-body`}>
+              <div className={`sticky px-8 py-4 top-0 w-full mb-1 bg-body z-[999]`}>
                 {/* chat header */}
                 {/* <BiChevronLeft size={28} /> */}
                 <span className="text-lg font-bold px-8">

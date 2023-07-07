@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { CreateButton } from "../../components/buttons/CreateButton";
 import Search from "../../components/search";
 // import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import Modal from "../../components/Modal";
 import { useEffect, useState } from "react";
 import { deleteDocument, getDocuments } from "../../actions/text";
 import moment from "moment";
@@ -104,6 +105,10 @@ export default function DocumentPage() {
       });
   };
   const { isMobileScreen } = useWindowSize();
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+
   return (
     // this is the main page container
     <div className="my-16 mx-10 min-w-[230px] ">
@@ -170,7 +175,7 @@ export default function DocumentPage() {
                   key={index}
                 >
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm ${darkMode ? 'bg-background-sidebar-alt text-white': 'bg-white'} font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
                   >
                     {value.title}
                   </td>
@@ -200,7 +205,8 @@ export default function DocumentPage() {
                     <div
                       className={`${darkMode ? '':'bg-background-secondary'} py-2 px-4 rounded-md cursor-pointer hover:bg-[#FF0000] hover:text-white`}
                       onClick={() => {
-                        handleDelete(value?.id);
+                        setDeleteId(value.id);
+                        setShowDeleteModal(true);
                       }}
                     >
                       Delete
@@ -212,13 +218,47 @@ export default function DocumentPage() {
           </tbody>
         </table>
       </div>
+      <Modal
+        open={showDeleteModal}
+        onClose={() => { setShowDeleteModal(false) }}
+        closeButton={false}
+      >
+        <div className="text-left">
+          <h3 className="text-xl font-medium mb-4 border-b pb-4 border-gray-300">Delete Document</h3>
+          <div className="bg-red-100 p-4 text-[#FF0000] rounded-md mb-4 max-w-md font-semibold">
+            Continuing with this action will delete the document permanently. Do you really want to delete the document?
+          </div>
+          <div className="flex justify-end w-full gap-4 border-t pt-4 border-gray-300">
+            <div>
+              <button className="bg-background-secondary hover:bg-gray-200 text-gray-800 py-2 px-4 rounded"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteId("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+            <div>
+              <button className="bg-[#FF0000] hover:bg-red-600 text-white py-2 px-4 rounded"
+                onClick={() => {
+                  handleDelete(deleteId);
+                  setShowDeleteModal(false);
+                  setDeleteId("");
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
       {
         // this is the pagination
         documentPageData.count > pagination.limit && (
           <div
-            className={`flex justify-between mt-6 ${
-              pagination.page == 1 && "flex-row-reverse"
-            }`}
+            className={`flex justify-between mt-6 ${pagination.page == 1 && "flex-row-reverse"
+              }`}
           >
             {/* previous button */}
             {pagination.page > 1 && (

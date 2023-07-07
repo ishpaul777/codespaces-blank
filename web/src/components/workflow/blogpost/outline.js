@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../../inputs/Input";
 import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const Outline = ({ handleCompose }) => {
+export const Outline = ({ handleCompose, title, audience, tone }) => {
   const [maxTokens, setMaxTokens] = useState(3);
 
   const [output, setOutput] = useState({
@@ -19,15 +19,16 @@ export const Outline = ({ handleCompose }) => {
       value: "",
       error: "",
     },
-    audience: {
-      value: "",
-      error: "",
-    },
-    tone: {
-      value: "",
-      error: "",
-    },
   });
+
+  useEffect(() => {
+    setOutlineForm({
+      topic: {
+        value: title,
+        error: "",
+      },
+    });
+  }, [title, audience, tone]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +65,7 @@ export const Outline = ({ handleCompose }) => {
       return;
     }
     setLoading(true);
-    let prompt = `You are writing a blog post on [${outlineForm.topic.value}] targeting [${outlineForm.audience.value}]. The tone of the blog should be [${outlineForm.tone.value}]. Please generate an outline for the blog post, providing relevant points. The outline should be a numbered list with exactly ${maxTokens} items and each item should have at max 10-15 words. The output format would be  - 1.<outline point>, 2.<outline point>, etc. it should strictly not contain any other text then the numbered list. It should not contain points like introduction, conclusion, etc.`;
+    let prompt = `You are writing a blog post on [${outlineForm.topic.value}] targeting [${audience}]. The tone of the blog should be [${tone}]. Please generate an outline for the blog post, providing relevant points. The outline should be a numbered list with exactly ${maxTokens} items and each item should have at max 10-15 words. The output format would be  - 1.<outline point>, 2.<outline point>, etc. it should strictly not contain any other text then the numbered list. It should not contain points like introduction, conclusion, etc.`;
 
     const requestBody = {
       input: prompt,
@@ -114,7 +115,7 @@ export const Outline = ({ handleCompose }) => {
         name={"topic"}
         required={true}
       ></Input>
-      <Input
+      {/* <Input
         type={"input"}
         label={"Audience"}
         labelFontWeight={"font-medium"}
@@ -124,8 +125,8 @@ export const Outline = ({ handleCompose }) => {
         onChange={handleChange}
         error={outlineForm.audience.error}
         name={"audience"}
-      ></Input>
-      <Input
+      ></Input> */}
+      {/* <Input
         type={"input"}
         label={"Tone of voice"}
         initialValue={outlineForm.tone.value}
@@ -135,7 +136,7 @@ export const Outline = ({ handleCompose }) => {
         onChange={handleChange}
         error={outlineForm.tone.error}
         name={"tone"}
-      ></Input>
+      ></Input> */}
       <OutputLength
         label={"Output length"}
         setValue={(output) => {
@@ -155,9 +156,10 @@ export const Outline = ({ handleCompose }) => {
           initialValue={output.output}
         ></Input>
       )}
-      <div className="grid grid-cols-2 gap-2">
+      <div className={`grid gap-2 ${output.visibility ? "grid-cols-2" : "grid-cols-1"}
+      `}>
         <DocActionButton
-          text={"Generate"}
+          text={output.visibility ? "Regenerate" : "Generate"}
           clickAction={() => {
             handleSubmit();
           }}

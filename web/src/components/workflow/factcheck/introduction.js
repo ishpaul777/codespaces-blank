@@ -138,7 +138,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
       <Input
         label={"Fact check title"}
         onChange={handleChange}
-        placeholder={"Factcheck title goes here..."}
+        placeholder={"Fact check title goes here..."}
         type={"input"}
         error={formObject.fact_check_title.error}
         name={"fact_check_title"}

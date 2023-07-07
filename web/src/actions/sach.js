@@ -6,7 +6,6 @@ export const getRelatedFactcheck = async (title, existing_article) => {
         "Content-Type": "application/json",
       },
       method: "POST",
-      credentials: "include",
       body: JSON.stringify({
         title: title,
         existing_article: existing_article,
@@ -19,6 +18,6 @@ export const getRelatedFactcheck = async (title, existing_article) => {
     return data;
   } else {
     const errorMessage = await response.json();
-    throw new Error("unable to get related factcheck");
+    throw new Error("unable to get related fact check");
   }
 };

@@ -61,9 +61,9 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       name: 'Chat',
       icon: Chat,
       linkTo: '/chats/dashboard',
-    },
+    }
   ];
-
+  
   const handleLogout = () => {
     logout()
       .then((res) => {

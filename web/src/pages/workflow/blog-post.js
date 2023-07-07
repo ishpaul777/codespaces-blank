@@ -42,6 +42,12 @@ export default function BlogPostWorkflow() {
 
   const [outline, setOutline] = useState("");
 
+  const [commonBlogDetails, setCommonBlogDetails] = useState({
+    title: "",
+    audience: "",
+    tone: "",
+  });
+
   const handleContentChange = (value) => {
     if (value.length > 0) {
       if (content.value.length >= 600) {
@@ -63,7 +69,7 @@ export default function BlogPostWorkflow() {
     {
       component: (
         <Introduction
-          handleCompose={(output) => {
+          handleCompose={(output, title, tone, audience) => {
             setEditorData((prevState) => {
               editor?.commands.setContent(prevState + output);
               return prevState + output;
@@ -75,6 +81,12 @@ export default function BlogPostWorkflow() {
               });
               return prevState + 1;
             });
+
+            setCommonBlogDetails({
+              title: title,
+              tone: tone,
+              audience: audience,
+            });
           }}
         />
       ),
@@ -85,6 +97,9 @@ export default function BlogPostWorkflow() {
     {
       component: (
         <Outline
+          tone={commonBlogDetails.tone}
+          audience={commonBlogDetails.audience}
+          title={commonBlogDetails.title}
           handleCompose={(outline) => {
             setOutline(outline);
             // outline_points is the list of points generated from the outline component
@@ -100,6 +115,8 @@ export default function BlogPostWorkflow() {
                   <ParagraphGenerator
                     editor={editor}
                     topic={element}
+                    tone={commonBlogDetails.tone}
+                    audience={commonBlogDetails.audience}
                     handleCompose={(output) => {
                       setEditorData((prevState) => {
                         editor?.commands.setContent(prevState + output);
@@ -215,7 +232,18 @@ export default function BlogPostWorkflow() {
 
   return (
     <div className="w-full h-screen flex">
-      <ToastContainer />
+     <ToastContainer
+         toastClassName={ ({ type }) =>
+          type === "error"
+            ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
+            : type === "success"
+            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+            : type === "warning"
+            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+            : ""
+        }
+        className="space-y-4  "
+      />
       {loading ? (
         <div className="w-full h-full justify-center items-center flex">
           <ClipLoader size={"20px"} />

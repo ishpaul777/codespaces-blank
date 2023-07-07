@@ -85,7 +85,9 @@ export default function SideBar({
         (collection) => collection.id === dragOverCollectionId
       );
 
-      const chat = collection?.chats?.find((chat) => chat.id === draggingChatId);
+      const chat = collection?.chats?.find(
+        (chat) => chat.id === draggingChatId
+      );
 
       if (!chat) {
         dispatch(
@@ -191,8 +193,9 @@ export default function SideBar({
                 <span className="text-gray-500">
                   {chat?.messages[2].content.length < maxListChars
                     ? chat?.messages[2].content
-                    : `${chat?.messages[2].content.slice(0, maxListChars) + "..."
-                    }
+                    : `${
+                        chat?.messages[2].content.slice(0, maxListChars) + "..."
+                      }
                   `}
                 </span>
               )}
@@ -225,7 +228,12 @@ export default function SideBar({
                   <AiOutlineCheck
                     size={styles.iconSize}
                     onClick={() =>
-                      dispatch(removeChatFromCollections(chat.id, currentCollectionIndex))
+                      dispatch(
+                        removeChatFromCollections(
+                          chat.id,
+                          currentCollectionIndex
+                        )
+                      )
                     }
                   />
                   <AiOutlineClose
@@ -313,7 +321,18 @@ export default function SideBar({
                 </button>
               ) : (
                 <div>
-                  <ToastContainer />
+                <ToastContainer
+         toastClassName={ ({ type }) =>
+          type === "error"
+            ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
+            : type === "success"
+            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+            : type === "warning"
+            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+            : ""
+        }
+        className="space-y-4  "
+      />
                 </div>
               )}
             </>
@@ -335,8 +354,9 @@ export default function SideBar({
           <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
         </div>
         <ul
-          className={`overflow-y-auto overflow-x-hidden  ${chatSiderCollapse && "d-none"
-            }  mt-3`}
+          className={`overflow-y-auto overflow-x-hidden  ${
+            chatSiderCollapse && "d-none"
+          }  mt-3`}
           style={{ maxHeight: "65vh" }}
         >
           {collectionCreateFormVisible && (
@@ -374,10 +394,11 @@ export default function SideBar({
             </li>
           )}
           <div
-            className={`flex ${isMobileScreen
+            className={`flex ${
+              isMobileScreen
                 ? "flex-row bg-white border border-gray-300 py-3 px-4"
                 : "flex-col"
-              } flex-wrap mr-4 justify-between`}
+            } flex-wrap mr-4 justify-between`}
           >
             {collections !== null &&
               collections.length > 0 &&
@@ -392,10 +413,11 @@ export default function SideBar({
                       }}
                       className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2
                       ${currentCollectionIndex === item.id && "mr-4 "}
-                      ${isMobileScreen
+                      ${
+                        isMobileScreen
                           ? "w-[45%] p-1"
                           : "flex p-2 justify-between w-full"
-                        }
+                      }
                     ${dragOverCollectionId === item.id && "bg-hover-on-white"}
                     `}
                       onClick={() => {
@@ -462,14 +484,16 @@ export default function SideBar({
                     </li>
                     <ul
                       className={`
-                      sm-fixed sm-left-0 sm-top-0 md:static bg-white ${currentCollectionIndex === item.id &&
-                          item?.chats?.length > 0
-                          ? `${isMobileScreen
-                            ? "w-[100vw] h-screen p-4 gap-4"
-                            : "border-l-2 ml-4 border-gray-300 pl-2 w-full pr-4"
-                          }`
+                      sm-fixed sm-left-0 sm-top-0 md:static bg-white ${
+                        currentCollectionIndex === item.id &&
+                        item?.chats?.length > 0
+                          ? `${
+                              isMobileScreen
+                                ? "w-[100vw] h-screen p-4 gap-4"
+                                : "border-l-2 ml-4 border-gray-300 pl-2 w-full pr-4"
+                            }`
                           : "translate-x-0 w-0"
-                        } flex flex-col ease-in-out duration-300
+                      } flex flex-col ease-in-out duration-300
                       `}
                       style={{
                         zIndex: 100,
@@ -567,5 +591,3 @@ export default function SideBar({
     </aside>
   );
 }
-
-

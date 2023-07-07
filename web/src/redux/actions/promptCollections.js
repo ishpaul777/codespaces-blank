@@ -2,7 +2,7 @@ import { errorToast } from "../../util/toasts";
 
 const createPromptCollection = (promptCollection) => async (dispatch) => {
   return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/prompt_template_collections`,
+    `${window.REACT_APP_TAGORE_API_URL}/prompt_template_collections`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -32,7 +32,7 @@ const createPromptCollection = (promptCollection) => async (dispatch) => {
 
 const deletePromptCollection = (promptCollectionId) => async (dispatch) => {
   return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/prompt_template_collections/${promptCollectionId}`,
+    `${window.REACT_APP_TAGORE_API_URL}/prompt_template_collections/${promptCollectionId}`,
     {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -61,7 +61,7 @@ const deletePromptCollection = (promptCollectionId) => async (dispatch) => {
 
 const getAllPromptCollections = () => async (dispatch) => {
   return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/prompt_template_collections`,
+    `${window.REACT_APP_TAGORE_API_URL}/prompt_template_collections`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -91,7 +91,7 @@ const getAllPromptCollections = () => async (dispatch) => {
 const addPromptToCollection =
   (collectionId, promptId, prompts) => async (dispatch) => {
     return fetch(
-      `${process.env.REACT_APP_TAGORE_API_URL}/prompt_templates/add/${promptId}`,
+      `${window.REACT_APP_TAGORE_API_URL}/prompt_templates/add/${promptId}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -123,7 +123,7 @@ const addPromptToCollection =
 
 const removePromptFromCollection = (promptId, prompts) => async (dispatch) => {
   return fetch(
-    `${process.env.REACT_APP_TAGORE_API_URL}/prompt_templates/remove/${promptId}`,
+    `${window.REACT_APP_TAGORE_API_URL}/prompt_templates/remove/${promptId}`,
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

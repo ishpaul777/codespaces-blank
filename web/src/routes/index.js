@@ -15,6 +15,7 @@ import { PersonaChat } from "../pages/personas/chat";
 import FactcheckWorkflow from "../pages/workflow/factcheck";
 import { Workflow } from "../pages/workflow";
 import BlogPostWorkflow from "../pages/workflow/blog-post";
+import { PersonaSachChat } from "../pages/personas/sach";
 
 export const routes = [
   {
@@ -74,6 +75,10 @@ export const routes = [
   {
     path: "personas/:id/chat",
     element: <PersonaChat />,
+  },
+  {
+    path: "personas/factly/sach/chat",
+    element: <PersonaSachChat />,
   },
   {
     path: "/playground",

@@ -4,7 +4,7 @@ import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const Conclusion = ({ outline, handleCompose, editor }) => {
+export const Conclusion = ({ outline, handleCompose, editor, tone }) => {
   const [maxTokens, setMaxTokens] = useState(100);
 
   const [loading, setLoading] = useState(false);
@@ -61,9 +61,8 @@ export const Conclusion = ({ outline, handleCompose, editor }) => {
       maxTokens
     )} words that wraps up the outline - ${
       conclusionForm.outline.value
-    } discussed in the blog post. The tone of voice should be [${
-      conclusionForm.tone.value
-    }]. The previous content is ${editor?.getHTML()}`;
+    } discussed in the blog post. The tone of voice should be [${tone}]. The previous content is ${editor?.getHTML()}`;
+
     const requestBody = {
       input: prompt,
       provider: "openai",
@@ -104,17 +103,6 @@ export const Conclusion = ({ outline, handleCompose, editor }) => {
         name={"outline"}
         error={conclusionForm.outline.error}
         required={true}
-      ></Input>
-      <Input
-        type={"input"}
-        label={"Tone of voice"}
-        initialValue={conclusionForm.tone.value}
-        placeholder={"informative, friendly, etc..."}
-        labelFontWeight={"font-medium"}
-        labelFontSize={"text-base"}
-        onChange={handleChange}
-        name={"tone"}
-        error={conclusionForm.tone.error}
       ></Input>
       <OutputLength
         label={"Output length"}

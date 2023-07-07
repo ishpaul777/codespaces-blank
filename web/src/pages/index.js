@@ -31,9 +31,9 @@ export function HomePage() {
       link: "/images",
     },
     {
-      title: "Chat with a factcheck expert",
+      title: "Chat with a fact check expert",
       description:
-        "Introducing our FactCheck Article Writer Chatbot, your go-to companion for crafting meticulously researched and reliable fact-check articles. Seamlessly collaborate with an AI-powered chatbot designed to enhance your writing process and ensure your content is backed by verifiable facts",
+        "Introducing our Fact Check Article Writer Chatbot, your go-to companion for crafting meticulously researched and reliable fact-check articles. Seamlessly collaborate with an AI-powered chatbot designed to enhance your writing process and ensure your content is backed by verifiable facts",
       image: factcheckexpertHero,
       link:
         defaultPersonas.length > 0
@@ -110,7 +110,7 @@ export function HomePage() {
               alt={option.title}
             />
             <div className="flex gap-2 flex-col">
-              <h3 class="text-lg font-semibold text-gray-700">
+              <h3 className="text-lg font-semibold text-gray-700">
                 {option.title}
               </h3>
               <p className="text-gray-500 flex-1 line-clamp-6 text-base">

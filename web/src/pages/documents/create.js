@@ -574,7 +574,202 @@ export default function Document() {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      {isMobileScreen && isMobileMenuOpen && (
+        // Mobile Menu Overlay
+        <div
+          className="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 z-50"
+          onClick={toggleMobileMenu}
+        ></div>
+      )}
+
+      {isMobileScreen && (
+        // Mobile Menu Content
+        <div
+          className={` w-3/4 fixed top-0 right-0 h-screen bg-background-sidebar z-50 transition-transform transform ${
+            isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          } duration-300`}
+        >
+          <button
+            className="text-white text-2xl focus:outline-none absolute top-3 right-3 "
+            onClick={toggleMobileMenu}
+          >
+            <AiOutlineMenuUnfold className="w-8 h-8 text-black" />
+          </button>
+          <div className="w-full flex justify-center items-center h-full ">
+            {/* Mobile menu content goes here */}
+            {/* ... */}
+            <div className="w-[80%] ">
+              <div className="flex justify-between p-3">
+                <input
+                  defaultValue={documentName}
+                  placeholder="enter title for the document"
+                  className={`${
+                    isMobileScreen
+                      ? "w-[80%] outline-none p-2"
+                      : "outline-none w-2/5 p-2"
+                  }`}
+                  onChange={(e) => onNameChange(e.target.value)}
+                ></input>
+              </div>
+              {/* actions container */}
+              <div className="p-3 cursor-pointer flex flex-col gap-11">
+                {/* image container */}
+                {/* input division - each input division will have label, a form input type and input-length counter */}
+                {/* prompt section */}
+                <div className={`flex flex-col gap-2 p-2`}>
+                  {/* label division*/}
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="contentDescription"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      Content description / brief
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <textarea
+                    className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg resize-none h-32 placeholder:[${styles.input.placeholderColor}]`}
+                    placeholder="Write an article about..."
+                    maxLength={600}
+                    onChange={(e) => handlePromptChange(e.target.value)}
+                  ></textarea>
+                  <div className="flex flex-row-reverse">
+                    <p
+                      className={`text-[${styles.countColor}]`}
+                    >{`${prompt?.length}/600`}</p>
+                  </div>
+                </div>
+                {/* keywords section */}
+                <div className={`flex flex-col gap-2 p-2`}>
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="keywords"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      {" "}
+                      Keywords{" "}
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <input
+                    className={`pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg placeholder:[${styles.input.placeholderColor}]`}
+                    placeholder={"enter keywords"}
+                    onChange={(e) => setKeywords(e.target.value)}
+                  ></input>
+                </div>
+                {/* languages section */}
+                <div className={`flex flex-col gap-2 p-2`}>
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="languages"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      Select language
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <div className="flex w-full pt-2 pb-2 pl-3 pr-3 border-[${styles.input.borderColor}] border rounded-lg bg-white">
+                    <select
+                      className={`appearance-none w-[98%] cursor-pointer focus:outline-none`}
+                      onChange={(e) => setLanguage(e.target.value)}
+                    >
+                      <option value="english">English</option>
+                      <option value="hindi">Hindi</option>
+                      <option value="telugu">Telugu</option>
+                    </select>
+                    <img src={ArrowIcon} />
+                  </div>
+                </div>
+                {/* languages section */}
+                <div className={`flex flex-col gap-2`}>
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="languages"
+                      className={`font-medium text-form-label text-sm`}
+                    >
+                      Output length
+                    </label>
+                    <img src={InfoIcon} alt="info-icon" />
+                  </div>
+                  <div className="flex gap-1">
+                    {outputLengthList.map((item, index) => {
+                      let isCustom = item.title === "Custom";
+                      return (
+                        <SizeButton
+                          clickAction={handleChangeInOutputSize}
+                          key={index}
+                          title={item.title}
+                          isSelected={
+                            isCustom
+                              ? customLength === selectedOutputLength.length
+                              : item.maxLength === selectedOutputLength.length
+                          }
+                          maxSize={isCustom ? customLength : item.maxLength}
+                          isCustom={isCustom}
+                        />
+                      );
+                    })}
+                  </div>
+                  {selectedOutputLength.name === "Custom" && (
+                    <input
+                      className="p-2 rounded border"
+                      type="number"
+                      placeholder="enter custom output length"
+                      onChange={(e) => handleCustomLengthChange(e.target.value)}
+                      defaultValue={customLength}
+                    />
+                  )}
+                </div>
+                {/* document actions buttons -
+            1.compose - it will create a request to tagore-server to get the details
+            2.reset - it will reset the document to the initial state
+        */}
+                {/* <div className="w-full flex flex-col gap-2">
+                  <DocActionButton
+                    isLoading={loading}
+                    text={"Compose"}
+                    clickAction={() => handleCompose()}
+                    isPrimary={true}
+                  ></DocActionButton>
+                  {
+                    loading && (
+                      <DocActionButton
+                        text={"Stop"}
+                        clickAction={() => handleStop()}
+                      ></DocActionButton>
+                    )
+                  }
+                  {continueButtonState.visibility && (
+                    <DocActionButton
+                      isLoading={false}
+                      text={"Continue Generating"}
+                      clickAction={() => handleCompose()}
+                      isPrimary={true}
+                    ></DocActionButton>
+                  )}
+                  <DocActionButton
+                    text={"Reset"}
+                    clickAction={() => editor?.commands?.setContent("")}
+                    isPrimary={false}
+                  ></DocActionButton>
+                </div> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <ToastContainer
+         toastClassName={ ({ type }) =>
+          type === "error"
+            ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
+            : type === "success"
+            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+            : type === "warning"
+            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+            : ""
+        }
+        className="space-y-4  "
+      />
     </div>
   );
 }
