@@ -197,7 +197,7 @@ export default function ImagePage() {
 
   return (
     <div className={`my-16 ${isMobileScreen ? "mx-6 my-24" : "mx-10"}`}>
-      <h2 className={`text-3xl font-medium ${darkMode && 'text-white'}`}>Generate Images</h2>
+      <h2 className={`text-3xl font-medium dark:text-white mb-4`}>Generate Images</h2>
       <ImageSearch
         isMobileScreen={isMobileScreen}
         placeholder={
@@ -249,12 +249,12 @@ export default function ImagePage() {
               onChange={handleRangeChange}
               className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
             />
-            <span className={`${darkMode ? 'text-[#BEBEBE]' : 'text-gray-600'}`}>{imageRequest.n}</span>
+            <span className={`dark:text-[#BEBEBE] text-gray-600}`}>{imageRequest.n}</span>
           </div>
         <div className="mr-4 flex gap-2">
           <select
             name="provider"
-            className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
+            className="p-2 bg-button-primary dark:bg-background-sidebar-alt text-black rounded-lg outline-none border-r-4 border-transparent dark:text-white"
             onChange={handleProviderChange}
           >
             <option value="stableDiffusion">Stable Diffusion</option>
@@ -289,7 +289,7 @@ export default function ImagePage() {
                     >
                       <img
                         alt="generated logos"
-                        className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
+                        className="rounded-lg cursor-pointer shadow-primary hover:shadow-md dark:shadow-none"
                         src={getURL(image?.url)}
                       ></img>
                       {image.isHover && (
@@ -314,7 +314,7 @@ export default function ImagePage() {
                         <img
                           alt="generated logos"
                           // onClick={() => downloadImage(image?.url, 'image.png')}
-                          className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
+                          className="rounded-lg cursor-pointer shadow-primary hover:shadow-md dark:shadow-none"
                           src={image.url}
                         ></img>
                         <div className="absolute top-0 left-0 w-full h-full flex flex-col bg-white justify-between items-start opacity-0 hover:opacity-80 cursor-pointer transition duration-300 ease-in-out">
