@@ -411,7 +411,7 @@ export const PersonaChat = () => {
     setChatLoading(false);
   };
   return (
-    <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
+    <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800 dark:text-white">
       {loading ? (
         <CentralLoading />
       ) : (

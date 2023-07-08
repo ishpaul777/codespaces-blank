@@ -96,9 +96,9 @@ export default function Personas() {
       <div className="flex flex-row justify-between items-center mt-8 mx-1">
         <div className="flex flex-row font-semibold text-[18px] gap-4 border-b border-solid border-[#D9E7DA]">
           <button
-            className={`text-grey-50 py-[10px] ${
+            className={`text-grey-50 dark:text-gray-50 py-[10px] ${
               tab === "All"
-                ? "text-black-50 border-b-[2px] border-black-50"
+                ? "text-black-50 border-b-2 border-black-50 dark:border-gray-50 dark:text-gray-200"
                 : ""
             }`}
             onClick={() => setTab("All")}
@@ -106,9 +106,9 @@ export default function Personas() {
             All
           </button>
           <button
-            className={`text-grey-50 py-[10px] ${
+             className={`text-grey-50 dark:text-gray-50 py-[10px] ${
               tab === "Created"
-                ? "text-black-50 border-b-[2px] border-black-50"
+                ? "text-black-50 border-b-2 border-black-50 dark:border-gray-50 dark:text-gray-200"
                 : ""
             }`}
             onClick={() => setTab("Created")}

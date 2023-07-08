@@ -21,7 +21,7 @@ export default function Layout() {
     >
       <div className="">
         {isMobileScreen && (
-          <nav className="w-screen flex justify-between items-end fixed top-0 bg-light-white dark:bg-background-sidebar-alt px-8 pb-4 pt-10 z-30">
+          <nav className="w-screen flex justify-between items-end fixed top-0 bg-[#DCE4E7] dark:bg-background-sidebar-alt px-8 pb-4 pt-10 z-30">
             <img
               src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
               className="cursor-pointer w-[123px] h-[32px]"
