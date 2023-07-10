@@ -231,34 +231,34 @@ export default function BlogPostWorkflow() {
   }, []);
 
   return (
-    <div className="w-full h-screen flex">
-     <ToastContainer
-         toastClassName={ ({ type }) =>
+    <div className="w-full h-screen flex dark:bg-background-secondary-alt">
+      <ToastContainer
+        toastClassName={({ type }) =>
           type === "error"
             ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
             : type === "success"
-            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-            : type === "warning"
-            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-            : ""
+              ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+              : type === "warning"
+                ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+                : ""
         }
         className="space-y-4  "
       />
       {loading ? (
-        <div className="w-full h-full justify-center items-center flex">
-          <ClipLoader size={"20px"} />
+        <div className="w-full h-full justify-center items-center flex dark:text-white text-blck-50">
+          <ClipLoader size={"20px"} color="currentColor" />
         </div>
       ) : (
         <>
-          <div className="w-1/2 h-full overflow-y-auto bg-background-sidebar py-10">
+          <div className="w-1/2 h-full overflow-y-auto bg-background-sidebar dark:bg-background-sidebar-alt py-10">
             <Link className="w-full" to={"/workflows"}>
-              <BiArrowBack className="text-2xl text-black-50 ml-10" />
+              <BiArrowBack className="text-2xl text-black-50 dark:text-white ml-10" />
             </Link>
 
             <div className="mt-10">
               <div className="px-10 flex flex-col gap-2 relative">
                 {activeState > 0 && (
-                  <div className="absolute bg-white bg-opacity-50 top-0 left-0 w-full h-full"></div>
+                  <div className="absolute bg-white dark:bg-background-secondary-alt bg-opacity-50 dark:bg-opacity-50 top-0 left-0 w-full h-full"></div>
                 )}
                 <Input
                   placeholder={
@@ -328,19 +328,21 @@ export default function BlogPostWorkflow() {
           </div>
           <div className="w-1/2 h-full">
             <div className="py-3 px-10 flex justify-between items-center">
-              <input
-                placeholder="enter title for your document"
-                className="w-1/2 py-2 px-5 rounded-lg"
-                value={docDetails?.title}
-                onChange={(e) => {
-                  setDocDetails((prev) => {
-                    return {
-                      ...prev,
-                      title: e.target.value,
-                    };
-                  });
-                }}
-              ></input>
+              <div className="w-1/2">
+                <Input
+                  placeholder="enter title for your document"
+                  initialValue={docDetails?.title}
+                  onChange={(e) => {
+                    setDocDetails((prev) => {
+                      return {
+                        ...prev,
+                        title: e.target.value,
+                      };
+                    });
+                  }}
+                  type="input"
+                />
+              </div>
               <button
                 className="bg-black-50 py-2 px-10 text-white border-none rounded-lg"
                 onClick={() => {
@@ -362,6 +364,7 @@ export default function BlogPostWorkflow() {
             <ScooterCore
               placeholder="Write your content here. Press / for commands and /generate for AI commands"
               heightStrategy="flexible"
+              className="bg-white dark:bg-background-secondary-alt dark:text-white text-black-50"
               menuType="bubble"
               editorInstance={(editor) => setEditor(editor)}
               initialValue={editorData}

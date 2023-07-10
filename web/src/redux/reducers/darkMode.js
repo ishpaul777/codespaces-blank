@@ -1,4 +1,4 @@
-const initialState = true;
+const initialState = localStorage.getItem('darkMode') === 'true';
 
 const darkModeReducer = (state = initialState, action) => {
   switch (action.type) {

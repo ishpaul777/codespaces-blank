@@ -19,7 +19,7 @@ export function SearchableInput({
   const [showList, setShowList] = useState(false);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 dark:text-white">
       <label
         className={`
           ${labelSize || "text-sm"}
@@ -31,11 +31,11 @@ export function SearchableInput({
       <div className="w-full flex flex-col">
         <input
           name={name}
-          className={`p-2 ${
+          className={`p-2 bg-transparent outline-none rounded-lg dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b] ${
             showList ? "border-x border-t" : "border"
           } border-[#D0D5DD] ${
             showList ? "rounded-t-md" : "rounded-md"
-          } bg-transparent outline-none`}
+          }`}
           placeholder={placeholder}
           value={initialValue}
           onChange={(e) => onChange(e.target.value)}

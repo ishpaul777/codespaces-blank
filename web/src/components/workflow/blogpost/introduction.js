@@ -87,7 +87,7 @@ export const Introduction = ({ contentBrief, handleCompose }) => {
     );
   };
   return (
-    <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
+    <div className="p-7 bg-white dark:bg-background-secondary-alt rounded-lg flex flex-col gap-8">
       <Input
         type={"input"}
         label={"Blog Title"}

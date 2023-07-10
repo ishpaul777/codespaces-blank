@@ -17,6 +17,7 @@ import { generateUUID } from "../../util/uuid";
 import { errorToast, successToast } from "../../util/toasts";
 import { ClipLoader } from "react-spinners";
 import { ToastContainer } from "react-toastify";
+import { Input } from "../../components/inputs/Input";
 
 export default function FactcheckWorkflow() {
   // editor instance for the workflow
@@ -117,7 +118,7 @@ export default function FactcheckWorkflow() {
           handleCompose={(data) => {
             handleCompose(data);
           }}
-          // editor={editor}
+        // editor={editor}
         />
       ),
     },
@@ -191,16 +192,16 @@ export default function FactcheckWorkflow() {
   }, []);
 
   return (
-    <div className="w-full h-screen flex">
-        <ToastContainer
-         toastClassName={ ({ type }) =>
+    <div className="w-full h-screen flex dark:bg-background-secondary-alt">
+      <ToastContainer
+        toastClassName={({ type }) =>
           type === "error"
             ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
             : type === "success"
-            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-            : type === "warning"
-            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-            : ""
+              ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+              : type === "warning"
+                ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+                : ""
         }
         className="space-y-4  "
       />
@@ -210,7 +211,7 @@ export default function FactcheckWorkflow() {
         </div>
       ) : (
         <>
-          <div className="w-1/2 h-full overflow-y-auto bg-background-sidebar py-10">
+          <div className="w-1/2 h-full overflow-y-auto bg-background-sidebar dark:bg-background-sidebar-alt py-10">
             <Link className="w-full" to={"/workflows"}>
               <BiArrowBack className="text-2xl text-black-50 ml-10" />
             </Link>
@@ -266,19 +267,21 @@ export default function FactcheckWorkflow() {
           </div>
           <div className="w-1/2 h-full">
             <div className="py-3 px-10 flex justify-between items-center">
-              <input
-                placeholder="enter title for your document"
-                className="w-1/2 py-2 px-5 rounded-lg"
-                value={docDetails?.title}
-                onChange={(e) => {
-                  setDocDetails((prev) => {
-                    return {
-                      ...prev,
-                      title: e.target.value,
-                    };
-                  });
-                }}
-              ></input>
+              <div className="w-1/2">
+                <Input
+                  placeholder="enter title for your document"
+                  initialValue={docDetails?.title}
+                  onChange={(e) => {
+                    setDocDetails((prev) => {
+                      return {
+                        ...prev,
+                        title: e.target.value,
+                      };
+                    });
+                  }}
+                  type="input"
+                />
+              </div>
               <button
                 className="bg-black-50 py-2 px-10 text-white border-none rounded-lg"
                 onClick={() => {
@@ -300,6 +303,7 @@ export default function FactcheckWorkflow() {
             </div>
             <ScooterCore
               placeholder="Write your content here. Press / for commands and /generate for AI commands"
+              className="bg-white dark:bg-background-secondary-alt dark:text-white text-black-50"
               heightStrategy="flexible"
               menuType="bubble"
               editorInstance={(editor) => setEditor(editor)}

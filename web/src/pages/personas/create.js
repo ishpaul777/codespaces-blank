@@ -273,9 +273,9 @@ export default function CreatePersona() {
               </p>
               <a
                 href={promptExampleLink}
-                className="flex flex-row items-center gap-2 text-[12px] text-[#0022D4] font-medium"
+                className="flex flex-row items-center gap-2 text-[12px] text-blue-500 font-medium"
               >
-                View prompt examples <RiShareBoxLine color="#0022D4" />
+                View prompt examples <RiShareBoxLine className="text-blue-500" />
               </a>
             </div>
             <div className="w-full flex flex-col gap-2 py-7 border-b border-b-[#EAECF0] dark:border-[#555]">
@@ -346,7 +346,7 @@ export default function CreatePersona() {
                     className="text-sm block text-[#6c6c6c] dark:text-gray-100 bg-background-secondary dark:bg-background-sidebar-alt rounded-md file:rounded-r-md
                     file:mr-4 file:py-2 file:px-4
                     file:border-0
-                    file:text-sm file:font-semibold file:bg-gray-500
+                    file:text-sm file:font-semibold file:bg-gray-300
                     file:dark:bg-violet-50 file:text-black file:cursor-pointer"
                   />
                   {requestBody.avatar.error && (

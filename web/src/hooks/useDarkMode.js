@@ -8,6 +8,8 @@ const useDarkMode = () => {
       type: 'TOGGLE_DARK_MODE',
       payload: !darkMode
     })
+
+    localStorage.setItem('darkMode', !darkMode);
   }
   return {
     darkMode,
