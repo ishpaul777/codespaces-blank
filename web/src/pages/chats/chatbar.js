@@ -67,23 +67,20 @@ export default function ChatBar({
   const { darkMode } = useDarkMode();
   return (
     <main
-      className={`main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-[80%] ${
-        darkMode && 'bg-button-primary-alt'
-      }`}
+      className={`main flex flex-grow flex-col pb-4 transition-all duration-150 ease-in md:ml-0 w-[80%] ${darkMode && 'bg-button-primary-alt'
+        }`}
     >
       <div className="w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center">
         {chat.length === 0 ? (
           <>
             {isMobileScreen ? (
               <div
-                className={`sticky ${
-                  isMobileScreen ? "px-4" : "px-8"
-                } py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7]`}
+                className={`sticky ${isMobileScreen ? "px-4" : "px-8"
+                  } py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7] dark:bg-background-sidebar-alt dark:border-background-sidebar-alt dark:text-white`}
               >
                 <div
-                  className={`border-none bg-white w-full ${
-                    isMobileScreen ? "pt-8 pb-2" : "py-3"
-                  } px-4  gap-4 flex justify-between`}
+                  className={`border-none bg-white dark:bg-background-sidebar-alt dark:text-white w-full ${isMobileScreen ? "pt-8 pb-2" : "py-3"
+                    } px-4  gap-4 flex justify-between`}
                 >
                   <button className="flex items-center">
                     <BiChevronLeft size={24} />
@@ -109,14 +106,14 @@ export default function ChatBar({
                   >
                     {chatSiderCollapse ? (
                       <AiOutlineMenuUnfold
-                    className={`${darkMode && 'text-white'}`}
-                    size={styles.fileIconSize}
-                  />
+                        className={`${darkMode && 'text-white'}`}
+                        size={styles.fileIconSize}
+                      />
                     ) : (
                       <AiOutlineMenuFold
-                    className={`${darkMode && 'text-white'}`}
-                    size={styles.fileIconSize}
-                  />
+                        className={`${darkMode && 'text-white'}`}
+                        size={styles.fileIconSize}
+                      />
                     )}
                   </button>
                   <button
@@ -128,14 +125,14 @@ export default function ChatBar({
                   >
                     {promptSiderCollapse ? (
                       <AiOutlineMenuFold
-                    className={`${darkMode && 'text-white'}`}
-                    size={styles.fileIconSize}
-                  />
+                        className={`${darkMode && 'text-white'}`}
+                        size={styles.fileIconSize}
+                      />
                     ) : (
                       <AiOutlineMenuUnfold
-                    className={`${darkMode && 'text-white'}`}
-                    size={styles.fileIconSize}
-                  />
+                        className={`${darkMode && 'text-white'}`}
+                        size={styles.fileIconSize}
+                      />
                     )}
                   </button>
                 </div>
@@ -143,7 +140,7 @@ export default function ChatBar({
             )}
             <div className="border-none w-full flex flex-col items-center p-4 gap-4">
               <div
-                className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4"
+                className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] dark:bg-background-sidebar-alt dark:border-background-sidebar-alt dark:text-white rounded-lg flex flex-col p-4 gap-4"
                 style={{
                   maxWidth: isMobileScreen ? '80vw' : '400px',
                   width: isMobileScreen ? '80vw' : '',
@@ -157,18 +154,20 @@ export default function ChatBar({
                   placeholder={'select model'}
                   initialValue={model}
                 ></Select>
-                <div className="bg-transparent h-1/2 w-full rounded-lg p-2 border border-[#D0D5DD] relative">
-                  <PromptInput
-                    initialValue={initialPrompt}
-                    label={"System Prompt"}
-                    position={"bottom"}
-                    onChange={setIntialPrompt}
-                    value={initialPrompt}
-                    placeholder={"Enter your system prompt"}
-                    onEnter={() => {}}
-                    isPromptModalVisible={isInitialPromptModalVisible}
-                    setIsPromptModalVisible={setIsInitialPromptModalVisible}
-                  />
+                <div className=" h-1/2">
+                  <label className="text-sm text-black-50 dark:text-white mb-2">System Prompt</label>
+                  <div className="bg-transparent w-full rounded-lg p-2 mt-2 border border-[#D0D5DD] relative">
+                    <PromptInput
+                      initialValue={initialPrompt}
+                      position={"bottom"}
+                      onChange={setIntialPrompt}
+                      value={initialPrompt}
+                      placeholder={"Enter your system prompt"}
+                      onEnter={() => { }}
+                      isPromptModalVisible={isInitialPromptModalVisible}
+                      setIsPromptModalVisible={setIsInitialPromptModalVisible}
+                    />
+                  </div>
                 </div>
                 <SelectTemperature
                   label={'Conversation Style'}
@@ -182,9 +181,8 @@ export default function ChatBar({
           </>
         ) : (
           <div
-            className={`sticky ${
-              isMobileScreen ? "px-4" : "px-8"
-            } py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7]`}
+            className={`sticky ${isMobileScreen ? "px-4" : "px-8"
+              } py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7]`}
           >
             {/* chat header */}
             {/* <BiChevronLeft size={28} /> */}
@@ -195,9 +193,8 @@ export default function ChatBar({
                         `}
             </span> */}
             <div
-              className={`border-none bg-white w-full ${
-                isMobileScreen ? "pt-8 pb-2" : "py-2"
-              } px-4  gap-4 flex justify-between`}
+              className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-2" : "py-2"
+                } px-4  gap-4 flex justify-between`}
             >
               {isMobileScreen ? (
                 <>
@@ -252,11 +249,10 @@ export default function ChatBar({
             </div>
 
             <div
-              className={`bg-white ease-in-out duration-300 ${
-                isSettingVisible
-                  ? 'h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4'
-                  : 'h-0 translate-y-0'
-              }`}
+              className={`bg-white ease-in-out duration-300 ${isSettingVisible
+                ? 'h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4'
+                : 'h-0 translate-y-0'
+                }`}
             >
               {isSettingVisible && (
                 <>
@@ -303,26 +299,23 @@ export default function ChatBar({
             return (
               <div
                 key={index}
-                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between ${
-                  isMobileScreen ? "px-4" : "px-7"
-                } py-6 ${
-                  item.role === 'user'
+                className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between ${isMobileScreen ? "px-4" : "px-7"
+                  } py-6 ${item.role === 'user'
                     ? darkMode
                       ? 'text-white'
                       : 'bg-[#ECEDF1]'
                     : darkMode
-                    ? 'bg-[#4A4A4A] text-white'
-                    : 'bg-[#E4E7ED]'
-                }`}
+                      ? 'bg-[#4A4A4A] text-white'
+                      : 'bg-[#E4E7ED]'
+                  }`}
               >
                 <div className={`w-full flex gap-4`}>
                   {item.role === "user" ? (
                     <div
                       className={`flex justify-center items-center h-8 w-8 rounded-full ring-2
-                        ${
-                          item.role === "user"
-                            ? "bg-green-600 ring-green-600"
-                            : ""
+                        ${item.role === "user"
+                          ? "bg-green-600 ring-green-600"
+                          : ""
                         } text-white mr-2`}
                     >
                       <span className="text-lg"> U </span>
@@ -380,13 +373,12 @@ export default function ChatBar({
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeMathjax]}
-                      className={`prose ${
-                        isMobileScreen
-                          ? 'max-w-[17rem]'
-                          : chatSiderCollapse || promptSiderCollapse
+                      className={`prose ${isMobileScreen
+                        ? 'max-w-[17rem]'
+                        : chatSiderCollapse || promptSiderCollapse
                           ? 'w-[80%]'
                           : 'max-w-2xl'
-                      } ${darkMode ? 'text-white' : ''}`}
+                        } ${darkMode ? 'text-white' : ''}`}
                       components={{
                         code({ node, inline, className, children, ...props }) {
                           const match = /language-(\w+)/.exec(className || '');
@@ -473,7 +465,7 @@ export default function ChatBar({
           </button>
         )}
         <div
-          className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
+          className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary dark:bg-background-sidebar-alt dark:border-background-sidebar-alt dark:text-white rounded-lg grid grid-cols-[9fr_1fr] max-h-96 dark:shadow-[#3b3b3b] `}
         >
           <PromptInput
             value={currentPrompt}

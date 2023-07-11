@@ -12,6 +12,7 @@ const Mentions = (props) => {
   const list = useRef(null); // add this line to create a ref
 
   const handlePrefixKeyDown = (e) => {
+
     if (e.key === "/" && !showPromptsList) {
       onSearch();
       setShowPromptsList(true);
@@ -124,14 +125,16 @@ const Mentions = (props) => {
         <ul
           ref={list}
           className={`absolute ${
-            position === "top" ? "bottom" : "top"
-          }-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-56 overflow-y-auto scrollbar-custom`}
+            position === "top" ? "bottom-full" : "top-full"
+          } left-0 w-full bg-white border border-gray-300 dark:bg-background-sidebar-alt dark:border-[#3b3b3b] dark:shadow-none
+          rounded-lg shadow-md max-h-56 overflow-y-auto scrollbar-custom p-2`}
         >
           {promptsList.map((option, index) => {
             return (
               <li
-                className={`cursor-pointer hover:bg-gray-100 p-4 ${
-                  activePromptIndex === index ? "bg-gray-200 active" : ""
+                className={`cursor-pointer hover:bg-gray-100 dark:bg-background-sidebar-alt dark:hover:bg-background-secondary-alt dark:text-white dark:hover:text-white
+                 p-4 rounded-md ${
+                  activePromptIndex === index ? "bg-gray-200 active rounded-md dark:text-white dark:!bg-background-secondary-alt dark:hover:text-white" : ""
                 }`}
                 onClick={() => {
                   setShowPromptsList(false);

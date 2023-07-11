@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { BiMessageDetail } from "react-icons/bi";
 import { RxCross1 } from "react-icons/rx";
+import { Input } from "../../components/inputs/Input";
 import {
   AiOutlineDelete,
   AiOutlineCheck,
@@ -164,11 +165,10 @@ export default function SideBar({
             }
           }}
           className={`p-2 text-lg cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2
-          ${chatID === chat?.id && (darkMode ? '' : 'bg-hover-on-white')} ${
-            darkMode
+          ${chatID === chat?.id && (darkMode ? '' : 'bg-hover-on-white')} ${darkMode
               ? 'hover:bg-button-primary-alt text-white'
               : 'hover:bg-hover-on-white'
-          } ${isMobileScreen && "border-b border-gray-300"
+            } ${isMobileScreen && "border-b border-gray-300"
             }`}
         >
           <div
@@ -190,12 +190,11 @@ export default function SideBar({
                 `}
               </span>
               {isMobileScreen && (
-                <span className="text-gray-500">
+                <span className="text-gray-500 dark:text-gray-200">
                   {chat?.messages[2].content.length < maxListChars
                     ? chat?.messages[2].content
-                    : `${
-                        chat?.messages[2].content.slice(0, maxListChars) + "..."
-                      }
+                    : `${chat?.messages[2].content.slice(0, maxListChars) + "..."
+                    }
                   `}
                 </span>
               )}
@@ -266,42 +265,36 @@ export default function SideBar({
 
   return (
     <aside
-      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${
-        chatSiderCollapse
-          ? 'translate-x-0 w-0'
-          : `${isMobileScreen ? 'w-full ' : 'w-[350px] '}`
-      } flex flex-row  ease-in-out duration-300 gap-4 ${
-        darkMode && 'bg-background-sidebar-alt'
-      }`}
+      className={`z-50 sm-fixed sm-left-0 sm-top-0 md:static h-screen sidebar ${chatSiderCollapse
+        ? 'translate-x-0 w-0'
+        : `${isMobileScreen ? 'w-full ' : 'w-[350px] '}`
+        } flex flex-row  ease-in-out duration-300 gap-4 ${darkMode && 'bg-background-sidebar-alt'
+        }`}
     >
       <div
-        className={`${
-          darkMode ? 'bg-background-sidebar-alt' : 'bg-white'
-        } relative w-full shadow-md ${chatSiderCollapse || 'pt-4 pl-4'}`}
+        className={`${darkMode ? 'bg-background-sidebar-alt' : 'bg-white'
+          } relative w-full shadow-md ${chatSiderCollapse || 'pt-4 pl-4'}`}
       >
         {isMobileScreen && !chatSiderCollapse && (
-          <div className="flex flex-wrap justify-between items-center pr-6 mt-8">
-            <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+          <div className="flex flex-wrap justify-between items-center pr-6 mt-8 dark:text-white">
+            <hr className="h-px bg-gray-300 mb-3 border-0 w-full dark:bg-gray-50"></hr>
             <h2 className="text-xl font-semibold">History</h2>
             <RxCross1 size={24} onClick={() => setChatSiderCollapse(true)} />
           </div>
         )}
         <div
           className={`${isMobileScreen ? "my-2" : "my-4"
-            } w-full text-center justify-between gap-2 ${
-            chatSiderCollapse ? 'd-none' : 'flex pr-4'
-          } ${darkMode && 'text-white'} `}
+            } w-full text-center justify-between gap-2 ${chatSiderCollapse ? 'd-none' : 'flex pr-4'
+            } ${darkMode && 'text-white'} `}
         >
           {!isMobileScreen && (
             <>
               <button
-                className={`p-2 w-full ${
-              darkMode
-                ? 'hover:bg-background-secondary-alt'
-                : 'hover:bg-light-gray'
-            } border rounded-md flex items-center cursor-pointer gap-3  ${
-              chatSiderCollapse ? 'd-none' : 'flex'
-                } `}
+                className={`p-2 w-full ${darkMode
+                  ? 'hover:bg-background-secondary-alt'
+                  : 'hover:bg-light-gray'
+                  } border rounded-md flex items-center cursor-pointer gap-3  ${chatSiderCollapse ? 'd-none' : 'flex'
+                  } `}
                 onClick={() => handleNewChatClick()}
               >
                 <HiPlus size={styles.iconSize} />
@@ -309,9 +302,8 @@ export default function SideBar({
               </button>
               {isFolderVisible ? (
                 <button
-                  className={`p-2 border rounded-md cursor-pointer flex justify-center items-center ${
-                darkMode ? 'hover:bg-button-primary-alt' : 'hover:bg-light-gray'
-              }`}
+                  className={`p-2 border rounded-md cursor-pointer flex justify-center items-center ${darkMode ? 'hover:bg-button-primary-alt' : 'hover:bg-light-gray'
+                    }`}
                   onClick={() => {
                     setCollectionCreateFormVisible(true);
                   }}
@@ -321,47 +313,46 @@ export default function SideBar({
                 </button>
               ) : (
                 <div>
-                <ToastContainer
-         toastClassName={ ({ type }) =>
-          type === "error"
-            ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
-            : type === "success"
-            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-            : type === "warning"
-            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-            : ""
-        }
-        className="space-y-4  "
-      />
+                  <ToastContainer
+                    toastClassName={({ type }) =>
+                      type === "error"
+                        ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
+                        : type === "success"
+                          ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+                          : type === "warning"
+                            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+                            : ""
+                    }
+                    className="space-y-4  "
+                  />
                 </div>
               )}
             </>
           )}
         </div>
         <div className={`${chatSiderCollapse || 'pr-4'}`}>
-          <input
-            className={`w-full p-3 border border-gray-300 rounded-md  ${
-              chatSiderCollapse ? 'd-none' : 'flex'
-            } `}
-            placeholder="Search prompt"
-            onChange={(e) =>
-              setPaginationChatHistory({
-                ...paginationChatHistory,
-                search_query: e.target.value,
-              })
-            }
-          />
-          <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
+          <div className={`${chatSiderCollapse ? 'd-none' : 'flex w-full'}`}>
+            <input
+              placeholder="Search chat.."
+              className={`p-3 w-full bg-transparent outline-none border border-[#fff] rounded-lg dark:bg-background-sidebar-alt dark:text-white ${darkMode && 'text-white'}`}
+              onChange={(e) =>
+                setPaginationChatHistory({
+                  ...paginationChatHistory,
+                  search_query: e.target.value,
+                })
+              }
+            />
+          </div>
+          <hr className="h-px bg-gray-300 mt-3 border-0 dark:bg-gray-50"></hr>
         </div>
         <ul
-          className={`overflow-y-auto overflow-x-hidden  ${
-            chatSiderCollapse && "d-none"
-          }  mt-3`}
+          className={`overflow-y-auto overflow-x-hidden  ${chatSiderCollapse && "d-none"
+            }  mt-3`}
           style={{ maxHeight: "65vh" }}
         >
           {collectionCreateFormVisible && (
             <li
-              className={`mr-4 p-3 bg-hover-on-white cursor-pointer rounded-md flex items-center justify-between mb-2`}
+              className={`mr-4 p-3 bg-hover-on-white cursor-pointer rounded-md flex items-center justify-between mb-2 dark:text-white dark:bg-background-secondary-alt`}
             >
               <div className="flex items-center gap-3">
                 <BsCaretRightFill size={16} />
@@ -394,11 +385,10 @@ export default function SideBar({
             </li>
           )}
           <div
-            className={`flex ${
-              isMobileScreen
-                ? "flex-row bg-white border border-gray-300 py-3 px-4"
-                : "flex-col"
-            } flex-wrap mr-4 justify-between`}
+            className={`flex ${isMobileScreen
+              ? "flex-row bg-white border border-gray-300 py-3 px-4 dark:bg-background-sidebar-alt dark:border-transparent dark:text-white"
+              : "flex-col"
+              } flex-wrap mr-4 justify-between`}
           >
             {collections !== null &&
               collections.length > 0 &&
@@ -411,14 +401,13 @@ export default function SideBar({
                         // e.preventDefault();
                         handleDragEnter(item.id);
                       }}
-                      className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2
+                      className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md  items-center mb-2 dark:text-white dark:hover:bg-background-secondary-alt  dark:hover:text-white
                       ${currentCollectionIndex === item.id && "mr-4 "}
-                      ${
-                        isMobileScreen
+                      ${isMobileScreen
                           ? "w-[45%] p-1"
                           : "flex p-2 justify-between w-full"
-                      }
-                    ${dragOverCollectionId === item.id && "bg-hover-on-white"}
+                        }
+                    ${dragOverCollectionId === item.id && "bg-hover-on-white dark:bg-background-secondary-alt dark:text-white"}
                     `}
                       onClick={() => {
                         if (
@@ -484,16 +473,15 @@ export default function SideBar({
                     </li>
                     <ul
                       className={`
-                      sm-fixed sm-left-0 sm-top-0 md:static bg-white ${
-                        currentCollectionIndex === item.id &&
-                        item?.chats?.length > 0
-                          ? `${
-                              isMobileScreen
-                                ? "w-[100vw] h-screen p-4 gap-4"
-                                : "border-l-2 ml-4 border-gray-300 pl-2 w-full pr-4"
-                            }`
+                      sm-fixed sm-left-0 sm-top-0 md:static bg-white dark:bg-background-sidebar-alt dark:text-white
+                       ${currentCollectionIndex === item.id &&
+                          item?.chats?.length > 0
+                          ? `${isMobileScreen
+                            ? "w-[100vw] h-screen p-4 gap-4"
+                            : "border-l-2 ml-4 border-gray-300 pl-2 w-full pr-4"
+                          }`
                           : "translate-x-0 w-0"
-                      } flex flex-col ease-in-out duration-300
+                        } flex flex-col ease-in-out duration-300
                       `}
                       style={{
                         zIndex: 100,
@@ -502,8 +490,8 @@ export default function SideBar({
                       {isMobileScreen &&
                         currentCollectionIndex === item.id &&
                         item?.chats?.length > 0 && (
-                          <div className="flex flex-wrap justify-between items-center my-8">
-                            <hr className="h-px bg-gray-300 mb-3 border-0 w-full"></hr>
+                          <div className="flex flex-wrap justify-between items-center my-8 ">
+                            <hr className="h-px bg-gray-300 mb-3 border-0 w-full dark:bg-gray-50"></hr>
                             <h2 className="text-xl font-semibold pl-2">
                               {item?.name}
                             </h2>
@@ -521,7 +509,7 @@ export default function SideBar({
                 );
               })}
           </div>
-          <hr className="h-px bg-gray-300 mt-3 border-0 mr-4 mb-3"></hr>
+          <hr className="h-px bg-gray-300 border-0 mr-4 mb-4"></hr>
           <ul
             className="mr-4"
             onDragEnter={() => {
@@ -531,13 +519,11 @@ export default function SideBar({
             {renderChats(chatHistory, false)}
           </ul>
           <div
-            className={`flex ${
-              paginationChatHistory.page === 1 ? 'flex-row-reverse' : 'flex-row'
-            } ${
-              paginationChatHistory.offset !== 0 &&
+            className={`flex ${paginationChatHistory.page === 1 ? 'flex-row-reverse' : 'flex-row'
+              } ${paginationChatHistory.offset !== 0 &&
               chatCount > paginationChatHistory.limit &&
               'justify-between'
-            } p-2 text-base cursor-pointer mt-4`}
+              } p-2 text-base cursor-pointer mt-4`}
           >
             {paginationChatHistory.page > 1 && (
               <span
@@ -565,19 +551,17 @@ export default function SideBar({
         </ul>
         {!isMobileScreen && (
           <div
-            className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${
-            chatSiderCollapse ? 'd-none' : 'flex'
-            } `}
+            className={`w-full px-2 flex absolute bottom-4 left-0 z-40 flex-col gap-2 ${chatSiderCollapse ? 'd-none' : 'flex'
+              } `}
           >
             <ul className="flex justify-center flex-col">
               {chatOptionsList.map((item, index) => (
                 <li
                   key={index}
-                  className={`flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md ${
-                  darkMode
+                  className={`flex items-center gap-6 px-4 py-2 cursor-pointer rounded-md ${darkMode
                     ? 'text-white hover:bg-button-primary-alt'
                     : 'hover:bg-button-primary '
-                }`}
+                    }`}
                   onClick={item.onClick}
                 >
                   {item.icon}
