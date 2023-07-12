@@ -26,9 +26,7 @@ export function Input({
         <input
           name={name}
           className={`p-2 bg-transparent outline-none border border-[#D0D5DD] rounded-lg dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b]
-          ${
-            disabled && "disabled:cursor-not-allowed"
-          }`}
+          ${disabled && "disabled:cursor-not-allowed"}`}
           placeholder={placeholder}
           value={initialValue}
           onChange={onChange}

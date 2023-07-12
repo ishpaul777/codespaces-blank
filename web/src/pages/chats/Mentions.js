@@ -8,11 +8,10 @@ const Mentions = (props) => {
   const [promptsList, setPromptsList] = useState(options);
   const [searchText, setSearchText] = useState("");
   const [activePromptIndex, setActivePromptIndex] = useState(-1);
-  const { darkMode } = useDarkMode()
+  const { darkMode } = useDarkMode();
   const list = useRef(null); // add this line to create a ref
 
   const handlePrefixKeyDown = (e) => {
-
     if (e.key === "/" && !showPromptsList) {
       onSearch();
       setShowPromptsList(true);
@@ -112,7 +111,9 @@ const Mentions = (props) => {
         onChange={(e) => {
           handleChange(e);
         }}
-        className={`rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto resize-none dark:placeholder:text-white ${darkMode && 'bg-background-sidebar-alt'}`}
+        className={`rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto resize-none dark:placeholder:text-white ${
+          darkMode && "bg-background-sidebar-alt"
+        }`}
         // onKeyDown={(e) => { handleKeydown(e) }}
         ref={textareaRef}
         value={props.value}
@@ -134,8 +135,10 @@ const Mentions = (props) => {
               <li
                 className={`cursor-pointer hover:bg-gray-100 dark:bg-background-sidebar-alt dark:hover:bg-background-secondary-alt dark:text-white dark:hover:text-white
                  p-4 rounded-md ${
-                  activePromptIndex === index ? "bg-gray-200 active rounded-md dark:text-white dark:!bg-background-secondary-alt dark:hover:text-white" : ""
-                }`}
+                   activePromptIndex === index
+                     ? "bg-gray-200 active rounded-md dark:text-white dark:!bg-background-secondary-alt dark:hover:text-white"
+                     : ""
+                 }`}
                 onClick={() => {
                   setShowPromptsList(false);
                   onSelect(option, "/");

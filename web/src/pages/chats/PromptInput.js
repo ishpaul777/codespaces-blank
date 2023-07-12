@@ -25,7 +25,7 @@ function PromptInput(props) {
       label: prompt.title,
     };
   });
-  const { darkMode } = useDarkMode()
+  const { darkMode } = useDarkMode();
   const [isSelectingPrompt, setIsSelectingPrompt] = React.useState(false);
 
   const [promptVars, setPromptVars] = React.useState([]);

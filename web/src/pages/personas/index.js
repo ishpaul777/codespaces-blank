@@ -53,7 +53,9 @@ export default function Personas() {
     <div className="m-10">
       {/* This is Page header */}
       <div className="flex flex-row justify-between items-center mt-24 mb-10 md:mt-0 gap-2">
-        <h2 className={`text-3xl font-medium   ${darkMode && 'text-white'}`}>Personas</h2>
+        <h2 className={`text-3xl font-medium   ${darkMode && "text-white"}`}>
+          Personas
+        </h2>
 
         <div className="flex flex-row items-center gap-2">
           {window.innerWidth >= 900 && (
@@ -71,9 +73,7 @@ export default function Personas() {
             />
           )}
           <Link to="/personas/create">
-            <CreateButton text={
-              isMobileScreen ? "" :
-              "Create Personas"} />
+            <CreateButton text={isMobileScreen ? "" : "Create Personas"} />
           </Link>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function Personas() {
             All
           </button>
           <button
-             className={`text-grey-50 dark:text-gray-50 py-[10px] ${
+            className={`text-grey-50 dark:text-gray-50 py-[10px] ${
               tab === "Created"
                 ? "text-black-50 border-b-2 border-black-50 dark:border-gray-50 dark:text-gray-200"
                 : ""

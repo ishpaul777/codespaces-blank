@@ -1,12 +1,12 @@
-import { Outlet } from 'react-router-dom';
-import { Sidebar } from './sidebar';
-import { SidebarAlt } from './sidebarAlt';
-import { useState } from 'react';
-import { ToastContainer } from 'react-toastify';
-import useWindowSize from '../../hooks/useWindowSize';
-import MenuIcon from '../MenuIcon';
-import useDarkMode from '../../hooks/useDarkMode';
-import DarkMode from '../buttons/DarkMode';
+import { Outlet } from "react-router-dom";
+import { Sidebar } from "./sidebar";
+import { SidebarAlt } from "./sidebarAlt";
+import { useState } from "react";
+import { ToastContainer } from "react-toastify";
+import useWindowSize from "../../hooks/useWindowSize";
+import MenuIcon from "../MenuIcon";
+import useDarkMode from "../../hooks/useDarkMode";
+import DarkMode from "../buttons/DarkMode";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Layout() {
@@ -16,8 +16,9 @@ export default function Layout() {
 
   return (
     <div
-      className={`${isMobileScreen ? 'w-full flex-wrap' : ''
-        } flex flex-row h-screen max-h-screen overflow-y-auto`}
+      className={`${
+        isMobileScreen ? "w-full flex-wrap" : ""
+      } flex flex-row h-screen max-h-screen overflow-y-auto`}
     >
       <div className="">
         {isMobileScreen && (
@@ -35,8 +36,9 @@ export default function Layout() {
         <Sidebar sideBarOpen={sideBarOpen} setSidebarOpen={setSidebarOpen} />
       </div>
       <main
-        className={`${isMobileScreen ? 'mt-10 w-full' : 'w-5/6 max-h-screen overflow-y-auto'
-          } dark:bg-background-secondary-alt`}
+        className={`${
+          isMobileScreen ? "mt-10 w-full" : "w-5/6 max-h-screen overflow-y-auto"
+        } dark:bg-background-secondary-alt`}
       >
         <Outlet></Outlet>
       </main>
@@ -46,10 +48,10 @@ export default function Layout() {
           type === "error"
             ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
             : type === "success"
-              ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-              : type === "warning"
-                ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-                : ""
+            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+            : type === "warning"
+            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+            : ""
         }
         className="space-y-4  "
       />

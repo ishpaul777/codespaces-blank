@@ -9,10 +9,18 @@ export default function PersonaCard({ name, desc, image, id }) {
       state={{ name, desc, image }}
     >
       <div className="h-[60%]">
-        <img src={image} className="w-full h-full rounded-lg bg-[#ffffff] dark:bg-background-secondary-alt object-contain" />
+        <img
+          src={image}
+          className="w-full h-full rounded-lg bg-[#ffffff] dark:bg-background-secondary-alt object-contain"
+        />
       </div>
-      <h2 className="text-[20px] font-[600] text-black-60 dark:text-white">{name}</h2>
-      <p className="text-[14px] font-[400] text-black-25 dark:text-gray-200" title={desc}>
+      <h2 className="text-[20px] font-[600] text-black-60 dark:text-white">
+        {name}
+      </h2>
+      <p
+        className="text-[14px] font-[400] text-black-25 dark:text-gray-200"
+        title={desc}
+      >
         {desc?.length > maxDescriptionLength
           ? `${desc?.slice(0, maxDescriptionLength)}...`
           : desc}

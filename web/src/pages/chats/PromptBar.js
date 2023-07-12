@@ -4,16 +4,16 @@
 // after clicking the button, modal will pop up and ask the user to enter a prompt name, description, and main text --- DONE
 // user can name use {{}} to create a variable that user can fill in later when they are creating a story --- DONE
 // later when prompt seleted by user will be asked to fill the empty variables
-import React, { useEffect, useState, useRef } from 'react';
-import Modal from './Modal';
-import { errorToast, successToast } from '../../util/toasts';
-import { MdOutlineCreateNewFolder } from 'react-icons/md';
+import React, { useEffect, useState, useRef } from "react";
+import Modal from "./Modal";
+import { errorToast, successToast } from "../../util/toasts";
+import { MdOutlineCreateNewFolder } from "react-icons/md";
 import {
   AiOutlineCheck,
   AiOutlineClose,
   AiOutlineDelete,
-} from 'react-icons/ai';
-import { useDispatch, useSelector } from 'react-redux';
+} from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { RxCross1 } from "react-icons/rx";
 import {
   createPrompt,
@@ -40,14 +40,14 @@ import {
   deletePromptTemplate,
   getAllPromptTemplates,
   updatePromptTemplate,
-} from '../../actions/prompts';
-import useDarkMode from '../../hooks/useDarkMode';
+} from "../../actions/prompts";
+import useDarkMode from "../../hooks/useDarkMode";
 import useWindowSize from "../../hooks/useWindowSize";
 
 function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
   const styles = {
-    fileIconSize: '24px',
-    iconSize: '20px',
+    fileIconSize: "24px",
+    iconSize: "20px",
   };
   const { isMobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState(false);
@@ -92,13 +92,13 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
   const [pagination, setPagination] = useState({
     limit: 12,
     page: 1,
-    search_query: '',
+    search_query: "",
   });
 
   const [promptValues, setPromptValues] = useState({
-    title: '',
-    description: '',
-    prompt: '',
+    title: "",
+    description: "",
+    prompt: "",
   });
   const [deletePromptIndex, setDeletePromptIndex] = useState(null);
   const dispatch = useDispatch();
@@ -112,17 +112,17 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
 
   function handleFormSubmit(values) {
     var error = false;
-    if (!values.title || values.title === '') {
+    if (!values.title || values.title === "") {
       setShowerror((prevValues) => ({ ...prevValues, title: true }));
       error = true;
     }
 
-    if (!values.prompt || values.prompt === '') {
+    if (!values.prompt || values.prompt === "") {
       setShowerror((prevValues) => ({ ...prevValues, prompt: true }));
       error = true;
     }
 
-    if (!values.description || values.description === '') {
+    if (!values.description || values.description === "") {
       setShowerror((prevValues) => ({ ...prevValues, description: true }));
       error = true;
     }
@@ -140,7 +140,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
             errorToast(error.message);
           });
         setShowModal(false);
-        setPromptValues({ title: '', description: '', content: '' });
+        setPromptValues({ title: "", description: "", content: "" });
         setShowerror(false);
       })
       .catch((error) => {
@@ -164,7 +164,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
       .then(() => {
         dispatch(deletePrompt(deletePromptIndex));
         setDeletePromptIndex(null);
-        successToast('Prompt template deleted successfully');
+        successToast("Prompt template deleted successfully");
       })
       .catch((error) => {
         errorToast(error.message);
@@ -184,17 +184,17 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
 
   const handleUpdateFormSubmit = (values) => {
     var error = false;
-    if (!values.title || values.title === '') {
+    if (!values.title || values.title === "") {
       setShowerror((prevValues) => ({ ...prevValues, title: true }));
       error = true;
     }
 
-    if (!values.prompt || values.prompt === '') {
+    if (!values.prompt || values.prompt === "") {
       setShowerror((prevValues) => ({ ...prevValues, prompt: true }));
       error = true;
     }
 
-    if (!values.description || values.description === '') {
+    if (!values.description || values.description === "") {
       setShowerror((prevValues) => ({ ...prevValues, description: true }));
       error = true;
     }
@@ -204,7 +204,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
     updatePromptTemplate({ ...values, id: updatePromptIndex }).then(() => {
       setShowUpdateModal(false);
       setUpdatePromptIndex(null);
-      setPromptValues({ title: '', description: '', content: '' });
+      setPromptValues({ title: "", description: "", content: "" });
       setShowerror(false);
       getAllPromptTemplates(pagination)
         .then((data) => {
@@ -267,8 +267,9 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
           handleDrop();
         }
       }}
-      className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 dark:text-white dark:hover:bg-background-secondary-alt  dark:hover:text-white ${isMobileScreen && "border-b border-gray-300 "
-        }`}
+      className={`mr-4 p-2 text-lg hover:bg-hover-on-white cursor-pointer rounded-md grid grid-cols-[9fr_1fr] items-center mb-2 dark:text-white dark:hover:bg-background-secondary-alt  dark:hover:text-white ${
+        isMobileScreen && "border-b border-gray-300 "
+      }`}
       onClick={() => {
         setUpdatePromptIndex(prompt.id);
         setPromptValues(prompt);
@@ -277,8 +278,9 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
     >
       <div className="flex justify-start gap-4 items-center">
         <div
-          className={`flex ${isMobileScreen ? "flex-col" : "flex-row items-center gap-2"
-            }`}
+          className={`flex ${
+            isMobileScreen ? "flex-col" : "flex-row items-center gap-2"
+          }`}
         >
           {!isMobileScreen && <BiBulb size={styles.iconSize} />}
           <h3 className="font-semibold md:font-normal">{prompt.title}</h3>
@@ -369,18 +371,24 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
         </div>
       ) : (
         <div
-          className={`my-4 w-full text-center justify-between gap-2 ${!open ? 'd-none' : 'flex pr-4'
-            }`}
+          className={`my-4 w-full text-center justify-between gap-2 ${
+            !open ? "d-none" : "flex pr-4"
+          }`}
         >
           <button
-            className={`p-2 w-full border rounded-md flex items-center cursor-pointer gap-3  ${!open ? 'd-none' : 'flex'
-              } ${darkMode ? 'bg-background-sidebar-alt hover:bg-background-secondary-alt text-white' : 'hover:bg-light-gray'}`}
+            className={`p-2 w-full border rounded-md flex items-center cursor-pointer gap-3  ${
+              !open ? "d-none" : "flex"
+            } ${
+              darkMode
+                ? "bg-background-sidebar-alt hover:bg-background-secondary-alt text-white"
+                : "hover:bg-light-gray"
+            }`}
             onClick={() => {
               setShowModal(true);
               setPromptValues({
-                title: '',
-                description: '',
-                prompt: '',
+                title: "",
+                description: "",
+                prompt: "",
               });
             }}
           >
@@ -406,10 +414,10 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
                   type === "error"
                     ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
                     : type === "success"
-                      ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-                      : type === "warning"
-                        ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-                        : ""
+                    ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+                    : type === "warning"
+                    ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+                    : ""
                 }
                 className="space-y-4  "
               />
@@ -421,10 +429,10 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
                   type === "error"
                     ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
                     : type === "success"
-                      ? "w-[340px] border-l-4 border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-                      : type === "warning"
-                        ? "w-[340px] border-l-4 border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-                        : ""
+                    ? "w-[340px] border-l-4 border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+                    : type === "warning"
+                    ? "w-[340px] border-l-4 border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+                    : ""
                 }
                 className="space-y-4  "
               />
@@ -443,7 +451,7 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
         onCancel={() => {
           setShowerror(false);
           setShowModal(false);
-          setPromptValues({ title: '', description: '', content: '' });
+          setPromptValues({ title: "", description: "", content: "" });
         }}
       >
         <ModalContent
@@ -457,14 +465,14 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
         centered
         closable={false}
         visible={showUpdateModal}
-        okButtonProps={{ style: { backgroundColor: '#000' } }}
+        okButtonProps={{ style: { backgroundColor: "#000" } }}
         onOk={(e) => handleUpdateFormSubmit(promptValues)}
         okText="Save"
         onCancel={() => {
           setShowUpdateModal(false);
           setShowerror(false);
           setUpdatePromptIndex(null);
-          setPromptValues({ title: '', description: '', content: '' });
+          setPromptValues({ title: "", description: "", content: "" });
         }}
       >
         <ModalContent
@@ -474,9 +482,9 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
         />
       </Modal>
 
-      <div className={`${!open || 'pr-4'}`}>
+      <div className={`${!open || "pr-4"}`}>
         <input
-          className={` ${!open ? 'd-none' : 'flex'}
+          className={` ${!open ? "d-none" : "flex"}
           p-3 w-full bg-transparent outline-none border border-[#fff] rounded-lg dark:bg-background-sidebar-alt dark:text-white
           `}
           placeholder="Search prompt"
@@ -485,8 +493,8 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
         <hr className="h-px bg-gray-300 mt-3 border-0"></hr>
       </div>
       <ul
-        className={`overflow-y-auto  ${!open && 'd-none'}  mt-3`}
-        style={{ maxHeight: '70vh' }}
+        className={`overflow-y-auto  ${!open && "d-none"}  mt-3`}
+        style={{ maxHeight: "70vh" }}
       >
         {promptcollectionCreateFormVisible && (
           <li
@@ -523,10 +531,11 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
           </li>
         )}
         <div
-          className={`flex ${isMobileScreen
-            ? "flex-row bg-white border border-gray-300 py-3 px-4 dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b]"
-            : "flex-col"
-            } flex-wrap mr-4 justify-between`}
+          className={`flex ${
+            isMobileScreen
+              ? "flex-row bg-white border border-gray-300 py-3 px-4 dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b]"
+              : "flex-col"
+          } flex-wrap mr-4 justify-between`}
         >
           {/* collections */}
           {promptCollections !== null &&
@@ -542,11 +551,15 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
                       handleDragEnter(item.id);
                     }}
                     className={`text-lg hover:bg-hover-on-white cursor-pointer rounded-md items-center mb-2 dark:text-white dark:hover:bg-background-secondary-alt  dark:hover:text-white
-                     ${isMobileScreen
-                        ? "w-[45%] p-1"
-                        : "flex w-full p-2 justify-between"
-                      }
-                    ${dragOverCollectionId === item.id && "bg-hover-on-white dark:bg-background-secondary-alt dark:text-white"}                      `}
+                     ${
+                       isMobileScreen
+                         ? "w-[45%] p-1"
+                         : "flex w-full p-2 justify-between"
+                     }
+                    ${
+                      dragOverCollectionId === item.id &&
+                      "bg-hover-on-white dark:bg-background-secondary-alt dark:text-white"
+                    }                      `}
                     onClick={() => {
                       if (currentPromptCollectionIndex === item.id) {
                         setCurrentPromptCollectionIndex(null);
@@ -610,13 +623,15 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
                   </ul> */}
                   <ul
                     className={`
-                      sm-fixed sm-left-0 sm-top-0 md:static bg-white dark:bg-background-sidebar-alt dark:text-white ${currentPromptCollectionIndex === item.id &&
+                      sm-fixed sm-left-0 sm-top-0 md:static bg-white dark:bg-background-sidebar-alt dark:text-white ${
+                        currentPromptCollectionIndex === item.id &&
                         item?.prompt_templates?.length > 0
-                        ? `${isMobileScreen
-                          ? "w-[100vw] h-screen p-4 gap-4"
-                          : "border-l-2 ml-4 border-gray-300 pl-2 w-full"
-                        }`
-                        : "translate-x-0 w-0"
+                          ? `${
+                              isMobileScreen
+                                ? "w-[100vw] h-screen p-4 gap-4"
+                                : "border-l-2 ml-4 border-gray-300 pl-2 w-full"
+                            }`
+                          : "translate-x-0 w-0"
                       } flex flex-col ease-in-out duration-300
                       `}
                     style={{
@@ -652,11 +667,13 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
         <hr className="h-px bg-gray-300 mt-3 border-0 mr-4 mb-3"></hr>
         {prompts?.map((prompt, index) => renderPrompt(prompt, index, false))}
         <div
-          className={`flex ${pagination.page === 1 ? 'flex-row-reverse' : 'flex-row'
-            } ${pagination.offset !== 0 &&
+          className={`flex ${
+            pagination.page === 1 ? "flex-row-reverse" : "flex-row"
+          } ${
+            pagination.offset !== 0 &&
             promptCount > pagination.limit &&
-            'justify-between'
-            } p-2 text-base cursor-pointer mt-4`}
+            "justify-between"
+          } p-2 text-base cursor-pointer mt-4`}
         >
           {pagination.page > 1 && (
             <span

@@ -33,9 +33,7 @@ export function SearchableInput({
           name={name}
           className={`p-2 bg-transparent outline-none rounded-lg dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b] ${
             showList ? "border-x border-t" : "border"
-          } border-[#D0D5DD] ${
-            showList ? "rounded-t-md" : "rounded-md"
-          }`}
+          } border-[#D0D5DD] ${showList ? "rounded-t-md" : "rounded-md"}`}
           placeholder={placeholder}
           value={initialValue}
           onChange={(e) => onChange(e.target.value)}

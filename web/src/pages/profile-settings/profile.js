@@ -1,5 +1,5 @@
-import React from 'react';
-import useDarkMode from '../../hooks/useDarkMode';
+import React from "react";
+import useDarkMode from "../../hooks/useDarkMode";
 
 const Profile = () => {
   const { darkMode } = useDarkMode();
@@ -9,7 +9,7 @@ const Profile = () => {
         <div className="flex flex-row items-center gap-[2%] w-full h-[10%] p-0">
           <div
             className={`w-fit h-full not-italic font-semibold text-3xl text-[#1e1e1e] ${
-              darkMode && 'text-white'
+              darkMode && "text-white"
             }`}
           >
             Profile Settings
@@ -20,7 +20,7 @@ const Profile = () => {
             <div className="flex flex-col items-start gap-[3%] w-full h-[26%] p-0">
               <label
                 className={`w-auto h-2/5 not-italic font-medium text-sm text-[#344054] mb-[5px] ${
-                  darkMode && 'text-dark-text'
+                  darkMode && "text-dark-text"
                 }`}
                 htmlFor="first-name"
               >
@@ -34,7 +34,7 @@ const Profile = () => {
             <div className="flex flex-col items-start gap-[3%] w-full h-[26%] p-0">
               <label
                 className={`w-auto h-2/5 not-italic font-medium text-sm text-[#344054] mb-[5px] ${
-                  darkMode && 'text-dark-text'
+                  darkMode && "text-dark-text"
                 }`}
                 htmlFor="last-name"
               >
@@ -49,7 +49,7 @@ const Profile = () => {
             <div className="flex flex-col items-start gap-[3%] w-full h-[26%] p-0">
               <label
                 className={`w-auto h-2/5 not-italic font-medium text-sm text-[#344054] mb-[5px] ${
-                  darkMode && 'text-dark-text'
+                  darkMode && "text-dark-text"
                 }`}
                 htmlFor="e-mail"
               >

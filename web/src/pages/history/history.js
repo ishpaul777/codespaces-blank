@@ -9,13 +9,17 @@ import useDarkMode from "../../hooks/useDarkMode";
 const History = () => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
   const itemsPerPage = 4;
-  const { darkMode } = useDarkMode()
+  const { darkMode } = useDarkMode();
   return (
     <>
       <div className="w-[83.33%] h-screen fixed px-[2%] py-[1%] right-0 top-0">
         <div className="flex justify-between flex-row m-2.5">
           <div className="w-6/12">
-            <div className={`not-italic font-semibold text-[25px] leading-9 text-[#1E1E1E] ${darkMode && 'text-white'}`}>
+            <div
+              className={`not-italic font-semibold text-[25px] leading-9 text-[#1E1E1E] ${
+                darkMode && "text-white"
+              }`}
+            >
               History
             </div>
           </div>
@@ -25,7 +29,11 @@ const History = () => {
         </div>
 
         <div className="w-full flex items-center flex-row mt-2.5 rounded-lg border-b-[#F3F3F3] border-b border-solid justify-start">
-          <div className={`not-italic font-semibold text-xs leading-5 px-5 py-2.5 text-[#1E1E1E] border-b-2 border-b-[#1E1E1E] border-solid; ${darkMode && 'border-b-white text-white'}`}>
+          <div
+            className={`not-italic font-semibold text-xs leading-5 px-5 py-2.5 text-[#1E1E1E] border-b-2 border-b-[#1E1E1E] border-solid; ${
+              darkMode && "border-b-white text-white"
+            }`}
+          >
             <div className="cursor-pointer">Text</div>
           </div>
 

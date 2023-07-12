@@ -36,16 +36,18 @@ export function Select({
           <BiChevronDown className="inline-block ml-2" />
         </button>
         {isOpen && !disabled && (
-          <div className="absolute top-full left-0 w-full bg-white border border-[#CED0D4]  dark:bg-background-sidebar-alt dark:border-[#3b3b3b]
-           rounded-md z-10 outline-none p-1">
+          <div
+            className="absolute top-full left-0 w-full bg-white border border-[#CED0D4]  dark:bg-background-sidebar-alt dark:border-[#3b3b3b]
+           rounded-md z-10 outline-none p-1"
+          >
             <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 dark:bg-background-secondary-alt rounded
               dark:hover:bg-background-sidebar-alt mb-2
                ${
-                selectedValue.toUpperCase() === "GPT-3.5-TURBO"
-                  ? "bg-gray-200 dark:bg-background-sidebar-alt"
-                  : ""
-              }`}
+                 selectedValue.toUpperCase() === "GPT-3.5-TURBO"
+                   ? "bg-gray-200 dark:bg-background-sidebar-alt"
+                   : ""
+               }`}
               onClick={() => handleOptionClick("gpt-3.5-turbo")}
             >
               GPT-3.5-TURBO
@@ -53,7 +55,9 @@ export function Select({
             <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 dark:bg-background-secondary-alt rounded
               dark:hover:bg-background-sidebar-alt  ${
-                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200 dark:bg-background-sidebar-alt " : ""
+                selectedValue.toUpperCase() === "GPT-4"
+                  ? "bg-gray-200 dark:bg-background-sidebar-alt "
+                  : ""
               }`}
               onClick={() => handleOptionClick("gpt-4")}
             >
@@ -111,7 +115,9 @@ export function SelectTemperature({
 
   const getButtonClassName = (buttonValue) => {
     return `py-3 rounded-md w-1/3 ${
-      active === buttonValue ? "bg-black text-white dark:bg-white dark:text-black-50" : "bg-gray-200 dark:bg-background-secondary-alt dark:text-white"
+      active === buttonValue
+        ? "bg-black text-white dark:bg-white dark:text-black-50"
+        : "bg-gray-200 dark:bg-background-secondary-alt dark:text-white"
     }`;
   };
 

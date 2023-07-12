@@ -24,7 +24,9 @@ export const Workflow = () => {
   return (
     <div className="my-16 mx-10">
       <div className="flex flex-row justify-between  items-center ">
-        <h2 className="text-3xl mt-8 md:mt-0 font-medium dark:text-white">Workflows</h2>
+        <h2 className="text-3xl mt-8 md:mt-0 font-medium dark:text-white">
+          Workflows
+        </h2>
       </div>
       <div className="w-full grid grid-cols-1 lg:mt-12 mt-8 gap-4 sm:grid-cols-2">
         {menuOptions.map((option) => (
@@ -32,7 +34,7 @@ export const Workflow = () => {
             to={option.link}
             className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 transition-all focus:ring-gray-400 focus:shadow-xl duration-150 rounded-lg shadow-sm hover:shadow-lg relative hover:ring-gray-300 hover:ring-2 ring-1 ring-gray-200  bg-white dark:bg-background-sidebar-alt dark:text-white dark:ring-background-secondary-alt"
           >
-             <img
+            <img
               className="md:w-48 w-full h-full"
               src={option.image}
               alt={option.title}

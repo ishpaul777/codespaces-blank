@@ -145,8 +145,12 @@ const Dropdown = ({
         </div>
       )}
       {isOpen && (
-        <div className="fixed top-24 h-full inset-0 z-40 backdrop-filter backdrop-blur-md"
-          onClick={() => { toggleDropdown(); setShowPromptCreateModal(false); }}
+        <div
+          className="fixed top-24 h-full inset-0 z-40 backdrop-filter backdrop-blur-md"
+          onClick={() => {
+            toggleDropdown();
+            setShowPromptCreateModal(false);
+          }}
         ></div>
       )}
       <Modal

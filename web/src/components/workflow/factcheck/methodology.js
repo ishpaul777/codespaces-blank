@@ -140,7 +140,9 @@ export const Methodology = ({
               error={data.methodology.error}
             ></SearchableInput>
             <div className="flex flex-col gap-2">
-              <label className="font-medium text-base dark:text-white text-black-50">Review sources</label>
+              <label className="font-medium text-base dark:text-white text-black-50">
+                Review sources
+              </label>
               {data.review_sources.map((reviewSource, rIndex) => {
                 // return an input with a cross icon at right
                 return (
@@ -196,16 +198,16 @@ export const Methodology = ({
                 }}
               >
                 <AiOutlinePlus />
-                <span>
-                  Add review source
-                </span>
+                <span>Add review source</span>
               </button>
             </div>
           </>
         );
       })}
       <div className="flex flex-col gap-2">
-        <label className="font-medium text-base text-black-50 dark:text-white">More Methodologies</label>
+        <label className="font-medium text-base text-black-50 dark:text-white">
+          More Methodologies
+        </label>
         <button
           className="flex justify-center items-center gap-2 border border-dashed  text-black-50 dark:text-white border-[#d2d7df] dark:border-[#e1dfdf] p-2 rounded-md"
           // onClick={() => handleAddNewMethodology()}

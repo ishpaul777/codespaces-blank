@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FactlyLogo from "../../assets/icons/factlyLogo";
 import { AiOutlineEdit, AiOutlineMenuUnfold } from "react-icons/ai";
 import ReactMarkdown from "react-markdown";
@@ -37,6 +37,25 @@ export const PersonaSachChat = () => {
   const [isCopied, setIsCopied] = useState(false);
   const [editIndex, setEditIndex] = useState(-1);
   const [streaming, setStreaming] = useState(false);
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const [chatSiderCollapse, setChatSiderCollapse] = useState(!isMobileScreen);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setIsMobileScreen(true);
+      } else {
+        setIsMobileScreen(false);
+        // setPromptSiderCollapse(false);
+        setChatSiderCollapse(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const socket = useSocket("wss://sach-chat-server.factly.in/api/v1/chat");
   useEffect(() => {
@@ -131,29 +150,30 @@ export const PersonaSachChat = () => {
   };
 
   return (
-    <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800">
+    <div className="flex min-h-screen max-h-screen flex-row bg-gray-100 text-gray-800 dark:text-white dark:bg-background-secondary-alt">
       {
         <>
           <SideBar
-            isMobileScreen={false}
-            chatSiderCollapse={false}
-            handleNewChatClick={() => {}}
+            isMobileScreen={isMobileScreen}
+            chatSiderCollapse={chatSiderCollapse}
+            setChatSiderCollapse={setChatSiderCollapse}
+            handleNewChatClick={() => { }}
             paginationChatHistory={{
               limit: 12,
               page: 1,
               search_query: "",
             }}
-            setPaginationChatHistory={() => {}}
+            setPaginationChatHistory={() => { }}
             chatHistory={[]}
             setChat={[]}
             setChatID={1}
             setIsEditing={false}
             chatID={1}
-            setChatTitle={() => {}}
-            deleteChatHistoryIndex={() => {}}
-            handleChatDelete={() => {}}
-            setDeleteChatHistoryIndex={() => {}}
-            handleHistoryDeleteClick={() => {}}
+            setChatTitle={() => { }}
+            deleteChatHistoryIndex={() => { }}
+            handleChatDelete={() => { }}
+            setDeleteChatHistoryIndex={() => { }}
+            handleHistoryDeleteClick={() => { }}
             chatCount={1}
             chatOptionsList={[
               {
@@ -171,13 +191,27 @@ export const PersonaSachChat = () => {
               className="relative w-full scrollbar-custom overflow-y-auto flex h-[90vh] flex-col items-center"
               ref={chatContainerRef}
             >
-              <div className={`sticky px-8 py-4 top-0 w-full mb-1 bg-body`}>
+              <div
+                className={`sticky px-8 py-4 top-0 w-full mb-1 bg-body z-[999] dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b]
+                ${isMobileScreen
+                    ? chatSiderCollapse
+                      ? "flex"
+                      : "hidden"
+                    : "flex"
+                  }
+              `}
+              >
                 {/* chat header */}
                 {/* <BiChevronLeft size={28} /> */}
+                <div className="dark:text-white text-[1e1e1e] mr-2">
+                  <button onClick={() => setChatSiderCollapse((prev) => !prev)}>
+                    <AiOutlineMenuUnfold size={styles.fileIconSize} />
+                  </button>
+                </div>
                 <span className="text-lg font-bold px-8">Sach Fact Check</span>
               </div>
               <div className="absolute top-[20px] left-[15px] z-9">
-                <button onClick={() => {}}>
+                <button onClick={() => { }}>
                   <AiOutlineMenuUnfold
                     size={styles.fileIconSize}
                     color="#1e1e1e"
@@ -209,17 +243,17 @@ export const PersonaSachChat = () => {
                 return (
                   <div
                     key={index}
-                    className={`rounded-lg my-1 border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
-                      item.sender === "human" ? "bg-[#ECEDF1]" : "bg-[#E4E7ED]"
-                    }`}
+                    className={`rounded-lg my-1 dark:text-white border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${item.role === "user"
+                        ? "dark:text-white bg-[#ECEDF1] dark:bg-transparent"
+                        : "dark:bg-[#4A4A4A] dark:text-white bg-[#E4E7ED]"
+                      }`}
                   >
                     <div className={`w-full flex gap-4`}>
                       <div
-                        className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
-                          item.sender === "human"
+                        className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${item.sender === "human"
                             ? "bg-green-600 ring-green-600"
                             : "ring-red-600 bg-red-600"
-                        } text-white mr-2`}
+                          } text-white mr-2`}
                       >
                         {item.sender === "human" ? (
                           <span className="text-lg"> U </span>
@@ -231,7 +265,7 @@ export const PersonaSachChat = () => {
                         <div className="w-[85%] flex flex-col justigy-center">
                           <textarea
                             ref={editref}
-                            className="bg-transparent p-2 outline-none text-base border-none focus:ring-0 h-auto scrollbar-hide pt-1"
+                            className="bg-transparent p-2 outline-none text-base border-b boder-black dark:border-white resize-none focus:ring-0 h-auto scrollbar-hide pt-1"
                             autoFocus={true}
                             style={{
                               borderBottom: "1px solid #000",
@@ -272,13 +306,12 @@ export const PersonaSachChat = () => {
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm, remarkMath]}
                           rehypePlugins={[rehypeMathjax]}
-                          className={`prose ${
-                            false
+                          className={`prose dark:text-white ${false
                               ? "max-w-[17rem]"
                               : false
-                              ? "max-w-4xl"
-                              : "max-w-2xl"
-                          } `}
+                                ? "max-w-4xl"
+                                : "max-w-2xl"
+                            } `}
                           components={{
                             code({
                               node,
@@ -358,7 +391,8 @@ export const PersonaSachChat = () => {
 							)} */}
               {!chatLoading && !streaming && messages?.length >= 2 && (
                 <button
-                  className="bg-white shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+                  className="bg-white dark:bg-background-sidebar-alt dark:text-white dark:shadow-black shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
+
                   onClick={() => {
                     let lastMessage;
                     setMessages((prevMessages) => {
@@ -375,7 +409,7 @@ export const PersonaSachChat = () => {
                 </button>
               )}
               <div
-                className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
+                className={`w-11/12 relative shadow-primary border px-4 py-2 bg-white border-primary dark:bg-background-sidebar-alt dark:border-[#3b3b3b] dark:shadow-none  rounded-lg grid grid-cols-[9fr_1fr] max-h-96`}
               >
                 <PromptInput
                   value={currentPrompt}

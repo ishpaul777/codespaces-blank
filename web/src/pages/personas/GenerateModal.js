@@ -162,7 +162,11 @@ function Modal({ open, onClose, children, closeButton = true }) {
                     }}
                   >
                     <div className="h-auto">
-                      <img src={regenerate} alt="regenerate" className="w-5 h-5 sm:w-8 sm:h-8"/>
+                      <img
+                        src={regenerate}
+                        alt="regenerate"
+                        className="w-5 h-5 sm:w-8 sm:h-8"
+                      />
                     </div>
                     <div className="w-fit h-fit mt-2 not-italic font-medium text-[14px] leading-6 text-[#667085] dark:text-white">
                       Regenerate

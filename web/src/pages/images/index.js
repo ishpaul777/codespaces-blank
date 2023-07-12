@@ -1,21 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
-import { ImageSearch } from '../../components/search/imagesSearch';
+import { useEffect, useRef, useState } from "react";
+import { ImageSearch } from "../../components/search/imagesSearch";
 import {
   generateVariationsOfImage,
   getGeneratedImages,
-} from '../../actions/images';
-import { HashLoader } from 'react-spinners';
-import { isURL } from '../../util/validateRegex';
-import { errorToast } from '../../util/toasts';
-import sunflowerImage from '../../assets/sunflower.png';
-import astronautImage from '../../assets/astronaut.png';
-import brightCity from '../../assets/bright-city.png';
-import madPanda from '../../assets/mad-panda.png';
-import handDrawnBoat from '../../assets/handrawn-boat.png';
-import foxNight from '../../assets/fox-night.png';
-import catWithHat from '../../assets/cat-with-hat.png';
-import davidWearingHeadphones from '../../assets/david-wearing-headphones.png';
-import useDarkMode from '../../hooks/useDarkMode';
+} from "../../actions/images";
+import { HashLoader } from "react-spinners";
+import { isURL } from "../../util/validateRegex";
+import { errorToast } from "../../util/toasts";
+import sunflowerImage from "../../assets/sunflower.png";
+import astronautImage from "../../assets/astronaut.png";
+import brightCity from "../../assets/bright-city.png";
+import madPanda from "../../assets/mad-panda.png";
+import handDrawnBoat from "../../assets/handrawn-boat.png";
+import foxNight from "../../assets/fox-night.png";
+import catWithHat from "../../assets/cat-with-hat.png";
+import davidWearingHeadphones from "../../assets/david-wearing-headphones.png";
+import useDarkMode from "../../hooks/useDarkMode";
 import ExampleModal from "./ExamplesModal";
 import useWindowSize from "../../hooks/useWindowSize";
 
@@ -24,9 +24,9 @@ export default function ImagePage() {
   const { isMobileScreen } = useWindowSize();
   const { darkMode } = useDarkMode();
   const [imageRequest, setImageRequest] = useState({
-    prompt: '',
+    prompt: "",
     n: 4,
-    provider: 'stableDiffusion',
+    provider: "stableDiffusion",
   });
 
   const handleRangeChange = (event) => {
@@ -95,14 +95,14 @@ export default function ImagePage() {
     generateVariationsOfImage(
       e.target.files[0],
       imageRequest.n,
-      'stable-diffusion-v1-5',
-      'stableDiffusion'
+      "stable-diffusion-v1-5",
+      "stableDiffusion"
     )
       .then((response) => {
         setImages(response?.map((image) => ({ ...image, isHover: false })));
       })
       .catch((err) => {
-        errorToast('error in generating variations of image ' + err?.message);
+        errorToast("error in generating variations of image " + err?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -132,15 +132,15 @@ export default function ImagePage() {
   const defaultImagePrompts = [
     {
       url: foxNight,
-      prompt: 'A painting of a fox in the style of Starry Night',
+      prompt: "A painting of a fox in the style of Starry Night",
     },
     {
       url: astronautImage,
-      prompt: 'An astronaut lounging in a tropical resort in space, vaporwave',
+      prompt: "An astronaut lounging in a tropical resort in space, vaporwave",
     },
     {
       url: catWithHat,
-      prompt: 'A photo of a cat with a hat on',
+      prompt: "A photo of a cat with a hat on",
     },
     {
       url: davidWearingHeadphones,
@@ -150,20 +150,20 @@ export default function ImagePage() {
     {
       url: brightCity,
       prompt:
-        'a pencil and watercolor drawing of a bright city in the future with flying cars',
+        "a pencil and watercolor drawing of a bright city in the future with flying cars",
     },
     {
       url: handDrawnBoat,
-      prompt: 'A hand-drawn sailboat circled by birds on the sea at sunrise',
+      prompt: "A hand-drawn sailboat circled by birds on the sea at sunrise",
     },
     {
       url: sunflowerImage,
       prompt:
-        'A photograph of a sunflower with sunglasses on in the middle of the flower in a field on a bright sunny day',
+        "A photograph of a sunflower with sunglasses on in the middle of the flower in a field on a bright sunny day",
     },
     {
       url: madPanda,
-      prompt: 'panda mad scientist mixing sparkling chemicals, digital art',
+      prompt: "panda mad scientist mixing sparkling chemicals, digital art",
     },
   ];
 
@@ -172,7 +172,7 @@ export default function ImagePage() {
     const blob = b64toBlob(base64Url);
 
     // Create a temporary link element
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
 
@@ -192,12 +192,14 @@ export default function ImagePage() {
     }
 
     const byteArray = new Uint8Array(byteArrays);
-    return new Blob([byteArray], { type: 'image/png' }); // Modify the MIME type if needed
+    return new Blob([byteArray], { type: "image/png" }); // Modify the MIME type if needed
   }
 
   return (
     <div className={`my-16 ${isMobileScreen ? "mx-6 my-24" : "mx-10"}`}>
-      <h2 className={`text-3xl font-medium dark:text-white mb-4`}>Generate Images</h2>
+      <h2 className={`text-3xl font-medium dark:text-white mb-4`}>
+        Generate Images
+      </h2>
       <ImageSearch
         isMobileScreen={isMobileScreen}
         placeholder={
@@ -223,8 +225,8 @@ export default function ImagePage() {
             onClick={() => onUploadButtonClick()}
             className={`text-black px-4 py-2 rounded-lg ${
               darkMode
-                ? 'bg-background-sidebar-alt text-white'
-                : 'bg-button-primary'
+                ? "bg-background-sidebar-alt text-white"
+                : "bg-button-primary"
             } `}
           >
             Upload Image
@@ -235,22 +237,26 @@ export default function ImagePage() {
               onChange={(e) => handleUploadFile(e)}
             ></input>
           </button>
-          <span className={`${darkMode && 'text-[#BEBEBE]'}`}>
+          <span className={`${darkMode && "text-[#BEBEBE]"}`}>
             to generate variations
           </span>
         </div>
-          <div className="flex flex-row items-center space-x-2">
-            <label className={`${darkMode ? 'text-[#BEBEBE]' : 'text-gray-600'}`}>Image Count </label>
-            <input
-              type="range"
-              min={1}
-              max={8}
-              value={imageRequest.n}
-              onChange={handleRangeChange}
-              className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
-            />
-            <span className={`dark:text-[#BEBEBE] text-gray-600}`}>{imageRequest.n}</span>
-          </div>
+        <div className="flex flex-row items-center space-x-2">
+          <label className={`${darkMode ? "text-[#BEBEBE]" : "text-gray-600"}`}>
+            Image Count{" "}
+          </label>
+          <input
+            type="range"
+            min={1}
+            max={8}
+            value={imageRequest.n}
+            onChange={handleRangeChange}
+            className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
+          />
+          <span className={`dark:text-[#BEBEBE] text-gray-600}`}>
+            {imageRequest.n}
+          </span>
+        </div>
         <div className="mr-4 flex gap-2">
           <select
             name="provider"
@@ -267,7 +273,7 @@ export default function ImagePage() {
       <div className={`mt-8`}>
         {loading ? (
           <div className={`flex justify-center mt-[20vh]`}>
-            <HashLoader color={'#667085'} loading={true} size={100} />
+            <HashLoader color={"#667085"} loading={true} size={100} />
           </div>
         ) : (
           <div
@@ -284,7 +290,7 @@ export default function ImagePage() {
                       onMouseEnter={() => onMouseIn(index)}
                       onMouseLeave={() => onMouseOut(index)}
                       onClick={() =>
-                        downloadImageFromBase64Url(image?.url, 'image.png')
+                        downloadImageFromBase64Url(image?.url, "image.png")
                       }
                     >
                       <img
@@ -321,8 +327,8 @@ export default function ImagePage() {
                           <p className="text-black font-medium text-xl m-4 font-serif">
                             {image.prompt}
                           </p>
-                          <p style={{ color: '#777' }} className=" text-lg m-4">
-                            Click to try{' '}
+                          <p style={{ color: "#777" }} className=" text-lg m-4">
+                            Click to try{" "}
                           </p>
                         </div>
                       </div>

@@ -172,7 +172,9 @@ export const IntroductionForm = ({ handleSubmit }) => {
         required={true}
       ></Input>
       <div className="flex flex-col">
-        <label className="font-medium text-base dark:text-white">Claim sources</label>
+        <label className="font-medium text-base dark:text-white">
+          Claim sources
+        </label>
         {claimSources.map((claimSource, index) => {
           // return an input with a cross icon at right
           return (

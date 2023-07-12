@@ -1,26 +1,26 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import ArrowLeft from '../../assets/icons/arrow-left.svg';
-import ArrowWithTail from '../../assets/icons/arrow-with-tail.svg';
-import Arrow from '../../assets/icons/arrow.svg';
-import Bookmark from '../../assets/icons/bookmark.svg';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ArrowLeft from "../../assets/icons/arrow-left.svg";
+import ArrowWithTail from "../../assets/icons/arrow-with-tail.svg";
+import Arrow from "../../assets/icons/arrow.svg";
+import Bookmark from "../../assets/icons/bookmark.svg";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
-import Chat from '../../assets/icons/chat.svg';
-import Documents from '../../assets/icons/documents.svg';
-import Home from '../../assets/icons/home.svg';
-import History from '../../assets/icons/history.svg';
-import Images from '../../assets/icons/images.svg';
-import Logout from '../../assets/icons/logout.svg';
-import Profile from '../../assets/icons/profile.svg';
-import Templates from '../../assets/icons/templates.svg';
-import Usage from '../../assets/icons/usage.svg';
+import Chat from "../../assets/icons/chat.svg";
+import Documents from "../../assets/icons/documents.svg";
+import Home from "../../assets/icons/home.svg";
+import History from "../../assets/icons/history.svg";
+import Images from "../../assets/icons/images.svg";
+import Logout from "../../assets/icons/logout.svg";
+import Profile from "../../assets/icons/profile.svg";
+import Templates from "../../assets/icons/templates.svg";
+import Usage from "../../assets/icons/usage.svg";
 import Workflow from "../../assets/icons/workflow.svg";
-import DocumentsDark from '../../assets/icons/documents_dark.svg';
-import ImagesDark from '../../assets/icons/images_dark.svg';
-import DashboardDark from '../../assets/icons/dashboard_dark.svg';
-import { logout } from '../../actions/kratos';
-import { errorToast } from '../../util/toasts';
-import useDarkMode from '../../hooks/useDarkMode';
+import DocumentsDark from "../../assets/icons/documents_dark.svg";
+import ImagesDark from "../../assets/icons/images_dark.svg";
+import DashboardDark from "../../assets/icons/dashboard_dark.svg";
+import { logout } from "../../actions/kratos";
+import { errorToast } from "../../util/toasts";
+import useDarkMode from "../../hooks/useDarkMode";
 import useWindowSize from "../../hooks/useWindowSize";
 
 // import FactlyLogo from '../../assets/factly-logo.svg';
@@ -33,24 +33,24 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
 
   const menuOptions = [
     {
-      name: 'Dashboard',
+      name: "Dashboard",
       icon: darkMode ? DashboardDark : Home,
-      linkTo: '/',
+      linkTo: "/",
     },
     {
-      name: 'Documents',
+      name: "Documents",
       icon: darkMode ? DocumentsDark : Documents,
-      linkTo: '/documents',
+      linkTo: "/documents",
     },
     {
-      name: 'Images',
+      name: "Images",
       icon: darkMode ? ImagesDark : Images,
-      linkTo: '/images',
+      linkTo: "/images",
     },
     {
-      name: 'Personas',
+      name: "Personas",
       icon: Templates,
-      linkTo: '/personas',
+      linkTo: "/personas",
     },
     {
       name: "Workflows",
@@ -58,10 +58,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       linkTo: "/workflows",
     },
     {
-      name: 'Chat',
+      name: "Chat",
       icon: Chat,
-      linkTo: '/chats/dashboard',
-    }
+      linkTo: "/chats/dashboard",
+    },
   ];
 
   const handleLogout = () => {
@@ -70,10 +70,9 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
         window.location.href = res.logout_url;
       })
       .catch(() => {
-        errorToast('error logging out');
+        errorToast("error logging out");
       });
   };
-
 
   const manageProfileOptions = [
     // {
@@ -99,9 +98,9 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
     //   linkTo: "/usage",
     // },
     {
-      name: 'Logout',
+      name: "Logout",
       icon: Logout,
-      linkTo: '/logout',
+      linkTo: "/logout",
       onClick: handleLogout,
     },
   ];
@@ -119,7 +118,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
     const path = window.location.pathname;
 
     let index = 0;
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       // find index of the menu option based on the path
       menuOptions.forEach((option, currentIndex) => {
         if (`/.factly/tagore/web${option}` === path) {
@@ -139,18 +138,20 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
 
   return (
     <div
-      className={`${isMobileScreen
-        ? sideBarOpen
-          ? "w-[100vw] fixed right-0 top-0 z-50 flex flex-row-reverse duration-300"
-          : "w-0"
-        : "w-full"
-        } `}
+      className={`${
+        isMobileScreen
+          ? sideBarOpen
+            ? "w-[100vw] fixed right-0 top-0 z-50 flex flex-row-reverse duration-300"
+            : "w-0"
+          : "w-full"
+      } `}
     >
       {(!isMobileScreen || sideBarOpen) && (
         <>
           <div
-            className={`${isMobileScreen ? "w-[80vw] z-50" : "w-full"
-              } p-5 pt-8 bg-background-sidebar h-screen flex flex-col dark:bg-background-sidebar-alt`}
+            className={`${
+              isMobileScreen ? "w-[80vw] z-50" : "w-full"
+            } p-5 pt-8 bg-background-sidebar h-screen flex flex-col dark:bg-background-sidebar-alt`}
           >
             <div className={`flex gap-x-2 items-center justify-center w-fit`}>
               <img
@@ -166,10 +167,11 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                   <li
                     key={index}
                     className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
-                ${(activeTab !== index)
-                        ? ('dark:hover:bg-button-primary-alt hover:bg-button-primary')
-                        : ('dark:bg-button-primary-alt bg-button-primary')
-                      }
+                ${
+                  activeTab !== index
+                    ? "dark:hover:bg-button-primary-alt hover:bg-button-primary"
+                    : "dark:bg-button-primary-alt bg-button-primary"
+                }
                 mt-2 dark:text-white`}
                     onClick={() => setActiveTab(index)}
                   >
@@ -184,7 +186,9 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
             {/* Menu list when they click on the manage profile button */}
             <div className="flex flex-col mt-auto gap-2">
               {openMenu && (
-                <ul className={`flex flex-col gap-2 bg-white dark:bg-background-secondary-alt p-2 rounded-lg`}>
+                <ul
+                  className={`flex flex-col gap-2 bg-white dark:bg-background-secondary-alt p-2 rounded-lg`}
+                >
                   {manageProfileOptions.map((option) => (
                     <Link to={option.linkTo}>
                       <li
@@ -195,10 +199,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                           }
                         }}
                       >
-                        {option.name === 'View Profile' ? (
+                        {option.name === "View Profile" ? (
                           <div className="bg-red-400 rounded-full text-white text-center  h-6 w-6 ">
-                            {' '}
-                            F{' '}
+                            {" "}
+                            F{" "}
                           </div>
                         ) : (
                           <img src={option.icon} />
@@ -211,8 +215,9 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
               )}
               {/* manage profile button */}
               <button
-                className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${darkMode && 'bg-button-primary-alt'
-                  } rounded pr-4 pl-4 pt-2 pb-2`}
+                className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${
+                  darkMode && "bg-button-primary-alt"
+                } rounded pr-4 pl-4 pt-2 pb-2`}
                 onClick={() => setOpenMenu((prevState) => !prevState)}
               >
                 <div className="flex flex-row gap-4 items-center">
@@ -221,7 +226,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                     FM{" "}
                   </div>
                   <span className="dark:text-white">
-                    {getOrgName('Factly Media and Research')}
+                    {getOrgName("Factly Media and Research")}
                   </span>
                 </div>
                 <img src={Arrow} />

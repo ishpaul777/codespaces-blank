@@ -275,7 +275,8 @@ export default function CreatePersona() {
                 href={promptExampleLink}
                 className="flex flex-row items-center gap-2 text-[12px] text-blue-500 font-medium"
               >
-                View prompt examples <RiShareBoxLine className="text-blue-500" />
+                View prompt examples{" "}
+                <RiShareBoxLine className="text-blue-500" />
               </a>
             </div>
             <div className="w-full flex flex-col gap-2 py-7 border-b border-b-[#EAECF0] dark:border-[#555]">
