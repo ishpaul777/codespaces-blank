@@ -6,7 +6,6 @@ import { ToastContainer } from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";
 import MenuIcon from "../MenuIcon";
 import useDarkMode from "../../hooks/useDarkMode";
-import DarkMode from "../buttons/DarkMode";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Layout() {
@@ -42,7 +41,6 @@ export default function Layout() {
       >
         <Outlet></Outlet>
       </main>
-      {!isMobileScreen && <DarkMode />}
       <ToastContainer
         toastClassName={({ type }) =>
           type === "error"

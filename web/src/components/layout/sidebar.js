@@ -22,6 +22,7 @@ import { logout } from "../../actions/kratos";
 import { errorToast } from "../../util/toasts";
 import useDarkMode from "../../hooks/useDarkMode";
 import useWindowSize from "../../hooks/useWindowSize";
+import DarkMode from "../buttons/DarkMode";
 
 // import FactlyLogo from '../../assets/factly-logo.svg';
 
@@ -213,6 +214,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                   ))}
                 </ul>
               )}
+              <DarkMode />
               {/* manage profile button */}
               <button
                 className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${
