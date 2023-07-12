@@ -189,9 +189,7 @@ export default function DocumentPage() {
                   <td
                     className={`${tableStyles.valuesPadding} text-sm bg-white dark:bg-background-sidebar-alt cursor-pointer dark:text-white font-medium text-text-primary text-left  text-black`}
                     onClick={() => {
-                      navigate(
-                        `/documents/create?id=${value.id}&isEdit=true`
-                      );
+                      navigate(`/documents/create?id=${value.id}&isEdit=true`);
                     }}
                   >
                     {value.title}

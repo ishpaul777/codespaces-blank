@@ -157,23 +157,23 @@ export const PersonaSachChat = () => {
             isMobileScreen={isMobileScreen}
             chatSiderCollapse={chatSiderCollapse}
             setChatSiderCollapse={setChatSiderCollapse}
-            handleNewChatClick={() => { }}
+            handleNewChatClick={() => {}}
             paginationChatHistory={{
               limit: 12,
               page: 1,
               search_query: "",
             }}
-            setPaginationChatHistory={() => { }}
+            setPaginationChatHistory={() => {}}
             chatHistory={[]}
             setChat={[]}
             setChatID={1}
             setIsEditing={false}
             chatID={1}
-            setChatTitle={() => { }}
-            deleteChatHistoryIndex={() => { }}
-            handleChatDelete={() => { }}
-            setDeleteChatHistoryIndex={() => { }}
-            handleHistoryDeleteClick={() => { }}
+            setChatTitle={() => {}}
+            deleteChatHistoryIndex={() => {}}
+            handleChatDelete={() => {}}
+            setDeleteChatHistoryIndex={() => {}}
+            handleHistoryDeleteClick={() => {}}
             chatCount={1}
             chatOptionsList={[
               {
@@ -193,12 +193,13 @@ export const PersonaSachChat = () => {
             >
               <div
                 className={`sticky px-8 py-4 top-0 w-full mb-1 bg-body z-[999] dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b]
-                ${isMobileScreen
+                ${
+                  isMobileScreen
                     ? chatSiderCollapse
                       ? "flex"
                       : "hidden"
                     : "flex"
-                  }
+                }
               `}
               >
                 {/* chat header */}
@@ -211,7 +212,7 @@ export const PersonaSachChat = () => {
                 <span className="text-lg font-bold px-8">Sach Fact Check</span>
               </div>
               <div className="absolute top-[20px] left-[15px] z-9">
-                <button onClick={() => { }}>
+                <button onClick={() => {}}>
                   <AiOutlineMenuUnfold
                     size={styles.fileIconSize}
                     color="#1e1e1e"
@@ -243,17 +244,19 @@ export const PersonaSachChat = () => {
                 return (
                   <div
                     key={index}
-                    className={`rounded-lg my-1 dark:text-white border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${item.role === "user"
+                    className={`rounded-lg my-1 dark:text-white border-[#CED0D4] w-11/12 flex items-center justify-between px-7 py-6 ${
+                      item.role === "user"
                         ? "dark:text-white bg-[#ECEDF1] dark:bg-transparent"
                         : "dark:bg-[#4A4A4A] dark:text-white bg-[#E4E7ED]"
-                      }`}
+                    }`}
                   >
                     <div className={`w-full flex gap-4`}>
                       <div
-                        className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${item.sender === "human"
+                        className={`flex justify-center items-center  h-8 w-8 rounded-full ring-2 ${
+                          item.sender === "human"
                             ? "bg-green-600 ring-green-600"
                             : "ring-red-600 bg-red-600"
-                          } text-white mr-2`}
+                        } text-white mr-2`}
                       >
                         {item.sender === "human" ? (
                           <span className="text-lg"> U </span>
@@ -306,12 +309,13 @@ export const PersonaSachChat = () => {
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm, remarkMath]}
                           rehypePlugins={[rehypeMathjax]}
-                          className={`prose dark:text-white ${false
+                          className={`prose dark:text-white ${
+                            false
                               ? "max-w-[17rem]"
                               : false
-                                ? "max-w-4xl"
-                                : "max-w-2xl"
-                            } `}
+                              ? "max-w-4xl"
+                              : "max-w-2xl"
+                          } `}
                           components={{
                             code({
                               node,
@@ -392,7 +396,6 @@ export const PersonaSachChat = () => {
               {!chatLoading && !streaming && messages?.length >= 2 && (
                 <button
                   className="bg-white dark:bg-background-sidebar-alt dark:text-white dark:shadow-black shadow-primary px-3 py-2 rounded-md text-sm flex items-center gap-2"
-
                   onClick={() => {
                     let lastMessage;
                     setMessages((prevMessages) => {

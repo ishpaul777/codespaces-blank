@@ -262,15 +262,17 @@ export default function Document() {
       {/* this is control section, it will have a prompt input, keyword input, language input and output length */}
       {!isMobileScreen ? (
         <div
-          className={`w-1/4 bg-background-sidebar h-fit ${darkMode && "bg-background-sidebar-alt text-white"
-            }`}
+          className={`w-1/4 bg-background-sidebar h-fit ${
+            darkMode && "bg-background-sidebar-alt text-white"
+          }`}
         >
           {/* actions container */}
           <div className="p-10 flex flex-col gap-11">
             {/* image container */}
             <div>
               {/* backbutton icon */}
-              <BiArrowBack className="text-2xl text-black-50 dark:text-white"
+              <BiArrowBack
+                className="text-2xl text-black-50 dark:text-white"
                 onClick={handleGoBack}
               />
             </div>
@@ -281,8 +283,9 @@ export default function Document() {
               <div className="flex gap-2">
                 <label
                   htmlFor="contentDescription"
-                  className={`font-medium ${darkMode ? "text-dark-text" : "text-form-label"
-                    } text-sm`}
+                  className={`font-medium ${
+                    darkMode ? "text-dark-text" : "text-form-label"
+                  } text-sm`}
                 >
                   Content description / brief
                 </label>
@@ -305,8 +308,9 @@ export default function Document() {
               <div className="flex gap-2">
                 <label
                   htmlFor="keywords"
-                  className={`font-medium ${darkMode ? "text-dark-text" : "text-form-label"
-                    } text-sm`}
+                  className={`font-medium ${
+                    darkMode ? "text-dark-text" : "text-form-label"
+                  } text-sm`}
                 >
                   {" "}
                   Keywords{" "}
@@ -324,8 +328,9 @@ export default function Document() {
               <div className="flex gap-2">
                 <label
                   htmlFor="languages"
-                  className={`font-medium ${darkMode ? "text-dark-text" : "text-form-label"
-                    } text-sm`}
+                  className={`font-medium ${
+                    darkMode ? "text-dark-text" : "text-form-label"
+                  } text-sm`}
                 >
                   Select language
                 </label>
@@ -350,8 +355,9 @@ export default function Document() {
               <div className="flex gap-2">
                 <label
                   htmlFor="languages"
-                  className={`font-medium ${darkMode ? "text-dark-text" : "text-form-label"
-                    } text-sm`}
+                  className={`font-medium ${
+                    darkMode ? "text-dark-text" : "text-form-label"
+                  } text-sm`}
                 >
                   Output length
                 </label>
@@ -424,7 +430,8 @@ export default function Document() {
           <div className="p-4 flex justify-between items-center">
             <div className="flex gap-3">
               {/* backbutton icon */}
-              <BiArrowBack className="text-2xl text-black-50 dark:text-white ml-10"
+              <BiArrowBack
+                className="text-2xl text-black-50 dark:text-white ml-10"
                 onClick={handleGoBack}
               />
               <h2 className="text-2xl font-medium">
@@ -463,21 +470,24 @@ export default function Document() {
       )}
 
       <div
-        className={` ${!isMobileScreen ? "w-3/4 grid  grid-rows-[1fr_14fr]" : "w-full"
-          }`}
+        className={` ${
+          !isMobileScreen ? "w-3/4 grid  grid-rows-[1fr_14fr]" : "w-full"
+        }`}
       >
         {/* this is the header section in create document page. It has mainly 2 elements - 1. File Name input box and 2. actions - [share, delete, save]*/}
         <div
-          className={`w-full py-3 px-6 flex justify-between border-b ${darkMode ? "bg-background-sidebar-alt" : "border-border-secondary"
-            }`}
+          className={`w-full py-3 px-6 flex justify-between border-b ${
+            darkMode ? "bg-background-sidebar-alt" : "border-border-secondary"
+          }`}
         >
           <div className={`w-3/5 flex flex-row items-center`}>
             <div className="w-2/5 border-2 p-2 border-border-secondary dark:border-[#3b3b3b] flex items-center rounded">
               <input
                 defaultValue={documentName}
                 placeholder="enter title for the document"
-                className={`outline-none w-full ${darkMode && "bg-background-sidebar-alt text-white"
-                  }`}
+                className={`outline-none w-full ${
+                  darkMode && "bg-background-sidebar-alt text-white"
+                }`}
                 onChange={(e) => onNameChange(e.target.value)}
               ></input>
               {/* <button className="text-xl" onClick={onNameSubmit}><AiOutlineCheck /></button> */}
@@ -510,12 +520,14 @@ export default function Document() {
           </div>
         </div>
         <div
-          className={`w-full flex justify-center ${darkMode && "bg-background-secondary-alt"
-            }`}
+          className={`w-full flex justify-center ${
+            darkMode && "bg-background-secondary-alt"
+          }`}
         >
           <div
-            className={`w-[60%] py-1 ${darkMode && "bg-background-sidebar-alt"
-              }`}
+            className={`w-[60%] py-1 ${
+              darkMode && "bg-background-sidebar-alt"
+            }`}
           >
             <ScooterCore
               placeholder="Write your content here. Press / for commands and /generate for AI commands"
@@ -583,8 +595,9 @@ export default function Document() {
       {isMobileScreen && (
         // Mobile Menu Content
         <div
-          className={` w-3/4 fixed top-0 right-0 h-screen bg-background-sidebar z-50 transition-transform transform ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-            } duration-300`}
+          className={` w-3/4 fixed top-0 right-0 h-screen bg-background-sidebar z-50 transition-transform transform ${
+            isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          } duration-300`}
         >
           <button
             className="text-white text-2xl focus:outline-none absolute top-3 right-3 "
@@ -600,10 +613,11 @@ export default function Document() {
                 <input
                   defaultValue={documentName}
                   placeholder="enter title for the document"
-                  className={`${isMobileScreen
+                  className={`${
+                    isMobileScreen
                       ? "w-[80%] outline-none p-2"
                       : "outline-none w-2/5 p-2"
-                    }`}
+                  }`}
                   onChange={(e) => onNameChange(e.target.value)}
                 ></input>
               </div>
@@ -759,10 +773,10 @@ export default function Document() {
           type === "error"
             ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
             : type === "success"
-              ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-              : type === "warning"
-                ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-                : ""
+            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
+            : type === "warning"
+            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
+            : ""
         }
         className="space-y-4  "
       />
