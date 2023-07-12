@@ -156,13 +156,12 @@ export default function ChatBar({
                 ></Select>
                 <div className=" h-1/2">
                   <label className="text-sm text-black-50 dark:text-white mb-2">System Prompt</label>
-                  <div className="bg-transparent w-full rounded-lg p-2 mt-2 border border-[#D0D5DD] relative">
+                  <div className="bg-transparent w-full rounded-lg p-2 mt-2 border border-[#fff] relative">
                     <PromptInput
                       initialValue={initialPrompt}
                       position={"bottom"}
                       onChange={setIntialPrompt}
-                      value={initialPrompt}
-                      placeholder={"Enter your system prompt"}
+                      value={initialPrompt}                      placeholder={"Enter your system prompt"}
                       onEnter={() => { }}
                       isPromptModalVisible={isInitialPromptModalVisible}
                       setIsPromptModalVisible={setIsInitialPromptModalVisible}
@@ -182,7 +181,7 @@ export default function ChatBar({
         ) : (
           <div
             className={`sticky ${isMobileScreen ? "px-4" : "px-8"
-              } py-4 top-0 w-full mb-1 z-40 bg-white border-b border-b-[#DCE4E7]`}
+              } py-4 top-0 w-full mb-1 z-40 bg-white dark:bg-background-sidebar-alt border-b border-b-[#DCE4E7] dark:border-[#3b3b3b]`}
           >
             {/* chat header */}
             {/* <BiChevronLeft size={28} /> */}
@@ -193,7 +192,7 @@ export default function ChatBar({
                         `}
             </span> */}
             <div
-              className={`border-none bg-white w-full ${isMobileScreen ? "pt-8 pb-2" : "py-2"
+              className={`border-none bg-white dark:bg-background-sidebar-alt dark:text-white w-full ${isMobileScreen ? "pt-8 pb-2" : "py-2"
                 } px-4  gap-4 flex justify-between`}
             >
               {isMobileScreen ? (
@@ -249,7 +248,7 @@ export default function ChatBar({
             </div>
 
             <div
-              className={`bg-white ease-in-out duration-300 ${isSettingVisible
+              className={`bg-white dark:bg-background-sidebar-alt dark:text-white ease-in-out duration-300 ${isSettingVisible
                 ? 'h-fit p-4 w-full translate-y-100 flex flex-col items-center gap-4'
                 : 'h-0 translate-y-0'
                 }`}
@@ -257,7 +256,7 @@ export default function ChatBar({
               {isSettingVisible && (
                 <>
                   <div
-                    className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4"
+                    className="md:w-2/5 top-0 sticky border bg-[#F8F8F8] dark:bg-background-secondary-alt border-[#DEDEDE] rounded-lg flex flex-col p-4 gap-4"
                     style={{
                       maxWidth: isMobileScreen ? '80vw' : '400px',
                       width: isMobileScreen ? '80vw' : '',

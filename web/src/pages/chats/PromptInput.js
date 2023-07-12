@@ -132,7 +132,6 @@ function PromptInput(props) {
         closable={false}
         title="Insert Variable Values for Prompt"
         visible={isPromptModalVisible}
-        okButtonProps={{ style: { backgroundColor: "#000" } }}
         onOk={() => handleInsertVariableValues()}
         okText="Save"
         onCancel={() => {
@@ -161,7 +160,7 @@ function PromptInput(props) {
             return (
               <div key={index} className="flex flex-col gap-2 h-full">
                 <label
-                  className="font-medium text-gray-700 text-base"
+                  className="font-medium text-gray-700 dark:text-white   text-base"
                   htmlFor={key}
                 >
                   {key}
@@ -171,7 +170,7 @@ function PromptInput(props) {
                     id={key}
                     placeholder="Name of the prompt"
                     rows={4}
-                    className={`p-2 border border-[#CED0D4] rounded-md bg-transparent resize-none`}
+                    className={`p-2 border border-[#CED0D4] dark:border-[#3B3B3B] dark:placeholder:text-white  rounded-md bg-transparent resize-none`}
                     type="input"
                     name={key}
                     value={variable[key]}

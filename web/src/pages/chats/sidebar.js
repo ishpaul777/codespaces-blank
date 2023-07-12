@@ -407,7 +407,7 @@ export default function SideBar({
                           ? "w-[45%] p-1"
                           : "flex p-2 justify-between w-full"
                         }
-                    ${dragOverCollectionId === item.id && "bg-hover-on-white dark:bg-background-secondary-alt dark:text-white"}
+                    ${dragOverCollectionId === item.id && "bg-ho?"}
                     `}
                       onClick={() => {
                         if (

@@ -112,7 +112,7 @@ const Mentions = (props) => {
         onChange={(e) => {
           handleChange(e);
         }}
-        className={`rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto resize-none ${darkMode && 'bg-background-sidebar-alt'}`}
+        className={`rounded-md bg-transparent w-full outline-none text-base scrollbar-custom max-h-40 pt-1 overflow-x-hidden overflow-y-auto resize-none dark:placeholder:text-white ${darkMode && 'bg-background-sidebar-alt'}`}
         // onKeyDown={(e) => { handleKeydown(e) }}
         ref={textareaRef}
         value={props.value}
