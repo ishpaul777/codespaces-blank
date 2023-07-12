@@ -171,7 +171,7 @@ export default function DocumentPage() {
                   tableStyles.headerPadding
                 } text-sm ${
                   darkMode ? "" : "bg-background-sidebar"
-                } font-medium text-text-primary text-left rounded-t-lg text-table-text ${
+                } font-medium text-text-primary text-left  text-table-text ${
                   darkMode && "text-white"
                 }`}
               >
@@ -187,7 +187,12 @@ export default function DocumentPage() {
                   key={index}
                 >
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm bg-white dark:bg-background-sidebar-alt cursor-pointer dark:text-white font-medium text-text-primary text-left  text-black`}
+                    onClick={() => {
+                      navigate(
+                        `/documents/create?id=${value.id}&isEdit=true`
+                      );
+                    }}
                   >
                     {value.title}
                   </td>
@@ -196,7 +201,7 @@ export default function DocumentPage() {
                       darkMode
                         ? "bg-background-sidebar-alt text-white"
                         : "bg-white"
-                    } font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    } font-medium text-text-primary text-left  text-black`}
                   >
                     {email}
                   </td>
@@ -205,7 +210,7 @@ export default function DocumentPage() {
                       darkMode
                         ? "bg-background-sidebar-alt text-white"
                         : "bg-white"
-                    } font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    } font-medium text-text-primary text-left  text-black`}
                   >
                     {moment(value.updated_at).format("MMMM Do YYYY, h:mm:ss a")}
                   </td>
@@ -214,7 +219,7 @@ export default function DocumentPage() {
                       darkMode
                         ? "bg-background-sidebar-alt text-white"
                         : "bg-white"
-                    } font-medium text-text-primary text-left rounded-t-lg text-black flex items-center gap-2`}
+                    } font-medium text-text-primary text-left  text-black flex items-center gap-2`}
                   >
                     <div
                       className={`${
