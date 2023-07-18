@@ -28,12 +28,17 @@ export default function BlogPostWorkflow() {
 
   const [activeState, setActiveState] = useState(0);
 
+  // stream for the workflow
+  const stream = true;
   // editorData for the workflow
   const [editorData, setEditorData] = useState(``);
 
   const [outlineForms, setOutlineForms] = useState([]);
 
   const [loading, setLoading] = useState(false);
+
+  // setFormLoading is used to set the loading state of the form
+  const [formLoading, setFormLoading] = useState(false);
 
   const [content, setContent] = useState({
     value: "",
@@ -69,24 +74,82 @@ export default function BlogPostWorkflow() {
     {
       component: (
         <Introduction
-          handleCompose={(output, title, tone, audience) => {
-            setEditorData((prevState) => {
-              editor?.commands.setContent(prevState + output);
-              return prevState + output;
-            });
+          loading={formLoading}
+          handleCompose={async (requestBody, title, tone, audience) => {
+            if (stream) {
+              setFormLoading(true);
+              requestBody.stream = true;
+              requestBody.model = "gpt-4";
+              let streamData = "";
+              var source = new SSE(
+                window.REACT_APP_TAGORE_API_URL + `/prompts/generate`,
+                {
+                  payload: JSON.stringify(requestBody),
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  withCredentials: true,
+                }
+              );
 
-            setActiveState((prevState) => {
-              workflowProcess[prevState + 1].ref.current.scrollIntoView({
-                behavior: "smooth",
+              setCommonBlogDetails({
+                title: title,
+                tone: tone,
+                audience: audience,
               });
-              return prevState + 1;
-            });
 
-            setCommonBlogDetails({
-              title: title,
-              tone: tone,
-              audience: audience,
-            });
+              source.addEventListener("message", (event) => {
+                let newData = JSON.parse(event.data)?.output;
+                // get difference between newData and streamData string
+                let difference = newData.replace(streamData, "");
+                // set streamData to newData
+                streamData = newData;
+                // set editorData to difference
+                setEditorData((prevState) => {
+                  editor?.commands.setContent(prevState + difference);
+                  return prevState + difference;
+                });
+              });
+
+              source.addEventListener("error", (event) => {
+                setFormLoading(false);
+                setActiveState((prevState) => {
+                  workflowProcess[prevState + 1]?.ref?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  return prevState + 1;
+                });
+              });
+
+              source.stream();
+            } else {
+              setFormLoading(true);
+              requestBody.stream = false;
+              requestBody.model = "gpt-3.5-turbo";
+              const response = await generateTextFromPrompt(requestBody);
+              let output = response?.output?.replace(/\n|\t|(?<=>)\s*/g, "");
+
+              setEditorData((prevState) => {
+                editor?.commands.setContent(prevState + output);
+                return prevState + output;
+              });
+
+              setCommonBlogDetails({
+                title: title,
+                tone: tone,
+                audience: audience,
+              });
+
+              setFormLoading(false);
+
+              setActiveState((prevState) => {
+                workflowProcess[prevState + 1]?.ref?.current?.scrollIntoView({
+                  behavior: "smooth",
+                });
+                return prevState + 1;
+              });
+            }
           }}
         />
       ),
@@ -113,19 +176,74 @@ export default function BlogPostWorkflow() {
               return {
                 component: (
                   <ParagraphGenerator
+                    loading={formLoading}
                     editor={editor}
                     topic={element}
                     tone={commonBlogDetails.tone}
                     audience={commonBlogDetails.audience}
-                    handleCompose={(output) => {
-                      setEditorData((prevState) => {
-                        editor?.commands.setContent(prevState + output);
-                        return prevState + output;
-                      });
-                      setActiveState((prevState) => {
-                        // TODO: scroll to the next component
-                        return prevState + 1;
-                      });
+                    handleCompose={async (requestBody) => {
+                      if (stream) {
+                        setFormLoading(true);
+                        requestBody.stream = true;
+                        requestBody.model = "gpt-4";
+                        let streamData = "";
+                        var source = new SSE(
+                          window.REACT_APP_TAGORE_API_URL + `/prompts/generate`,
+                          {
+                            payload: JSON.stringify(requestBody),
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            withCredentials: true,
+                          }
+                        );
+
+                        source.addEventListener("message", (event) => {
+                          let newData = JSON.parse(event.data)?.output;
+                          // get difference between newData and streamData string
+                          let difference = newData.replace(streamData, "");
+                          // set streamData to newData
+                          streamData = newData;
+                          // set editorData to difference
+                          setEditorData((prevState) => {
+                            editor?.commands.setContent(prevState + difference);
+                            return prevState + difference;
+                          });
+                        });
+
+                        source.addEventListener("error", (event) => {
+                          setFormLoading(false);
+                          setActiveState((prevState) => {
+                            return prevState + 1;
+                          });
+                        });
+
+                        source.stream();
+                      } else {
+                        setFormLoading(true);
+                        requestBody.stream = false;
+                        requestBody.model = "gpt-3.5-turbo";
+                        const response = await generateTextFromPrompt(
+                          requestBody
+                        );
+                        const responseHTML = response.output?.replace(
+                          /\n|\t|(?<=>)\s*/g,
+                          ""
+                        );
+
+                        setEditorData((prevState) => {
+                          let output = prevState + responseHTML;
+                          editor?.commands.setContent(output);
+                          return output;
+                        });
+
+                        setActiveState((prevState) => {
+                          // TODO: scroll to the next component
+                          return prevState + 1;
+                        });
+                        setFormLoading(false);
+                      }
                     }}
                   />
                 ),
@@ -155,19 +273,64 @@ export default function BlogPostWorkflow() {
       component: (
         <Conclusion
           editor={editor}
+          loading={formLoading}
           outline={outline}
-          handleCompose={(output) => {
-            setEditorData((prevState) => {
-              editor?.commands.setContent(prevState + output);
-              return prevState + output;
-            });
+          handleCompose={async (requestBody) => {
+            if (stream) {
+              setFormLoading(true);
+              requestBody.stream = true;
+              requestBody.model = "gpt-4";
+              let streamData = "";
+              var source = new SSE(
+                window.REACT_APP_TAGORE_API_URL + `/prompts/generate`,
+                {
+                  payload: JSON.stringify(requestBody),
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  withCredentials: true,
+                }
+              );
 
-            setActiveState((prevState) => {
-              // workflowProcess[prevState + 1].ref.current.scrollIntoView({
-              //   behavior: "smooth",
-              // });
-              return prevState + 1;
-            });
+              source.addEventListener("message", (event) => {
+                let newData = JSON.parse(event.data)?.output;
+                // get difference between newData and streamData string
+                let difference = newData.replace(streamData, "");
+                // set streamData to newData
+                streamData = newData;
+                // set editorData to difference
+                setEditorData((prevState) => {
+                  editor?.commands.setContent(prevState + difference);
+                  return prevState + difference;
+                });
+              });
+
+              source.addEventListener("error", () => {
+                setFormLoading(false);
+                setActiveState((prevState) => {
+                  return prevState + 1;
+                });
+              });
+
+              source.stream();
+            } else {
+              setFormLoading(true);
+              requestBody.stream = false;
+              requestBody.model = "gpt-3.5-turbo";
+              const response = await generateTextFromPrompt(requestBody);
+              let output = response?.output?.replace(/\n|\t|(?<=>)\s*/g, "");
+
+              setEditorData((prevState) => {
+                editor?.commands.setContent(prevState + output);
+                return prevState + output;
+              });
+
+              setActiveState((prevState) => {
+                return prevState + 1;
+              });
+              setFormLoading(false);
+            }
           }}
         />
       ),
@@ -175,27 +338,6 @@ export default function BlogPostWorkflow() {
       ref: createRef(),
     },
   ];
-
-  // useEffect(() => {
-  //   setMethodology([
-  //     {
-  //       index: "3.1",
-  //       title: "Review Methodology",
-  //       ref: createRef(),
-  //       component: (
-  //         <Methodology
-  //           handleNext={() => {
-  //             handleNext();
-  //           }}
-  //           handleCompose={(data) => {
-  //             handleCompose(data);
-  //           }}
-  //           editor={editor}
-  //         />
-  //       ),
-  //     },
-  //   ]);
-  // }, [editor]);
 
   const [docDetails, setDocDetails] = useState({
     title: "",

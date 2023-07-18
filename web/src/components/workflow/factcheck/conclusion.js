@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Input } from "../../inputs/Input";
 import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
-import { generateTextFromPrompt } from "../../../actions/text";
 
-export const FactcheckConclusion = ({ handleSubmit, editor }) => {
+export const FactcheckConclusion = ({ handleSubmit, editor, loading }) => {
   const [maxTokens, setMaxTokens] = useState(100);
   const [highlights, setHighlights] = useState("");
 
@@ -12,10 +11,7 @@ export const FactcheckConclusion = ({ handleSubmit, editor }) => {
     setHighlights(e.target.value);
   };
 
-  const [loading, setLoading] = useState();
-
   const handleClick = async () => {
-    setLoading(true);
     let conclusionPrompt = `Generate a conclusion having exactly ${getWordsForConclusion(
       maxTokens
     )} words that wraps up the whole article written till now - ${editor?.getText()}.
@@ -27,15 +23,10 @@ export const FactcheckConclusion = ({ handleSubmit, editor }) => {
       input: conclusionPrompt,
       provider: "openai",
       max_tokens: maxTokens,
-      model: "gpt-3.5-turbo",
-      stream: false,
       additional_instructions: `The generated text should have e valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.`,
     };
 
-    const response = await generateTextFromPrompt(request);
-
-    handleSubmit(response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""));
-    setLoading(false);
+    handleSubmit(request);
   };
 
   function getWordsForConclusion(max) {
