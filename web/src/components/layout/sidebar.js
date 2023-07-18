@@ -6,6 +6,7 @@ import Arrow from "../../assets/icons/arrow.svg";
 import Bookmark from "../../assets/icons/bookmark.svg";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import Chat from "../../assets/icons/chat.svg";
+import ChatDark from "../../assets/icons/chatDark.svg";
 import Documents from "../../assets/icons/documents.svg";
 import Home from "../../assets/icons/home.svg";
 import History from "../../assets/icons/history.svg";
@@ -13,8 +14,10 @@ import Images from "../../assets/icons/images.svg";
 import Logout from "../../assets/icons/logout.svg";
 import Profile from "../../assets/icons/profile.svg";
 import Templates from "../../assets/icons/templates.svg";
+import TemplatesDark from "../../assets/icons/templatesDark.svg";
 import Usage from "../../assets/icons/usage.svg";
 import Workflow from "../../assets/icons/workflow.svg";
+import WorkFlowDark from "../../assets/icons/workflowDark.svg";
 import DocumentsDark from "../../assets/icons/documents_dark.svg";
 import ImagesDark from "../../assets/icons/images_dark.svg";
 import DashboardDark from "../../assets/icons/dashboard_dark.svg";
@@ -50,17 +53,17 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
     },
     {
       name: "Personas",
-      icon: Templates,
+      icon: darkMode ? TemplatesDark : Templates,
       linkTo: "/personas",
     },
     {
       name: "Workflows",
-      icon: Workflow,
+      icon: darkMode ? WorkFlowDark : Workflow,
       linkTo: "/workflows",
     },
     {
       name: "Chat",
-      icon: Chat,
+      icon: darkMode ? ChatDark : Chat,
       linkTo: "/chats/dashboard",
     },
   ];
