@@ -32,44 +32,76 @@ export default function FactcheckWorkflow() {
 
   const [loading, setLoading] = useState(true);
 
-  function handleNext() {
-    if (activeState !== workflowProcess.length - 1) {
-      setActiveState((prev) => {
-        workflowProcess[prev + 1]?.ref.current?.scrollIntoView({
-          behavior: "smooth",
-        });
-        return prev + 1;
-      });
-    }
-  }
+  const [formLoading, setFormLoading] = useState(false);
 
-  async function handleCompose(output) {
-    setEditorData((prevData) => {
-      editor?.commands?.setContent(prevData + output);
-      return prevData + output;
-    });
-    if (activeState !== workflowProcess.length - 1) {
-      setActiveState((prev) => {
-        workflowProcess[prev + 1]?.ref.current?.scrollIntoView({
-          behavior: "smooth",
-        });
-        return prev + 1;
-      });
-    }
-  }
+  let stream = true;
 
   const workflowProcess = [
     {
       component: (
         <IntroductionForm
-          handleSubmit={(response) => {
-            setFactcheckTitle(response?.title);
-            editor?.commands?.insertContent(response?.output);
-            if (activeState !== workflowProcess.length - 1) {
-              workflowProcess[activeState + 1]?.ref.current?.scrollIntoView({
-                behavior: "smooth",
+          loadingForm={formLoading}
+          handleSubmit={async (request) => {
+            setFactcheckTitle(request?.title);
+            if (stream) {
+              setFormLoading(true);
+              request.requestBody.stream = true;
+              request.requestBody.model = "gpt-4";
+
+              let streamData = "";
+              var source = new SSE(
+                window.REACT_APP_TAGORE_API_URL + `/prompts/generate`,
+                {
+                  payload: JSON.stringify(request.requestBody),
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  withCredentials: true,
+                }
+              );
+
+              source.addEventListener("message", (event) => {
+                let newData = JSON.parse(event.data)?.output;
+                // get difference between newData and streamData string
+                let difference = newData.replace(streamData, "");
+                // set streamData to newData
+                streamData = newData;
+                // set editorData to difference
+                setEditorData((prevState) => {
+                  editor?.commands.setContent(prevState + difference);
+                  return prevState + difference;
+                });
               });
-              setActiveState((prev) => prev + 1);
+
+              source.addEventListener("error", (event) => {
+                setFormLoading(false);
+                setActiveState((prevState) => {
+                  workflowProcess[prevState + 1]?.ref?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  return prevState + 1;
+                });
+              });
+
+              source.stream();
+            } else {
+              setFormLoading(true);
+              request.requestBody.stream = false;
+              request.requestBody.model = "gpt-3.5-turbo";
+
+              const response = await generateTextFromPrompt(
+                request.requestBody
+              );
+              editor?.commands?.insertContent(response?.output);
+              if (activeState !== workflowProcess.length - 1) {
+                workflowProcess[activeState + 1]?.ref.current?.scrollIntoView({
+                  behavior: "smooth",
+                });
+                setActiveState((prev) => prev + 1);
+              }
+
+              setFormLoading(false);
             }
           }}
         ></IntroductionForm>
@@ -112,11 +144,72 @@ export default function FactcheckWorkflow() {
       ref: createRef(),
       component: (
         <Methodology
-          // handleNext={() => {
-          //   handleNext();
-          // }}
-          handleCompose={(data) => {
-            handleCompose(data);
+          loading={formLoading}
+          handleCompose={async (requestData) => {
+            if (stream) {
+              setFormLoading(true);
+              requestData.stream = true;
+              requestData.model = "gpt-4";
+              let streamData = "";
+              var source = new SSE(
+                window.REACT_APP_TAGORE_API_URL + `/prompts/generate`,
+                {
+                  payload: JSON.stringify(requestData),
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  withCredentials: true,
+                }
+              );
+
+              source.addEventListener("message", (event) => {
+                let newData = JSON.parse(event.data)?.output;
+                // get difference between newData and streamData string
+                let difference = newData.replace(streamData, "");
+                // set streamData to newData
+                streamData = newData;
+                // set editorData to difference
+                setEditorData((prevState) => {
+                  editor?.commands.setContent(prevState + difference);
+                  return prevState + difference;
+                });
+              });
+
+              source.addEventListener("error", () => {
+                setFormLoading(false);
+                setActiveState((prevState) => {
+                  workflowProcess[prevState + 1]?.ref?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  return prevState + 1;
+                });
+              });
+
+              source.stream();
+            } else {
+              setFormLoading(true);
+              requestData.stream = false;
+              requestData.model = "gpt-3.5-turbo";
+              generateTextFromPrompt(requestData)
+                .then((response) => {
+                  editor?.commands?.insertContent(response?.output);
+                  if (activeState !== workflowProcess.length - 1) {
+                    workflowProcess[
+                      activeState + 1
+                    ]?.ref.current?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                    setActiveState((prev) => prev + 1);
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                })
+                .finally(() => {
+                  setFormLoading(false);
+                });
+            }
           }}
           // editor={editor}
         />
@@ -127,12 +220,72 @@ export default function FactcheckWorkflow() {
       title: "Fact check conclusion paragraph",
       component: (
         <FactcheckConclusion
-          handleSubmit={(output) => {
-            setEditorData((prevData) => {
-              editor?.commands?.setContent(prevData + output);
-              return prevData + output;
-            });
-            setActiveState((prev) => prev + 1);
+          loading={formLoading}
+          handleSubmit={(request) => {
+            if (stream) {
+              setFormLoading(true);
+              request.stream = true;
+              request.model = "gpt-4";
+              let streamData = "";
+              var source = new SSE(
+                window.REACT_APP_TAGORE_API_URL + `/prompts/generate`,
+                {
+                  payload: JSON.stringify(request),
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  withCredentials: true,
+                }
+              );
+
+              source.addEventListener("message", (event) => {
+                let newData = JSON.parse(event.data)?.output;
+                // get difference between newData and streamData string
+                let difference = newData.replace(streamData, "");
+                // set streamData to newData
+                streamData = newData;
+                // set editorData to difference
+                setEditorData((prevState) => {
+                  editor?.commands.setContent(prevState + difference);
+                  return prevState + difference;
+                });
+              });
+
+              source.addEventListener("error", () => {
+                setFormLoading(false);
+                setActiveState((prevState) => {
+                  workflowProcess[prevState + 1]?.ref?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  return prevState + 1;
+                });
+              });
+
+              source.stream();
+            } else {
+              setFormLoading(true);
+              request.stream = false;
+              request.model = "gpt-3.5-turbo";
+              generateTextFromPrompt(request)
+                .then((response) => {
+                  editor?.commands?.insertContent(response?.output);
+                  if (activeState !== workflowProcess.length - 1) {
+                    workflowProcess[
+                      activeState + 1
+                    ]?.ref.current?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                    setActiveState((prev) => prev + 1);
+                  }
+                })
+                .catch((error) => {
+                  errorToast(error?.message);
+                })
+                .finally(() => {
+                  setFormLoading(false);
+                });
+            }
           }}
           editor={editor}
         />
@@ -141,54 +294,37 @@ export default function FactcheckWorkflow() {
     },
   ];
 
-  // useEffect(() => {
-  //   setMethodology([
-  //     {
-  //       index: "3.1",
-  //       title: "Review Methodology",
-  //       ref: createRef(),
-  //       component: (
-  //         <Methodology
-  //           handleNext={() => {
-  //             handleNext();
-  //           }}
-  //           handleCompose={(data) => {
-  //             handleCompose(data);
-  //           }}
-  //           editor={editor}
-  //         />
-  //       ),
-  //     },
-  //   ]);
-  // }, [editor]);
-
   const [docDetails, setDocDetails] = useState({
     title: "",
-    id: "",
+    id: -1,
+    isFileCreated: false,
   });
 
   useEffect(() => {
-    setLoading(true);
-    let title = "Untitled-" + generateUUID(8);
+    if (!docDetails.isFileCreated) {
+      setLoading(true);
+      let title = "Untitled-" + generateUUID(8);
 
-    let requestBody = {
-      title: title,
-      description: "",
-    };
-    createDocument(requestBody)
-      .then((response) => {
-        setDocDetails({
-          id: response.id,
-          title: response.title,
+      let requestBody = {
+        title: title,
+        description: "",
+      };
+      createDocument(requestBody)
+        .then((response) => {
+          setDocDetails({
+            id: response.id,
+            title: response.title,
+            isFileCreated: true,
+          });
+          successToast("document created successfully");
+        })
+        .catch((err) => {
+          errorToast("error in creating document");
+        })
+        .finally(() => {
+          setLoading(false);
         });
-        successToast("document created successfully");
-      })
-      .catch((err) => {
-        errorToast("error in creating document");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    }
   }, []);
 
   return (
@@ -293,7 +429,6 @@ export default function FactcheckWorkflow() {
                       successToast("document updated successfully");
                     })
                     .catch((err) => {
-                      console.log(err?.message);
                       errorToast("Unable to update document. " + err?.message);
                     });
                 }}

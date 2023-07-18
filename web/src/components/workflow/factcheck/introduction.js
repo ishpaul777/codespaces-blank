@@ -8,7 +8,7 @@ import { DocActionButton } from "../../buttons/DocActionButton";
 import { factcheckIntroPrompt } from "../../../constants/factcheck";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const IntroductionForm = ({ handleSubmit }) => {
+export const IntroductionForm = ({ handleSubmit, loadingForm }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newFormObject = { ...formObject };
@@ -25,8 +25,6 @@ export const IntroductionForm = ({ handleSubmit }) => {
   const [claimSources, setClaimSources] = useState([]);
 
   const [maxTokens, setMaxTokens] = useState(100);
-
-  const [loadingForm, setLoadingForm] = useState(false);
 
   const validateForm = () => {
     const newFormObject = { ...formObject };
@@ -62,7 +60,6 @@ export const IntroductionForm = ({ handleSubmit }) => {
       return;
     }
 
-    setLoadingForm(true);
     let factCheckIntro = factcheckIntroPrompt;
     factCheckIntro = factCheckIntro.replace(
       "{factcheck_title}",
@@ -97,15 +94,11 @@ export const IntroductionForm = ({ handleSubmit }) => {
     const requestBody = {
       input: factCheckIntro,
       provider: "openai",
-      model: "gpt-3.5-turbo",
-      stream: false,
       additional_instructions: `The generated text should have exactly ${maxTokens} words and be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.`,
     };
 
-    const response = await generateTextFromPrompt(requestBody);
-    setLoadingForm(false);
     handleSubmit({
-      output: response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""),
+      requestBody,
       title: formObject.fact_check_title.value,
     });
   };

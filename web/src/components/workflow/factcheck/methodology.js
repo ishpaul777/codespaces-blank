@@ -11,6 +11,7 @@ import { Input } from "../../inputs/Input";
 
 export const Methodology = ({
   handleCompose,
+  loading,
   // handleNext,
   // editor,
 }) => {
@@ -36,8 +37,6 @@ export const Methodology = ({
   };
 
   const [formData, setFormData] = useState([initialFormData]);
-
-  const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     let error = false;
@@ -69,7 +68,6 @@ export const Methodology = ({
   };
 
   const handleClick = async () => {
-    setLoading(true);
     if (validateForm()) {
       return;
     }
@@ -102,15 +100,10 @@ export const Methodology = ({
     const request = {
       input: methodologyPrompt,
       provider: "openai",
-      model: "gpt-3.5-turbo",
-      stream: false,
       additional_instructions: `The generated text should have exactly ${maxTokens} be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.`,
     };
 
-    const response = await generateTextFromPrompt(request);
-
-    handleCompose(response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""));
-    setLoading(false);
+    handleCompose(request);
   };
 
   return (

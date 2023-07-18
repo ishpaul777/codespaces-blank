@@ -4,10 +4,14 @@ import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const Conclusion = ({ outline, handleCompose, editor, tone }) => {
+export const Conclusion = ({
+  loading,
+  outline,
+  handleCompose,
+  editor,
+  tone,
+}) => {
   const [maxTokens, setMaxTokens] = useState(100);
-
-  const [loading, setLoading] = useState(false);
 
   const [conclusionForm, setConclusionForm] = useState({
     outline: {
@@ -55,8 +59,6 @@ export const Conclusion = ({ outline, handleCompose, editor, tone }) => {
       return;
     }
 
-    setLoading(true);
-
     let prompt = `Generate a conclusion having exactly ${getWordsForConclusion(
       maxTokens
     )} words that wraps up the outline - ${
@@ -66,15 +68,11 @@ export const Conclusion = ({ outline, handleCompose, editor, tone }) => {
     const requestBody = {
       input: prompt,
       provider: "openai",
-      model: "gpt-3.5-turbo",
-      stream: false,
       additional_instructions:
         "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
     };
 
-    const response = await generateTextFromPrompt(requestBody);
-    handleCompose(response.output.replace(/\n|\t|(?<=>)\s*/g, ""));
-    setLoading(false);
+    handleCompose(requestBody);
   };
 
   function getWordsForConclusion(max) {

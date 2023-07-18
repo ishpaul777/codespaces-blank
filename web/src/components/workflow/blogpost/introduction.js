@@ -4,9 +4,8 @@ import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
 import { generateTextFromPrompt } from "../../../actions/text";
 
-export const Introduction = ({ contentBrief, handleCompose }) => {
+export const Introduction = ({ contentBrief, handleCompose, loading }) => {
   const [maxTokens, setMaxTokens] = useState(100);
-  const [loading, setLoading] = useState(false);
   const [introductionForm, setIntroductionForm] = useState({
     title: {
       value: "",
@@ -57,30 +56,27 @@ export const Introduction = ({ contentBrief, handleCompose }) => {
       return;
     }
 
-    setLoading(true);
-
     let prompt = `
     Title: [${introductionForm.title.value}]
     Audience: [${introductionForm.audience.value}]
     Tone of Voice: [${introductionForm.tone.value}}]
     Tone of Voice: [${contentBrief}]
-    Generate an introduction for your blog that captures the attention of your target audience and sets the tone for the rest of the content. Ensure it aligns with the given title, reflects the interests of the audience, conveys the desired tone of voice and incorporates the key points from the provided content brief. It should have exactly ${maxTokens} words.
+    Generate a title and an introduction for your blog that captures the attention of your target audience and sets the tone for the rest of the content. Ensure it aligns with the given title, reflects the interests of the audience, conveys the desired tone of voice and incorporates the key points from the provided content brief. It should have around ${maxTokens}-${
+      maxTokens + 20
+    } words. Use h1 tag for the title and p tag for the introduction paragraph.
     `;
 
     const requestBody = {
       input: prompt,
       provider: "openai",
       max_tokens: maxTokens,
-      model: "gpt-3.5-turbo",
-      stream: false,
       additional_instructions:
         "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text.",
     };
 
-    const response = await generateTextFromPrompt(requestBody);
-    setLoading(false);
+    // const response = await generateTextFromPrompt(requestBody);
     handleCompose(
-      response?.output?.replace(/\n|\t|(?<=>)\s*/g, ""),
+      requestBody,
       introductionForm.title.value,
       introductionForm.tone.value,
       introductionForm.audience.value
