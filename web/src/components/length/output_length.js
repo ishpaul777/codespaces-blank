@@ -56,7 +56,7 @@ export const OutputLength = ({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 text-blck-50 dark:text-white">
       <label
         className={`
           ${labelSize || "text-sm"}
@@ -88,7 +88,7 @@ export const OutputLength = ({
         {selectedOutputLength.name === "Custom" && (
           <input
             min={100}
-            className="p-2 rounded border"
+            className="w-[40%] p-2 bg-transparent outline-none border border-[#D0D5DD] rounded-lg dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b]"
             type="number"
             placeholder="enter custom output length"
             onChange={(e) => handleCustomLengthChange(e.target.value)}

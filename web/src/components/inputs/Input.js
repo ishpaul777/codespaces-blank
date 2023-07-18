@@ -14,7 +14,7 @@ export function Input({
   return (
     <div className="flex flex-col gap-2">
       <label
-        className={`
+        className={` text-black-50 dark:text-white
           ${labelSize || "text-sm"}
           ${labelFontWeight || "font-normal"}
           `}
@@ -25,9 +25,8 @@ export function Input({
       {type === "input" ? (
         <input
           name={name}
-          className={`p-2 border border-[#D0D5DD] rounded-md bg-transparent outline-none ${
-            disabled && "disabled:cursor-not-allowed"
-          }`}
+          className={`p-2 bg-transparent outline-none border border-[#D0D5DD] rounded-lg dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b]
+          ${disabled && "disabled:cursor-not-allowed"}`}
           placeholder={placeholder}
           value={initialValue}
           onChange={onChange}
@@ -35,7 +34,7 @@ export function Input({
         ></input>
       ) : (
         <textarea
-          className={`p-2 border border-[#D0D5DD] rounded-md bg-transparent resize-none outline-none ${
+          className={`p-2 bg-transparent resize-none outline-none border border-[#D0D5DD] rounded-lg dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b] ${
             disabled && "disabled:cursor-not-allowed"
           }`}
           placeholder={placeholder}

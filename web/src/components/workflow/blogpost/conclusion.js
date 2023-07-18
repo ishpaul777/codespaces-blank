@@ -91,7 +91,7 @@ export const Conclusion = ({ outline, handleCompose, editor, tone }) => {
   }
 
   return (
-    <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
+    <div className="p-7 bg-white dark:bg-background-secondary-alt rounded-lg flex flex-col gap-8">
       <Input
         type={"textarea"}
         label={"Blog Outline"}

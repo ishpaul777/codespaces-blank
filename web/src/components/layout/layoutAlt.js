@@ -2,15 +2,22 @@ import { Outlet } from "react-router-dom";
 
 import { SidebarAlt } from "./sidebarAlt";
 import { ToastContainer } from "react-toastify";
+import useDarkMode from "../../hooks/useDarkMode";
+
 export default function LayoutAlt() {
+  const { darkMode } = useDarkMode();
   return (
     <div className="flex flex-row h-screen w-full">
       <SidebarAlt />
-      <main className="w-5/6 max-h-screen overflow-y-auto">
+      <main
+        className={`w-full max-h-screen overflow-y-auto ${
+          darkMode && "bg-background-secondary-alt"
+        }`}
+      >
         <Outlet></Outlet>
       </main>
       <ToastContainer
-         toastClassName={ ({ type }) =>
+        toastClassName={({ type }) =>
           type === "error"
             ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
             : type === "success"

@@ -23,7 +23,7 @@ const Pagination = ({ totalPages, currentPage, setCurrentPage }) => {
 
   return (
     <div className="flex items-center flex-row px-[2%] py-[1%] justify-end">
-      <div className="flex justify-evenly items-center flex-row border rounded-[10px] border-solid border-[#D0D5DD]">
+      <div className="flex justify-evenly items-center flex-row border rounded-[10px] border-solid border-[#D0D5DD] dark:text-white">
         <button
           className="not-italic font-semibold leading-5 px-5 py-2.5"
           onClick={() => setCurrentPage((prev) => (prev === 1 ? 1 : prev - 1))}

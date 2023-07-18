@@ -25,7 +25,7 @@ export function Select({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 !dark:text-white">
       <label>{label}</label>
       <div className="relative">
         <button
@@ -36,20 +36,28 @@ export function Select({
           <BiChevronDown className="inline-block ml-2" />
         </button>
         {isOpen && !disabled && (
-          <div className="absolute top-full left-0 w-full bg-white border border-[#CED0D4] rounded-md z-10 outline-none">
+          <div
+            className="absolute top-full left-0 w-full bg-white border border-[#CED0D4]  dark:bg-background-sidebar-alt dark:border-[#3b3b3b]
+           rounded-md z-10 outline-none p-1"
+          >
             <button
-              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase() === "GPT-3.5-TURBO"
-                  ? "bg-gray-200"
-                  : ""
-              }`}
+              className={`w-full py-2 px-3 text-left hover:bg-gray-200 dark:bg-background-secondary-alt rounded
+              dark:hover:bg-background-sidebar-alt mb-2
+               ${
+                 selectedValue.toUpperCase() === "GPT-3.5-TURBO"
+                   ? "bg-gray-200 dark:bg-background-sidebar-alt"
+                   : ""
+               }`}
               onClick={() => handleOptionClick("gpt-3.5-turbo")}
             >
               GPT-3.5-TURBO
             </button>
             <button
-              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
+              className={`w-full py-2 px-3 text-left hover:bg-gray-200 dark:bg-background-secondary-alt rounded
+              dark:hover:bg-background-sidebar-alt  ${
+                selectedValue.toUpperCase() === "GPT-4"
+                  ? "bg-gray-200 dark:bg-background-sidebar-alt "
+                  : ""
               }`}
               onClick={() => handleOptionClick("gpt-4")}
             >
@@ -107,7 +115,9 @@ export function SelectTemperature({
 
   const getButtonClassName = (buttonValue) => {
     return `py-3 rounded-md w-1/3 ${
-      active === buttonValue ? "bg-black text-white" : "bg-gray-200"
+      active === buttonValue
+        ? "bg-black text-white dark:bg-white dark:text-black-50"
+        : "bg-gray-200 dark:bg-background-secondary-alt dark:text-white"
     }`;
   };
 
@@ -135,7 +145,7 @@ export function SelectTemperature({
         </button>
       </div>
       <input
-        className="w-full py-2 slider border border-[#CED0D4] rounded-md bg-transparent accent-black cursor-pointer"
+        className="w-full py-2 slider border border-[#CED0D4] rounded-md bg-transparent accent-black dark:accent-white cursor-pointer"
         onChange={onChange}
         type="range"
         min="0"

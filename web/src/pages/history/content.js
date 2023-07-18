@@ -1,6 +1,8 @@
 import React from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
+import useDarkMode from "../../hooks/useDarkMode";
 const Content = () => {
+  const { darkMode } = useDarkMode();
   return (
     <div className="box-border flex flex-col justify-center items-start gap-4 isolate w-full border flex-none order-none grow-0 px-[26px] py-[22px] rounded-lg border-solid border-[#F3F3F3]">
       <div className="flex flex-col items-start gap-3 w-full flex-none order-none grow-0 z-0 p-0">
@@ -17,7 +19,11 @@ const Content = () => {
             <BiDotsVerticalRounded />
           </div>
         </div>
-        <div className="w-full not-italic font-medium text-xs leading-5 text-[#1E1E1E] flex-none order-1 grow-0">
+        <div
+          className={`w-full not-italic font-medium text-xs leading-5 text-[#1E1E1E] flex-none order-1 grow-0 ${
+            darkMode && "text-white"
+          }`}
+        >
           Once upon a time there was a blogger who wanted to make their voice
           heard. After months of hard work and dedication, they had finally
           managed to create a blog that people could read and appreciate.Soon

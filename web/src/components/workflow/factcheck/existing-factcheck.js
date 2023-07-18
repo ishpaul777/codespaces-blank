@@ -24,7 +24,7 @@ export const ExistingFactcheck = ({
       });
   };
   return (
-    <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
+    <div className="p-7 bg-white dark:bg-background-secondary-alt dark:text-white text-black-50 rounded-lg flex flex-col gap-8">
       <p>
         Searches for existing Fact Checks in SACH and generate content
         accordingly. SACH (Search Application for Claims & Hoaxes) is a web

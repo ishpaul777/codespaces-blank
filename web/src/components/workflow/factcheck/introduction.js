@@ -134,7 +134,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
   });
 
   return (
-    <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
+    <div className="p-7 bg-white dark:bg-background-secondary-alt rounded-lg flex flex-col gap-8">
       <Input
         label={"Fact check title"}
         onChange={handleChange}
@@ -171,17 +171,19 @@ export const IntroductionForm = ({ handleSubmit }) => {
         initialValue={formObject.fact_check_claimant.value}
         required={true}
       ></Input>
-      <div className="flex flex-col gap-2">
-        <label className="font-medium text-base">Claim sources</label>
+      <div className="flex flex-col">
+        <label className="font-medium text-base dark:text-white">
+          Claim sources
+        </label>
         {claimSources.map((claimSource, index) => {
           // return an input with a cross icon at right
           return (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 dark:text-white">
               <div className="grid grid-cols-[95fr_5fr] items-center gap-2 justify-center">
-                <input
-                  className="p-2 border border-[#D0D5DD] rounded-md bg-transparent outline-none"
+                <Input
+                  type="input"
                   placeholder="Claim source goes here..."
-                  value={claimSource.claim_source}
+                  initialValue={claimSource.claim_source}
                   onChange={(e) => {
                     const newClaimSources = [...claimSources];
                     newClaimSources[index].claim_source = e.target.value;
@@ -193,9 +195,9 @@ export const IntroductionForm = ({ handleSubmit }) => {
 
                     setClaimSources(newClaimSources);
                   }}
-                ></input>
+                ></Input>
                 <RxCross2
-                  className="text-black-50 text-lg cursor-pointer"
+                  className="text-black-50 text-lg cursor-pointer dark:text-white"
                   onClick={() => {
                     const newClaimSources = [...claimSources];
                     newClaimSources.splice(index, 1);
@@ -212,7 +214,7 @@ export const IntroductionForm = ({ handleSubmit }) => {
           );
         })}
         <button
-          className="flex justify-center items-center gap-2 border border-dashed border-[#d2d7df] p-2 rounded-md"
+          className="mt-2 flex justify-center items-center gap-2 border border-dashed text-base text-black-50 dark:text-white border-[#d2d7df] dark:border-[#e1dfdf] p-2 rounded-md"
           onClick={() => {
             setClaimSources([
               ...claimSources,
@@ -223,8 +225,8 @@ export const IntroductionForm = ({ handleSubmit }) => {
             ]);
           }}
         >
-          <AiOutlinePlus className="text-black-50 text-base" />
-          <span className="text-black-50 text-base">Add claim source</span>
+          <AiOutlinePlus />
+          <span>Add claim source</span>
         </button>
       </div>
       <Input

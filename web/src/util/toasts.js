@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
-import ErrorImage from '../assets/icons/Error.svg';
-import SuccessImage from '../assets/icons/Success.svg';
-import WarningImage from '../assets/icons/Warning.svg';
-import XCloseImage from '../assets/icons/XClose.svg';
+import ErrorImage from "../assets/icons/Error.svg";
+import SuccessImage from "../assets/icons/Success.svg";
+import WarningImage from "../assets/icons/Warning.svg";
+import XCloseImage from "../assets/icons/XClose.svg";
 
 const CustomToast = ({ type, message, closeToast }) => {
   let icon;
@@ -21,13 +21,23 @@ const CustomToast = ({ type, message, closeToast }) => {
           <div className="w-[25px] flex justify-center items-center">
             <img src={icon} alt="icon" />
           </div>
-          <p className={`text-lg not-italic font-medium leading-6 ${type === "error"
-            ? "text-[#DA3125] "
-            : type === "success"
-            ? "text-[#03C04A] "
-            : type === "warning"
-            ? "text-[#EA8700]"
-            : ""}`}>{type === "error" ? "Error" : type === "success" ? "Success" : "Warning"}</p>
+          <p
+            className={`text-lg not-italic font-medium leading-6 ${
+              type === "error"
+                ? "text-[#DA3125] "
+                : type === "success"
+                ? "text-[#03C04A] "
+                : type === "warning"
+                ? "text-[#EA8700]"
+                : ""
+            }`}
+          >
+            {type === "error"
+              ? "Error"
+              : type === "success"
+              ? "Success"
+              : "Warning"}
+          </p>
         </div>
         <div
           className="text-[#475467] text-base not-italic font-normal leading-6"

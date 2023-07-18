@@ -7,6 +7,7 @@ import { DocActionButton } from "../../buttons/DocActionButton";
 import { SearchableInput } from "../../inputs/searchableInput";
 import { factcheckMethodologyPrompt } from "../../../constants/factcheck";
 import { generateTextFromPrompt } from "../../../actions/text";
+import { Input } from "../../inputs/Input";
 
 export const Methodology = ({
   handleCompose,
@@ -113,7 +114,7 @@ export const Methodology = ({
   };
 
   return (
-    <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
+    <div className="p-7 bg-white dark:bg-background-secondary-alt rounded-lg flex flex-col gap-8">
       {formData.map((data, index) => {
         return (
           <>
@@ -139,16 +140,18 @@ export const Methodology = ({
               error={data.methodology.error}
             ></SearchableInput>
             <div className="flex flex-col gap-2">
-              <label className="font-medium text-base">Review sources</label>
+              <label className="font-medium text-base dark:text-white text-black-50">
+                Review sources
+              </label>
               {data.review_sources.map((reviewSource, rIndex) => {
                 // return an input with a cross icon at right
                 return (
                   <div className="flex flex-col gap-2">
                     <div className="grid grid-cols-[95fr_5fr] items-center gap-2 justify-center">
-                      <input
-                        className="p-2 border border-[#D0D5DD] rounded-md bg-transparent outline-none"
+                      <Input
+                        type="input"
                         placeholder="Review source goes here..."
-                        value={reviewSource.review_source}
+                        initialValue={reviewSource.review_source}
                         onChange={(e) => {
                           const newReviewSource = [...data.review_sources];
                           newReviewSource[rIndex].review_source =
@@ -163,9 +166,9 @@ export const Methodology = ({
                           newFormData[index].review_sources = newReviewSource;
                           setFormData(newFormData);
                         }}
-                      ></input>
+                      ></Input>
                       <RxCross2
-                        className="text-black-50 text-lg cursor-pointer"
+                        className="text-black-50 text-lg cursor-pointer dark:text-white"
                         onClick={() => {
                           const newReviewSource = [...data.review_sources];
                           newReviewSource.splice(rIndex, 1);
@@ -184,7 +187,7 @@ export const Methodology = ({
                 );
               })}
               <button
-                className="flex justify-center items-center gap-2 border border-dashed border-[#d2d7df] p-2 rounded-md"
+                className="flex justify-center items-center gap-2 border border-dashed text-black-50 dark:text-white border-[#d2d7df] dark:border-[#e1dfdf] p-2 rounded-md"
                 onClick={() => {
                   const newFormData = [...formData];
                   newFormData[index].review_sources.push({
@@ -194,19 +197,19 @@ export const Methodology = ({
                   setFormData(newFormData);
                 }}
               >
-                <AiOutlinePlus className="text-black-50 text-base" />
-                <span className="text-black-50 text-base">
-                  Add review source
-                </span>
+                <AiOutlinePlus />
+                <span>Add review source</span>
               </button>
             </div>
           </>
         );
       })}
       <div className="flex flex-col gap-2">
-        <label className="font-medium text-base">More Methodologies</label>
+        <label className="font-medium text-base text-black-50 dark:text-white">
+          More Methodologies
+        </label>
         <button
-          className="flex justify-center items-center gap-2 border border-dashed border-[#d2d7df] p-2 rounded-md"
+          className="flex justify-center items-center gap-2 border border-dashed  text-black-50 dark:text-white border-[#d2d7df] dark:border-[#e1dfdf] p-2 rounded-md"
           // onClick={() => handleAddNewMethodology()}
           onClick={() => {
             const newFormData = [...formData];
@@ -214,8 +217,8 @@ export const Methodology = ({
             setFormData(newFormData);
           }}
         >
-          <AiOutlinePlus className="text-black-50 text-base" />
-          <span className="text-black-50 text-base">Add Methodology</span>
+          <AiOutlinePlus />
+          <span>Add Methodology</span>
         </button>
       </div>
       <OutputLength

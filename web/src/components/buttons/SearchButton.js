@@ -17,7 +17,7 @@ export default function SearchButton({
       onClick={onClick}
       disabled={disabled}
     >
-      {text}
+      <span>{text}</span>
       {isLoading && <ClipLoader color={textColor} loading={true} size={15} />}
     </button>
   );
