@@ -1,3 +1,5 @@
 {
-
+  "API_KEY": "ya29.a0AbVbY6PrkrnQkvgjUHUHI63u48HxvPs1NQi45AolhwFfp2t-H--ZE7dGgF3jwSGjeiDpj2NCDnQxNJ4K4T4attpyWB52kxfG9YuFWQpqjetZxqvabgoy4070GO7Lrb9nRTjh-w0jw9aP65tkmG2ps223dXGpuop-Ti-0AcwaCgYKAfISARASFQFWKvPl98_zHnJ-mw4a2vTbsgmKgA0174",
+  "API_URL":"https://us-central1-aiplatform.googleapis.com",
+  "PROJECT_ID":"factly-prod"
 }

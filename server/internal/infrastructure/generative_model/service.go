@@ -38,8 +38,6 @@ type ChatGenerativeModel interface {
 
 func NewTextGenerativeModel(provider string) TextGenerativeModel {
 	switch provider {
-	case "openai":
-		return NewOpenAIAdapter()
 	default:
 		return NewOpenAIAdapter()
 	}
@@ -47,8 +45,6 @@ func NewTextGenerativeModel(provider string) TextGenerativeModel {
 
 func NewImageGenerativeModel(provider string) ImageGenerativeModel {
 	switch provider {
-	case "openai":
-		return NewOpenAIAdapter()
 	case "stableDiffusion":
 		return NewStableDiffusionAdapter()
 	default:
@@ -58,10 +54,10 @@ func NewImageGenerativeModel(provider string) ImageGenerativeModel {
 
 func NewChatGenerativeModel(provider string) ChatGenerativeModel {
 	switch provider {
-	case "openai":
-		return NewOpenAIAdapter()
 	case "anthropic":
 		return NewAnthropicAdapter()
+	case "google":
+		return NewGoogleAdapter()
 	default:
 		return NewOpenAIAdapter()
 	}
