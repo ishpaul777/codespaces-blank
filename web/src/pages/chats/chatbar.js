@@ -380,7 +380,7 @@ export default function ChatBar({
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeMathjax]}
-                      className={`prose ${
+                      className={`prose dark:prose-invert ${
                         isMobileScreen
                           ? "max-w-[17rem]"
                           : chatSiderCollapse || promptSiderCollapse

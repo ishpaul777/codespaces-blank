@@ -309,7 +309,7 @@ export const PersonaSachChat = () => {
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm, remarkMath]}
                           rehypePlugins={[rehypeMathjax]}
-                          className={`prose dark:text-white ${
+                          className={`prose dark:prose-invert ${
                             false
                               ? "max-w-[17rem]"
                               : false

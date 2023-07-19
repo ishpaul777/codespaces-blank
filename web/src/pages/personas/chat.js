@@ -568,7 +568,7 @@ export const PersonaChat = () => {
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeMathjax]}
-                            className={`prose dark:text-white ${
+                            className={`prose dark:text-white dark:prose-invert ${
                               isMobileScreen
                                 ? "max-w-[17rem]"
                                 : chatSiderCollapse
