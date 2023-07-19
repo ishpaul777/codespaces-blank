@@ -79,9 +79,9 @@ func validateAnthropicModel(model string) bool {
 	}
 }
 
-func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, *models.Usage, error) {
+func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, error) {
 	if !validateAnthropicModel(model) {
-		return nil, nil, ErrIncorrectAnthropicModel
+		return nil, ErrIncorrectAnthropicModel
 	}
 
 	request := anthropicChatRequest{
@@ -94,20 +94,20 @@ func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, m
 
 	requestBody, err := json.Marshal(request)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	requestURL := a.API_URL + "/v1/complete"
 	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	req.Header.Add("x-api-key", a.API_KEY)
 
 	resp, err := a.Client.Do(req)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	defer resp.Body.Close()
@@ -115,7 +115,7 @@ func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, m
 	var response anthropicChatResponse
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	latestMessage := models.Message{
@@ -125,11 +125,7 @@ func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, m
 
 	messages = append(messages, latestMessage)
 
-	return messages, &models.Usage{
-		TotalTokens:      0,
-		PromptTokens:     0,
-		CompletionTokens: 0,
-	}, nil
+	return messages, nil
 }
 
 // func (a *AnthropicAdapter) GenerateStreamingResponse(model string, temperature float32, chat models.Chat, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {

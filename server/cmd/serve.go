@@ -8,6 +8,7 @@ import (
 
 	"github.com/factly/tagore/server/internal/infrastructure/db"
 	"github.com/factly/tagore/server/internal/infrastructure/http"
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 
 	// "github.com/factly/tagore/server/internal/infrastructure/http"
 	"github.com/factly/tagore/server/pkg/config"
@@ -45,10 +46,18 @@ func serve() {
 		// now using custom logger to log infos, errors, warnings
 		logger.Fatal("error connecting to database")
 	}
+
+	pubSubClient, err := pubsub.NewPubSub(config.PubSub.Provider, config.PubSub.URL)
+	if err != nil {
+		logger.Fatal("error connecting to pubsub")
+	}
+
+	defer pubSubClient.Close()
 	// database.GetClient().(*gorm.DB).AutoMigrate(&models.Chat{})
 	app := app.NewApp()
 	app.SetLogger(logger)
 	app.SetConfig(config)
 	app.SetDB(database)
+	app.SetPubSub(pubSubClient)
 	http.RunHTTPServer(app)
 }

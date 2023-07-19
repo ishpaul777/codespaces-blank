@@ -6,14 +6,9 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 )
 
-func (p *PGPersonaRepository) CreatePersonaChat(userID, personaID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error) {
+func (p *PGPersonaRepository) CreatePersonaChat(userID, personaID uint, messages []models.Message) (*models.PersonaChat, error) {
 	// convert messages to jsonb
 	rawMessages, err := json.Marshal(messages)
-	if err != nil {
-		return nil, err
-	}
-
-	usageRaw, err := json.Marshal(usage)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +21,6 @@ func (p *PGPersonaRepository) CreatePersonaChat(userID, personaID uint, messages
 		Title:     messages[1].Content,
 		PersonaID: personaID,
 		Messages:  rawMessages,
-		Usage:     usageRaw,
 	}
 
 	err = p.client.Create(personaChat).Error
