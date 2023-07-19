@@ -59,6 +59,7 @@ export default function ChatBar({
   chatID,
   handleRegenerate,
   handleStop,
+  handleSubmit,
 }) {
   const [isPromptModalVisible, setIsPromptModalVisible] = React.useState(false);
   const [isInitialPromptModalVisible, setIsInitialPromptModalVisible] =
@@ -487,9 +488,7 @@ export default function ChatBar({
           <div className="flex flex-row-reverse">
             <button
               className={`flex items-center justify-center`}
-              onClick={
-                stream ? () => handleChatStream() : () => handleChatSubmit()
-              }
+              onClick={() => handleSubmit()}
             >
               {!loading ? (
                 <img src={sendButton} />

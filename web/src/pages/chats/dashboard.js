@@ -79,12 +79,14 @@ export default function ChatPage() {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
     "gpt-4": "GPT-4",
     "claude-v1.3": "Claude v1.3",
+    "chat-bison@001": "Chat Bison(Google)",
   };
 
   const modelIDtoProvider = {
     "gpt-3.5-turbo": "openai",
     "gpt-4": "openai",
     "claude-v1.3": "anthropic",
+    "chat-bison@001": "google",
   };
 
   const styles = {
@@ -201,7 +203,7 @@ export default function ChatPage() {
       provider: modelIDtoProvider[model],
       temperature: temperature,
       additional_instructions: "Return the content in valid markdown format.",
-      stream: stream,
+      stream: false,
     };
 
     if (chatID) {
@@ -310,7 +312,7 @@ export default function ChatPage() {
   const handleKeypress = (e) => {
     //it triggers by pressing the enter key
     if (e.keyCode === 13) {
-      if (stream) {
+      if (stream && modelIDtoProvider[model] !== "google") {
         handleChatStream();
       } else {
         handleChatSubmit();
@@ -458,7 +460,7 @@ export default function ChatPage() {
       id: chatID,
     };
 
-    if (stream) {
+    if (stream && modelIDtoProvider[model] !== "google") {
       var source = new SSE(
         window.REACT_APP_TAGORE_API_URL + "/chat/completions",
         {
@@ -489,6 +491,7 @@ export default function ChatPage() {
 
       source.stream();
     } else {
+      requestBody.stream = false;
       getChatResponse(requestBody)
         .then((data) => {
           if (!chatID) {
@@ -512,6 +515,18 @@ export default function ChatPage() {
     setSSEClient(null);
     setIsEditing({ status: false, id: null });
     setLoading(false);
+  };
+
+  const handleSubmit = () => {
+    if (stream) {
+      if (modelIDtoProvider[model] === "google") {
+        handleChatSubmit();
+      } else {
+        handleChatStream();
+      }
+    } else {
+      handleChatSubmit();
+    }
   };
 
   return (
@@ -543,7 +558,6 @@ export default function ChatPage() {
         isFolderVisible={true}
       />
 
-      {/* chat */}
       <ChatBar
         chat={chat}
         setChatSiderCollapse={setChatSiderCollapse}
@@ -581,6 +595,7 @@ export default function ChatPage() {
         chatID={chatID}
         handleRegenerate={handleRegenerate}
         handleStop={handleStop}
+        handleSubmit={handleSubmit}
       />
 
       {/* prompt bar */}
