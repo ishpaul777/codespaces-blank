@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import useDarkMode from "../../hooks/useDarkMode";
 
 const Pagination = ({ data, itemsPerPage }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const { darkMode } = useDarkMode();
   useEffect(() => {
     setTotalPages(Math.ceil(data.length / itemsPerPage));
   }, [data, itemsPerPage]);
@@ -23,7 +24,10 @@ const Pagination = ({ data, itemsPerPage }) => {
           className={
             currentPage === i
               ? "border not-italic font-semibold leading-5 px-[15px] py-2.5 border-solid border-[#D0D5DD] border-collapse bg-[#F9FAFB] "
-              : "border not-italic font-semibold leading-5 px-[15px] py-2.5 border-solid border-[#D0D5DD] border-collapse"
+              : `border not-italic font-semibold leading-5 px-[15px] py-2.5 border-solid border-[#D0D5DD] border-collapse ${
+                  darkMode &&
+                  "bg-background-sidebar-alt text-white border-background-sidebar-alt"
+                }`
           }
         >
           {i}
@@ -35,14 +39,26 @@ const Pagination = ({ data, itemsPerPage }) => {
   };
 
   return (
-    <div className="flex items-center flex-row px-[2%] py-[1%] justify-end">
-      <div className="flex justify-evenly items-center flex-row border rounded-[10px] border-solid border-[#D0D5DD] border-collapse">
-        <button className="not-italic font-semibold leading-5 px-5 py-2.5">
-          <AiOutlineArrowLeft />
+    <div className={`flex items-center flex-row px-[2%] py-[1%] justify-end`}>
+      <div
+        className={`flex justify-evenly items-stretch flex-row border rounded-[10px] border-solid border-[#D0D5DD] border-collapse ${
+          darkMode && "border-background-sidebar-alt"
+        }`}
+      >
+        <button
+          className={`not-italic font-semibold leading-5 px-5 py-2.5 ${
+            darkMode && "bg-background-sidebar-alt"
+          }`}
+        >
+          <AiOutlineArrowLeft className={`${darkMode && "text-dark-text"}`} />
         </button>
         <ul>{renderPageNumbers()}</ul>
-        <button className="not-italic font-semibold leading-5 px-5 py-2.5">
-          <AiOutlineArrowRight />
+        <button
+          className={`not-italic font-semibold leading-5 px-5 py-2.5 ${
+            darkMode && "bg-background-sidebar-alt"
+          }`}
+        >
+          <AiOutlineArrowRight className={`${darkMode && "text-dark-text"}`} />
         </button>
       </div>
     </div>

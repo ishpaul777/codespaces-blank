@@ -2,13 +2,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { CreateButton } from "../../components/buttons/CreateButton";
 import Search from "../../components/search";
 // import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import Modal from "../../components/Modal";
 import { useEffect, useState } from "react";
 import { deleteDocument, getDocuments } from "../../actions/text";
 import moment from "moment";
 import { errorToast, successToast } from "../../util/toasts";
 import { getKratosSessionDetails } from "../../actions/kratos";
 import useWindowSize from "../../hooks/useWindowSize";
+import useDarkMode from "../../hooks/useDarkMode";
 export default function DocumentPage() {
+  const { darkMode } = useDarkMode();
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
     data: [],
@@ -102,13 +105,23 @@ export default function DocumentPage() {
       });
   };
   const { isMobileScreen } = useWindowSize();
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+
   return (
     // this is the main page container
     <div className="my-16 mx-10 min-w-[230px] ">
       {/* This is the page header */}
       <div className="flex flex-col  ">
         <div className="w-full flex flex-row  items-center justify-between gap-5 mt-8 md:mt-0">
-          <div className="w-fit text-3xl font-medium ">Documents</div>
+          <div
+            className={`w-fit text-3xl font-medium  ${
+              darkMode && "text-white"
+            }`}
+          >
+            Documents
+          </div>
           <div
             className={`w-[50%]  flex flex-row justify-end gap-[3%] items-center`}
           >
@@ -154,7 +167,13 @@ export default function DocumentPage() {
             return (
               <th
                 key={index}
-                className={`${header.width} ${tableStyles.headerPadding} text-sm bg-background-sidebar font-medium text-text-primary text-left rounded-t-lg text-table-text`}
+                className={`${header.width} ${
+                  tableStyles.headerPadding
+                } text-sm ${
+                  darkMode ? "" : "bg-background-sidebar"
+                } font-medium text-text-primary text-left  text-table-text ${
+                  darkMode && "text-white"
+                }`}
               >
                 {header.name}
               </th>
@@ -168,25 +187,42 @@ export default function DocumentPage() {
                   key={index}
                 >
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm bg-white dark:bg-background-sidebar-alt cursor-pointer dark:text-white font-medium text-text-primary text-left  text-black`}
+                    onClick={() => {
+                      navigate(`/documents/create?id=${value.id}&isEdit=true`);
+                    }}
                   >
                     {value.title}
                   </td>
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm ${
+                      darkMode
+                        ? "bg-background-sidebar-alt text-white"
+                        : "bg-white"
+                    } font-medium text-text-primary text-left  text-black`}
                   >
                     {email}
                   </td>
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black`}
+                    className={`${tableStyles.valuesPadding} text-sm ${
+                      darkMode
+                        ? "bg-background-sidebar-alt text-white"
+                        : "bg-white"
+                    } font-medium text-text-primary text-left  text-black`}
                   >
                     {moment(value.updated_at).format("MMMM Do YYYY, h:mm:ss a")}
                   </td>
                   <td
-                    className={`${tableStyles.valuesPadding} text-sm bg-white font-medium text-text-primary text-left rounded-t-lg text-black flex items-center gap-2`}
+                    className={`${tableStyles.valuesPadding} text-sm ${
+                      darkMode
+                        ? "bg-background-sidebar-alt text-white"
+                        : "bg-white"
+                    } font-medium text-text-primary text-left  text-black flex items-center gap-2`}
                   >
                     <div
-                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#007BFF] hover:text-white`}
+                      className={`${
+                        darkMode ? "" : "bg-background-secondary"
+                      } py-2 px-4 rounded-md cursor-pointer hover:bg-[#007BFF] hover:text-white`}
                       onClick={() => {
                         navigate(
                           `/documents/create?id=${value.id}&isEdit=true`
@@ -196,9 +232,12 @@ export default function DocumentPage() {
                       Edit
                     </div>
                     <div
-                      className={`bg-background-secondary py-2 px-4 rounded-md cursor-pointer hover:bg-[#FF0000] hover:text-white`}
+                      className={`${
+                        darkMode ? "" : "bg-background-secondary"
+                      } py-2 px-4 rounded-md cursor-pointer hover:bg-[#FF0000] hover:text-white`}
                       onClick={() => {
-                        handleDelete(value?.id);
+                        setDeleteId(value.id);
+                        setShowDeleteModal(true);
                       }}
                     >
                       Delete
@@ -210,6 +249,48 @@ export default function DocumentPage() {
           </tbody>
         </table>
       </div>
+      <Modal
+        open={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+        }}
+        closeButton={false}
+      >
+        <div className="text-left">
+          <h3 className="text-xl font-medium mb-4 border-b pb-4 border-gray-300">
+            Delete Document
+          </h3>
+          <div className="bg-red-100 p-4 text-[#FF0000] rounded-md mb-4 max-w-md font-semibold">
+            Continuing with this action will delete the document permanently. Do
+            you really want to delete the document?
+          </div>
+          <div className="flex justify-end w-full gap-4 border-t pt-4 border-gray-300">
+            <div>
+              <button
+                className="bg-background-secondary hover:bg-gray-200 text-gray-800 py-2 px-4 rounded"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteId("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+            <div>
+              <button
+                className="bg-[#FF0000] hover:bg-red-600 text-white py-2 px-4 rounded"
+                onClick={() => {
+                  handleDelete(deleteId);
+                  setShowDeleteModal(false);
+                  setDeleteId("");
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
       {
         // this is the pagination
         documentPageData.count > pagination.limit && (

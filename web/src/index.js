@@ -7,6 +7,7 @@ import { routes } from "./routes";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import "react-toastify/dist/ReactToastify.css";
+import Tagore from "./Tagore";
 
 const router = createBrowserRouter(routes, {
   basename: window.REACT_APP_PUBLIC_URL,
@@ -16,7 +17,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <Tagore>
+      <RouterProvider router={router} />
+    </Tagore>
   </Provider>
 );
 

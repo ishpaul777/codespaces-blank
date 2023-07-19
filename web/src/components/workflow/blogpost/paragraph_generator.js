@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Input } from "../../inputs/Input";
 import { OutputLength } from "../../length/output_length";
 import { DocActionButton } from "../../buttons/DocActionButton";
-import { generateTextFromPrompt } from "../../../actions/text";
 
 export const ParagraphGenerator = ({
   topic,
@@ -10,10 +9,9 @@ export const ParagraphGenerator = ({
   editor,
   tone,
   audience,
+  loading,
 }) => {
   const [maxTokens, setMaxTokens] = useState(100);
-
-  const [loading, setLoading] = useState(false);
 
   const [outlineForm, setOutlineForm] = useState({
     about: {
@@ -26,7 +24,6 @@ export const ParagraphGenerator = ({
     },
   });
 
-  console.log();
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newFormObject = { ...outlineForm };
@@ -62,7 +59,6 @@ export const ParagraphGenerator = ({
       return;
     }
 
-    setLoading(true);
     let prompt = `You are writing a blog post with the following subheading: [${
       outlineForm.about.value
     }]. The keywords for the blog post are [${
@@ -74,20 +70,13 @@ export const ParagraphGenerator = ({
       input: prompt,
       provider: "openai",
       max_tokens: maxTokens,
-      model: "gpt-3.5-turbo",
-      stream: false,
     };
 
-    const response = await generateTextFromPrompt(requestBody);
-
-    const responseHTML = response.output?.replace(/\n|\t|(?<=>)\s*/g, "");
-    handleCompose(responseHTML);
-    setLoading(false);
+    handleCompose(requestBody);
     // Remove leading and trailing whitespace from each element
   };
-
   return (
-    <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
+    <div className="p-7 bg-white dark:bg-background-secondary-alt rounded-lg flex flex-col gap-8">
       <Input
         type={"input"}
         label={"What is your paragraph about?"}

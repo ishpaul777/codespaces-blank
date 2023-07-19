@@ -5,13 +5,14 @@ import Documents from "../../assets/icons/documents.svg";
 import Home from "../../assets/icons/home.svg";
 import Images from "../../assets/icons/images.svg";
 import Logout from "../../assets/icons/logout.svg";
+import useDarkMode from "../../hooks/useDarkMode";
 
 // import FactlyLogo from '../../assets/factly-logo.svg';
 
 export function SidebarAlt() {
   const [colorTab, setColorTab] = useState(null);
   const [activeTab, setActiveTab] = useState([]);
-
+  const { darkMode } = useDarkMode();
   const handleArrowClick = (index) => {
     setActiveTab((prevActiveTabs) => {
       if (prevActiveTabs.includes(index)) {
@@ -76,7 +77,11 @@ export function SidebarAlt() {
   ];
 
   return (
-    <div className="flex flex-col p-5 pt-8 w-1/6 h-full bg-background-sidebar justify-between">
+    <div
+      className={`flex flex-col p-5 pt-8 w-1/6 h-full ${
+        darkMode ? "bg-background-sidebar-alt" : "bg-background-sidebar"
+      } justify-between`}
+    >
       <div>
         <div className={`flex gap-x-2 items-center justify-center w-fit`}>
           <img
@@ -95,8 +100,11 @@ export function SidebarAlt() {
                 key={index}
                 className={`flex flex-col justify-between text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
               ${colorTab !== index && "hover:bg-button-primary"} 
-              ${colorTab === index && "bg-button-primary"} 
-              mt-2`}
+              ${
+                colorTab === index &&
+                (darkMode ? "bg-button-primary-alt" : "hover:bg-button-primary")
+              } 
+              mt-2 ${darkMode && "text-white hover:bg-button-primary-alt"}`}
               >
                 <div className="flex justify-between w-[12vw] ">
                   <div className="flex gap-x-4 justify-start">

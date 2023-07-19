@@ -84,10 +84,10 @@ const Dropdown = ({
       {isOpen && (
         <div
           id="dropdown"
-          className="absolute right-5 mt-9 z-50 bg-white divide-y divide-gray-100 rounded-lg shadow w-44"
+          className="absolute right-5 mt-9 z-50 bg-white dark:bg-background-sidebar-alt divide-y divide-gray-100 dark:divide-[#3b3b3b] rounded-lg shadow w-44"
         >
           <ul
-            className="py-2 text-sm text-gray-700"
+            className="py-2 text-sm text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownDefaultButton"
           >
             <li
@@ -145,7 +145,13 @@ const Dropdown = ({
         </div>
       )}
       {isOpen && (
-        <div className="fixed top-24 h-full inset-0 z-40 backdrop-filter backdrop-blur-md"></div>
+        <div
+          className="fixed top-24 h-full inset-0 z-40 backdrop-filter backdrop-blur-md"
+          onClick={() => {
+            toggleDropdown();
+            setShowPromptCreateModal(false);
+          }}
+        ></div>
       )}
       <Modal
         centered

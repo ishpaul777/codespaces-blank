@@ -15,13 +15,14 @@ import handDrawnBoat from "../../assets/handrawn-boat.png";
 import foxNight from "../../assets/fox-night.png";
 import catWithHat from "../../assets/cat-with-hat.png";
 import davidWearingHeadphones from "../../assets/david-wearing-headphones.png";
+import useDarkMode from "../../hooks/useDarkMode";
 import ExampleModal from "./ExamplesModal";
 import useWindowSize from "../../hooks/useWindowSize";
 
 export default function ImagePage() {
   const fileInputRef = useRef(null);
   const { isMobileScreen } = useWindowSize();
-
+  const { darkMode } = useDarkMode();
   const [imageRequest, setImageRequest] = useState({
     prompt: "",
     n: 4,
@@ -196,7 +197,9 @@ export default function ImagePage() {
 
   return (
     <div className={`my-16 ${isMobileScreen ? "mx-6 my-24" : "mx-10"}`}>
-      <h2 className="text-3xl font-medium mb-4">Generate Images</h2>
+      <h2 className={`text-3xl font-medium dark:text-white mb-4`}>
+        Generate Images
+      </h2>
       <ImageSearch
         isMobileScreen={isMobileScreen}
         placeholder={
@@ -220,7 +223,11 @@ export default function ImagePage() {
         <div className="flex gap-2 items-center">
           <button
             onClick={() => onUploadButtonClick()}
-            className={`bg-button-primary text-black px-4 py-2 rounded-lg`}
+            className={`text-black px-4 py-2 rounded-lg ${
+              darkMode
+                ? "bg-background-sidebar-alt text-white"
+                : "bg-button-primary"
+            } `}
           >
             Upload Image
             <input
@@ -230,10 +237,14 @@ export default function ImagePage() {
               onChange={(e) => handleUploadFile(e)}
             ></input>
           </button>
-          <span>to generate variations</span>
+          <span className={`${darkMode && "text-[#BEBEBE]"}`}>
+            to generate variations
+          </span>
         </div>
-        <div className="flex flex-row items-center space-x-2 ml-2">
-          <label className="text-gray-600 text-sm">Image Count </label>
+        <div className="flex flex-row items-center space-x-2">
+          <label className={`${darkMode ? "text-[#BEBEBE]" : "text-gray-600"}`}>
+            Image Count{" "}
+          </label>
           <input
             type="range"
             min={1}
@@ -242,12 +253,14 @@ export default function ImagePage() {
             onChange={handleRangeChange}
             className="w-32 bg-gray-300 appearance-none h-1 rounded-lg outline-none"
           />
-          <span className="text-gray-600">{imageRequest.n}</span>
+          <span className={`dark:text-[#BEBEBE] text-gray-600}`}>
+            {imageRequest.n}
+          </span>
         </div>
         <div className="mr-4 flex gap-2">
           <select
             name="provider"
-            className="px-4 py-2 bg-button-primary text-black rounded-lg outline-none"
+            className="p-2 bg-button-primary dark:bg-background-sidebar-alt text-black rounded-lg outline-none border-r-4 border-transparent dark:text-white"
             onChange={handleProviderChange}
           >
             <option value="stableDiffusion">Stable Diffusion</option>
@@ -282,7 +295,7 @@ export default function ImagePage() {
                     >
                       <img
                         alt="generated logos"
-                        className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
+                        className="rounded-lg cursor-pointer shadow-primary hover:shadow-md dark:shadow-none"
                         src={getURL(image?.url)}
                       ></img>
                       {image.isHover && (
@@ -307,7 +320,7 @@ export default function ImagePage() {
                         <img
                           alt="generated logos"
                           // onClick={() => downloadImage(image?.url, 'image.png')}
-                          className="rounded-lg cursor-pointer shadow-primary hover:shadow-md"
+                          className="rounded-lg cursor-pointer shadow-primary hover:shadow-md dark:shadow-none"
                           src={image.url}
                         ></img>
                         <div className="absolute top-0 left-0 w-full h-full flex flex-col bg-white justify-between items-start opacity-0 hover:opacity-80 cursor-pointer transition duration-300 ease-in-out">

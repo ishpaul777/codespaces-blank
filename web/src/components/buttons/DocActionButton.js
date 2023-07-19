@@ -14,10 +14,8 @@ export const DocActionButton = ({
   return (
     <button
       className={`${
-        isPrimary ? "bg-black" : "bg-[#D6D6D6]"
-      }  px-3 py-2 rounded-md ${
-        isPrimary ? "text-white" : "text-black"
-      } font-medium
+        isPrimary ? "bg-black text-white" : "bg-[#D6D6D6] text-black"
+      }  px-3 py-2 rounded-md font-medium
       ${width ? width : ""}
       `}
       onClick={(e) => clickAction(e)}

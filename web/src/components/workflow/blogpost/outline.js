@@ -102,7 +102,7 @@ export const Outline = ({ handleCompose, title, audience, tone }) => {
   }
 
   return (
-    <div className="p-7 bg-white rounded-lg flex flex-col gap-8">
+    <div className="p-7 bg-white dark:bg-background-secondary-alt rounded-lg flex flex-col gap-8">
       <Input
         type={"input"}
         label={"Blog Post Outline Topic "}
@@ -156,9 +156,14 @@ export const Outline = ({ handleCompose, title, audience, tone }) => {
           initialValue={output.output}
         ></Input>
       )}
-      <div className="grid grid-cols-2 gap-2">
+      <div
+        className={`grid gap-2 ${
+          output.visibility ? "grid-cols-2" : "grid-cols-1"
+        }
+      `}
+      >
         <DocActionButton
-          text={"Generate"}
+          text={output.visibility ? "Regenerate" : "Generate"}
           clickAction={() => {
             handleSubmit();
           }}

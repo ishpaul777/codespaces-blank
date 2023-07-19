@@ -12,7 +12,7 @@ const MenuIcon = () => {
       <g clipPath="url(#clip0_6015_267)">
         <path
           d="M11.4199 31.749H36.9199V28.5824H11.4199V31.749ZM19.4199 23.8324H36.9199V20.6657H19.4199V23.8324ZM11.4199 12.749V15.9157H36.9199V12.749H11.4199Z"
-          fill="#1E1E1E"
+          fill="currentColor"
         />
       </g>
       <defs>

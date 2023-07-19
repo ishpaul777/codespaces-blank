@@ -8,6 +8,7 @@ import Pagination from "./pagination";
 import { getPersona } from "../../actions/persona";
 import { errorToast } from "../../util/toasts";
 import useWindowSize from "../../hooks/useWindowSize";
+import useDarkMode from "../../hooks/useDarkMode";
 import sachLogo from "../../assets/sach_logo.svg";
 
 export default function Personas() {
@@ -18,7 +19,7 @@ export default function Personas() {
     search_query: "",
     count: 0,
   });
-
+  const { darkMode } = useDarkMode();
   const [searchQuery, setSearchQuery] = useState("");
   // personData is the data of the persona on the current page
   const [personaData, setPersonaData] = useState([]);
@@ -52,7 +53,9 @@ export default function Personas() {
     <div className="m-10">
       {/* This is Page header */}
       <div className="flex flex-row justify-between items-center mt-24 mb-10 md:mt-0 gap-2">
-        <h2 className="text-3xl font-medium  ">Personas</h2>
+        <h2 className={`text-3xl font-medium   ${darkMode && "text-white"}`}>
+          Personas
+        </h2>
 
         <div className="flex flex-row items-center gap-2">
           {window.innerWidth >= 900 && (
@@ -70,7 +73,7 @@ export default function Personas() {
             />
           )}
           <Link to="/personas/create">
-            <CreateButton text={"Create Personas"} />
+            <CreateButton text={isMobileScreen ? "" : "Create Personas"} />
           </Link>
         </div>
       </div>
@@ -93,9 +96,9 @@ export default function Personas() {
       <div className="flex flex-row justify-between items-center mt-8 mx-1">
         <div className="flex flex-row font-semibold text-[18px] gap-4 border-b border-solid border-[#D9E7DA]">
           <button
-            className={`text-grey-50 py-[10px] ${
+            className={`text-grey-50 dark:text-gray-50 py-[10px] ${
               tab === "All"
-                ? "text-black-50 border-b-[2px] border-black-50"
+                ? "text-black-50 border-b-2 border-black-50 dark:border-gray-50 dark:text-gray-200"
                 : ""
             }`}
             onClick={() => setTab("All")}
@@ -103,9 +106,9 @@ export default function Personas() {
             All
           </button>
           <button
-            className={`text-grey-50 py-[10px] ${
+            className={`text-grey-50 dark:text-gray-50 py-[10px] ${
               tab === "Created"
-                ? "text-black-50 border-b-[2px] border-black-50"
+                ? "text-black-50 border-b-2 border-black-50 dark:border-gray-50 dark:text-gray-200"
                 : ""
             }`}
             onClick={() => setTab("Created")}
@@ -127,7 +130,7 @@ export default function Personas() {
       </div>
       {/* This is Page Items */}
       <div
-        className={`grid grid-rows-2 gap-6 my-10 grid-cols-2 ${
+        className={`grid grid-rows-2 gap-6 my-10 grid-cols-1 ${
           window.innerWidth < 1000 ? "sm:grid-cols-4" : "sm:grid-cols-5"
         } `}
       >
