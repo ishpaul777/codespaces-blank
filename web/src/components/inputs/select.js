@@ -73,6 +73,14 @@ export function Select({
             >
               Chat Bison(Google)
             </button>
+            <button
+              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
+                selectedValue.toUpperCase() === "Claude 2" ? "bg-gray-200" : ""
+              }`}
+              onClick={() => handleOptionClick("claude-2")}
+            >
+              Claude 2
+            </button>
             {/* <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
                 selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""

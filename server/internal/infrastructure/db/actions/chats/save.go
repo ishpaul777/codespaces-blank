@@ -13,7 +13,6 @@ func (p *PGChatsRepository) SaveChat(title string, userID uint, chatID *uint, mo
 		return nil, err
 	}
 
-
 	// chat is the chat object that will be saved in the database
 	if len(messages) == 0 {
 		return nil, errors.New("messages cannot be empty")

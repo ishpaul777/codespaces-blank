@@ -59,6 +59,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 	}
 
 	var responseMessage []models.Message
+
 	title := ""
 
 	if chatID != nil {

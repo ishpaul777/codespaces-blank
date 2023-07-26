@@ -153,6 +153,7 @@ func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, mess
 		if err != nil {
 			return nil, err
 		}
+
 		return nil, errors.New("google model returned status code " + response.Status)
 	}
 
