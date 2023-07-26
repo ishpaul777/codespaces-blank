@@ -24,6 +24,8 @@ func NewOpenAIAdapter() *OpenAIAdapter {
 	return &OpenAIAdapter{}
 }
 
+const OPENAI PROVIDER = "openai"
+
 var modelDataFile = "./modelData/openAI.json"
 
 func (o *OpenAIAdapter) LoadConfig() error {
@@ -144,8 +146,10 @@ func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(userID uint, model stri
 		responseMap.FinishReason = resp.Choices[0].FinishReason
 		if resp.Choices[0].FinishReason == "length" || resp.Choices[0].FinishReason == "stop" {
 			payload := map[string]interface{}{
-				"input":  prompt,
-				"output": responseMap.Output,
+				"input":    prompt,
+				"model":    model,
+				"provider": OPENAI,
+				"output":   responseMap.Output,
 			}
 
 			request := models.RequestUsage{
@@ -214,8 +218,10 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(userID uint, model stri
 		responseMap.FinishReason = resp.Choices[0].FinishReason
 		if resp.Choices[0].FinishReason == "length" || resp.Choices[0].FinishReason == "stop" {
 			payload := map[string]interface{}{
-				"input":  prompt,
-				"output": responseMap.Output,
+				"input":    prompt,
+				"output":   responseMap.Output,
+				"model":    model,
+				"provider": OPENAI,
 			}
 
 			request := models.RequestUsage{
@@ -323,7 +329,7 @@ func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, mess
 	return messages, nil
 }
 
-func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
+func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub) {
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
 	for _, message := range messages {
 		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
@@ -388,6 +394,22 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, mod
 				return
 			}
 			dataChan <- string(byteStream)
+
+			usagePayload := map[string]interface{}{
+				"model":    model,
+				"provider": OPENAI,
+				"chat":     chat,
+			}
+
+			request := models.RequestUsage{
+				UserID:  userID,
+				Type:    "generate-chat",
+				Payload: usagePayload,
+			}
+
+			byteData, _ := json.Marshal(request)
+
+			pubsubClient.Publish("tagore.usage", byteData)
 		}
 
 		if err != nil {
@@ -415,7 +437,7 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, mod
 	}
 }
 
-func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {
+func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
 	const temperature = 0.9
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
 	for _, message := range messages {
@@ -462,7 +484,22 @@ func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID ui
 
 				dataChan <- string(byteStream)
 				errChan <- io.EOF
-				return
+
+				payload := map[string]interface{}{
+					"model":    model,
+					"provider": OPENAI,
+					"chat":     personaChat,
+				}
+
+				request := models.RequestUsage{
+					UserID:  userID,
+					Type:    "generate-persona-chat",
+					Payload: payload,
+				}
+
+				byteData, _ := json.Marshal(request)
+
+				pubsubClient.Publish("tagore.usage", byteData)
 			} else {
 				personaChat, err := personaRepo.UpdatePersonaChat(userID, personaID, *chatID, messages)
 				if err != nil {
@@ -478,8 +515,24 @@ func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID ui
 
 				dataChan <- string(byteStream)
 				errChan <- io.EOF
-				return
+
+				payload := map[string]interface{}{
+					"model":    model,
+					"provider": OPENAI,
+					"chat":     personaChat,
+				}
+
+				request := models.RequestUsage{
+					UserID:  userID,
+					Type:    "generate-persona-chat",
+					Payload: payload,
+				}
+
+				byteData, _ := json.Marshal(request)
+
+				pubsubClient.Publish("tagore.usage", byteData)
 			}
+			return
 		}
 
 		if err != nil {

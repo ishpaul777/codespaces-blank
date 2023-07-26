@@ -1,14 +1,15 @@
 package repositories
 
 import (
+	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/infrastructure/db"
 	"github.com/factly/tagore/server/internal/infrastructure/db/actions/usage"
 )
 
 type UsageRepository interface {
-	SaveGenerateUsage(userID uint, inputToken, outputToken int) error
-	SaveChatUsage(userID uint, chatID uint, inputToken, outputToken int) error
-	SavePersonaUsage(userID uint, personaID uint, inputToken, outputToken int) error
+	SaveGenerateUsage(userID uint, inputToken, outputToken int, model, provider string, typeUsedFor models.UsageType) error
+	SaveChatUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error
+	SavePersonaUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error
 }
 
 func NewUsageRepository(database db.IDatabaseService) (UsageRepository, error) {

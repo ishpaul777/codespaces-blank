@@ -13,6 +13,7 @@ import (
 
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/helper"
 )
 
@@ -131,7 +132,7 @@ func (a *AnthropicAdapter) GenerateResponse(model string, temperature float32, m
 	return messages, nil
 }
 
-func (a *AnthropicAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
+func (a *AnthropicAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub) {
 	if !validateAnthropicModel(model) {
 		errChan <- ErrIncorrectAnthropicModel
 		return
@@ -245,6 +246,6 @@ func generateRequestText(messages []models.Message) string {
 	return requestString
 }
 
-func (a *AnthropicAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {
+func (a *AnthropicAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
 
 }

@@ -12,6 +12,7 @@ type ConfigGenerativeModel interface {
 	LoadConfig() error
 }
 
+type PROVIDER string
 type TextGenerativeModel interface {
 	ConfigGenerativeModel
 	GenerateTextUsingTextModel(prompt, model string, maxTokens uint) (interface{}, string, error)
@@ -31,8 +32,8 @@ type ChatGenerativeModel interface {
 	ConfigGenerativeModel
 	// GenerateResponse(model string, temperature float32, chat models.Chat, chatRepo repositories.ChatRepository) (*models.Chat, error)
 	GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, error)
-	GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
-	GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error)
+	GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub)
+	GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub)
 	GenerateChatTitle(message models.Message) (string, error)
 	// GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 }

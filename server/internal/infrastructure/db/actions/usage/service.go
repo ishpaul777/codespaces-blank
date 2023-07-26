@@ -3,6 +3,7 @@ package usage
 import (
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/infrastructure/db"
+	"github.com/factly/tagore/server/pkg/helper"
 	"gorm.io/gorm"
 )
 
@@ -20,28 +21,17 @@ func NewPGUsageRepository(database db.IDatabaseService) (*PGUsageRepository, err
 	return &PGUsageRepository{client: dbClient}, nil
 }
 
-func (p *PGUsageRepository) SaveGenerateUsage(userID uint, inputToken, outputToken int) error {
-	usage, err := p.GetUsage(userID)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			newUsage := &models.Usage{
-				UserID:         userID,
-				PromptTokens:   uint(inputToken),
-				ResponseTokens: uint(outputToken),
-				TotalTokens:    uint(inputToken + outputToken),
-			}
-			err := p.client.Model(&models.Usage{}).Create(&newUsage).Error
-			if err != nil {
-				return err
-			}
-			return nil
-		}
+func (p *PGUsageRepository) SaveGenerateUsage(userID uint, inputToken, outputToken int, model, provider string, typeUsedFor models.UsageType) error {
+	newUsage := &models.Usage{
+		UserID:         userID,
+		PromptTokens:   uint(inputToken),
+		ResponseTokens: uint(outputToken),
+		TotalTokens:    uint(inputToken + outputToken),
+		Provider:       provider,
+		Model:          model,
+		Type:           typeUsedFor,
 	}
-	usage.PromptTokens += uint(inputToken)
-	usage.ResponseTokens += uint(outputToken)
-	usage.TotalTokens += uint(inputToken + outputToken)
-
-	err = p.client.Model(&models.Usage{}).Where("user_id", userID).Updates(&usage).Error
+	err := p.client.Model(&models.Usage{}).Create(&newUsage).Error
 	if err != nil {
 		return err
 	}
@@ -49,12 +39,54 @@ func (p *PGUsageRepository) SaveGenerateUsage(userID uint, inputToken, outputTok
 	return nil
 }
 
-func (p *PGUsageRepository) SaveChatUsage(userID uint, chatID uint, inputToken, outputToken int) error {
-	panic("implement me")
+func (p *PGUsageRepository) SaveChatUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error {
+	chatUsage := models.EachChatUsage{
+		ResponseTokens: uint(outputToken),
+		PromptTokens:   uint(inputToken),
+		TotalTokens:    uint(inputToken + outputToken),
+	}
+
+	// convert chatUsage to jsonb
+	chatUsageRaw, err := helper.ConvertToJSONB(chatUsage)
+	if err != nil {
+		return err
+	}
+
+	// update the chat usage in the chat table with chat id
+	err = p.client.Model(&models.Chat{}).Where("id = ?", chatID).Updates(&models.Chat{
+		Usage: chatUsageRaw,
+	}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (p *PGUsageRepository) SavePersonaUsage(userID uint, personaID uint, inputToken, outputToken int) error {
-	panic("implement me")
+func (p *PGUsageRepository) SavePersonaUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error {
+	chatUsage := models.EachChatUsage{
+		ResponseTokens: uint(outputToken),
+		PromptTokens:   uint(inputToken),
+		TotalTokens:    uint(inputToken + outputToken),
+	}
+
+	// convert chatUsage to jsonb
+	chatUsageRaw, err := helper.ConvertToJSONB(chatUsage)
+	if err != nil {
+		return err
+	}
+
+	// update the chat usage in the chat table with chat id
+	err = p.client.Model(&models.PersonaChat{}).Where("id = ?", chatID).Updates(&models.Chat{
+		Usage: chatUsageRaw,
+	}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (p *PGUsageRepository) GetUsage(userID uint) (models.Usage, error) {

@@ -10,6 +10,7 @@ import (
 
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 )
 
 type GoogleAdapter struct {
@@ -174,10 +175,10 @@ func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, mess
 	return messages, nil
 }
 
-func (g *GoogleAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {
+func (g *GoogleAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub) {
 
 }
 
-func (g *GoogleAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error) {
+func (g *GoogleAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
 
 }

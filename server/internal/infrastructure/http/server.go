@@ -80,9 +80,9 @@ func RunHTTPServer(app *application.App) {
 	promptService := services.NewPromptService(promptRepository, app.GetPubSub())
 	documentService := services.NewDocumentService(documentRepository)
 	imageService := services.NewImageService(imageRepository)
-	chatService := services.NewChatService(chatRepository)
+	chatService := services.NewChatService(chatRepository, app.GetPubSub())
 	promptTemplateService := services.NewPromptTemplateService(promptTemplateRepository)
-	personaService := services.NewPersonaService(personaRepository)
+	personaService := services.NewPersonaService(personaRepository, app.GetPubSub())
 
 	usageService := services.NewUsageService(usageRepository)
 
@@ -104,8 +104,20 @@ func RunHTTPServer(app *application.App) {
 				if err != nil {
 					logger.Error("error in saving the generate-text user details", "error", err.Error())
 				}
+
+			case "generate-chat":
+				err := usageService.SaveChatUsage(usageData.UserID, usageData.Payload)
+				if err != nil {
+					logger.Error("error in saving the generate-chat user details", "error", err.Error())
+				}
+
+			case "generate-persona-chat":
+				err := usageService.SavePersonaUsage(usageData.UserID, usageData.Payload)
+				if err != nil {
+					logger.Error("error in saving the generate-persona user details", "error", err.Error())
+				}
 			default:
-				logger.Info("unknown usage type")
+				logger.Error("unknown usage type")
 			}
 
 		})

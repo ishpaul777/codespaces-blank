@@ -18,7 +18,7 @@ import useDarkMode from "../../hooks/useDarkMode";
 export default function ChatPage() {
   const navigate = useNavigate();
   const { darkMode } = useDarkMode();
-  const [stream, setStream] = useState(false);
+  const [stream, setStream] = useState(true);
   const [initialPrompt, setIntialPrompt] = useState("");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
   const [promptSiderCollapse, setPromptSiderCollapse] = useState(

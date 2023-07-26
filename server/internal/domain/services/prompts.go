@@ -110,6 +110,7 @@ func (p *promptService) GenerateText(provider, model string, userID uint, input,
 		}
 	}
 
+	// p.pubsubClient.Publish("tagore.usage",)
 	return &models.GenerateTextResponse{
 		Output:       output.(string),
 		FinishReason: finishReason,

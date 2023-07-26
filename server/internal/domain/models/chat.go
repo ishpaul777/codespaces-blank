@@ -19,6 +19,12 @@ type Chat struct {
 	Usage json.RawMessage `json:"usage" gorm:"type:jsonb"`
 }
 
+type EachChatUsage struct {
+	TotalTokens    uint `json:"total_tokens"`
+	PromptTokens   uint `json:"prompt_tokens"`
+	ResponseTokens uint `json:"response_tokens"`
+}
+
 type ChatCollection struct {
 	Base
 	// Name is the name of the chat collection/folder

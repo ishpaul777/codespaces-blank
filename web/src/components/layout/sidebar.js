@@ -217,7 +217,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                   ))}
                 </ul>
               )}
-              <DarkMode />
+              {/* <DarkMode /> */}
               {/* manage profile button */}
               <button
                 className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${
