@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -93,13 +92,13 @@ func (g *GoogleAdapter) GenerateChatTitle(message models.Message) (string, error
 	return "", nil
 }
 
-func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, *models.Usage, error) {
+func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, error) {
 	if model == "" {
 		model = "chat-bison@001"
 	}
 
 	if !validateGoogleModel(model) {
-		return nil, nil, errIncorrectGoogleModel
+		return nil, errIncorrectGoogleModel
 	}
 
 	reqBody := &reqBodyForGoogleChat{}
@@ -114,7 +113,7 @@ func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, mess
 			Author:  msg.Role,
 		})
 	}
-	fmt.Println("messages for google body", messagesForGoogle)
+
 	reqBody.Instances = append(reqBody.Instances, struct {
 		Context  string    `json:"context"`
 		Examples []message `json:"examples"`
@@ -129,13 +128,13 @@ func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, mess
 
 	byteRequest, err := json.Marshal(reqBody)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	requestURL := g.API_URL + "/v1/projects/" + g.PROJECT_ID + "/locations/us-central1/publishers/google/models/" + model + ":predict"
 	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(byteRequest))
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	req.Header.Add("Content-Type", "application/json")
@@ -144,7 +143,7 @@ func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, mess
 
 	response, err := g.Client.Do(req)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	defer response.Body.Close()
@@ -152,16 +151,15 @@ func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, mess
 		responseBody := map[string]interface{}{}
 		err = json.NewDecoder(response.Body).Decode(&responseBody)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
-		fmt.Println(responseBody)
-		return nil, nil, errors.New("google model returned status code " + response.Status)
+		return nil, errors.New("google model returned status code " + response.Status)
 	}
 
 	var googleResponse googleChatResponse
 	err = json.NewDecoder(response.Body).Decode(&googleResponse)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	if len(googleResponse.Predictions) > 0 {
@@ -172,11 +170,7 @@ func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, mess
 			})
 		}
 	}
-	return messages, &models.Usage{
-		TotalTokens:      0,
-		CompletionTokens: 0,
-		PromptTokens:     0,
-	}, nil
+	return messages, nil
 }
 
 func (g *GoogleAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository) {

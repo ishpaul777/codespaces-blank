@@ -1,10 +1,12 @@
 package http
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	application "github.com/factly/tagore/server/app"
+	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/domain/services"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/chat"
@@ -70,12 +72,19 @@ func RunHTTPServer(app *application.App) {
 		logger.Fatal("error creating persona repository")
 	}
 
-	promptService := services.NewPromptService(promptRepository)
+	usageRepository, err := repositories.NewUsageRepository(db)
+	if err != nil {
+		logger.Fatal("error creating usage repository")
+	}
+
+	promptService := services.NewPromptService(promptRepository, app.GetPubSub())
 	documentService := services.NewDocumentService(documentRepository)
 	imageService := services.NewImageService(imageRepository)
 	chatService := services.NewChatService(chatRepository)
 	promptTemplateService := services.NewPromptTemplateService(promptTemplateRepository)
 	personaService := services.NewPersonaService(personaRepository)
+
+	usageService := services.NewUsageService(usageRepository)
 
 	prompts.InitRoutes(router, promptService, logger)
 	documents.InitRoutes(router, documentService, logger)
@@ -83,6 +92,24 @@ func RunHTTPServer(app *application.App) {
 	chat.InitRoutes(router, chatService, logger)
 	prompt_templates.InitRoutes(router, promptTemplateService, logger)
 	persona.InitRoutes(router, personaService, logger)
+
+	go func() {
+		pubsub := app.GetPubSub()
+		pubsub.Subscribe("tagore.usage", func(data []byte) {
+			usageData := models.RequestUsage{}
+			json.Unmarshal(data, &usageData)
+			switch usageData.Type {
+			case "generate-text":
+				err := usageService.SaveGenerateUsage(usageData.UserID, usageData.Payload)
+				if err != nil {
+					logger.Error("error in saving the generate-text user details", "error", err.Error())
+				}
+			default:
+				logger.Info("unknown usage type")
+			}
+
+		})
+	}()
 
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Server.Port), router)
 	if err != nil {

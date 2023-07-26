@@ -14,6 +14,7 @@ type Config struct {
 	Server   ServerConfig
 	Database DatabaseConfig
 	Logger   LoggerConfig
+	PubSub   PubSubConfig
 }
 
 type ServerConfig struct {
@@ -31,6 +32,11 @@ type DatabaseConfig struct {
 type LoggerConfig struct {
 	OutputType string
 	Level      string
+}
+
+type PubSubConfig struct {
+	Provider string
+	URL      string
 }
 
 func New() IConfigService {
@@ -99,6 +105,19 @@ func (config Config) LoadConfig() (*Config, error) {
 		c.Logger.Level = viper.GetString("LOG_LEVEL")
 	} else {
 		log.Fatal("LOG_LEVEL config not set")
+	}
+
+	// setting pubsub configuration
+	if viper.IsSet("PUBSUB_PROVIDER") {
+		c.PubSub.Provider = viper.GetString("PUBSUB_PROVIDER")
+	} else {
+		log.Fatal("PUBSUB_PROVIDER config not set")
+	}
+
+	if viper.IsSet("PUBSUB_URL") {
+		c.PubSub.URL = viper.GetString("PUBSUB_URL")
+	} else {
+		log.Fatal("PUBSUB_URL config not set")
 	}
 
 	log.Println("configuration loaded successfully")

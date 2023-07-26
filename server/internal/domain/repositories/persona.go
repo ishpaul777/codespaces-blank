@@ -17,8 +17,8 @@ type PersonaRepository interface {
 	GetAllDefaultPersonas() ([]models.Persona, error)
 
 	// PersonaChat Methods
-	CreatePersonaChat(userID, personaID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error)
-	UpdatePersonaChat(userID, personaID, chatID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error)
+	CreatePersonaChat(userID, personaID uint, messages []models.Message) (*models.PersonaChat, error)
+	UpdatePersonaChat(userID, personaID, chatID uint, messages []models.Message) (*models.PersonaChat, error)
 	GetPersonaChatByID(userID, personaID, chatID uint) (*models.PersonaChat, error)
 	GetAllPersonaChatsByUserID(userID, personaID uint, pagination helper.Pagination) ([]models.PersonaChat, uint, error)
 	DeletePersonaChatByID(userID, personaID, chatID uint) error

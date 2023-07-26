@@ -59,7 +59,6 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 	}
 
 	var responseMessage []models.Message
-	var usage *models.Usage
 	title := ""
 
 	if chatID != nil {
@@ -73,7 +72,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 			return nil, err
 		}
 
-		responseMessage, usage, err = generativeModel.GenerateResponse(model, temperature, messages)
+		responseMessage, err = generativeModel.GenerateResponse(model, temperature, messages)
 		if err != nil {
 			return nil, err
 		}
@@ -96,7 +95,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		}
 
 		newMessage = append(newMessage, systemMessage, messages[0])
-		responseMessage, usage, err = generativeModel.GenerateResponse(model, temperature, newMessage)
+		responseMessage, err = generativeModel.GenerateResponse(model, temperature, newMessage)
 		if err != nil {
 			return nil, err
 		}
@@ -115,7 +114,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		}
 	}
 
-	chat, err := c.chatRepository.SaveChat(title, userID, chatID, model, responseMessage, *usage)
+	chat, err := c.chatRepository.SaveChat(title, userID, chatID, model, responseMessage)
 	if err != nil {
 		return nil, err
 	}
