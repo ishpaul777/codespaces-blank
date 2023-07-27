@@ -24,3 +24,17 @@ type RequestUsage struct {
 	Type    string      `json:"type"`
 	Payload interface{} `json:"payload"`
 }
+
+type GetUsageFilters struct {
+	TargetMonth string `json:"target_month"`
+	Type        string `json:"type"`
+	Model       string `json:"model"`
+	Provider    string `json:"provider"`
+}
+
+type GetUsageResponse struct {
+	TotalTokens    uint   `json:"total_tokens" gorm:"column:total_tokens"`
+	PromptTokens   uint   `json:"prompt_tokens" gorm:"column:prompt_tokens"`
+	ResponseTokens uint   `json:"response_tokens" gorm:"column:response_tokens"`
+	Date           string `json:"date" gorm:"column:date"`
+}

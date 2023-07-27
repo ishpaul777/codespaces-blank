@@ -15,6 +15,7 @@ import (
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/persona"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompt_templates"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompts"
+	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/usage"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -92,6 +93,7 @@ func RunHTTPServer(app *application.App) {
 	chat.InitRoutes(router, chatService, logger)
 	prompt_templates.InitRoutes(router, promptTemplateService, logger)
 	persona.InitRoutes(router, personaService, logger)
+	usage.InitRoutes(router, usageService, logger)
 
 	go func() {
 		pubsub := app.GetPubSub()

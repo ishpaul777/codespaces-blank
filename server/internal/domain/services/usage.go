@@ -13,6 +13,7 @@ type UsageService interface {
 	SaveGenerateUsage(userID uint, data interface{}) error
 	SaveChatUsage(userID uint, data interface{}) error
 	SavePersonaUsage(userID uint, data interface{}) error
+	GetUsageByUserID(userID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error)
 }
 
 type usageService struct {
@@ -142,4 +143,8 @@ func (u *usageService) SavePersonaUsage(userID uint, data interface{}) error {
 
 	return u.usageRepository.SavePersonaUsage(userID, chat.ID, inputToken, outputToken, model, provider)
 
+}
+
+func (u *usageService) GetUsageByUserID(userID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error) {
+	return u.usageRepository.GetUsageByUserID(userID, filters)
 }
