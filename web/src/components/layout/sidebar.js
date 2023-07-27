@@ -16,6 +16,7 @@ import Profile from "../../assets/icons/profile.svg";
 import Templates from "../../assets/icons/templates.svg";
 import TemplatesDark from "../../assets/icons/templatesDark.svg";
 import Usage from "../../assets/icons/usage.svg";
+import UsageDark from "../../assets/icons/usageDark.svg";
 import Workflow from "../../assets/icons/workflow.svg";
 import WorkFlowDark from "../../assets/icons/workflowDark.svg";
 import DocumentsDark from "../../assets/icons/documents_dark.svg";
@@ -66,6 +67,11 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       icon: darkMode ? ChatDark : Chat,
       linkTo: "/chats/dashboard",
     },
+    {
+      name: "Usage",
+      icon: darkMode ? UsageDark : Usage,
+      linkTo: "/usage",
+    }
   ];
 
   const handleLogout = () => {
@@ -80,7 +86,6 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
 
   const manageProfileOptions = [
     // {
-    //   name: "View Profile",
     //   icon: Profile,
     //   linkTo: "/profile",
     // },

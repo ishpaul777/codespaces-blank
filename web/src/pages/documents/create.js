@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ArrowIcon from "../../assets/icons/arrow.svg";
 import InfoIcon from "../../assets/icons/info-icon.svg";
-import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import Clear from "../../assets/icons/clear.svg";
 import Share from "../../assets/icons/share.svg";
 import Tick from "../../assets/icons/tick.svg";
