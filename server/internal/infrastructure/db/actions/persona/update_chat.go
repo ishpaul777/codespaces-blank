@@ -6,14 +6,9 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 )
 
-func (p *PGPersonaRepository) UpdatePersonaChat(userID, personaID, chatID uint, messages []models.Message, usage models.Usage) (*models.PersonaChat, error) {
+func (p *PGPersonaRepository) UpdatePersonaChat(userID, personaID, chatID uint, messages []models.Message) (*models.PersonaChat, error) {
 	// convert messages to jsonb
 	rawMessages, err := json.Marshal(messages)
-	if err != nil {
-		return nil, err
-	}
-
-	usageRaw, err := json.Marshal(usage)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +20,6 @@ func (p *PGPersonaRepository) UpdatePersonaChat(userID, personaID, chatID uint, 
 		},
 		PersonaID: personaID,
 		Messages:  rawMessages,
-		Usage:     usageRaw,
 	}
 
 	err = p.client.Model(&models.PersonaChat{}).Where("id = ?", chatID).Updates(personaChat).Error

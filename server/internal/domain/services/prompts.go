@@ -6,6 +6,7 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/infrastructure/generative_model"
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 )
 
 type PromptService interface {
@@ -14,11 +15,13 @@ type PromptService interface {
 }
 type promptService struct {
 	promptRepository repositories.PromptRepository
+	pubsubClient     pubsub.PubSub
 }
 
-func NewPromptService(repository repositories.PromptRepository) PromptService {
+func NewPromptService(repository repositories.PromptRepository, pubsub pubsub.PubSub) PromptService {
 	return &promptService{
 		promptRepository: repository,
+		pubsubClient:     pubsub,
 	}
 }
 
@@ -107,6 +110,7 @@ func (p *promptService) GenerateText(provider, model string, userID uint, input,
 		}
 	}
 
+	// p.pubsubClient.Publish("tagore.usage",)
 	return &models.GenerateTextResponse{
 		Output:       output.(string),
 		FinishReason: finishReason,
@@ -130,8 +134,8 @@ func (p *promptService) GenerateTextStream(provider, model string, userID uint, 
 	isUsingChatModel := models.ModelBelongsToChat(model)
 	prompt := constructPromptForChat(input, generateFor)
 	if isUsingChatModel {
-		generativeModel.GenerateTextUsingChatModelStream(model, prompt, maxTokens, additionalInstructions, dataChan, errChan)
+		generativeModel.GenerateTextUsingChatModelStream(userID, model, prompt, maxTokens, additionalInstructions, dataChan, errChan, p.pubsubClient)
 	} else {
-		generativeModel.GenerateTextUsingTextModelStream(model, prompt, maxTokens, dataChan, errChan)
+		generativeModel.GenerateTextUsingTextModelStream(userID, model, prompt, maxTokens, dataChan, errChan, p.pubsubClient)
 	}
 }

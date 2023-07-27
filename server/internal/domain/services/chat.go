@@ -1,12 +1,14 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
 
 	prompts "github.com/factly/tagore/server/internal/domain/constants/prompts"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/infrastructure/generative_model"
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/helper"
 )
 
@@ -42,12 +44,14 @@ type ChatService interface {
 // chatService is a concrete implementation of ChatService interface
 type chatService struct {
 	chatRepository repositories.ChatRepository
+	pubsubClient   pubsub.PubSub
 }
 
 // NewChatService returns a new instance of ChatService
-func NewChatService(repository repositories.ChatRepository) ChatService {
+func NewChatService(repository repositories.ChatRepository, pubsubClient pubsub.PubSub) ChatService {
 	return &chatService{
 		chatRepository: repository,
+		pubsubClient:   pubsubClient,
 	}
 }
 
@@ -59,7 +63,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 	}
 
 	var responseMessage []models.Message
-	var usage *models.Usage
+
 	title := ""
 
 	if chatID != nil {
@@ -73,7 +77,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 			return nil, err
 		}
 
-		responseMessage, usage, err = generativeModel.GenerateResponse(model, temperature, messages)
+		responseMessage, err = generativeModel.GenerateResponse(model, temperature, messages)
 		if err != nil {
 			return nil, err
 		}
@@ -96,7 +100,7 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		}
 
 		newMessage = append(newMessage, systemMessage, messages[0])
-		responseMessage, usage, err = generativeModel.GenerateResponse(model, temperature, newMessage)
+		responseMessage, err = generativeModel.GenerateResponse(model, temperature, newMessage)
 		if err != nil {
 			return nil, err
 		}
@@ -115,11 +119,26 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		}
 	}
 
-	chat, err := c.chatRepository.SaveChat(title, userID, chatID, model, responseMessage, *usage)
+	chat, err := c.chatRepository.SaveChat(title, userID, chatID, model, responseMessage)
 	if err != nil {
 		return nil, err
 	}
 
+	payload := map[string]interface{}{
+		"model":    model,
+		"provider": provider,
+		"chat":     chat,
+	}
+
+	usage := models.RequestUsage{
+		UserID:  userID,
+		Type:    "generate-chat",
+		Payload: payload,
+	}
+
+	usageByteData, _ := json.Marshal(usage)
+
+	_ = c.pubsubClient.Publish("tagore.usage", usageByteData)
 	return chat, nil
 }
 
@@ -155,10 +174,10 @@ func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provi
 		}
 
 		newMessage = append(newMessage, systemMessage, messages[0])
-		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, newMessage, dataChan, errChan, c.chatRepository)
+		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, newMessage, dataChan, errChan, c.chatRepository, c.pubsubClient)
 
 	} else {
-		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, messages, dataChan, errChan, c.chatRepository)
+		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, messages, dataChan, errChan, c.chatRepository, c.pubsubClient)
 	}
 }
 

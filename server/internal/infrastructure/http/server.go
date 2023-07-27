@@ -1,10 +1,12 @@
 package http
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	application "github.com/factly/tagore/server/app"
+	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/domain/services"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/chat"
@@ -13,6 +15,7 @@ import (
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/persona"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompt_templates"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompts"
+	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/usage"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -70,12 +73,19 @@ func RunHTTPServer(app *application.App) {
 		logger.Fatal("error creating persona repository")
 	}
 
-	promptService := services.NewPromptService(promptRepository)
+	usageRepository, err := repositories.NewUsageRepository(db)
+	if err != nil {
+		logger.Fatal("error creating usage repository")
+	}
+
+	promptService := services.NewPromptService(promptRepository, app.GetPubSub())
 	documentService := services.NewDocumentService(documentRepository)
 	imageService := services.NewImageService(imageRepository)
-	chatService := services.NewChatService(chatRepository)
+	chatService := services.NewChatService(chatRepository, app.GetPubSub())
 	promptTemplateService := services.NewPromptTemplateService(promptTemplateRepository)
-	personaService := services.NewPersonaService(personaRepository)
+	personaService := services.NewPersonaService(personaRepository, app.GetPubSub())
+
+	usageService := services.NewUsageService(usageRepository)
 
 	prompts.InitRoutes(router, promptService, logger)
 	documents.InitRoutes(router, documentService, logger)
@@ -83,6 +93,37 @@ func RunHTTPServer(app *application.App) {
 	chat.InitRoutes(router, chatService, logger)
 	prompt_templates.InitRoutes(router, promptTemplateService, logger)
 	persona.InitRoutes(router, personaService, logger)
+	usage.InitRoutes(router, usageService, logger)
+
+	go func() {
+		pubsub := app.GetPubSub()
+		pubsub.Subscribe("tagore.usage", func(data []byte) {
+			usageData := models.RequestUsage{}
+			json.Unmarshal(data, &usageData)
+			switch usageData.Type {
+			case "generate-text":
+				err := usageService.SaveGenerateUsage(usageData.UserID, usageData.Payload)
+				if err != nil {
+					logger.Error("error in saving the generate-text user details", "error", err.Error())
+				}
+
+			case "generate-chat":
+				err := usageService.SaveChatUsage(usageData.UserID, usageData.Payload)
+				if err != nil {
+					logger.Error("error in saving the generate-chat user details", "error", err.Error())
+				}
+
+			case "generate-persona-chat":
+				err := usageService.SavePersonaUsage(usageData.UserID, usageData.Payload)
+				if err != nil {
+					logger.Error("error in saving the generate-persona user details", "error", err.Error())
+				}
+			default:
+				logger.Error("unknown usage type")
+			}
+
+		})
+	}()
 
 	err = http.ListenAndServe(fmt.Sprintf(":%s", cfg.Server.Port), router)
 	if err != nil {

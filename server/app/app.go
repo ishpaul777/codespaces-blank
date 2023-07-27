@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/factly/tagore/server/internal/infrastructure/db"
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/config"
 	"github.com/factly/tagore/server/pkg/logger"
 )
@@ -14,6 +15,7 @@ type App struct {
 	logger   logger.ILogger
 	config   *config.Config
 	database db.IDatabaseService
+	pubsub   pubsub.PubSub
 }
 
 func NewApp() *App {
@@ -46,4 +48,12 @@ func (a *App) GetLogger() logger.ILogger {
 
 func (a *App) SetDB(database db.IDatabaseService) {
 	a.database = database
+}
+
+func (a *App) GetPubSub() pubsub.PubSub {
+	return a.pubsub
+}
+
+func (a *App) SetPubSub(pubsub pubsub.PubSub) {
+	a.pubsub = pubsub
 }

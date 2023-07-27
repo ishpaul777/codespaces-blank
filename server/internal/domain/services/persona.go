@@ -5,6 +5,7 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/infrastructure/generative_model"
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/helper"
 )
 
@@ -24,10 +25,14 @@ type PersonaService interface {
 
 type personaService struct {
 	personaRepository repositories.PersonaRepository
+	pubsub            pubsub.PubSub
 }
 
-func NewPersonaService(personaRepository repositories.PersonaRepository) PersonaService {
-	return &personaService{personaRepository}
+func NewPersonaService(personaRepository repositories.PersonaRepository, pubsubClient pubsub.PubSub) PersonaService {
+	return &personaService{
+		personaRepository: personaRepository,
+		pubsub:            pubsubClient,
+	}
 }
 
 func (s *personaService) CreateNewPersona(userID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error) {
@@ -93,8 +98,8 @@ func (s *personaService) ChatWithPersonaStream(userID, personaID uint, personaCh
 		})
 
 		newMessages = append(newMessages, messages...)
-		generativeModel.GenerateStreamingResponseForPersona(userID, personaID, personaChatID, selectPersona.Model, newMessages, s.personaRepository, dataChan, errChan)
+		generativeModel.GenerateStreamingResponseForPersona(userID, personaID, personaChatID, selectPersona.Model, newMessages, s.personaRepository, dataChan, errChan, s.pubsub)
 	} else {
-		generativeModel.GenerateStreamingResponseForPersona(userID, personaID, personaChatID, selectPersona.Model, messages, s.personaRepository, dataChan, errChan)
+		generativeModel.GenerateStreamingResponseForPersona(userID, personaID, personaChatID, selectPersona.Model, messages, s.personaRepository, dataChan, errChan, s.pubsub)
 	}
 }

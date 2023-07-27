@@ -7,13 +7,8 @@ import (
 	"github.com/factly/tagore/server/pkg/helper"
 )
 
-func (p *PGChatsRepository) SaveChat(title string, userID uint, chatID *uint, model string, messages []models.Message, usage models.Usage) (*models.Chat, error) {
+func (p *PGChatsRepository) SaveChat(title string, userID uint, chatID *uint, model string, messages []models.Message) (*models.Chat, error) {
 	messageRaw, err := helper.ConvertToJSONB(messages)
-	if err != nil {
-		return nil, err
-	}
-
-	usageRaw, err := helper.ConvertToJSONB(usage)
 	if err != nil {
 		return nil, err
 	}
@@ -27,12 +22,10 @@ func (p *PGChatsRepository) SaveChat(title string, userID uint, chatID *uint, mo
 		chat = models.Chat{
 			Title:    title, // at 0 index there's always a system prompt so avoiding that
 			Messages: messageRaw,
-			Usage:    usageRaw,
 		}
 	} else {
 		chat = models.Chat{
 			Messages: messageRaw,
-			Usage:    usageRaw,
 		}
 	}
 	// if chatID is nil, it means that the chat is new and needs to be created

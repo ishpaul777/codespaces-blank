@@ -78,14 +78,14 @@ export default function ChatPage() {
   const modelIDToLabel = {
     "gpt-3.5-turbo": "GPT-3.5 Turbo",
     "gpt-4": "GPT-4",
-    "claude-v1.3": "Claude v1.3",
+    "claude-2": "Claude 2",
     "chat-bison@001": "Chat Bison(Google)",
   };
 
   const modelIDtoProvider = {
     "gpt-3.5-turbo": "openai",
     "gpt-4": "openai",
-    "claude-v1.3": "anthropic",
+    "claude-2": "anthropic",
     "chat-bison@001": "google",
   };
 
@@ -303,9 +303,9 @@ export default function ChatPage() {
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef();
     useEffect(() => {
-      console.log("called")
-      elementRef.current.scrollIntoView({ behavior: "instant" })
-    }, [chat])
+      console.log("called");
+      elementRef.current.scrollIntoView({ behavior: "instant" });
+    }, [chat]);
     return <div ref={elementRef} />;
   };
 
@@ -603,14 +603,16 @@ export default function ChatPage() {
 
       {/* prompt bar */}
       <aside
-        className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${promptSiderCollapse
-          ? "translate-x-0 w-0"
-          : `${isMobileScreen ? "w-full " : "w-[350px] "}`
-          } flex flex-row ease-in-out duration-300 gap-4 z-50`}
+        className={`sidebar sm-fixed sm-right-0 sm-top-0 md:static h-screen ${
+          promptSiderCollapse
+            ? "translate-x-0 w-0"
+            : `${isMobileScreen ? "w-full " : "w-[350px] "}`
+        } flex flex-row ease-in-out duration-300 gap-4 z-50`}
       >
         <div
-          className={`${darkMode ? "bg-background-sidebar-alt" : "bg-white"
-            } w-full relative shadow-md ${promptSiderCollapse || "pt-4 pl-4"}`}
+          className={`${
+            darkMode ? "bg-background-sidebar-alt" : "bg-white"
+          } w-full relative shadow-md ${promptSiderCollapse || "pt-4 pl-4"}`}
         >
           <PromptBar
             open={!promptSiderCollapse}
