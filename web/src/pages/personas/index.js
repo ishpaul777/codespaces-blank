@@ -142,6 +142,7 @@ export default function Personas() {
             "Searches for existing Fact Checks in SACH and generate content accordingly. SACH (Search Application for Claims & Hoaxes) is a web based search application that enables one to search for fact-checks published by organizations around the world using text."
           }
           id={-1}
+          isDefault={true}
         />
         {personaData.map((persona, index) => (
           <PersonaCard
