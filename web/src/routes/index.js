@@ -16,7 +16,7 @@ import FactcheckWorkflow from "../pages/workflow/factcheck";
 import { Workflow } from "../pages/workflow";
 import BlogPostWorkflow from "../pages/workflow/blog-post";
 import { PersonaSachChat } from "../pages/personas/sach";
-import Usage  from "../pages/usage";
+import Usage from "../pages/usage";
 
 export const routes = [
   {
@@ -51,10 +51,6 @@ export const routes = [
         path: "/workflows",
         element: <Workflow />,
       },
-      {
-        path: "/usage",
-        element: <Usage />,
-      }
     ],
   },
   {
@@ -65,7 +61,14 @@ export const routes = [
         path: "/profile",
         element: <Profile />,
       },
-      { path: "/history", element: <History /> },
+      {
+        path: "/history",
+        element: <History />,
+      },
+      {
+        path: "/usage",
+        element: <Usage />,
+      },
     ],
   },
   {

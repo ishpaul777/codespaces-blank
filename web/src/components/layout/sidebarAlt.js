@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Arrow from "../../assets/icons/arrow.svg";
+import ArrowDark from "../../assets/icons/arrowDark.svg";
 import Documents from "../../assets/icons/documents.svg";
+import DocumentsDark from "../../assets/icons/documents_dark.svg";
 import Home from "../../assets/icons/home.svg";
+import HomeDark from "../../assets/icons/homeDark.svg";
 import Images from "../../assets/icons/images.svg";
+import ImagesDark from "../../assets/icons/images_dark.svg";
 import Logout from "../../assets/icons/logout.svg";
+import LogoutDark from "../../assets/icons/logoutDark.svg";
 import useDarkMode from "../../hooks/useDarkMode";
-
+import Usage from "../../assets/icons/usage.svg";
+import UsageDark from "../../assets/icons/usageDark.svg";
 // import FactlyLogo from '../../assets/factly-logo.svg';
 
 export function SidebarAlt() {
@@ -29,13 +35,13 @@ export function SidebarAlt() {
   const menuOptions = [
     {
       name: "Account",
-      icon: Home,
+      icon: darkMode ? HomeDark : Home,
       linkTo: "/",
     },
     {
       name: "History",
-      icon: Documents,
-      arrow: Arrow,
+      icon: darkMode ? DocumentsDark : Documents,
+      arrow: darkMode ? ArrowDark : Arrow,
       subOptions: [
         {
           name: "Text",
@@ -50,8 +56,8 @@ export function SidebarAlt() {
     },
     {
       name: "Favorites",
-      icon: Documents,
-      arrow: Arrow,
+      icon: darkMode ? DocumentsDark : Documents,
+      arrow: darkMode ? ArrowDark : Arrow,
       subOptions: [
         {
           name: "Text",
@@ -66,21 +72,20 @@ export function SidebarAlt() {
     },
     {
       name: "Usage",
-      icon: Images,
+      icon: darkMode ? UsageDark : Usage,
       linkTo: "/usage",
     },
     {
       name: "Playground",
-      icon: Images,
+      icon: darkMode ? ImagesDark : Images,
       linkTo: "/playground",
     },
   ];
 
   return (
     <div
-      className={`flex flex-col p-5 pt-8 w-1/6 h-full ${
-        darkMode ? "bg-background-sidebar-alt" : "bg-background-sidebar"
-      } justify-between`}
+      className={`flex flex-col p-5 pt-8 w-1/6 h-full ${darkMode ? "bg-background-sidebar-alt" : "bg-background-sidebar"
+        } justify-between`}
     >
       <div>
         <div className={`flex gap-x-2 items-center justify-center w-fit`}>
@@ -99,11 +104,10 @@ export function SidebarAlt() {
               <li
                 key={index}
                 className={`flex flex-col justify-between text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
-              ${colorTab !== index && "hover:bg-button-primary"} 
-              ${
-                colorTab === index &&
-                (darkMode ? "bg-button-primary-alt" : "hover:bg-button-primary")
-              } 
+              ${colorTab !== index && "hover:bg-button-primary"}
+              ${colorTab === index &&
+                  (darkMode ? "bg-button-primary-alt" : "hover:bg-button-primary")
+                  }
               mt-2 ${darkMode && "text-white hover:bg-button-primary-alt"}`}
               >
                 <div className="flex justify-between w-[12vw] ">
@@ -115,9 +119,8 @@ export function SidebarAlt() {
                     {menu.subOptions && (
                       <img
                         onClick={() => handleArrowClick(index)}
-                        className={`-rotate-90 p-[5px] ${
-                          isSubMenuVisible(index) && "rotate-0"
-                        }`}
+                        className={`-rotate-90 p-[5px] ${isSubMenuVisible(index) && "rotate-0"
+                          }`}
                         src={menu.arrow}
                         alt="arrow"
                       />
@@ -140,7 +143,10 @@ export function SidebarAlt() {
           ))}
         </ul>
       </div>
-      <div className="flex gap-x-4 h-[7%] text-base font-normal text-black items-center justify-start p-3 cursor-pointer bg-button-primary">
+      <div
+        className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${darkMode && "bg-button-primary-alt"
+          } rounded pr-4 pl-4 pt-2 pb-2`}
+      >
         <img className="w-[18px] h-[18px]" src={Logout} alt="Logout" />
         <h3>Logout</h3>
       </div>

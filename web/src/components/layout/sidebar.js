@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ArrowLeft from "../../assets/icons/arrow-left.svg";
-import ArrowWithTail from "../../assets/icons/arrow-with-tail.svg";
 import Arrow from "../../assets/icons/arrow.svg";
 import Bookmark from "../../assets/icons/bookmark.svg";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
@@ -12,11 +10,11 @@ import Home from "../../assets/icons/home.svg";
 import History from "../../assets/icons/history.svg";
 import Images from "../../assets/icons/images.svg";
 import Logout from "../../assets/icons/logout.svg";
+import LogoutDark from "../../assets/icons/logoutDark.svg";
 import Profile from "../../assets/icons/profile.svg";
+import ProfileDark from "../../assets/icons/profileDark.svg";
 import Templates from "../../assets/icons/templates.svg";
 import TemplatesDark from "../../assets/icons/templatesDark.svg";
-import Usage from "../../assets/icons/usage.svg";
-import UsageDark from "../../assets/icons/usageDark.svg";
 import Workflow from "../../assets/icons/workflow.svg";
 import WorkFlowDark from "../../assets/icons/workflowDark.svg";
 import DocumentsDark from "../../assets/icons/documents_dark.svg";
@@ -67,11 +65,6 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       icon: darkMode ? ChatDark : Chat,
       linkTo: "/chats/dashboard",
     },
-    {
-      name: "Usage",
-      icon: darkMode ? UsageDark : Usage,
-      linkTo: "/usage",
-    }
   ];
 
   const handleLogout = () => {
@@ -85,10 +78,11 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   };
 
   const manageProfileOptions = [
-    // {
-    //   icon: Profile,
-    //   linkTo: "/profile",
-    // },
+    {
+      name: "Profile",
+      icon: darkMode ? ProfileDark : Profile,
+      linkTo: "/profile",
+    },
     // {
     //   name: "History",
     //   icon: History,
@@ -108,7 +102,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
     // },
     {
       name: "Logout",
-      icon: Logout,
+      icon: darkMode ? LogoutDark : Logout,
       linkTo: "/logout",
       onClick: handleLogout,
     },
@@ -172,7 +166,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
             {/* Sidebar menu options */}
             <ul className={`pt-6 flex-col items-center justify-center mt-10`}>
               {menuOptions.map((menu, index) => (
-                <Link to={menu.linkTo}>
+                <Link to={menu.linkTo} key={index}>
                   <li
                     key={index}
                     className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
@@ -198,8 +192,8 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                 <ul
                   className={`flex flex-col gap-2 bg-white dark:bg-background-secondary-alt p-2 rounded-lg`}
                 >
-                  {manageProfileOptions.map((option) => (
-                    <Link to={option.linkTo}>
+                  {manageProfileOptions.map((option, index) => (
+                    <Link to={option.linkTo} key={index}>
                       <li
                         className={`flex flex-row items-center gap-4 p-2 rounded hover:bg-button-primary dark:hover:bg-background-sidebar-alt cursor-pointer dark:text-white`}
                         onClick={() => {
