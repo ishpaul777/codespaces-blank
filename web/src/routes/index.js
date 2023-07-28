@@ -11,6 +11,7 @@ import Playground from "../pages/natdev/Playground";
 import Compare from "../pages/natdev/Compare";
 import Personas from "../pages/personas";
 import CreatePersona from "../pages/personas/create";
+import EditPersona from "../pages/personas/edit";
 import { PersonaChat } from "../pages/personas/chat";
 import FactcheckWorkflow from "../pages/workflow/factcheck";
 import { Workflow } from "../pages/workflow";
@@ -45,6 +46,10 @@ export const routes = [
       {
         path: "/personas/create",
         element: <CreatePersona />,
+      },
+      {
+        path: "/personas/:id/edit",
+        element: <EditPersona />,
       },
       {
         path: "/workflows",

@@ -6,10 +6,11 @@ import { Link } from "react-router-dom";
 import avtarImg from "../../assets/avatar.png";
 import Pagination from "./pagination";
 import { getPersona } from "../../actions/persona";
-import { errorToast } from "../../util/toasts";
+import { errorToast, successToast } from "../../util/toasts";
 import useWindowSize from "../../hooks/useWindowSize";
 import useDarkMode from "../../hooks/useDarkMode";
 import sachLogo from "../../assets/sach_logo.svg";
+import { deletePersonaById } from "../../actions/persona";
 
 export default function Personas() {
   const [tab, setTab] = useState("All");
@@ -48,6 +49,23 @@ export default function Personas() {
   }, [pagination.search_query]);
 
   const { isMobileScreen } = useWindowSize();
+
+  const handleDelete = (id) => {
+    if (!id || id === "") return;
+
+    deletePersonaById(id)
+      .then((response) => {
+        const newPersonaData = personaData.filter((persona) => {
+          return persona.id !== id;
+        });
+        setPersonaData(newPersonaData);
+        successToast("Persona deleted successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+        errorToast("Error deleting persona");
+      });
+  };
 
   return (
     <div className="m-10">
@@ -143,6 +161,7 @@ export default function Personas() {
           }
           id={-1}
           isDefault={true}
+          handleDelete={handleDelete}
         />
         {personaData.map((persona, index) => (
           <PersonaCard
@@ -151,6 +170,8 @@ export default function Personas() {
             name={persona?.name}
             desc={persona?.description}
             id={persona?.id}
+            handleDelete={handleDelete}
+            isDefault={persona?.is_default}
           />
         ))}
       </div>
