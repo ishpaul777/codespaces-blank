@@ -84,8 +84,9 @@ export function SidebarAlt() {
 
   return (
     <div
-      className={`flex flex-col p-5 pt-8 w-1/6 h-full ${darkMode ? "bg-background-sidebar-alt" : "bg-background-sidebar"
-        } justify-between`}
+      className={`flex flex-col p-5 pt-8 w-1/6 h-full ${
+        darkMode ? "bg-background-sidebar-alt" : "bg-background-sidebar"
+      } justify-between`}
     >
       <div>
         <div className={`flex gap-x-2 items-center justify-center w-fit`}>
@@ -105,9 +106,10 @@ export function SidebarAlt() {
                 key={index}
                 className={`flex flex-col justify-between text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
               ${colorTab !== index && "hover:bg-button-primary"}
-              ${colorTab === index &&
-                  (darkMode ? "bg-button-primary-alt" : "hover:bg-button-primary")
-                  }
+              ${
+                colorTab === index &&
+                (darkMode ? "bg-button-primary-alt" : "hover:bg-button-primary")
+              }
               mt-2 ${darkMode && "text-white hover:bg-button-primary-alt"}`}
               >
                 <div className="flex justify-between w-[12vw] ">
@@ -119,8 +121,9 @@ export function SidebarAlt() {
                     {menu.subOptions && (
                       <img
                         onClick={() => handleArrowClick(index)}
-                        className={`-rotate-90 p-[5px] ${isSubMenuVisible(index) && "rotate-0"
-                          }`}
+                        className={`-rotate-90 p-[5px] ${
+                          isSubMenuVisible(index) && "rotate-0"
+                        }`}
                         src={menu.arrow}
                         alt="arrow"
                       />
@@ -144,10 +147,15 @@ export function SidebarAlt() {
         </ul>
       </div>
       <div
-        className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${darkMode && "bg-button-primary-alt"
-          } rounded pr-4 pl-4 pt-2 pb-2`}
+        className={`mb-2 flex flex-row gap-2 items-center w-full gap-x-2.5 bg-button-primary ${
+          darkMode && "bg-button-primary-alt"
+        } rounded p-3 dark:text-white cursor-pointer`}
       >
-        <img className="w-[18px] h-[18px]" src={Logout} alt="Logout" />
+        <img
+          className="w-[18px] h-[18px]"
+          src={darkMode ? LogoutDark : Logout}
+          alt="Logout"
+        />
         <h3>Logout</h3>
       </div>
     </div>
