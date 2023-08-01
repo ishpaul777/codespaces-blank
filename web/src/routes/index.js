@@ -16,6 +16,7 @@ import FactcheckWorkflow from "../pages/workflow/factcheck";
 import { Workflow } from "../pages/workflow";
 import BlogPostWorkflow from "../pages/workflow/blog-post";
 import { PersonaSachChat } from "../pages/personas/sach";
+import Login from "../pages/auth/login";
 
 export const routes = [
   {
@@ -95,5 +96,9 @@ export const routes = [
   {
     path: "/workflows/blogpost",
     element: <BlogPostWorkflow />,
+  },
+  {
+    path: "/auth/login",
+    element: <Login />,
   },
 ];
