@@ -2,13 +2,25 @@ import React, { useState } from "react";
 import GoogleIcon from "../../assets/icons/google-icon.svg";
 import { Link } from "react-router-dom";
 
-function Login({title}) {
+function Signup({title}) {
   const [fields, setFields] = useState({
+    firstName: {
+      value: "",
+      error: "",
+    },
+    lastName: {
+      value: "",
+      error: "",
+    },
     email: {
       value: "",
       error: "",
     },
     password: {
+      value: "",
+      error: "",
+    },
+    confirmPassword: {
       value: "",
       error: "",
     },
@@ -40,6 +52,26 @@ function Login({title}) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+		// Name regex must be atleast 3 characters long and not contain any special characters or numbers
+		const nameRegex = /^[a-zA-Z]{3,}$/;
+
+		if (!nameRegex.test(fields.firstName.value)) {
+			isValid = false;
+			setFields({
+				...fields,
+				firstName: { error: "Please enter a valid first name" },
+			});
+			return isValid;
+		}
+
+		if (!nameRegex.test(fields.lastName.value)) {
+			isValid = false;
+			setFields({
+				...fields,
+				lastName: { error: "Please enter a valid last name" },
+			});
+			return isValid;
+		}
 
     if (!emailRegex.test(email)) {
       isValid = false;
@@ -55,6 +87,15 @@ function Login({title}) {
       });
       return isValid;
     }
+
+		if (fields.password.value !== fields.confirmPassword.value) {
+			isValid = false;
+			setFields({
+				...fields,
+				confirmPassword: { error: "Passwords do not match" },
+			});
+			return isValid;
+		}
     return isValid;
   };
 
@@ -65,6 +106,46 @@ function Login({title}) {
         className="bg-[#F3F5F8] w-full flex flex-col gap-4"
         onSubmit={handleSubmit}
       >
+        <div className="flex flex-col items-start gap-3 w-full justify-start">
+          <label className="text-gray-500 font-semibold" htmlFor="firstName">
+            First Name
+          </label>
+          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
+            <input
+              value={fields.firstName.value}
+              onChange={handleFieldChange}
+              className="py-3 outline-none border-none bg-transparent w-full"
+              type="text"
+              name="firstName"
+              id="firstName"
+              placeholder="John"
+            />
+          </div>
+          <span className="text-red-500 text-sm font-semibold">
+            {" "}
+            {fields.firstName.error}
+          </span>
+        </div>
+        <div className="flex flex-col items-start gap-3 w-full justify-start">
+          <label className="text-gray-500 font-semibold" htmlFor="lastName">
+            Last Name
+          </label>
+          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
+            <input
+              value={fields.lastName.value}
+              onChange={handleFieldChange}
+              className="py-3 outline-none border-none bg-transparent w-full"
+              type="text"
+              name="lastName"
+              id="lastName"
+              placeholder="Doe"
+            />
+          </div>
+          <span className="text-red-500 text-sm font-semibold">
+            {" "}
+            {fields.lastName.error}
+          </span>
+        </div>
         <div className="flex flex-col items-start gap-3 w-full justify-start">
           <label className="text-gray-500 font-semibold" htmlFor="email">
             Email
@@ -105,6 +186,29 @@ function Login({title}) {
             {fields.password.error}
           </span>
         </div>
+        <div className="flex flex-col items-start gap-3 w-full justify-start">
+          <label
+            className="text-gray-500 font-semibold"
+            htmlFor="confirmPassword"
+          >
+            Confirm Password
+          </label>
+          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
+            <input
+              value={fields.confirmPassword.value}
+              onChange={handleFieldChange}
+              className="py-3 outline-none border-none bg-transparent w-full"
+              type="text"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="********"
+            />
+          </div>
+          <span className="text-red-500 text-sm font-semibold">
+            {" "}
+            {fields.confirmPassword.error}
+          </span>
+        </div>
         <button
           type="submit"
           className="block w-full bg-[#1E1E1E] hover:bg-slate-800 py-4 rounded-lg text-white font-semibold mb-2 shadow-md"
@@ -120,10 +224,10 @@ function Login({title}) {
           <img src={GoogleIcon} alt="google icon" />
           Sign in with Google
         </button>
-        <span className="text-gray-500 text-sm text-center w-full font-semibold">
-          Don't have an account?
-          <Link to="/auth/signup" className="text-[#1E1E1E] font-semibold ml-2">
-            Sign up
+        <span className="text-gray-500 w-full text-center text-sm font-semibold">
+          Already Have an account?
+          <Link to="/auth/login" className="text-[#1E1E1E] font-semibold ml-2">
+            Sign in
           </Link>
         </span>
       </form>
@@ -131,4 +235,4 @@ function Login({title}) {
   );
 }
 
-export default Login;
+export default Signup;

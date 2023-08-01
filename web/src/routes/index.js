@@ -17,6 +17,8 @@ import { Workflow } from "../pages/workflow";
 import BlogPostWorkflow from "../pages/workflow/blog-post";
 import { PersonaSachChat } from "../pages/personas/sach";
 import Login from "../pages/auth/login";
+import AuthLayout from "../pages/auth/authlayout";
+import Signup from "../pages/auth/signup";
 
 export const routes = [
   {
@@ -98,7 +100,17 @@ export const routes = [
     element: <BlogPostWorkflow />,
   },
   {
-    path: "/auth/login",
-    element: <Login />,
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/auth/login",
+        element: <Login title="Welcome Back! Sign in" />,
+      },
+      {
+        path: "/auth/signup",
+        element: <Signup title="Welcome! Sign up" />,
+      }
+    ],
   },
 ];
