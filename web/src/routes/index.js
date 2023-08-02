@@ -3,7 +3,6 @@ import LayoutAlt from "../components/layout/layoutAlt";
 import { HomePage } from "../pages";
 import ChatPage from "../pages/chats/dashboard";
 import DocumentPage from "../pages/documents";
-import Profile from "../pages/profile-settings/profile";
 import Document from "../pages/documents/create";
 import ImagePage from "../pages/images";
 import History from "../pages/history/history";
@@ -16,6 +15,12 @@ import FactcheckWorkflow from "../pages/workflow/factcheck";
 import { Workflow } from "../pages/workflow";
 import BlogPostWorkflow from "../pages/workflow/blog-post";
 import { PersonaSachChat } from "../pages/personas/sach";
+import Usage from "../pages/usage";
+import Profile from "../pages/settings/profile";
+import SettingsOrganisation from "../pages/settings/organisation";
+import OrgMembers from "../pages/settings/organisation/members";
+import InviteMembers from "../pages/settings/organisation/inviteMembers";
+import Invitations from "../pages/settings/profile/invitations";
 import Login from "../pages/auth/login";
 import AuthLayout from "../pages/auth/authlayout";
 import Signup from "../pages/auth/signup";
@@ -60,10 +65,33 @@ export const routes = [
     element: <LayoutAlt />,
     children: [
       {
+        path: "/history",
+        element: <History />,
+      },
+      {
+        path: "/usage",
+        element: <Usage />,
+      },
+      {
         path: "/profile",
         element: <Profile />,
       },
-      { path: "/history", element: <History /> },
+      {
+        path: "/org",
+        element: <SettingsOrganisation />,
+      },
+      {
+        path: "/org/members",
+        element: <OrgMembers />,
+      },
+      {
+        path: "/org/members/invite",
+        element: <InviteMembers />,
+      },
+      {
+        path: "/profile/invitations",
+        element: <Invitations />,
+      },
     ],
   },
   {
@@ -110,7 +138,7 @@ export const routes = [
       {
         path: "/auth/signup",
         element: <Signup title="Welcome! Sign up" />,
-      }
+      },
     ],
   },
 ];

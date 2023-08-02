@@ -1,81 +1,101 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import Arrow from "../../assets/icons/arrow.svg";
-import Documents from "../../assets/icons/documents.svg";
-import Home from "../../assets/icons/home.svg";
-import Images from "../../assets/icons/images.svg";
-import Logout from "../../assets/icons/logout.svg";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useDarkMode from "../../hooks/useDarkMode";
-
-// import FactlyLogo from '../../assets/factly-logo.svg';
+import { AiOutlineBarChart } from "react-icons/ai";
+import { BiArrowBack } from "react-icons/bi";
+import { FiSettings, FiUser, FiUsers } from "react-icons/fi";
+import { getOrganisationsFromKavach } from "../../actions/organisation";
+import { useDispatch } from "react-redux";
+import { MdOutlineMailOutline } from "react-icons/md";
+import { errorToast } from "../../util/toasts";
+import { getProfile } from "../../actions/profile";
 
 export function SidebarAlt() {
-  const [colorTab, setColorTab] = useState(null);
-  const [activeTab, setActiveTab] = useState([]);
-  const { darkMode } = useDarkMode();
-  const handleArrowClick = (index) => {
-    setActiveTab((prevActiveTabs) => {
-      if (prevActiveTabs.includes(index)) {
-        return prevActiveTabs.filter((tab) => tab !== index); // Close the clicked sub-option
-      } else {
-        return [...prevActiveTabs, index]; // Open the clicked sub-option
-      }
-    });
-  };
+  const dispatch = useDispatch();
+  let navigate = useNavigate();
 
-  const isSubMenuVisible = (index) => {
-    return activeTab.includes(index);
-  };
+  const [colorTab, setColorTab] = useState(0);
+  const { darkMode } = useDarkMode();
+
+  const [selectedTab, setSelectedTab] = useState({
+    index: 0,
+    section: "Organisation",
+  });
   const menuOptions = [
     {
-      name: "Account",
-      icon: Home,
-      linkTo: "/",
-    },
-    {
-      name: "History",
-      icon: Documents,
-      arrow: Arrow,
-      subOptions: [
+      title: "Organisation",
+      options: [
         {
-          name: "Text",
+          name: "Settings",
+          icon: FiSettings,
+          linkTo: "/org",
         },
         {
-          name: "Image",
+          name: "Usage",
+          icon: AiOutlineBarChart,
+          linkTo: "/usage",
         },
         {
-          name: "Document",
-        },
-      ],
-    },
-    {
-      name: "Favorites",
-      icon: Documents,
-      arrow: Arrow,
-      subOptions: [
-        {
-          name: "Text",
-        },
-        {
-          name: "Image",
-        },
-        {
-          name: "Document",
+          name: "Members",
+          icon: FiUsers,
+          linkTo: "/org/members",
         },
       ],
     },
     {
-      name: "Usage",
-      icon: Images,
-      linkTo: "/usage",
-    },
-    {
-      name: "Playground",
-      icon: Images,
-      linkTo: "/playground",
+      title: "Profile",
+      options: [
+        {
+          name: "Profile",
+          icon: FiUser,
+          linkTo: "/profile",
+        },
+        {
+          name: "Invitations",
+          icon: MdOutlineMailOutline,
+          linkTo: "/profile/invitations",
+        },
+      ],
     },
   ];
 
+  const style = {
+    color: "#6e6e81",
+    fontSize: "1.5rem",
+    selectedColor: "#000000",
+  };
+
+  const fetchOrganisationsFromKavach = async () => {
+    const response = await getOrganisationsFromKavach();
+    dispatch({
+      type: "ADD_ORGS",
+      payload: response?.map((org) => ({
+        ...org?.organisation,
+        role: org?.permission?.role,
+      })),
+    });
+  };
+
+  useEffect(() => {
+    fetchOrganisationsFromKavach();
+  }, []);
+
+  const fetchProfile = async () => {
+    getProfile()
+      .then((res) => {
+        dispatch({
+          type: "ADD_PROFILE",
+          payload: res,
+        });
+      })
+      .catch(() => {
+        errorToast("Unable to fetch profile. Please try again later.");
+      });
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
   return (
     <div
       className={`flex flex-col p-5 pt-8 w-1/6 h-full ${
@@ -92,57 +112,78 @@ export function SidebarAlt() {
         </div>
 
         <ul
-          className={`flex flex-col pt-6 items-center justify-center mt-10 w-[100%]`}
+          className={`flex flex-col gap-4 pt-6 items-center justify-center mt-10 w-[100%]`}
         >
-          {menuOptions.map((menu, index) => (
-            <Link to={menu.linkTo}>
-              <li
-                key={index}
-                className={`flex flex-col justify-between text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
-              ${colorTab !== index && "hover:bg-button-primary"} 
-              ${
-                colorTab === index &&
-                (darkMode ? "bg-button-primary-alt" : "hover:bg-button-primary")
-              } 
-              mt-2 ${darkMode && "text-white hover:bg-button-primary-alt"}`}
-              >
-                <div className="flex justify-between w-[12vw] ">
-                  <div className="flex gap-x-4 justify-start">
-                    <img src={menu.icon} alt="menu-icon" />
-                    <h3>{menu.name}</h3>
-                  </div>
-                  <div className="flex justify-center items-center">
-                    {menu.subOptions && (
-                      <img
-                        onClick={() => handleArrowClick(index)}
-                        className={`-rotate-90 p-[5px] ${
-                          isSubMenuVisible(index) && "rotate-0"
-                        }`}
-                        src={menu.arrow}
-                        alt="arrow"
-                      />
-                    )}
-                  </div>
+          {menuOptions.map((menuOption, mIndex) => {
+            return (
+              <div className="flex flex-col gap-1" key={mIndex}>
+                <span className="text-lg font-medium">{menuOption.title}</span>
+                <div>
+                  {menuOption.options.map((menu, index) => {
+                    const isSelected =
+                      selectedTab.section === menuOption.title &&
+                      selectedTab.index === index;
+                    return (
+                      <Link to={menu.linkTo} key={index}>
+                        <li
+                          key={index}
+                          className={`flex flex-col justify-between text-base font-normal text-black items-center px-4 py-2 cursor-pointer rounded-lg
+                          ${colorTab !== index && "hover:bg-button-primary"}
+                          ${
+                            colorTab === index &&
+                            (darkMode
+                              ? "bg-button-primary-alt"
+                              : "hover:bg-button-primary")
+                          }
+                          mt-2 ${
+                            darkMode && "text-white hover:bg-button-primary-alt"
+                          }`}
+                        >
+                          <div className="flex justify-between w-[12vw] ">
+                            <div
+                              className="flex gap-x-4 justify-start items-center"
+                              onClick={() => {
+                                setSelectedTab({
+                                  index: index,
+                                  section: menuOption.title,
+                                });
+                              }}
+                            >
+                              <menu.icon
+                                size={style.fontSize}
+                                color={
+                                  isSelected ? style.selectedColor : style.color
+                                }
+                              />
+                              <h3
+                                className={`${
+                                  isSelected ? "text-black" : "text-[#6e6e81]"
+                                }`}
+                              >
+                                {menu.name}
+                              </h3>
+                            </div>
+                          </div>
+                        </li>
+                      </Link>
+                    );
+                  })}
                 </div>
-                {isSubMenuVisible(index) && menu.subOptions && (
-                  <ul className="flex flex-col items-evenly justify-evenly mt-2 h-[100px] mr-11">
-                    {menu.subOptions.map((subOption, subIndex) => (
-                      <li key={subIndex}>
-                        <div className="flex gap-x-4">
-                          <h3>{subOption.name}</h3>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            </Link>
-          ))}
+              </div>
+            );
+          })}
         </ul>
       </div>
-      <div className="flex gap-x-4 h-[7%] text-base font-normal text-black items-center justify-start p-3 cursor-pointer bg-button-primary">
-        <img className="w-[18px] h-[18px]" src={Logout} alt="Logout" />
-        <h3>Logout</h3>
+      <div
+        className={`mb-2 flex flex-row gap-2 items-center justify-center w-full gap-x-2.5 ${
+          darkMode && "bg-button-primary-alt"
+        } rounded p-3 dark:text-white cursor-pointer`}
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        <BiArrowBack size={"16px"} />
+        <span className="text-base">Go back</span>
       </div>
     </div>
   );

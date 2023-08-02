@@ -19,15 +19,17 @@ export function SearchableInput({
   const [showList, setShowList] = useState(false);
 
   return (
-    <div className="flex flex-col gap-2 dark:text-white">
-      <label
-        className={`
+    <div className="flex flex-col gap-2 dark:text-white z-50">
+      {label && (
+        <label
+          className={`
           ${labelSize || "text-sm"}
           ${labelFontWeight || "font-normal"}
           `}
-      >
-        {label}
-      </label>
+        >
+          {label}
+        </label>
+      )}
       <div className="w-full flex flex-col">
         <input
           name={name}

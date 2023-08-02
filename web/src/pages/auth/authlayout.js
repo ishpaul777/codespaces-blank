@@ -2,7 +2,6 @@ import React from "react";
 import Factly from "../../assets/FactlyLogotext.svg";
 import { Outlet } from "react-router-dom";
 
-
 function AuthLayout({ title }) {
   return (
     <div className="h-screen md:flex-row flex flex-col bg-[#f3f5f8]">
@@ -12,8 +11,7 @@ function AuthLayout({ title }) {
         </div>
       </div>
       <div className="flex flex-col gap-10 md:w-1/2 justify-center py-10 px-16 md:px-36 items-center bg-[#F3F5F8]">
-       
-				<Outlet />
+        <Outlet />
       </div>
     </div>
   );

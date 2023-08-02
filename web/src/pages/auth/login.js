@@ -3,7 +3,7 @@ import GoogleIcon from "../../assets/icons/google-icon.svg";
 import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
-function Login({title}) {
+function Login({ title }) {
   const [fields, setFields] = useState({
     email: {
       value: "",

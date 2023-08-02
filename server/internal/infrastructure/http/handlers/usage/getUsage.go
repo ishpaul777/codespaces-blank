@@ -23,6 +23,7 @@ func (h *httpHandler) getUsage(w http.ResponseWriter, r *http.Request) {
 	filters.Type = r.URL.Query().Get("type")
 	filters.Model = r.URL.Query().Get("model")
 	filters.Provider = r.URL.Query().Get("provider")
+	filters.UsageType = models.StatisticType(r.URL.Query().Get("usage_type"))
 
 	usage, err := h.usageService.GetUsageByUserID(uID, *filters)
 	if err != nil {

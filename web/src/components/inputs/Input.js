@@ -10,18 +10,21 @@ export function Input({
   labelSize,
   labelFontWeight,
   required = false,
+  showLabel = true,
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label
-        className={` text-black-50 dark:text-white
+      {showLabel && (
+        <label
+          className={` text-black-50 dark:text-white
           ${labelSize || "text-sm"}
           ${labelFontWeight || "font-normal"}
           `}
-      >
-        {label}
-        {required && <span className="text-red-500">*</span>}
-      </label>
+        >
+          {label}
+          {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
       {type === "input" ? (
         <input
           name={name}
