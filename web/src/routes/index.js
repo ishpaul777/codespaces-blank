@@ -21,6 +21,9 @@ import SettingsOrganisation from "../pages/settings/organisation";
 import OrgMembers from "../pages/settings/organisation/members";
 import InviteMembers from "../pages/settings/organisation/inviteMembers";
 import Invitations from "../pages/settings/profile/invitations";
+import Login from "../pages/auth/login";
+import AuthLayout from "../pages/auth/authlayout";
+import Signup from "../pages/auth/signup";
 
 export const routes = [
   {
@@ -123,5 +126,19 @@ export const routes = [
   {
     path: "/workflows/blogpost",
     element: <BlogPostWorkflow />,
+  },
+  {
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/auth/login",
+        element: <Login title="Welcome Back! Sign in" />,
+      },
+      {
+        path: "/auth/signup",
+        element: <Signup title="Welcome! Sign up" />,
+      },
+    ],
   },
 ];

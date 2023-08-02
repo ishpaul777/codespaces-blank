@@ -98,7 +98,7 @@ export function SelectTemperature({
   value,
 }) {
   const active =
-    value < 0.5 ? "Precise" : value == 0.5 ? "Neutral" : "Creative";
+    value < 0.5 ? "Precise" : value === 0.5 ? "Neutral" : "Creative";
 
   const getButtonClassName = (buttonValue) => {
     return `py-3 rounded-md w-1/3 ${
@@ -149,7 +149,7 @@ export function SelectTemperature({
   );
 }
 
-export function SelectInput({
+export default function SelectInput({
   label,
   onChange,
   value,
