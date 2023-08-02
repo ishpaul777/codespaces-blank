@@ -303,7 +303,6 @@ export default function ChatPage() {
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef();
     useEffect(() => {
-      console.log("called");
       elementRef.current.scrollIntoView({ behavior: "instant" });
     }, [chat]);
     return <div ref={elementRef} />;
