@@ -138,7 +138,7 @@ export const routes = [
       {
         path: "/auth/signup",
         element: <Signup title="Welcome! Sign up" />,
-      }
+      },
     ],
   },
 ];

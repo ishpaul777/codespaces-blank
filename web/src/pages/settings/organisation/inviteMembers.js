@@ -3,12 +3,12 @@ import Wrapper from "../../../components/layout/wrapper";
 import { Link } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import { Input } from "../../../components/inputs/Input";
-import { SelectInput } from "../../../components/inputs/select";
 import { useState } from "react";
 import { isEmail } from "../../../util/validateRegex";
 import { sendInvites } from "../../../actions/organisation";
 import { useSelector } from "react-redux";
 import { errorToast, successToast } from "../../../util/toasts";
+import SelectInput from "../../../components/inputs/select";
 
 function InviteMembers() {
   const iconStyling = {
@@ -231,6 +231,33 @@ function InviteMembers() {
                       setForm(temp);
                     }}
                   />
+                  {/* <SelectInput
+                    value={formItem.role.value}
+                    error={formItem.role.error}
+                    placeholder={"Select role"}
+                    listOptions={[
+                      {
+                        value: "admin",
+                        label: "Admin",
+                      },
+                      {
+                        value: "member",
+                        label: "Member",
+                      },
+                    ]}
+                    index={index}
+                    onChange={(value) => {
+                      let temp = [...form];
+                      if (value) {
+                        temp[index].role.value = value;
+                        temp[index].role.error = "";
+                      } else {
+                        temp[index].role.value = "";
+                        temp[index].role.error = "Role is required";
+                      }
+                      setForm(temp);
+                    }}
+                  /> */}
                   {/* <Input
                     showLabel={false}
                     placeholder={"Enter role"}

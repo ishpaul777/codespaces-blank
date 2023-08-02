@@ -90,9 +90,7 @@ function OrgMembers() {
                             <button
                               className={`p-2 rounded-md bg-border-secondary hover:bg-red-500 hover:text-white`}
                             >
-                              {
-                                user["id"] === profile?.id ? "Leave" : "Remove"
-                              }
+                              {user["id"] === profile?.id ? "Leave" : "Remove"}
                             </button>
                           </td>
                         ) : (

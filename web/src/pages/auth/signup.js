@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import GoogleIcon from "../../assets/icons/google-icon.svg";
 import { Link } from "react-router-dom";
 
-function Signup({title}) {
+function Signup({ title }) {
   const [fields, setFields] = useState({
     firstName: {
       value: "",
@@ -52,26 +52,26 @@ function Signup({title}) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-		// Name regex must be atleast 3 characters long and not contain any special characters or numbers
-		const nameRegex = /^[a-zA-Z]{3,}$/;
+    // Name regex must be atleast 3 characters long and not contain any special characters or numbers
+    const nameRegex = /^[a-zA-Z]{3,}$/;
 
-		if (!nameRegex.test(fields.firstName.value)) {
-			isValid = false;
-			setFields({
-				...fields,
-				firstName: { error: "Please enter a valid first name" },
-			});
-			return isValid;
-		}
+    if (!nameRegex.test(fields.firstName.value)) {
+      isValid = false;
+      setFields({
+        ...fields,
+        firstName: { error: "Please enter a valid first name" },
+      });
+      return isValid;
+    }
 
-		if (!nameRegex.test(fields.lastName.value)) {
-			isValid = false;
-			setFields({
-				...fields,
-				lastName: { error: "Please enter a valid last name" },
-			});
-			return isValid;
-		}
+    if (!nameRegex.test(fields.lastName.value)) {
+      isValid = false;
+      setFields({
+        ...fields,
+        lastName: { error: "Please enter a valid last name" },
+      });
+      return isValid;
+    }
 
     if (!emailRegex.test(email)) {
       isValid = false;
@@ -88,14 +88,14 @@ function Signup({title}) {
       return isValid;
     }
 
-		if (fields.password.value !== fields.confirmPassword.value) {
-			isValid = false;
-			setFields({
-				...fields,
-				confirmPassword: { error: "Passwords do not match" },
-			});
-			return isValid;
-		}
+    if (fields.password.value !== fields.confirmPassword.value) {
+      isValid = false;
+      setFields({
+        ...fields,
+        confirmPassword: { error: "Passwords do not match" },
+      });
+      return isValid;
+    }
     return isValid;
   };
 

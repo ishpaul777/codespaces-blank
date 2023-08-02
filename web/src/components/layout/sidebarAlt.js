@@ -80,7 +80,6 @@ export function SidebarAlt() {
     fetchOrganisationsFromKavach();
   }, []);
 
-
   const fetchProfile = async () => {
     getProfile()
       .then((res) => {

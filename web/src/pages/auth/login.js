@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import GoogleIcon from "../../assets/icons/google-icon.svg";
 import { Link } from "react-router-dom";
 
-function Login({title}) {
+function Login({ title }) {
   const [fields, setFields] = useState({
     email: {
       value: "",

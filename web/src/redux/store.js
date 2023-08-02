@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
   promptCollections: promptCollectionsReducer,
   darkMode: darkModeReducer,
   organisations: orgReducer,
-  profile: profileReducer
+  profile: profileReducer,
 });
 
 // Create store with promptsReducer and middleware using configureStore
