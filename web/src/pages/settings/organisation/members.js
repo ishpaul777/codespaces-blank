@@ -31,7 +31,7 @@ function OrgMembers() {
     headerPadding: "p-4",
   };
 
-  const { users } = useSelector(({ organisations }) => {
+  const { users, profile } = useSelector(({ organisations, profile }) => {
     let selectedOrg = organisations?.details?.find(
       (org) => org?.id === organisations?.selectedOrg
     );
@@ -41,7 +41,9 @@ function OrgMembers() {
         name: user?.user?.first_name + " " + user?.user?.last_name,
         email: user?.user?.email,
         role: user?.role,
+        id: user?.user?.id,
       })),
+      profile: profile?.details,
     };
   });
 
@@ -88,7 +90,9 @@ function OrgMembers() {
                             <button
                               className={`p-2 rounded-md bg-border-secondary hover:bg-red-500 hover:text-white`}
                             >
-                              Remove
+                              {
+                                user["id"] === profile?.id ? "Leave" : "Remove"
+                              }
                             </button>
                           </td>
                         ) : (

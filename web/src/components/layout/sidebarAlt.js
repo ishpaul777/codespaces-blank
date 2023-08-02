@@ -7,6 +7,8 @@ import { FiSettings, FiUser, FiUsers } from "react-icons/fi";
 import { getOrganisationsFromKavach } from "../../actions/organisation";
 import { useDispatch } from "react-redux";
 import { MdOutlineMailOutline } from "react-icons/md";
+import { errorToast } from "../../util/toasts";
+import { getProfile } from "../../actions/profile";
 
 export function SidebarAlt() {
   const dispatch = useDispatch();
@@ -78,6 +80,23 @@ export function SidebarAlt() {
     fetchOrganisationsFromKavach();
   }, []);
 
+
+  const fetchProfile = async () => {
+    getProfile()
+      .then((res) => {
+        dispatch({
+          type: "ADD_PROFILE",
+          payload: res,
+        });
+      })
+      .catch(() => {
+        errorToast("Unable to fetch profile. Please try again later.");
+      });
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
   return (
     <div
       className={`flex flex-col p-5 pt-8 w-1/6 h-full ${
