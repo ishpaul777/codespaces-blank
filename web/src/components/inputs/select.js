@@ -1,6 +1,7 @@
 import "../../index.css";
 import { BiChevronDown } from "react-icons/bi";
 import React, { useState } from "react";
+import { RxCross2 } from "react-icons/rx";
 
 export function Select({
   label,
@@ -81,38 +82,6 @@ export function Select({
             >
               Claude 2
             </button>
-            {/* <button
-              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
-              }`}
-              onClick={() => handleOptionClick("claude-v1.3")}
-            >
-              Claude-v1.3
-            </button>
-            <button
-              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
-              }`}
-              onClick={() => handleOptionClick("claude-v1.2")}
-            >
-              Claude-v1.2
-            </button>
-            <button
-              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
-              }`}
-              onClick={() => handleOptionClick("claude-v1.3-100k")}
-            >
-              Claude-v1.3-100k
-            </button>
-            <button
-              className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
-                selectedValue.toUpperCase() === "GPT-4" ? "bg-gray-200" : ""
-              }`}
-              onClick={() => handleOptionClick("claude-instant-v1")}
-            >
-              Claude-instant-v1
-            </button> */}
           </div>
         )}
       </div>
@@ -176,6 +145,77 @@ export function SelectTemperature({
         <span>0.5</span>
         <span>1</span>
       </div>
+    </div>
+  );
+}
+
+export function SelectInput({
+  label,
+  onChange,
+  value,
+  placeholder,
+  labelSize,
+  labelFontWeight,
+  listOptions = [],
+  error,
+  index,
+}) {
+  const [showList, setShowList] = useState(false);
+  return (
+    <div className="flex flex-col gap-2">
+      {label && (
+        <label
+          className={`
+          ${labelSize || "text-sm"}
+          ${labelFontWeight || "font-normal"}
+          `}
+        >
+          {label}
+        </label>
+      )}
+      <div className="w-full flex flex-col">
+        <div
+          className={`p-2 bg-transparent outline-none dark:bg-background-sidebar-alt dark:text-white dark:border-[#3b3b3b] border border-[#D0D5DD] rounded-md flex items-center justify-between cursor-pointer z-0`}
+          onClick={() => setShowList((prev) => !prev)}
+        >
+          <span className={`${!value && "text-gray-400"}`}>
+            {value ? value : placeholder}
+          </span>
+          <div className="flex gap-2">
+            {value && (
+              <RxCross2
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(null);
+                }}
+              ></RxCross2>
+            )}
+            <BiChevronDown />
+          </div>
+        </div>
+        {showList && listOptions.length && (
+          <div className={`relative w-full z-${50 - index}`}>
+            <ul
+              className={`absolute w-full bg-white border border-[#D0D5DD] p-2 rounded-lg flex flex-col text-[#1D1D1D] text-opacity-60 cursor-pointer`}
+            >
+              {listOptions.map((option) => {
+                return (
+                  <li
+                    className="hover:bg-[#F4F4F6] p-2 rounded-md"
+                    onClick={() => {
+                      onChange(option?.value);
+                      setShowList(false);
+                    }}
+                  >
+                    {option?.label}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </div>
+      {error && <span className="text-red-500 text-xs">{error}</span>}
     </div>
   );
 }

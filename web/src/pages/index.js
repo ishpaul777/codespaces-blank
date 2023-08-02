@@ -11,8 +11,8 @@ import scriptwriter from "../assets/scriptwriter.png";
 import CustomPersona from "../assets/CustomPersona.png";
 
 import useDarkMode from "../hooks/useDarkMode";
+
 export function HomePage() {
-  const iconColor = "#AC94FA";
   const darkMode = useDarkMode();
   const [defaultPersonas, setDefaultPersonas] = useState([]);
   const menuOptions = [

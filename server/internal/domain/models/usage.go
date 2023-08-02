@@ -25,11 +25,19 @@ type RequestUsage struct {
 	Payload interface{} `json:"payload"`
 }
 
+type StatisticType string
+
+const (
+	StatisticTypeDaily   StatisticType = "daily"
+	StatisticTypeMonthly StatisticType = "cumulative"
+)
+
 type GetUsageFilters struct {
-	TargetMonth string `json:"target_month"`
-	Type        string `json:"type"`
-	Model       string `json:"model"`
-	Provider    string `json:"provider"`
+	TargetMonth string        `json:"target_month"`
+	Type        string        `json:"type"`
+	Model       string        `json:"model"`
+	Provider    string        `json:"provider"`
+	UsageType   StatisticType `json:"usage_type"`
 }
 
 type GetUsageResponse struct {

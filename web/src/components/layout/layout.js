@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "./sidebar";
-import { SidebarAlt } from "./sidebarAlt";
+
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";

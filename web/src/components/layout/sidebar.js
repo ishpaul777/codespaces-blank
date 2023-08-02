@@ -1,32 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Arrow from "../../assets/icons/arrow.svg";
-import Bookmark from "../../assets/icons/bookmark.svg";
-import { AiOutlineMenuUnfold } from "react-icons/ai";
-import Chat from "../../assets/icons/chat.svg";
-import ChatDark from "../../assets/icons/chatDark.svg";
-import Documents from "../../assets/icons/documents.svg";
-import Home from "../../assets/icons/home.svg";
-import History from "../../assets/icons/history.svg";
-import Images from "../../assets/icons/images.svg";
-import Logout from "../../assets/icons/logout.svg";
-import LogoutDark from "../../assets/icons/logoutDark.svg";
-import Profile from "../../assets/icons/profile.svg";
-import ProfileDark from "../../assets/icons/profileDark.svg";
-import Templates from "../../assets/icons/templates.svg";
-import TemplatesDark from "../../assets/icons/templatesDark.svg";
-import Workflow from "../../assets/icons/workflow.svg";
-import WorkFlowDark from "../../assets/icons/workflowDark.svg";
-import DocumentsDark from "../../assets/icons/documents_dark.svg";
-import ImagesDark from "../../assets/icons/images_dark.svg";
-import DashboardDark from "../../assets/icons/dashboard_dark.svg";
+import { AiOutlineMenuUnfold, AiOutlineRobot } from "react-icons/ai";
 import { logout } from "../../actions/kratos";
 import { errorToast } from "../../util/toasts";
 import useDarkMode from "../../hooks/useDarkMode";
 import useWindowSize from "../../hooks/useWindowSize";
-import DarkMode from "../buttons/DarkMode";
-
-// import FactlyLogo from '../../assets/factly-logo.svg';
+import { MdOutlineSpaceDashboard } from "react-icons/md";
+import { HiOutlineDocumentDuplicate } from "react-icons/hi";
+import { IoImagesOutline } from "react-icons/io5";
+import { TiFlowMerge } from "react-icons/ti";
+import { BsChatLeftText } from "react-icons/bs";
+import { BiLogOutCircle } from "react-icons/bi";
+import { FiSettings } from "react-icons/fi";
 
 export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   const [openMenu, setOpenMenu] = useState(false);
@@ -37,32 +23,32 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   const menuOptions = [
     {
       name: "Dashboard",
-      icon: darkMode ? DashboardDark : Home,
+      icon: MdOutlineSpaceDashboard,
       linkTo: "/",
     },
     {
       name: "Documents",
-      icon: darkMode ? DocumentsDark : Documents,
+      icon: HiOutlineDocumentDuplicate,
       linkTo: "/documents",
     },
     {
       name: "Images",
-      icon: darkMode ? ImagesDark : Images,
+      icon: IoImagesOutline,
       linkTo: "/images",
     },
     {
       name: "Personas",
-      icon: darkMode ? TemplatesDark : Templates,
+      icon: AiOutlineRobot,
       linkTo: "/personas",
     },
     {
       name: "Workflows",
-      icon: darkMode ? WorkFlowDark : Workflow,
+      icon: TiFlowMerge,
       linkTo: "/workflows",
     },
     {
       name: "Chat",
-      icon: darkMode ? ChatDark : Chat,
+      icon: BsChatLeftText,
       linkTo: "/chats/dashboard",
     },
   ];
@@ -79,31 +65,14 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
 
   const manageProfileOptions = [
     {
-      name: "Profile",
-      icon: darkMode ? ProfileDark : Profile,
-      linkTo: "/profile",
+      name: "Settings",
+      icon: FiSettings,
+      linkTo: "/org",
     },
-    // {
-    //   name: "History",
-    //   icon: History,
-    //   linkTo: "/history",
-    //   arrow: ArrowLeft,
-    // },
-    // {
-    //   name: "Favorites",
-    //   icon: Bookmark,
-    //   linkTo: "/favorites",
-    //   arrow: ArrowLeft,
-    // },
-    // {
-    //   name: "Usage",
-    //   icon: Usage,
-    //   linkTo: "/usage",
-    // },
     {
       name: "Logout",
-      icon: darkMode ? LogoutDark : Logout,
-      linkTo: "/logout",
+      icon: BiLogOutCircle,
+      linkTo: "/",
       onClick: handleLogout,
     },
   ];
@@ -138,6 +107,16 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       setActiveTab(0);
     }
   }, []);
+
+  const styles = {
+    icons: {
+      color: "#000000",
+      fontSize: "1.5rem",
+    },
+    manageicons: {
+      fontSize: "1rem",
+    },
+  };
 
   return (
     <div
@@ -179,7 +158,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                     onClick={() => setActiveTab(index)}
                   >
                     <div className="flex gap-x-4">
-                      <img src={menu.icon} alt="menu-icon" />
+                      <menu.icon
+                        size={styles.icons.fontSize}
+                        color={styles.icons.color}
+                      />
                       <h3>{menu.name}</h3>
                     </div>
                   </li>
@@ -202,14 +184,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
                           }
                         }}
                       >
-                        {option.name === "View Profile" ? (
-                          <div className="bg-red-400 rounded-full text-white text-center  h-6 w-6 ">
-                            {" "}
-                            F{" "}
-                          </div>
-                        ) : (
-                          <img src={option.icon} />
-                        )}
+                        <option.icon
+                          size={styles.manageicons.fontSize}
+                          color={styles.icons.color}
+                        />
                         <h3 className="text-base"> {option.name} </h3>
                       </li>
                     </Link>
@@ -250,151 +228,3 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
     </div>
   );
 }
-// export function Sidebar({ children }) {
-
-//   const [openMenu, setOpenMenu] = useState(false);
-
-//   const menuOptions = [
-//     {
-//       name: "Dashboard",
-//       icon: "home",
-//       linkTo: "/",
-//     },
-//     {
-//       name: "Documents",
-//       icon: "documents",
-//       linkTo: "/documents",
-//     },
-//     {
-//       name: "Images",
-//       icon: "images",
-//       linkTo: "/images",
-//     },
-//     {
-//       name: "Templates",
-//       icon: "templates",
-//       linkTo: "/templates",
-//     },
-//     {
-//       name: "Chat",
-//       icon: "chat",
-//       linkTo: "/chats",
-//     },
-//   ];
-
-//   const manageProfileOptions = [
-//     {
-//       name: "View Profile",
-//       icon: "profile",
-//       linkTo: "/profile",
-//     },
-//     {
-//       name: "History",
-//       icon: "history",
-//       linkTo: "/history",
-//     },
-//     {
-//       name: "Favorites",
-//       icon: "bookmark",
-//       linkTo: "/favorites",
-//     },
-//     {
-//       name: "Usage",
-//       icon: "usage",
-//       linkTo: "/usage",
-//     },
-//     {
-//       name: "Logout",
-//       icon: "logout",
-//       linkTo: "/logout",
-//     },
-//   ];
-
-//   const handleSidebarClick = (index) => {
-//     sidebarData.setActiveTabSetter(index);
-//   };
-
-//   if (!sidebarData.visible) return null;
-
-//   return (
-//     <div
-//       className={`p-5 pt-8 w-1/6 bg-background-sidebar h-screen flex flex-col`}
-//     >
-//       <div
-//         className={`flex gap-x-2 items-center justify-center ${
-//           open ? "ml-2" : null
-//         }`}
-//       >
-//         {open ? (
-//           <img
-//             src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
-//             className="cursor-pointer w-3/4"
-//           />
-//         ) : (
-//           <img src="/factly-logo.png" className="object-cover cursor-pointer" />
-//         )}
-//       </div>
-//       {/* Sidebar menu options */}
-//       <ul className={`pt-6 flex-col items-center justify-center mt-10`}>
-//         {menuOptions.map((menu, index) => (
-//           <Link to={menu.linkTo}>
-//             <li
-//               key={index}
-//               className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
-//                 ${
-//                   sidebarData?.activeTab !== index && "hover:bg-button-primary"
-//                 }
-//                 ${sidebarData?.activeTab === index && "bg-button-primary"}
-//                 mt-2`}
-//               onClick={() => handleSidebarClick(index)}
-//             >
-//               <div className="flex gap-x-4">
-//                 <img src={`/icons/${menu.icon}.svg`} />
-//                 {open ? <h3>{menu.name}</h3> : null}
-//               </div>
-//             </li>
-//           </Link>
-//         ))}
-//       </ul>
-//       {/* Menu list when they click on the manage profile button */}
-//       <div className="flex flex-col mt-auto gap-2">
-//         {openMenu && (
-//           <ul className={`flex flex-col gap-2 bg-white p-2 rounded-lg`}>
-//             {manageProfileOptions.map((option) => (
-//               <Link to={option.linkTo}>
-//                 <li
-//                   className={`flex flex-row items-center gap-4 p-2 ${
-//                     option.name !== "Logout"
-//                       ? "hover:bg-button-primary"
-//                       : "hover:bg-red-600 hover:text-white border-t"
-//                   } cursor-pointer`}
-//                 >
-//                   {option.name === "View Profile" ? (
-//                     <div className="bg-red-400 rounded-full text-white text-center  h-6 w-6 ">
-//                       {" "}
-//                       F{" "}
-//                     </div>
-//                   ) : (
-//                     <img src={`/icons/${option.icon}.svg`} />
-//                   )}
-//                   <h3 className="text-base"> {option.name} </h3>
-//                 </li>
-//               </Link>
-//             ))}
-//           </ul>
-//         )}
-//         {/* manage profile button */}
-//         <button
-//           className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary rounded pr-4 pl-4 pt-2 pb-2`}
-//           onClick={() => setOpenMenu((prevState) => !prevState)}
-//         >
-//           <div className="flex flex-row gap-4 items-center">
-//             <div className="bg-red-400 p-2 rounded-full text-white"> FM </div>
-//             <span>{getOrgName("Factly Media and Research")}</span>
-//           </div>
-//           <img src={"/icons/arrow.svg"} />
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }

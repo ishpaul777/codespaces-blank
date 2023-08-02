@@ -231,8 +231,6 @@ function PromptBar({ open, isFolderVisible, setPromptSiderCollapse }) {
     const prompt = collection?.prompt_templates?.find(
       (prompt) => prompt.id === draggingPromptId
     );
-    // console.log("dragOverCollectionId", collection);
-    // console.log("draggingPromptId", draggingPromptId);
 
     if (!prompt) {
       dispatch(

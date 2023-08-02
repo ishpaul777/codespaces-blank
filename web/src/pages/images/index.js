@@ -27,7 +27,7 @@ export default function ImagePage() {
     prompt: "",
     n: 4,
     provider: "stableDiffusion",
-    model: "stable-diffusion-xl-1024-v1-0"
+    model: "stable-diffusion-xl-1024-v1-0",
   });
 
   const handleRangeChange = (event) => {
