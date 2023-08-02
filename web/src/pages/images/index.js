@@ -27,6 +27,7 @@ export default function ImagePage() {
     prompt: "",
     n: 4,
     provider: "stableDiffusion",
+    model: "stable-diffusion-xl-1024-v1-0"
   });
 
   const handleRangeChange = (event) => {
@@ -95,7 +96,7 @@ export default function ImagePage() {
     generateVariationsOfImage(
       e.target.files[0],
       imageRequest.n,
-      "stable-diffusion-v1-5",
+      "stable-diffusion-xl-1024-v1-0",
       "stableDiffusion"
     )
       .then((response) => {

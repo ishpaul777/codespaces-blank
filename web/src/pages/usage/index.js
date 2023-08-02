@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import Search from "../../components/search";
 import chevronLeft from "../../assets/icons/chevron-left.svg";
 import chevronRight from "../../assets/icons/chevron-right.svg";
-import { fakeData } from "./data";
-import UsageChart from "./UsageChart";
+import { fakeData } from './data';
+import UsageChart from './UsageChart';
+import useWindowSize from '../../hooks/useWindowSize';
+
 
 function MonthSelector({ selectedMonth, onPrevious, onNext }) {
   return (
@@ -20,22 +22,16 @@ function MonthSelector({ selectedMonth, onPrevious, onNext }) {
     </div>
   );
 }
+
 function Usage() {
-  const currentMonth = new Date().toLocaleString("default", { month: "long" });
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+	// isMobileScreen is true if the screen width is less than 640px
+	const { isMobileScreen} = useWindowSize();
+
+	const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+	const months = [
+		"January", "February", "March", "April", "May", "June",
+		"July", "August", "September", "October", "November", "December"
+	];
 
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const selectedMonthData = fakeData.find(
@@ -87,37 +83,56 @@ function Usage() {
     headerPadding: "p-4",
   };
 
-  return (
-    <div className="m-10">
-      {/* This is Page header */}
-      <div className="flex flex-row justify-between items-center mt-24 mb-10 md:mt-0 gap-2">
-        <h2 className="text-2xl font-medium dark:text-white text-black">
-          Usage
-        </h2>
-        <div className="flex flex-row items-center gap-2">
-          {/* current date text color should be #6c6c6c in light and text-gray-100 in dark */}
-          <span className="text-gray-600 dark:text-gray-100">
-            {new Date().toLocaleDateString(undefined, {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-          {/* button bg-black text-white in light and opposite in dark */}
-          <button className="px-4 py-2 rounded-md bg-black text-white dark:bg-white dark:text-black">
-            Button
-          </button>
-        </div>
-      </div>
 
-      <div className="flex justify-center mt-4">
-        <MonthSelector
-          selectedMonth={selectedMonth}
-          onPrevious={handlePreviousMonth}
-          onNext={handleNextMonth}
-        />
-      </div>
-      <UsageChart selectedMonthData={selectedMonthData} />
+	const pageData = {
+		heading: "Usage",
+		description: "This insightful graph presents a comprehensive breakdown of the number of words you have generated across various interactions on our application. The data includes words used in personal activities, chatbot conversations, and interactions with personas.",
+	}
+
+	return (
+		<div className={`my-16 ${isMobileScreen ? "mx-6 my-24" : "mx-10"} flex flex-col gap-6`}>
+			<h2 className={`text-3xl font-medium dark:text-white mb-4`}>
+				{pageData.heading}
+      </h2>
+			<span className='text-base'>
+				{pageData.description}
+			</span>
+			<div className='graph-container'>
+				{/* filter division - it consists of all the filters involved in showing usage
+					- month selector
+					- model selector
+					- provider selector
+					- graph type - ('Daily', 'Cumulative')
+				*/}
+				<div className='flex items-center'>
+
+				</div>
+			</div>
+		</div>
+		// <div className="m-10">
+		// 	{/* This is Page header */}
+		// 	<div className="flex flex-row justify-between items-center mt-24 mb-10 md:mt-0 gap-2">
+		// 		<h2 className="text-2xl font-medium dark:text-white text-black">Usage</h2>
+		// 		<div className="flex flex-row items-center gap-2">
+		// 			{/* current date text color should be #6c6c6c in light and text-gray-100 in dark */}
+		// 			<span className="text-gray-600 dark:text-gray-100">
+		// 				{new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}
+		// 			</span>
+		// 			{/* button bg-black text-white in light and opposite in dark */}
+		// 			<button className="px-4 py-2 rounded-md bg-black text-white dark:bg-white dark:text-black">
+		// 				Button
+		// 			</button>
+		// 		</div>
+		// 	</div>
+
+		// 	<div className="flex justify-center mt-4">
+		// 		<MonthSelector
+		// 			selectedMonth={selectedMonth}
+		// 			onPrevious={handlePreviousMonth}
+		// 			onNext={handleNextMonth}
+		// 		/>
+		// 	</div>
+		// 	<UsageChart selectedMonthData={selectedMonthData} />
 
       {/* Display your bar chart with data for the selected month here */}
       <div className="flex flex-col md:flex-row mt-4  items-center justify-between gap-4">
