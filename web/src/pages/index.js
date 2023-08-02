@@ -11,8 +11,8 @@ import scriptwriter from "../assets/scriptwriter.png";
 import CustomPersona from "../assets/CustomPersona.png";
 
 import useDarkMode from "../hooks/useDarkMode";
+
 export function HomePage() {
-  const iconColor = "#AC94FA";
   const darkMode = useDarkMode();
   const [defaultPersonas, setDefaultPersonas] = useState([]);
   const menuOptions = [
@@ -105,8 +105,9 @@ export function HomePage() {
         </h2>
       </div>
       <div className="w-full grid grid-cols-1 lg:mt-12 mt-8 gap-4 sm:grid-cols-2">
-        {menuOptions.map((option) => (
+        {menuOptions.map((option, index) => (
           <Link
+            key={option.title + "_" + index}
             to={option.link}
             className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 transition-all focus:ring-gray-400 focus:shadow-xl duration-150 rounded-lg shadow-sm hover:shadow-lg relative hover:ring-gray-300 hover:ring-2 ring-1 ring-gray-200  bg-white dark:bg-background-sidebar-alt dark:text-white dark:ring-background-secondary-alt"
           >
