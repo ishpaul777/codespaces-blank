@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import GoogleIcon from "../../assets/icons/google-icon.svg";
 import { Link } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 function Login({title}) {
   const [fields, setFields] = useState({
@@ -13,6 +14,9 @@ function Login({title}) {
       error: "",
     },
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleFieldChange = (e) => {
     setFields({
@@ -94,11 +98,22 @@ function Login({title}) {
               value={fields.password.value}
               onChange={handleFieldChange}
               className="py-3 outline-none border-none bg-transparent w-full"
-              type="text"
+              type={showPassword ? "text" : "password"}
               name="password"
               id="password"
               placeholder="********"
             />
+            <button
+              type="button"
+              className="focus:outline-none"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
+              ) : (
+                <AiOutlineEye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
           </div>
           <span className="text-red-500 text-sm font-semibold">
             {" "}

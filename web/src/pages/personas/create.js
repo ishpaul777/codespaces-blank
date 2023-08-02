@@ -53,7 +53,7 @@ export default function CreatePersona() {
       error: "",
     },
     avatar: {
-      value: "",
+      value: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Fphotos%2Fhd-wallpaper&psig=AOvVaw2hi_7j8v2LltPt_2Z1jPee&ust=1691079814882000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLCq0q6xvoADFQAAAAAdAAAAABAE",
       error: "",
     },
   });
