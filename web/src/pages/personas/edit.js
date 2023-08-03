@@ -1,16 +1,19 @@
-import { useState } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
+import { useState, useEffect } from "react";
 import { isURL } from "../../util/validateRegex";
-import { createPersona } from "../../actions/persona";
+import { updatePersona } from "../../actions/persona";
 import { errorToast, successToast } from "../../util/toasts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PersonaForm from "./personaForm";
+import { getPersonaByID } from "../../actions/persona";
+import { HashLoader } from "react-spinners";
 
-export default function CreatePersona() {
+export default function EditPersona() {
   const [open, setOpen] = useState(false);
   const [genOpen, setGenOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  let { id } = useParams();
 
   const [requestBody, setRequestBody] = useState({
     name: {
@@ -34,6 +37,44 @@ export default function CreatePersona() {
       error: "",
     },
   });
+
+  useEffect(() => {
+    setLoading(true);
+    getPersonaByID(id)
+      .then((response) => {
+        console.log(response);
+        const { avatar, description, name, prompt, visibility } = response;
+        setRequestBody({
+          name: {
+            value: name,
+            error: "",
+          },
+          description: {
+            value: description,
+            error: "",
+          },
+          prompt: {
+            value: prompt,
+            error: "",
+          },
+          visibility: {
+            value: visibility,
+            error: "",
+          },
+          avatar: {
+            value: avatar,
+            error: "",
+          },
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        errorToast("Unable to fetch persona. Please try again.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -165,35 +206,38 @@ export default function CreatePersona() {
       avatar: requestBody.avatar.value,
     };
 
-    createPersona(reqBody)
+    updatePersona(id, reqBody)
       .then((res) => {
-        successToast("Persona created successfully");
-        navigate("/personas/" + res.id + "/chat", {
-          state: {
-            name: res.name,
-            desc: res.description,
-            image: res.avatar,
-          },
-        });
+        successToast("Persona saved successfully");
+        navigate("/personas");
       })
       .catch((err) => {
-        errorToast("Unable to create persona");
+        console.log(err);
+        errorToast("Unable to save persona");
       });
   };
 
   return (
-    <PersonaForm
-      handleChange={handleChange}
-      handleSubmit={handleSubmit}
-      requestBody={requestBody}
-      isEditForm={false}
-      setOpen={setOpen}
-      open={open}
-      handleUpload={handleUpload}
-      onDelete={onDelete}
-      handleModalClose={handleModalClose}
-      genOpen={genOpen}
-      setGenOpen={setGenOpen}
-    />
+    <>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <HashLoader color="#667085" size={100} />
+        </div>
+      ) : (
+        <PersonaForm
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          requestBody={requestBody}
+          isEditForm={true}
+          setOpen={setOpen}
+          open={open}
+          handleUpload={handleUpload}
+          onDelete={onDelete}
+          handleModalClose={handleModalClose}
+          genOpen={genOpen}
+          setGenOpen={setGenOpen}
+        />
+      )}
+    </>
   );
 }
