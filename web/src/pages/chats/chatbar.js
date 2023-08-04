@@ -21,7 +21,7 @@ import remarkMath from "remark-math";
 import { IoReloadOutline } from "react-icons/io5";
 import { GrStop } from "react-icons/gr";
 import useDarkMode from "../../hooks/useDarkMode";
-import Dropdown from "../../components/dropdown";
+import Dropdown from "../../components/Dropdown";
 
 export default function ChatBar({
   chat,
