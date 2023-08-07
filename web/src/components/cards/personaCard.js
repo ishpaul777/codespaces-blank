@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
+import Modal from "../../components/Modal";
 
 export default function PersonaCard({
   name,
@@ -14,6 +15,8 @@ export default function PersonaCard({
   const maxDescriptionLength = 60;
   const navigate = useNavigate();
   const [menuOptionsVisible, setMenuOptionsVisible] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 
   return (
     <div
@@ -71,7 +74,7 @@ export default function PersonaCard({
                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-background-secondary-alt"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete(id);
+                    setShowDeleteModal(true);
                     setMenuOptionsVisible(false);
                   }}
                 >
@@ -92,7 +95,49 @@ export default function PersonaCard({
           ? `${desc?.slice(0, maxDescriptionLength)}...`
           : desc}
       </p>
-      {/* menu options */}
+
+      <Modal
+        open={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+        }}
+        closeButton={false}
+      >
+        <div className="text-left">
+          <h3 className="text-xl font-medium mb-4 border-b pb-4 border-gray-300">
+            Delete Document
+          </h3>
+          <div className="bg-red-100 p-4 text-[#FF0000] rounded-md mb-4 max-w-md font-semibold">
+            Continuing with this action will delete the document permanently. Do
+            you really want to delete the document?
+          </div>
+          <div className="flex justify-end w-full gap-4 border-t pt-4 border-gray-300">
+            <div>
+              <button
+                className="bg-background-secondary hover:bg-gray-200 text-gray-800 py-2 px-4 rounded"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDeleteModal(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+            <div>
+              <button
+                className="bg-[#FF0000] hover:bg-red-600 text-white py-2 px-4 rounded"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(id);
+                  setShowDeleteModal(false);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
