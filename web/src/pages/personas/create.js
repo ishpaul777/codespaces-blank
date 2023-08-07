@@ -30,7 +30,7 @@ export default function CreatePersona() {
       error: "",
     },
     avatar: {
-      value: "https://api.dicebear.com/6.x/avataaars/svg",
+      value: "",
       error: "",
     },
   });
