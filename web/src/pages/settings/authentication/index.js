@@ -24,6 +24,20 @@ function Authentication() {
     });
   };
 
+  const handleUpdatePassword = () => {
+    if (validateUpdatePassword()) {
+      // tpdo: update password api call
+      alert(JSON.stringify(updatePasswordFields));
+    } else {
+      // todo: throw error toasts
+    }
+  };
+
+  const validateUpdatePassword = () => {
+    // todo: validate password and confirm password
+    return true;
+  };
+
   const [twoFactorAuthenticatorFields, setTwoFactorAuthenticatorFields] =
     useState({
       authenticator: {
@@ -42,16 +56,32 @@ function Authentication() {
     });
   };
 
+  const handle2faSubmit = () => {
+    if (validate2fa()) {
+      // todo: 2fa api call
+      alert(JSON.stringify(twoFactorAuthenticatorFields));
+    } else {
+      // todo: throw error toasts
+    }
+  };
+
+  const validate2fa = () => {
+    return true;
+  };
+
   return (
     <div className="w-full h-screen p-16 max-h-screen overflow-y-auto">
-      <h1 className="text-2xl font-bold">Security</h1>
+      <h1 className="text-2xl font-semibold">Security</h1>
       <div className="w-full flex md:flex-row flex-col gap-16 mt-4">
         <div className="w-full md:w-1/2">
           <div className="w-full flex flex-col gap-4">
             {/* uptdatepassword */}
             <div className="w-full flex flex-row justify-between items-center">
-              <form className="w-full flex flex-col gap-4">
-                <h2 className="text-xl font-bold">Update Password</h2>
+              <form
+                className="w-full flex flex-col gap-4"
+                onSubmit={handleUpdatePassword}
+              >
+                <h2 className="text-xl font-semibold">Update Password</h2>
                 <div className="flex flex-col items-start gap-3 w-full justify-start">
                   <label
                     className="text-gray-500 font-semibold"
@@ -109,7 +139,10 @@ function Authentication() {
                     {updatePasswordFields.confirmPassword.error}
                   </span>
                 </div>
-                <button className="w-full bg-[#1e1e1e] text-white py-3 rounded-md font-semibold">
+                <button
+                  className="w-full bg-[#1e1e1e] text-white py-3 rounded-md font-semibold"
+                  type="submit"
+                >
                   Update Password
                 </button>
               </form>
@@ -120,21 +153,24 @@ function Authentication() {
         <div className="w-full md:w-1/2">
           <div className="w-full flex flex-col gap-4">
             <div className="w-full flex flex-row justify-between items-center">
-              <form className="w-full flex flex-col gap-4">
+              <form
+                className="w-full flex flex-col gap-4"
+                onSubmit={handle2faSubmit}
+              >
                 <h2 className="text-xl font-bold">
                   Manage Two Factor Authentication
                 </h2>
-                <div className="flex flex-row items-start gap-3">
+                <div className="flex flex-col md:flex-row items-start gap-3">
                   {/* qr code */}
-									<img
-										src="https://pentestlab.files.wordpress.com/2012/04/qrcode_attack.png"
-										alt="qr code"
-										className="w-1/2 h-full"
-									/>
+                  <img
+                    src="https://pentestlab.files.wordpress.com/2012/04/qrcode_attack.png"
+                    alt="qr code"
+                    className="w-1/2 h-full"
+                  />
                   <div className="flex flex-col gap-4 w-full h-full justify-start">
                     <div className="flex flex-col gap-4 w-full h-full justiPfy-start">
                       <p className="text-[#1e1e1e] text-lg">
-                        <strong>
+                        <strong className="font-semibold">
                           {" "}
                           This is your authenticator secret key. Use this if you
                           can't scan the QR code.
