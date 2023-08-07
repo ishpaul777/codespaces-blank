@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
@@ -59,7 +60,21 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 			errChan = nil
 		}()
 
-		go h.promptService.GenerateTextStream(requestBody.Provider, requestBody.Model, uint(uID), requestBody.InputPrompt, requestBody.GenerateFor, requestBody.AdditionalInstructions, requestBody.MaxTokens, dataChan, errChan)
+		input := &models.InputForGenerateTextResponseStream{
+			InputForGenerateTextResponse: models.InputForGenerateTextResponse{
+				Provider:               requestBody.Provider,
+				Model:                  requestBody.Model,
+				UserID:                 uID,
+				Input:                  requestBody.InputPrompt,
+				GenerateFor:            requestBody.GenerateFor,
+				AdditionalInstructions: requestBody.AdditionalInstructions,
+				MaxTokens:              requestBody.MaxTokens,
+			},
+			DataChan: dataChan,
+			ErrChan:  errChan,
+		}
+
+		go h.promptService.GenerateTextStream(input)
 		for {
 			select {
 			case msg := <-dataChan:
@@ -83,7 +98,17 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		response, err := h.promptService.GenerateText(requestBody.Provider, requestBody.Model, uint(uID), requestBody.InputPrompt, requestBody.GenerateFor, requestBody.AdditionalInstructions, requestBody.MaxTokens)
+		input := &models.InputForGenerateTextResponse{
+			Provider:               requestBody.Provider,
+			Model:                  requestBody.Model,
+			UserID:                 uID,
+			Input:                  requestBody.InputPrompt,
+			GenerateFor:            requestBody.GenerateFor,
+			AdditionalInstructions: requestBody.AdditionalInstructions,
+			MaxTokens:              requestBody.MaxTokens,
+		}
+
+		response, err := h.promptService.GenerateText(input)
 
 		if err != nil {
 			h.logger.Error("error generating text", "error", err.Error())

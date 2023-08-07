@@ -59,10 +59,10 @@ func (o *OpenAIAdapter) GenerateChatTitle(message models.Message) (string, error
 	return resp.Choices[0].Text, nil
 }
 
-func (o *OpenAIAdapter) GenerateTextUsingTextModel(prompt, model string, maxTokens uint) (interface{}, string, error) {
+func (o *OpenAIAdapter) GenerateTextUsingTextModel(input *InputForGenerateTextUsingTextModel) (interface{}, string, error) {
 	req := openai.CompletionRequest{
-		Prompt:    prompt,
-		MaxTokens: int(maxTokens),
+		Prompt:    input.Prompt,
+		MaxTokens: int(input.MaxTokens),
 		Model:     openai.GPT3TextDavinci003,
 	}
 	ctx := context.Background()
@@ -74,7 +74,7 @@ func (o *OpenAIAdapter) GenerateTextUsingTextModel(prompt, model string, maxToke
 	return resp.Choices[0].Text, resp.Choices[0].FinishReason, nil
 }
 
-func (o *OpenAIAdapter) GenerateTextUsingChatModel(prompt, model, additionalInstructions string, maxTokens uint) (interface{}, string, error) {
+func (o *OpenAIAdapter) GenerateTextUsingChatModel(input *InputForGenerateTextUsingChatModel) (interface{}, string, error) {
 
 	systemMessage := openai.ChatCompletionMessage{
 		Role:    "system",
@@ -83,7 +83,7 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModel(prompt, model, additionalInst
 
 	textGenerationMessage := openai.ChatCompletionMessage{
 		Role:    "user",
-		Content: prompt + ". " + additionalInstructions,
+		Content: input.Prompt + ". " + input.AdditionalInstructions,
 	}
 
 	messages := []openai.ChatCompletionMessage{}
@@ -92,7 +92,7 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModel(prompt, model, additionalInst
 	ctx := context.Background()
 	req := openai.ChatCompletionRequest{
 		Messages: messages,
-		Model:    model,
+		Model:    input.Model,
 		// MaxTokens: int(maxTokens),
 	}
 
@@ -111,22 +111,22 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModel(prompt, model, additionalInst
 // 		dataChan: a channel to send the generated text
 // 		errChan: a channel to send the error
 
-func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(userID uint, model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
-	if model == "" {
-		model = openai.GPT3TextDavinci003
+func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(input *InputForGenerateTextUsingTextModelStream) {
+	if input.Model == "" {
+		input.Model = openai.GPT3TextDavinci003
 	}
 
 	req := openai.CompletionRequest{
-		Prompt:    prompt,
-		MaxTokens: int(maxTokens),
-		Model:     model,
+		Prompt:    input.Prompt,
+		MaxTokens: int(input.MaxTokens),
+		Model:     input.Model,
 	}
 
 	ctx := context.Background()
 
 	stream, err := o.Client.CreateCompletionStream(ctx, req)
 	if err != nil {
-		errChan <- err
+		input.ErrChan <- err
 		return
 	}
 	responseMap := models.GenerateTextResponse{
@@ -138,7 +138,7 @@ func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(userID uint, model stri
 
 		resp, err := stream.Recv()
 		if err != nil {
-			errChan <- err
+			input.ErrChan <- err
 			return
 		}
 
@@ -146,34 +146,34 @@ func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(userID uint, model stri
 		responseMap.FinishReason = resp.Choices[0].FinishReason
 		if resp.Choices[0].FinishReason == "length" || resp.Choices[0].FinishReason == "stop" {
 			payload := map[string]interface{}{
-				"input":    prompt,
-				"model":    model,
+				"input":    input.Prompt,
+				"model":    input.Model,
 				"provider": OPENAI,
 				"output":   responseMap.Output,
 			}
 
 			request := models.RequestUsage{
-				UserID:  userID,
+				UserID:  input.UserID,
 				Type:    "generate-text",
 				Payload: payload,
 			}
 
 			byteData, _ := json.Marshal(request)
-			pubsubClient.Publish("tagore.usage", byteData)
+			input.PubsubClient.Publish("tagore.usage", byteData)
 		}
 		respJSON, err := json.Marshal(responseMap)
 		if err != nil {
-			errChan <- err
+			input.ErrChan <- err
 			return
 		}
 
-		dataChan <- string(respJSON)
+		input.DataChan <- string(respJSON)
 	}
 }
 
-func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(userID uint, model string, prompt string, maxTokens uint, additionalInstructions string, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
-	if model == "" {
-		model = openai.GPT3Dot5Turbo
+func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(input *InputForGenerateTextUsingChatModelStream) {
+	if input.Model == "" {
+		input.Model = openai.GPT3Dot5Turbo
 	}
 
 	systemMessage := openai.ChatCompletionMessage{
@@ -183,7 +183,7 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(userID uint, model stri
 
 	textGenerationMessage := openai.ChatCompletionMessage{
 		Role:    "user",
-		Content: prompt + ". " + additionalInstructions,
+		Content: input.Prompt + ". " + input.AdditionalInstructions,
 	}
 
 	messages := []openai.ChatCompletionMessage{}
@@ -192,14 +192,14 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(userID uint, model stri
 	ctx := context.Background()
 	req := openai.ChatCompletionRequest{
 		Messages:  messages,
-		Model:     model,
-		MaxTokens: int(maxTokens),
+		Model:     input.Model,
+		MaxTokens: int(input.MaxTokens),
 	}
 
 	stream, err := o.Client.CreateChatCompletionStream(ctx, req)
 
 	if err != nil {
-		errChan <- err
+		input.ErrChan <- err
 		return
 	}
 	responseMap := models.GenerateTextResponse{
@@ -210,7 +210,7 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(userID uint, model stri
 	for {
 		resp, err := stream.Recv()
 		if err != nil {
-			errChan <- err
+			input.ErrChan <- err
 			return
 		}
 
@@ -218,29 +218,29 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(userID uint, model stri
 		responseMap.FinishReason = resp.Choices[0].FinishReason
 		if resp.Choices[0].FinishReason == "length" || resp.Choices[0].FinishReason == "stop" {
 			payload := map[string]interface{}{
-				"input":    prompt,
+				"input":    input.Prompt,
 				"output":   responseMap.Output,
-				"model":    model,
+				"model":    input.Model,
 				"provider": OPENAI,
 			}
 
 			request := models.RequestUsage{
-				UserID:  userID,
+				UserID:  input.UserID,
 				Type:    "generate-text",
 				Payload: payload,
 			}
 
 			byteData, _ := json.Marshal(request)
-			pubsubClient.Publish("tagore.usage", byteData)
+			input.PubsubClient.Publish("tagore.usage", byteData)
 		}
 
 		respJson, err := json.Marshal(responseMap)
 		if err != nil {
-			errChan <- err
+			input.ErrChan <- err
 			return
 		}
 
-		dataChan <- string(respJson)
+		input.DataChan <- string(respJson)
 	}
 
 }
@@ -299,9 +299,9 @@ func (o *OpenAIAdapter) GenerateVariation(model string, image *os.File, nOfImage
 	return generatedImages, nil
 }
 
-func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, error) {
+func (o *OpenAIAdapter) GenerateResponse(input *GenerateChatResponse) ([]models.Message, error) {
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
-	for _, message := range messages {
+	for _, message := range input.Messages {
 		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
 			Role:    message.Role,
 			Content: message.Content,
@@ -309,9 +309,9 @@ func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, mess
 	}
 
 	req := openai.ChatCompletionRequest{
-		Model:       model,
+		Model:       input.Model,
 		Messages:    requestMessages,
-		Temperature: temperature,
+		Temperature: input.Temperature,
 	}
 
 	ctx := context.Background()
@@ -324,14 +324,14 @@ func (o *OpenAIAdapter) GenerateResponse(model string, temperature float32, mess
 	latestMessage.Role = "assistant"
 
 	latestMessage.Content = response.Choices[0].Message.Content
-	messages = append(messages, latestMessage)
+	input.Messages = append(input.Messages, latestMessage)
 
-	return messages, nil
+	return input.Messages, nil
 }
 
-func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub) {
+func (o *OpenAIAdapter) GenerateStreamingResponse(data *GenerateChatResponseStream) {
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
-	for _, message := range messages {
+	for _, message := range data.Messages {
 		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
 			Role:    message.Role,
 			Content: message.Content,
@@ -339,23 +339,23 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, mod
 	}
 
 	req := openai.ChatCompletionRequest{
-		Model:       model,
+		Model:       data.Model,
 		Messages:    requestMessages,
 		Stream:      true,
-		Temperature: temperature,
+		Temperature: data.Temperature,
 	}
 
 	ctx := context.Background()
 	stream, err := o.Client.CreateChatCompletionStream(ctx, req)
 	if err != nil {
-		errChan <- err
+		data.ErrChan <- err
 		return
 	}
 
 	latestMessage := models.Message{}
 	latestMessage.Role = "assistant"
 
-	messages = append(messages, latestMessage)
+	data.Messages = append(data.Messages, latestMessage)
 
 	// chat is the chat object which will be streamed
 	chat := &models.Chat{}
@@ -366,16 +366,16 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, mod
 			var dbErr error
 			var title string
 			var userMsgs []models.Message
-			for _, msg := range messages {
+			for _, msg := range data.Messages {
 				if msg.Role == "user" {
 					userMsgs = append(userMsgs, msg)
 				}
 			}
 
-			if len(userMsgs) > 0 && chatID == nil {
+			if len(userMsgs) > 0 && data.ChatID == nil {
 				title, dbErr = o.GenerateChatTitle(userMsgs[0])
 				if dbErr != nil {
-					errChan <- dbErr
+					data.ErrChan <- dbErr
 					return
 				}
 			} else {
@@ -383,45 +383,45 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, mod
 			}
 
 			// fullChatData is the the chat object with all the details
-			chat, dbErr = chatRepo.SaveChat(title, userID, chatID, model, messages)
+			chat, dbErr = data.ChatRepo.SaveChat(title, data.UserID, data.ChatID, data.Model, data.Messages)
 			if dbErr != nil {
-				errChan <- dbErr
+				data.ErrChan <- dbErr
 				return
 			}
 			byteStream, err := json.Marshal(chat)
 			if err != nil {
-				errChan <- err
+				data.ErrChan <- err
 				return
 			}
-			dataChan <- string(byteStream)
+			data.DataChan <- string(byteStream)
 
 			usagePayload := map[string]interface{}{
-				"model":    model,
+				"model":    data.Model,
 				"provider": OPENAI,
 				"chat":     chat,
 			}
 
 			request := models.RequestUsage{
-				UserID:  userID,
+				UserID:  data.UserID,
 				Type:    "generate-chat",
 				Payload: usagePayload,
 			}
 
 			byteData, _ := json.Marshal(request)
 
-			pubsubClient.Publish("tagore.usage", byteData)
+			data.PubsubClient.Publish("tagore.usage", byteData)
 		}
 
 		if err != nil {
-			errChan <- err
+			data.ErrChan <- err
 			return
 		}
 
-		messages[len(messages)-1].Content += response.Choices[0].Delta.Content
+		data.Messages[len(data.Messages)-1].Content += response.Choices[0].Delta.Content
 
-		msgStream, err := helper.ConvertToJSONB(messages)
+		msgStream, err := helper.ConvertToJSONB(data.Messages)
 		if err != nil {
-			errChan <- err
+			data.ErrChan <- err
 			return
 		}
 
@@ -429,11 +429,11 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(userID uint, chatID *uint, mod
 
 		byteStream, err := json.Marshal(chat)
 		if err != nil {
-			errChan <- err
+			data.ErrChan <- err
 			return
 		}
 
-		dataChan <- string(byteStream)
+		data.DataChan <- string(byteStream)
 	}
 }
 

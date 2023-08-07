@@ -10,8 +10,8 @@ import (
 )
 
 type PromptService interface {
-	GenerateText(provider, model string, userID uint, input, generateFor, additionalInstructions string, maxTokens uint) (*models.GenerateTextResponse, error)
-	GenerateTextStream(provider, model string, userID uint, input, generateFor, additionalInstructions string, maxTokens uint, dataChan chan<- string, errChan chan<- error)
+	GenerateText(input *models.InputForGenerateTextResponse) (*models.GenerateTextResponse, error)
+	GenerateTextStream(input *models.InputForGenerateTextResponseStream)
 }
 type promptService struct {
 	promptRepository repositories.PromptRepository
@@ -81,12 +81,12 @@ func constructPromptForChat(input, generateFor string) string {
 	return prompt
 }
 
-func (p *promptService) GenerateText(provider, model string, userID uint, input, generateFor, additionalInstructions string, maxTokens uint) (*models.GenerateTextResponse, error) {
-	if provider == "" {
-		provider = "openai"
+func (p *promptService) GenerateText(input *models.InputForGenerateTextResponse) (*models.GenerateTextResponse, error) {
+	if input.Provider == "" {
+		input.Provider = "openai"
 	}
 
-	generativeModel := generative_model.NewTextGenerativeModel(provider)
+	generativeModel := generative_model.NewTextGenerativeModel(input.Provider)
 
 	err := generativeModel.LoadConfig()
 	if err != nil {
@@ -94,17 +94,28 @@ func (p *promptService) GenerateText(provider, model string, userID uint, input,
 	}
 	var output interface{}
 	var finishReason string
-	isUsingChatModel := models.ModelBelongsToChat(model)
+	isUsingChatModel := models.ModelBelongsToChat(input.Model)
 	var prompt string
 	if isUsingChatModel {
-		prompt = constructPromptForChat(input, generateFor)
-		output, finishReason, err = generativeModel.GenerateTextUsingChatModel(prompt, model, additionalInstructions, maxTokens)
+		prompt = constructPromptForChat(input.Input, input.GenerateFor)
+		inputForChatModel := &generative_model.InputForGenerateTextUsingChatModel{
+			Prompt:                 prompt,
+			Model:                  input.Model,
+			AdditionalInstructions: input.AdditionalInstructions,
+			MaxTokens:              input.MaxTokens,
+		}
+		output, finishReason, err = generativeModel.GenerateTextUsingChatModel(inputForChatModel)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		prompt = constructPrompt(input, generateFor, additionalInstructions)
-		output, finishReason, err = generativeModel.GenerateTextUsingTextModel(prompt, model, maxTokens)
+		prompt = constructPrompt(input.Input, input.GenerateFor, input.AdditionalInstructions)
+		inputForTextModel := &generative_model.InputForGenerateTextUsingTextModel{
+			Prompt:    prompt,
+			Model:     input.Model,
+			MaxTokens: input.MaxTokens,
+		}
+		output, finishReason, err = generativeModel.GenerateTextUsingTextModel(inputForTextModel)
 		if err != nil {
 			return nil, err
 		}
@@ -119,23 +130,45 @@ func (p *promptService) GenerateText(provider, model string, userID uint, input,
 	// return p.promptRepository.CreatePrompt(userID, input, output.(string), finishReason)
 }
 
-func (p *promptService) GenerateTextStream(provider, model string, userID uint, input, generateFor, additionalInstructions string, maxTokens uint, dataChan chan<- string, errChan chan<- error) {
-	if provider == "" {
-		provider = "openai"
+func (p *promptService) GenerateTextStream(input *models.InputForGenerateTextResponseStream) {
+	if input.Provider == "" {
+		input.Provider = "openai"
 	}
-	generativeModel := generative_model.NewTextGenerativeModel(provider)
+	generativeModel := generative_model.NewTextGenerativeModel(input.Provider)
 
 	err := generativeModel.LoadConfig()
 	if err != nil {
-		errChan <- err
+		input.ErrChan <- err
 		return
 	}
 
-	isUsingChatModel := models.ModelBelongsToChat(model)
-	prompt := constructPromptForChat(input, generateFor)
+	isUsingChatModel := models.ModelBelongsToChat(input.Model)
+
 	if isUsingChatModel {
-		generativeModel.GenerateTextUsingChatModelStream(userID, model, prompt, maxTokens, additionalInstructions, dataChan, errChan, p.pubsubClient)
+		prompt := constructPromptForChat(input.Input, input.GenerateFor)
+		inputForChatModel := &generative_model.InputForGenerateTextUsingChatModelStream{
+			Prompt:                 prompt,
+			Model:                  input.Model,
+			AdditionalInstructions: input.AdditionalInstructions,
+			MaxTokens:              input.MaxTokens,
+			UserID:                 input.UserID,
+			PubsubClient:           p.pubsubClient,
+			DataChan:               input.DataChan,
+			ErrChan:                input.ErrChan,
+		}
+		generativeModel.GenerateTextUsingChatModelStream(inputForChatModel)
 	} else {
-		generativeModel.GenerateTextUsingTextModelStream(userID, model, prompt, maxTokens, dataChan, errChan, p.pubsubClient)
+		prompt := constructPrompt(input.Input, input.GenerateFor, input.AdditionalInstructions)
+		inputForTextModel := &generative_model.InputForGenerateTextUsingTextModelStream{
+			Prompt:       prompt,
+			Model:        input.Model,
+			MaxTokens:    input.MaxTokens,
+			UserID:       input.UserID,
+			PubsubClient: p.pubsubClient,
+			DataChan:     input.DataChan,
+			ErrChan:      input.ErrChan,
+		}
+
+		generativeModel.GenerateTextUsingTextModelStream(inputForTextModel)
 	}
 }

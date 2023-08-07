@@ -13,11 +13,11 @@ import (
 )
 
 type ChatService interface {
-	GenerateResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message) (*models.Chat, error)
+	GenerateResponse(input models.GenerateResponseforChat) (*models.Chat, error)
 	// GenerateStreamingResponse generates response for a chat in a streaming fashion
 
 	// GenerateStreamingResponse generates response for a chat in a streaming fashion
-	GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error)
+	GenerateStreamingResponse(input models.GenerateResponseForChatStream)
 
 	// GetChatHistoryByUser returns all the chats for a user
 	GetChatHistoryByUser(userID uint, pagination helper.Pagination) ([]models.Chat, uint, error)
@@ -55,8 +55,8 @@ func NewChatService(repository repositories.ChatRepository, pubsubClient pubsub.
 	}
 }
 
-func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message) (*models.Chat, error) {
-	generativeModel := generative_model.NewChatGenerativeModel(provider)
+func (c *chatService) GenerateResponse(input models.GenerateResponseforChat) (*models.Chat, error) {
+	generativeModel := generative_model.NewChatGenerativeModel(input.Provider)
 	err := generativeModel.LoadConfig()
 	if err != nil {
 		return nil, err
@@ -66,8 +66,8 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 
 	title := ""
 
-	if chatID != nil {
-		isOwner, err := c.chatRepository.IsUserChatOwner(userID, *chatID)
+	if input.ChatID != nil {
+		isOwner, err := c.chatRepository.IsUserChatOwner(input.UserID, *input.ChatID)
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +77,12 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 			return nil, err
 		}
 
-		responseMessage, err = generativeModel.GenerateResponse(model, temperature, messages)
+		generateRequest := &generative_model.GenerateChatResponse{
+			Model:       input.Model,
+			Temperature: input.Temperature,
+			Messages:    input.Messages,
+		}
+		responseMessage, err = generativeModel.GenerateResponse(generateRequest)
 		if err != nil {
 			return nil, err
 		}
@@ -86,27 +91,33 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		newMessage := make([]models.Message, 0)
 		systemMessage := models.Message{}
 
-		if systemPrompt == "" {
+		if input.SystemPrompt == "" {
 
 			systemMessage = models.Message{
-				Content: prompts.SYSTEM_PROMPT + " " + additionalInstructions,
+				Content: prompts.SYSTEM_PROMPT + " " + input.AdditionalInstructions,
 				Role:    "system",
 			}
 		} else {
 			systemMessage = models.Message{
-				Content: systemPrompt + " " + additionalInstructions,
+				Content: input.SystemPrompt + " " + input.AdditionalInstructions,
 				Role:    "system",
 			}
 		}
 
-		newMessage = append(newMessage, systemMessage, messages[0])
-		responseMessage, err = generativeModel.GenerateResponse(model, temperature, newMessage)
+		newMessage = append(newMessage, systemMessage, input.Messages[0])
+		generateResponse := &generative_model.GenerateChatResponse{
+			Model:       input.Model,
+			Temperature: input.Temperature,
+			Messages:    newMessage,
+		}
+
+		responseMessage, err = generativeModel.GenerateResponse(generateResponse)
 		if err != nil {
 			return nil, err
 		}
 
 		var usrMsgs []models.Message
-		for _, msg := range messages {
+		for _, msg := range input.Messages {
 			if msg.Role == "user" {
 				usrMsgs = append(usrMsgs, msg)
 			}
@@ -119,19 +130,19 @@ func (c *chatService) GenerateResponse(userID uint, chatID *uint, provider, mode
 		}
 	}
 
-	chat, err := c.chatRepository.SaveChat(title, userID, chatID, model, responseMessage)
+	chat, err := c.chatRepository.SaveChat(title, input.UserID, input.ChatID, input.Model, responseMessage)
 	if err != nil {
 		return nil, err
 	}
 
 	payload := map[string]interface{}{
-		"model":    model,
-		"provider": provider,
+		"model":    input.Model,
+		"provider": input.Provider,
 		"chat":     chat,
 	}
 
 	usage := models.RequestUsage{
-		UserID:  userID,
+		UserID:  input.UserID,
 		Type:    "generate-chat",
 		Payload: payload,
 	}
@@ -146,38 +157,62 @@ func (c *chatService) GetChatHistoryByUser(userID uint, pagination helper.Pagina
 	return c.chatRepository.GetAllChatsByUser(userID, pagination)
 }
 
-func (c *chatService) GenerateStreamingResponse(userID uint, chatID *uint, provider, model string, temperature float32, systemPrompt, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error) {
-	generativeModel := generative_model.NewChatGenerativeModel(provider)
+func (c *chatService) GenerateStreamingResponse(input models.GenerateResponseForChatStream) {
+	generativeModel := generative_model.NewChatGenerativeModel(input.Provider)
 	err := generativeModel.LoadConfig()
 	if err != nil {
-		errChan <- err
+		input.ErrChan <- err
 		return
 	}
 
 	// if chatID is nil, it means that the chat is new and needs to be created
 
-	if chatID == nil {
+	if input.ChatID == nil {
 		newMessage := make([]models.Message, 0)
 		systemMessage := models.Message{}
 
-		if systemPrompt == "" {
+		if input.SystemPrompt == "" {
 
 			systemMessage = models.Message{
-				Content: prompts.SYSTEM_PROMPT + " " + additionalInstructions,
+				Content: prompts.SYSTEM_PROMPT + " " + input.AdditionalInstructions,
 				Role:    "system",
 			}
 		} else {
 			systemMessage = models.Message{
-				Content: systemPrompt + " " + additionalInstructions,
+				Content: input.SystemPrompt + " " + input.AdditionalInstructions,
 				Role:    "system",
 			}
 		}
 
-		newMessage = append(newMessage, systemMessage, messages[0])
-		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, newMessage, dataChan, errChan, c.chatRepository, c.pubsubClient)
+		newMessage = append(newMessage, systemMessage, input.Messages[0])
+
+		generateRequest := &generative_model.GenerateChatResponseStream{
+			UserID:       input.UserID,
+			ChatID:       input.ChatID,
+			Model:        input.Model,
+			Temperature:  input.Temperature,
+			Messages:     newMessage,
+			DataChan:     input.DataChan,
+			ErrChan:      input.ErrChan,
+			ChatRepo:     c.chatRepository,
+			PubsubClient: c.pubsubClient,
+		}
+		generativeModel.GenerateStreamingResponse(generateRequest)
 
 	} else {
-		generativeModel.GenerateStreamingResponse(userID, chatID, model, temperature, messages, dataChan, errChan, c.chatRepository, c.pubsubClient)
+
+		generateRequest := &generative_model.GenerateChatResponseStream{
+			UserID:       input.UserID,
+			ChatID:       input.ChatID,
+			Model:        input.Model,
+			Temperature:  input.Temperature,
+			Messages:     input.Messages,
+			DataChan:     input.DataChan,
+			ErrChan:      input.ErrChan,
+			ChatRepo:     c.chatRepository,
+			PubsubClient: c.pubsubClient,
+		}
+		generativeModel.GenerateStreamingResponse(generateRequest)
 	}
 }
 

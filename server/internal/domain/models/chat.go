@@ -40,3 +40,20 @@ type Message struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
 }
+
+type GenerateResponseforChat struct {
+	UserID                 uint      `json:"user_id"`
+	ChatID                 *uint     `json:"chat_id"`
+	Provider               string    `json:"provider"`
+	Model                  string    `json:"model"`
+	Temperature            float32   `json:"temperature"`
+	SystemPrompt           string    `json:"system_prompt"`
+	AdditionalInstructions string    `json:"additional_instructions"`
+	Messages               []Message `json:"messages"`
+}
+
+type GenerateResponseForChatStream struct {
+	GenerateResponseforChat
+	DataChan               chan<- string
+	ErrChan                chan<- error
+}

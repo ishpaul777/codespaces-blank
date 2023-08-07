@@ -1,7 +1,7 @@
 package generative_model
 
 import (
-	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -11,6 +11,7 @@ import (
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
+	httpGoogle "google.golang.org/api/transport/http"
 )
 
 type GoogleAdapter struct {
@@ -93,89 +94,95 @@ func (g *GoogleAdapter) GenerateChatTitle(message models.Message) (string, error
 	return "", nil
 }
 
-func (g *GoogleAdapter) GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, error) {
-	if model == "" {
-		model = "chat-bison@001"
-	}
-
-	if !validateGoogleModel(model) {
-		return nil, errIncorrectGoogleModel
-	}
-
-	reqBody := &reqBodyForGoogleChat{}
-
-	messagesForGoogle := make([]message, 0)
-	for _, msg := range messages[1:] {
-		if msg.Role == "assistant" {
-			msg.Role = "bot"
-		}
-		messagesForGoogle = append(messagesForGoogle, message{
-			Content: msg.Content,
-			Author:  msg.Role,
-		})
-	}
-
-	reqBody.Instances = append(reqBody.Instances, struct {
-		Context  string    `json:"context"`
-		Examples []message `json:"examples"`
-		Messages []message `json:"messages"`
-	}{
-		Context:  messages[0].Content,
-		Examples: []message{},
-		Messages: messagesForGoogle,
-	})
-
-	reqBody.Parameters.Temperature = temperature
-
-	byteRequest, err := json.Marshal(reqBody)
+func (g *GoogleAdapter) GenerateResponse(input *GenerateChatResponse) ([]models.Message, error) {
+	ctx := context.Background()
+	newClient, _, err := httpGoogle.NewClient(ctx)
 	if err != nil {
 		return nil, err
 	}
+	g.Client = newClient
+	// if model == "" {
+	// 	model = "chat-bison@001"
+	// }
 
-	requestURL := g.API_URL + "/v1/projects/" + g.PROJECT_ID + "/locations/us-central1/publishers/google/models/" + model + ":predict"
-	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(byteRequest))
-	if err != nil {
-		return nil, err
-	}
+	// if !validateGoogleModel(model) {
+	// 	return nil, errIncorrectGoogleModel
+	// }
 
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Authorization", "Bearer "+g.API_KEY)
+	// reqBody := &reqBodyForGoogleChat{}
 
-	response, err := g.Client.Do(req)
-	if err != nil {
-		return nil, err
-	}
+	// messagesForGoogle := make([]message, 0)
+	// for _, msg := range messages[1:] {
+	// 	if msg.Role == "assistant" {
+	// 		msg.Role = "bot"
+	// 	}
+	// 	messagesForGoogle = append(messagesForGoogle, message{
+	// 		Content: msg.Content,
+	// 		Author:  msg.Role,
+	// 	})
+	// }
 
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		responseBody := map[string]interface{}{}
-		err = json.NewDecoder(response.Body).Decode(&responseBody)
-		if err != nil {
-			return nil, err
-		}
+	// reqBody.Instances = append(reqBody.Instances, struct {
+	// 	Context  string    `json:"context"`
+	// 	Examples []message `json:"examples"`
+	// 	Messages []message `json:"messages"`
+	// }{
+	// 	Context:  messages[0].Content,
+	// 	Examples: []message{},
+	// 	Messages: messagesForGoogle,
+	// })
 
-		return nil, errors.New("google model returned status code " + response.Status)
-	}
+	// reqBody.Parameters.Temperature = temperature
 
-	var googleResponse googleChatResponse
-	err = json.NewDecoder(response.Body).Decode(&googleResponse)
-	if err != nil {
-		return nil, err
-	}
+	// byteRequest, err := json.Marshal(reqBody)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if len(googleResponse.Predictions) > 0 {
-		if len(googleResponse.Predictions[0].Candidates) > 0 {
-			messages = append(messages, models.Message{
-				Content: googleResponse.Predictions[0].Candidates[0].Content,
-				Role:    "assistant",
-			})
-		}
-	}
-	return messages, nil
+	// requestURL := g.API_URL + "/v1/projects/" + g.PROJECT_ID + "/locations/us-central1/publishers/google/models/" + model + ":predict"
+	// req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(byteRequest))
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// req.Header.Add("Content-Type", "application/json")
+	// req.Header.Add("Accept", "application/json")
+	// req.Header.Add("Authorization", "Bearer "+g.API_KEY)
+
+	// response, err := g.Client.Do(req)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// defer response.Body.Close()
+	// if response.StatusCode != http.StatusOK {
+	// 	responseBody := map[string]interface{}{}
+	// 	err = json.NewDecoder(response.Body).Decode(&responseBody)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	return nil, errors.New("google model returned status code " + response.Status)
+	// }
+
+	// var googleResponse googleChatResponse
+	// err = json.NewDecoder(response.Body).Decode(&googleResponse)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// if len(googleResponse.Predictions) > 0 {
+	// 	if len(googleResponse.Predictions[0].Candidates) > 0 {
+	// 		messages = append(messages, models.Message{
+	// 			Content: googleResponse.Predictions[0].Candidates[0].Content,
+	// 			Role:    "assistant",
+	// 		})
+	// 	}
+	// }
+	return input.Messages, nil
 }
 
-func (g *GoogleAdapter) GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub) {
+func (g *GoogleAdapter) GenerateStreamingResponse(data *GenerateChatResponseStream) {
 
 }
 

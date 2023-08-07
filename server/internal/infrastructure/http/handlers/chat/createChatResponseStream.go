@@ -63,7 +63,22 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 			errChan = nil
 		}()
 
-		go h.chatService.GenerateStreamingResponse(userID, requestBody.ChatID, requestBody.Provider, requestBody.Model, requestBody.Temperature, requestBody.SystemPrompt, requestBody.AdditionalInstructions, requestBody.Messages, msgChan, errChan)
+		input := models.GenerateResponseForChatStream{
+			GenerateResponseforChat: models.GenerateResponseforChat{
+				UserID:                 userID,
+				ChatID:                 requestBody.ChatID,
+				Provider:               requestBody.Provider,
+				Model:                  requestBody.Model,
+				Temperature:            requestBody.Temperature,
+				SystemPrompt:           requestBody.SystemPrompt,
+				AdditionalInstructions: requestBody.AdditionalInstructions,
+				Messages:               requestBody.Messages,
+			},
+			DataChan: msgChan,
+			ErrChan:  errChan,
+		}
+
+		go h.chatService.GenerateStreamingResponse(input)
 
 		for {
 			select {
@@ -88,7 +103,18 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 			}
 		}
 	} else {
-		chatResponse, err := h.chatService.GenerateResponse(userID, requestBody.ChatID, requestBody.Provider, requestBody.Model, requestBody.Temperature, requestBody.SystemPrompt, requestBody.AdditionalInstructions, requestBody.Messages)
+		input := models.GenerateResponseforChat{
+			UserID:                 userID,
+			ChatID:                 requestBody.ChatID,
+			Provider:               requestBody.Provider,
+			Model:                  requestBody.Model,
+			Temperature:            requestBody.Temperature,
+			SystemPrompt:           requestBody.SystemPrompt,
+			AdditionalInstructions: requestBody.AdditionalInstructions,
+			Messages:               requestBody.Messages,
+		}
+
+		chatResponse, err := h.chatService.GenerateResponse(input)
 		if err != nil {
 			h.logger.Error("error while generating chat response", "error", err.Error())
 			errorx.Render(w, errorx.Parser(errorx.InternalServerError()))

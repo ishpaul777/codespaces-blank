@@ -13,12 +13,67 @@ type ConfigGenerativeModel interface {
 }
 
 type PROVIDER string
+
+type (
+	GenerateChatResponse struct {
+		Model       string
+		Temperature float32
+		Messages    []models.Message
+	}
+
+	GenerateChatResponseStream struct {
+		UserID       uint
+		ChatID       *uint
+		Model        string
+		Temperature  float32
+		Messages     []models.Message
+		DataChan     chan<- string
+		ErrChan      chan<- error
+		ChatRepo     repositories.ChatRepository
+		PubsubClient pubsub.PubSub
+	}
+
+	InputForGenerateTextUsingTextModel struct {
+		Prompt    string
+		Model     string
+		MaxTokens uint
+	}
+
+	InputForGenerateTextUsingChatModel struct {
+		Prompt                 string
+		Model                  string
+		AdditionalInstructions string
+		MaxTokens              uint
+	}
+
+	InputForGenerateTextUsingTextModelStream struct {
+		UserID       uint
+		Model        string
+		Prompt       string
+		MaxTokens    uint
+		DataChan     chan<- string
+		ErrChan      chan<- error
+		PubsubClient pubsub.PubSub
+	}
+
+	InputForGenerateTextUsingChatModelStream struct {
+		UserID                 uint
+		Model                  string
+		Prompt                 string
+		AdditionalInstructions string
+		MaxTokens              uint
+		DataChan               chan<- string
+		ErrChan                chan<- error
+		PubsubClient           pubsub.PubSub
+	}
+)
+
 type TextGenerativeModel interface {
 	ConfigGenerativeModel
-	GenerateTextUsingTextModel(prompt, model string, maxTokens uint) (interface{}, string, error)
-	GenerateTextUsingChatModel(prompt, model, additionalInstructions string, maxTokens uint) (interface{}, string, error)
-	GenerateTextUsingTextModelStream(userID uint, model string, prompt string, maxTokens uint, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub)
-	GenerateTextUsingChatModelStream(userID uint, model string, prompt string, maxTokens uint, additionalInstructions string, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub)
+	GenerateTextUsingTextModel(input *InputForGenerateTextUsingTextModel) (interface{}, string, error)
+	GenerateTextUsingChatModel(input *InputForGenerateTextUsingChatModel) (interface{}, string, error)
+	GenerateTextUsingTextModelStream(input *InputForGenerateTextUsingTextModelStream)
+	GenerateTextUsingChatModelStream(input *InputForGenerateTextUsingChatModelStream)
 	EditText(input string, instruction string) (interface{}, error)
 }
 
@@ -31,8 +86,9 @@ type ImageGenerativeModel interface {
 type ChatGenerativeModel interface {
 	ConfigGenerativeModel
 	// GenerateResponse(model string, temperature float32, chat models.Chat, chatRepo repositories.ChatRepository) (*models.Chat, error)
-	GenerateResponse(model string, temperature float32, messages []models.Message) ([]models.Message, error)
-	GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub)
+	GenerateResponse(input *GenerateChatResponse) ([]models.Message, error)
+	// GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub)
+	GenerateStreamingResponse(data *GenerateChatResponseStream)
 	GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub)
 	GenerateChatTitle(message models.Message) (string, error)
 	// GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
