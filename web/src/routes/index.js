@@ -25,6 +25,7 @@ import Invitations from "../pages/settings/profile/invitations";
 import Login from "../pages/auth/login";
 import AuthLayout from "../pages/auth/authlayout";
 import Signup from "../pages/auth/signup";
+import Authentication from "../pages/settings/authentication";
 
 export const routes = [
   {
@@ -96,6 +97,10 @@ export const routes = [
       {
         path: "/profile/invitations",
         element: <Invitations />,
+      },
+      {
+        path: "/authentication",
+        element: <Authentication />,
       },
     ],
   },

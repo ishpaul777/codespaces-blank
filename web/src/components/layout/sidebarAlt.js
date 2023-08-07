@@ -55,6 +55,11 @@ export function SidebarAlt() {
           icon: MdOutlineMailOutline,
           linkTo: "/profile/invitations",
         },
+        {
+          name: "Authentication",
+          icon: FiSettings,
+          linkTo: "/authentication",
+        },
       ],
     },
   ];
