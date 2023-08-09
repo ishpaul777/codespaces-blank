@@ -21,7 +21,7 @@ import remarkMath from "remark-math";
 import { IoReloadOutline } from "react-icons/io5";
 import { GrStop } from "react-icons/gr";
 import useDarkMode from "../../hooks/useDarkMode";
-import Dropdown from "../../components/Dropdown";
+// import Dropdown from "../../components/Dropdown";
 
 export default function ChatBar({
   chat,
@@ -91,11 +91,11 @@ export default function ChatBar({
                     <span className="text-lg">Back to Dashboard</span>
                   </button>
                   {/* <BsThreeDotsVertical size={20} /> */}
-                  <Dropdown
+                  {/* <Dropdown
                     handleNewChatClick={handleNewChatClick}
                     setPromptSiderCollapse={setPromptSiderCollapse}
                     setChatSiderCollapse={setChatSiderCollapse}
-                  />
+                  /> */}
                 </div>
               </div>
             ) : (
@@ -221,11 +221,11 @@ export default function ChatBar({
                       cursor={"pointer"}
                     />
                   </div>
-                  <Dropdown
+                  {/* <Dropdown
                     setChatSiderCollapse={setChatSiderCollapse}
                     handleNewChatClick={handleNewChatClick}
                     setPromptSiderCollapse={setPromptSiderCollapse}
-                  />
+                  /> */}
                 </>
               ) : (
                 <>

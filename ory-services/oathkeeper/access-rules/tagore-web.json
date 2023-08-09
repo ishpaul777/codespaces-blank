@@ -1,12 +1,39 @@
 [
   {
+    "id": "tagore:web:anonymous",
+    "upstream": {
+      "preserve_host": true,
+      "url": "http://tagore-web:3000"
+    },
+    "match": {
+      "url": "http://127.0.0.1:4455/.factly/tagore/web/<(auth/login|auth/registration|auth/verification|verifyEmail|auth/recovery|manifest.json|static/.*|config.js)(|/)>",
+      "methods": [
+        "GET"
+      ]
+    },
+    "authenticators": [
+      {
+        "handler": "anonymous"
+      }
+    ],
+    "authorizer": {
+      "handler": "allow"
+    },
+    "mutators": [
+      {
+        "handler": "noop"
+      }
+    ]
+  }
+  ,
+  {
     "id": "tagore:web:protected",
     "upstream": {
       "preserve_host": true,
       "url": "http://tagore-web:3000"
     },
     "match": {
-      "url": "http://127.0.0.1:4455/.factly/tagore/web/<.*>",
+      "url": "http://127.0.0.1:4455/.factly/tagore/web</|/documents|/documents/create|/personas|/personas/create|/personas/\\d+/edit|/personas/\\d+/chat|/personas/factly/sach/chat|/playground|/compare|/workflows|/workflows/fact-check|/workflows/blogpost|/history|/usage|/profile|/org|/org/members|/org/members/invite|/profile/invitations|/passwords|/chats/dashboard|>",
       "methods": [
         "GET",
         "POST",
@@ -30,7 +57,7 @@
       {
         "handler": "redirect",
         "config": {
-          "to": "http://127.0.0.1:4455/.factly/kavach/web/auth/login",
+          "to": "http://127.0.0.1:4455/.factly/tagore/web/auth/login",
           "return_to_query_param": "return_to"
         }
       }

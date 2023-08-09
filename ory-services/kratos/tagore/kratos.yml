@@ -1,0 +1,114 @@
+version: v0.11.0
+
+dsn: postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
+
+serve:
+  public:
+    base_url: http://127.0.0.1:4455/.ory/kratos-tagore/public/
+    cors:
+      enabled: true
+  admin:
+    base_url: http://kratos-tagore:4434/
+
+selfservice:
+  default_browser_return_url: http://127.0.0.1:4455/.factly/tagore/web/
+  allowed_return_urls:
+    - http://127.0.0.1:4455/.factly/tagore/web/
+
+  methods:
+    password:
+      enabled: true
+
+    oidc:
+      enabled: true
+      config:
+        providers:
+          - id: google 
+            provider: google
+            client_id: 123abc
+            client_secret: 123abc
+            mapper_url: file:///etc/config/kratos/oidc.google.jsonnet
+            scope:
+              - email
+              - profile
+
+
+    link:
+      enabled: true
+      config:
+        lifespan: 15m
+
+    totp:
+      enabled: true
+      config:
+        issuer: factly.in
+
+  flows:
+    error:
+      ui_url: http://127.0.0.1:4455/.factly/tagore/web/error
+
+    settings:
+      ui_url: http://127.0.0.1:4455/.factly/tagore/web/account/#security
+      privileged_session_max_age: 3m
+      required_aal: highest_available
+
+    logout:
+      after:
+        default_browser_return_url: http://127.0.0.1:4455/.factly/tagore/web/
+
+    login:
+      ui_url: http://127.0.0.1:4455/.factly/tagore/web/auth/login
+      lifespan: 10m
+      after:
+        password:
+          hooks:
+            - hook: require_verified_address
+
+
+    verification:
+      use: code
+      enabled: true
+      ui_url: http://127.0.0.1:4455/.factly/tagore/web/auth/verification
+      # after:
+      #   hooks: 
+      #     - hook: web_hook
+      #       config:
+      #         url: http://tagore-server:8002/welcomeEmail
+      #         method: POST
+      #         body: base64://ZnVuY3Rpb24oY3R4KSB7CiAgdXNlcklkOiBjdHguaWRlbnRpdHkuaWQsCiAgdHJhaXRzOiB7CiAgICBlbWFpbDogY3R4LmlkZW50aXR5LnRyYWl0cy5lbWFpbCwKICAgIG5hbWU6IGN0eC5pZGVudGl0eS50cmFpdHMubmFtZSwKICAgIGlzX3ZlcmlmaWVkOiBjdHguaWRlbnRpdHkudmVyaWZpYWJsZV9hZGRyZXNzZXNbMF0udmVyaWZpZWQKICB9LAp9Cg==
+      #         response:
+      #           ignore: true
+
+    registration:
+      lifespan: 10m
+      ui_url: http://127.0.0.1:4455/.factly/tagore/web/auth/registration
+      after:
+        default_browser_return_url: http://127.0.0.1:4455/.factly/tagore/web/verifyEmail
+
+    recovery:
+      enabled: true
+      ui_url: http://127.0.0.1:4455/.factly/tagore/web/auth/recovery
+
+
+log:
+  level: debug
+  format: text
+  leak_sensitive_values: true
+
+secrets:
+  cookie:
+    - PLEASE-CHANGE-ME-I-AM-VERY-INSECURE
+
+hashers:
+  bcrypt:
+    cost: 4
+
+identity:
+  default_schema_id: default
+  schemas:
+    - id: default
+      url: file:///etc/config/kratos-tagore/identity.schema.json
+
+courier:
+  smtp:
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true

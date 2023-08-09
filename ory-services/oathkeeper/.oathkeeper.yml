@@ -52,7 +52,7 @@ access_rules:
     - file:///etc/config/oathkeeper/access-rules/kavach-server.json
     - file:///etc/config/oathkeeper/access-rules/kratos.json
     - file:///etc/config/oathkeeper/access-rules/tagore-server.json
-
+    - file:///etc/config/oathkeeper/access-rules/kratos-tagore.json
 authenticators:
   anonymous:
     enabled: true

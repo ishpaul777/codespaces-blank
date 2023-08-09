@@ -150,6 +150,24 @@ services:
     networks:
       - tagore
 
+  kratos-tagore:
+      depends_on:
+        - kratos-migrate
+      image: oryd/kratos:v0.11.1
+      ports:
+        - "4440:4433" # public
+        - "4441:4434" # admin
+      environment:
+        - DSN=postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
+        - LOG_LEVEL=trace
+      volumes:
+        - type: bind
+          source: ./ory-services/kratos/tagore
+          target: /etc/config/kratos-tagore
+      command: serve -c /etc/config/kratos-tagore/kratos.yml --dev --watch-courier
+      restart: unless-stopped
+      networks:
+        - tagore
 
 
   keto-migrate:

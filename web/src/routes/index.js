@@ -26,6 +26,9 @@ import Login from "../pages/auth/login";
 import AuthLayout from "../pages/auth/authlayout";
 import Signup from "../pages/auth/signup";
 import Authentication from "../pages/settings/authentication";
+import { VerifyEmail } from "../pages/verifyEmail";
+import { Verification } from "../pages/auth/verification";
+import { ForgotPassword } from "../pages/auth/forgotPassword";
 
 export const routes = [
   {
@@ -99,7 +102,7 @@ export const routes = [
         element: <Invitations />,
       },
       {
-        path: "/authentication",
+        path: "/passwords",
         element: <Authentication />,
       },
     ],
@@ -138,6 +141,10 @@ export const routes = [
     element: <BlogPostWorkflow />,
   },
   {
+    path: "/verifyEmail",
+    element: <VerifyEmail />,
+  },
+  {
     path: "/",
     element: <AuthLayout />,
     children: [
@@ -146,8 +153,16 @@ export const routes = [
         element: <Login title="Welcome Back! Sign in" />,
       },
       {
-        path: "/auth/signup",
+        path: "/auth/registration",
         element: <Signup title="Welcome! Sign up" />,
+      },
+      {
+        path: "/auth/verification",
+        element: <Verification title={"Verify your Email"} />,
+      },
+      {
+        path: "/auth/recovery",
+        element: <ForgotPassword title="Forgot Password" />,
       },
     ],
   },

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GoogleIcon from "../../assets/icons/google-icon.svg";
 import { Link } from "react-router-dom";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { Input } from "../../components/inputs/Input";
+import { isEmail, passwordValidation } from "../../util/validateRegex";
 
 function Signup({ title }) {
+  const [ui, setUI] = useState({});
   const [fields, setFields] = useState({
     firstName: {
       value: "",
@@ -27,80 +29,228 @@ function Signup({ title }) {
     },
   });
 
-  const handleFieldChange = (e) => {
-    setFields({
-      ...fields,
-      [e.target.name]: {
-        value: e.target.value,
-        error: "",
-      },
-    });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateFields()) {
-      alert(JSON.stringify(fields, null, 2));
-    } else {
-      return;
+      handleRegistrationWithEmail();
     }
   };
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShadowConfirmPassword] = useState(false);
-
   const validateFields = () => {
     let isValid = true;
-    const email = fields.email.value;
-    const password = fields.password.value;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex =
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-    // Name regex must be atleast 3 characters long and not contain any special characters or numbers
-    const nameRegex = /^[a-zA-Z]{3,}$/;
 
-    if (!nameRegex.test(fields.firstName.value)) {
+    if (fields.firstName.value === "") {
       isValid = false;
-      setFields({
-        ...fields,
-        firstName: { error: "Please enter a valid first name" },
+      setFields((prev) => {
+        return {
+          ...prev,
+          firstName: {
+            ...prev.firstName,
+            error: "This field is required",
+          },
+        };
       });
-      return isValid;
     }
 
-    if (!nameRegex.test(fields.lastName.value)) {
+    if (fields.lastName.value === "") {
       isValid = false;
-      setFields({
-        ...fields,
-        lastName: { error: "Please enter a valid last name" },
+      setFields((prev) => {
+        return {
+          ...prev,
+          lastName: {
+            ...prev.lastName,
+            error: "This field is required",
+          },
+        };
       });
-      return isValid;
     }
 
-    if (!emailRegex.test(email)) {
+    if (fields.email.value === "") {
       isValid = false;
-      setFields({ ...fields, email: { error: "Please enter a valid email" } });
-      return isValid;
-    }
-    if (!passwordRegex.test(password)) {
-      isValid = false;
-      alert("Please enter a valid password");
-      setFields({
-        ...fields,
-        password: { error: "Please enter a valid password" },
+      setFields((prev) => {
+        return {
+          ...prev,
+          email: {
+            ...prev.email,
+            error: "This field is required",
+          },
+        };
       });
-      return isValid;
+    } else {
+      if (!isEmail(fields.email.value)) {
+        isValid = false;
+        setFields((prev) => {
+          return {
+            ...prev,
+            email: {
+              ...prev.email,
+              error: "Please enter a valid email",
+            },
+          };
+        });
+      }
     }
 
-    if (fields.password.value !== fields.confirmPassword.value) {
+    let errorString = passwordValidation(fields.password.value);
+    if (errorString) {
       isValid = false;
-      setFields({
-        ...fields,
-        confirmPassword: { error: "Passwords do not match" },
+      setFields((prev) => {
+        return {
+          ...prev,
+          password: {
+            ...prev.password,
+            error: errorString,
+          },
+        };
       });
-      return isValid;
+    }
+
+    if (fields.confirmPassword.value !== fields.password.value) {
+      isValid = false;
+      setFields((prev) => {
+        return {
+          ...prev,
+          confirmPassword: {
+            ...prev.confirmPassword,
+            error: "Passwords do not match",
+          },
+        };
+      });
     }
     return isValid;
+  };
+
+  useEffect(() => {
+    var obj = {};
+    window.location.search
+      .split("?")
+      .filter((each) => each.trim() !== "")
+      .forEach((each) => {
+        var temp = each.split("=");
+        obj[temp[0]] = temp[1];
+      });
+
+    const returnTo = obj["return_to"];
+
+    let selfServiceURL;
+    if (returnTo) {
+      selfServiceURL =
+        window.REACT_APP_KRATOS_PUBLIC_URL +
+        "/self-service/registration/browser?return_to=" +
+        returnTo;
+    } else {
+      selfServiceURL =
+        window.REACT_APP_KRATOS_PUBLIC_URL +
+        "/self-service/registration/browser";
+    }
+
+    if (!obj["flow"]) {
+      window.location.href = selfServiceURL;
+    } else {
+      fetch(
+        window.REACT_APP_KRATOS_PUBLIC_URL +
+          "/self-service/registration/flows" +
+          "?id=" +
+          obj["flow"],
+        {
+          credentials: "include",
+        }
+      )
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            throw new Error(res.json());
+          }
+        })
+        .then((res) => {
+          setUI(res.ui);
+        })
+        .catch(() => {
+          window.location.href =
+            window.REACT_APP_KRATOS_PUBLIC_URL +
+            "/self-service/registration/browser";
+        });
+    }
+  }, []);
+
+  // handleRegistrationWithEmail is the handler for user registration with email
+  const handleRegistrationWithEmail = () => {
+    var authForm = document.createElement("form");
+    authForm.action = ui.action;
+    authForm.method = ui.method;
+    authForm.style.display = "none";
+
+    var fnameInput = document.createElement("input");
+    fnameInput.name = "traits.name.first";
+    fnameInput.value = fields.firstName.value;
+
+    var lnameInput = document.createElement("input");
+    lnameInput.name = "traits.name.last";
+    lnameInput.value = fields.lastName.value;
+
+    var identifierInput = document.createElement("input");
+    identifierInput.name = "traits.email";
+    identifierInput.value = fields.email.value;
+
+    var passwordInput = document.createElement("input");
+    passwordInput.name = "password";
+    passwordInput.value = fields.password.value;
+
+    var csrfInput = document.createElement("input");
+    csrfInput.name = "csrf_token";
+    csrfInput.type = "hidden";
+    csrfInput.value = ui.nodes.find(
+      (value) => value.attributes.name === "csrf_token"
+    ).attributes.value;
+
+    var methodInput = document.createElement("input");
+    methodInput.name = "method";
+    methodInput.value = "password";
+
+    authForm.appendChild(identifierInput);
+    authForm.appendChild(passwordInput);
+    authForm.appendChild(csrfInput);
+    authForm.appendChild(methodInput);
+    authForm.appendChild(fnameInput);
+    authForm.appendChild(lnameInput);
+
+    document.body.appendChild(authForm);
+    authForm.submit();
+  };
+
+  const handleOIDC = (e) => {
+    e.preventDefault();
+    withOIDC("google");
+  };
+
+  const withOIDC = (values) => {
+    var oidcForm = document.createElement("form");
+    oidcForm.action = ui.action;
+    oidcForm.method = ui.method;
+    oidcForm.style.display = "none";
+
+    var csrfInput = document.createElement("input");
+    csrfInput.name = "csrf_token";
+    csrfInput.type = "hidden";
+    csrfInput.value = ui.nodes.find(
+      (value) => value.attributes.name === "csrf_token"
+    ).attributes.value;
+
+    var methodInput = document.createElement("input");
+    methodInput.name = "method";
+    methodInput.value = "oidc";
+
+    var providerInput = document.createElement("input");
+    providerInput.name = "provider";
+    providerInput.value = values;
+
+    oidcForm.appendChild(providerInput);
+    oidcForm.appendChild(csrfInput);
+    oidcForm.appendChild(methodInput);
+
+    document.body.appendChild(oidcForm);
+
+    oidcForm.submit();
   };
 
   return (
@@ -110,132 +260,152 @@ function Signup({ title }) {
         className="bg-[#F3F5F8] w-full flex flex-col gap-4"
         onSubmit={handleSubmit}
       >
-        <div className="flex flex-col items-start gap-3 w-full justify-start">
-          <label className="text-gray-500 font-semibold" htmlFor="firstName">
-            First Name
-          </label>
-          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
-            <input
-              value={fields.firstName.value}
-              onChange={handleFieldChange}
-              className="py-3 outline-none border-none bg-transparent w-full"
-              type="text"
-              name="firstName"
-              id="firstName"
-              placeholder="John"
-            />
-          </div>
-          <span className="text-red-500 text-sm font-semibold">
-            {" "}
-            {fields.firstName.error}
-          </span>
-        </div>
-        <div className="flex flex-col items-start gap-3 w-full justify-start">
-          <label className="text-gray-500 font-semibold" htmlFor="lastName">
-            Last Name
-          </label>
-          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
-            <input
-              value={fields.lastName.value}
-              onChange={handleFieldChange}
-              className="py-3 outline-none border-none bg-transparent w-full"
-              type="text"
-              name="lastName"
-              id="lastName"
-              placeholder="Doe"
-            />
-          </div>
-          <span className="text-red-500 text-sm font-semibold">
-            {" "}
-            {fields.lastName.error}
-          </span>
-        </div>
-        <div className="flex flex-col items-start gap-3 w-full justify-start">
-          <label className="text-gray-500 font-semibold" htmlFor="email">
-            Email
-          </label>
-          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
-            <input
-              value={fields.email.value}
-              onChange={handleFieldChange}
-              className="py-3 outline-none border-none bg-transparent w-full"
-              type="text"
-              name="email"
-              id="email"
-              placeholder="abcd@example.com"
-            />
-          </div>
-          <span className="text-red-500 text-sm font-semibold">
-            {" "}
-            {fields.email.error}
-          </span>
-        </div>
-        <div className="flex flex-col items-start gap-3 w-full justify-start">
-          <label className="text-gray-500 font-semibold" htmlFor="password">
-            Password
-          </label>
-          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
-            <input
-              value={fields.password.value}
-              onChange={handleFieldChange}
-              className="py-3 outline-none border-none bg-transparent w-full"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              id="password"
-              placeholder="********"
-            />
-             <button
-              type="button"
-              className="focus:outline-none"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
-              ) : (
-                <AiOutlineEye className="h-5 w-5 text-gray-500" />
-              )}
-            </button>
-          </div>
-          <span className="text-red-500 text-sm font-semibold">
-            {" "}
-            {fields.password.error}
-          </span>
-        </div>
-        <div className="flex flex-col items-start gap-3 w-full justify-start">
-          <label
-            className="text-gray-500 font-semibold"
-            htmlFor="confirmPassword"
-          >
-            Confirm Password
-          </label>
-          <div className="flex items-center border border-[#D0D5DD] px-3 rounded-md bg-white w-full shadow">
-            <input
-              value={fields.confirmPassword.value}
-              onChange={handleFieldChange}
-              className="py-3 outline-none border-none bg-transparent w-full"
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              id="confirmPassword"
-              placeholder="********"
-            />
+        <Input
+          label={"First Name"}
+          name={"firstName"}
+          initialValue={fields.firstName.value}
+          onChange={(e) => {
+            // validate the first name
+            if (e.target.value === "") {
+              setFields((prev) => {
+                return {
+                  ...prev,
+                  firstName: {
+                    value: e.target.value,
+                    error: "This field is required",
+                  },
+                };
+              });
+            }
+            // if the first name is valid, remove the error
+            else {
+              setFields((prev) => {
+                return {
+                  ...prev,
+                  firstName: {
+                    value: e.target.value,
+                    error: "",
+                  },
+                };
+              });
+            }
+          }}
+          error={fields.firstName.error}
+          backgroundColor="white"
+          placeholder="Enter your first name"
+          padding="p-3"
+          type="input"
+        />
+        <Input
+          label={"Last Name"}
+          name={"lastName"}
+          initialValue={fields.lastName.value}
+          onChange={(e) => {
+            if (e.target.value === "") {
+              setFields((prev) => {
+                return {
+                  ...prev,
+                  lastName: {
+                    value: e.target.value,
+                    error: "This field is required",
+                  },
+                };
+              });
+            } else {
+              setFields((prev) => {
+                return {
+                  ...prev,
+                  lastName: {
+                    value: e.target.value,
+                    error: "",
+                  },
+                };
+              });
+            }
+          }}
+          error={fields.lastName.error}
+          backgroundColor="white"
+          placeholder="Enter your last name"
+          padding="p-3"
+          type="input"
+        />
 
-            <button
-              type="button"
-              className="focus:outline-none"
-              onClick={() => setShadowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? (
-                <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
-              ) : (
-                <AiOutlineEye className="h-5 w-5 text-gray-500" />
-              )}
-            </button>
-          </div>
-          <span className="text-red-500 text-sm font-semibold">
-            {" "}
-            {fields.confirmPassword.error}
-          </span>
-        </div>
+        <Input
+          label={"Email"}
+          name={"email"}
+          initialValue={fields.email.value}
+          onChange={(e) => {
+            if (!isEmail(e.target.value)) {
+              setFields({
+                ...fields,
+                email: {
+                  value: e.target.value,
+                  error: "Please enter a valid email",
+                },
+              });
+            } else {
+              setFields({
+                ...fields,
+                email: { value: e.target.value, error: "" },
+              });
+            }
+          }}
+          error={fields.email.error}
+          backgroundColor="white"
+          placeholder="Enter your email"
+          padding="p-3"
+          type="input"
+        />
+        <Input
+          label={"Password"}
+          name={"password"}
+          initialValue={fields.password.value}
+          onChange={(e) => {
+            let errorString = passwordValidation(e.target.value);
+            if (errorString) {
+              setFields({
+                ...fields,
+                password: { value: e.target.value, error: errorString },
+              });
+            } else {
+              setFields({
+                ...fields,
+                password: { value: e.target.value, error: "" },
+              });
+            }
+          }}
+          error={fields.password.error}
+          backgroundColor="white"
+          placeholder="Enter your password"
+          padding="p-3"
+          type={"password"}
+        />
+        <Input
+          label={"Confirm Password"}
+          name={"confirmPassword"}
+          initialValue={fields.confirmPassword.value}
+          onChange={(e) => {
+            if (e.target.value !== fields.password.value) {
+              setFields({
+                ...fields,
+                confirmPassword: {
+                  value: e.target.value,
+                  error: "Passwords do not match",
+                },
+              });
+            } else {
+              setFields({
+                ...fields,
+                confirmPassword: { value: e.target.value, error: "" },
+              });
+            }
+          }}
+          error={fields.confirmPassword.error}
+          backgroundColor="white"
+          placeholder="Confirm your password"
+          padding="p-3"
+          type={"input"}
+        />
         <button
           type="submit"
           className="block w-full bg-[#1E1E1E] hover:bg-slate-800 py-4 rounded-lg text-white font-semibold mb-2 shadow-md"

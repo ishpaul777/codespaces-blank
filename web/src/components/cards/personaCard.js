@@ -17,7 +17,6 @@ export default function PersonaCard({
   const [menuOptionsVisible, setMenuOptionsVisible] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-
   return (
     <div
       onClick={() => {
