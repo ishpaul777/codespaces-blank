@@ -11,7 +11,6 @@ export function ForgotPassword({ title }) {
     error: "",
   });
 
-
   const handleChange = (e) => {
     const { value } = e.target;
     let error = "";
@@ -115,20 +114,19 @@ export function ForgotPassword({ title }) {
   return (
     <>
       <h1 className="text-center text-3xl font-semibold">{title}</h1>
-      {
-        ui?.messages?.[0]?.text && (
-          <span
-            className={`
+      {ui?.messages?.[0]?.text && (
+        <span
+          className={`
           border p-2 text-sm rounded-md
         ${
           ui?.messages?.[0]?.type === "error"
             ? " bg-red-100 text-red-500 border-red-500"
             : "bg-green-100 text-green-500 border-green-500"
         }`}
-          >
-            {ui?.messages?.[0]?.text}
-          </span>
-        )}
+        >
+          {ui?.messages?.[0]?.text}
+        </span>
+      )}
       <div className="bg-[#F3F5F8] w-full flex flex-col gap-4">
         <Input
           label={"Email"}
@@ -138,7 +136,7 @@ export function ForgotPassword({ title }) {
           error={recoveryEmail.error}
           backgroundColor="white"
           placeholder={`Enter your Email`}
-          name={'email'}
+          name={"email"}
         />
         <button
           className="block w-full bg-[#1E1E1E] hover:bg-slate-800 py-4 rounded-lg text-white font-semibold mb-2 shadow-md"

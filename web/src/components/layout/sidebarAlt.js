@@ -58,7 +58,7 @@ export function SidebarAlt() {
         {
           name: "Authentication",
           icon: FiSettings,
-          linkTo: "/authentication",
+          linkTo: "/passwords",
         },
       ],
     },

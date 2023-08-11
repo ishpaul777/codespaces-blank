@@ -128,7 +128,9 @@ function Login({ title }) {
     }
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+
     var authForm = document.createElement("form");
     authForm.action = ui.action;
     authForm.method = ui.method;
@@ -200,7 +202,7 @@ function Login({ title }) {
   return (
     <>
       <h1 className="text-center text-3xl font-semibold">{title}</h1>
-      <form className="bg-[#F3F5F8] w-full flex flex-col gap-4">
+      <div className="bg-[#F3F5F8] w-full flex flex-col gap-4">
         {ui?.messages?.[0]?.text && (
           <span
             className={`
@@ -270,7 +272,7 @@ function Login({ title }) {
             <Link to={"/auth/verification"}>Verify your account</Link>
           )}
         </span>
-      </form>
+      </div>
     </>
   );
 }

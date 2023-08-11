@@ -48,7 +48,7 @@ selfservice:
       ui_url: http://127.0.0.1:4455/.factly/tagore/web/error
 
     settings:
-      ui_url: http://127.0.0.1:4455/.factly/tagore/web/account/#security
+      ui_url: http://127.0.0.1:4455/.factly/tagore/web/passwords 
       privileged_session_max_age: 3m
       required_aal: highest_available
 
@@ -69,15 +69,6 @@ selfservice:
       use: code
       enabled: true
       ui_url: http://127.0.0.1:4455/.factly/tagore/web/auth/verification
-      # after:
-      #   hooks: 
-      #     - hook: web_hook
-      #       config:
-      #         url: http://tagore-server:8002/welcomeEmail
-      #         method: POST
-      #         body: base64://ZnVuY3Rpb24oY3R4KSB7CiAgdXNlcklkOiBjdHguaWRlbnRpdHkuaWQsCiAgdHJhaXRzOiB7CiAgICBlbWFpbDogY3R4LmlkZW50aXR5LnRyYWl0cy5lbWFpbCwKICAgIG5hbWU6IGN0eC5pZGVudGl0eS50cmFpdHMubmFtZSwKICAgIGlzX3ZlcmlmaWVkOiBjdHguaWRlbnRpdHkudmVyaWZpYWJsZV9hZGRyZXNzZXNbMF0udmVyaWZpZWQKICB9LAp9Cg==
-      #         response:
-      #           ignore: true
 
     registration:
       lifespan: 10m
