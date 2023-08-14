@@ -17,7 +17,7 @@ services:
     healthcheck:
       interval: 10s
       retries: 10
-      test: 'pg_isready -U "$$POSTGRES_USER" -d "kavach"'
+      test: 'pg_isready -U "$$POSTGRES_USER" -d "tagore"'
       timeout: 2s
     networks:
       - tagore
