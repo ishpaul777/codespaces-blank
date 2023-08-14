@@ -17,11 +17,10 @@ function Login({ title }) {
     },
   });
 
-  const [totp, setTOTP] = useState('');
+  const [totp, setTOTP] = useState("");
 
   const [aal2, setaal2] = useState(false);
   const [ui, setUI] = useState({});
-
 
   const handleFieldChange = (e) => {
     let { name, value } = e.target;
@@ -200,26 +199,25 @@ function Login({ title }) {
     oidcForm.submit();
   };
 
-
   const handleTOTPSubmit = () => {
-    var totpForm = document.createElement('form');
+    var totpForm = document.createElement("form");
     totpForm.action = ui.action;
     totpForm.method = ui.method;
-    totpForm.style.display = 'none';
+    totpForm.style.display = "none";
 
-    var csrfInput = document.createElement('input');
-    csrfInput.name = 'csrf_token';
-    csrfInput.type = 'hidden';
+    var csrfInput = document.createElement("input");
+    csrfInput.name = "csrf_token";
+    csrfInput.type = "hidden";
     csrfInput.value = ui.nodes.find(
-      (value) => value.attributes.name === 'csrf_token',
+      (value) => value.attributes.name === "csrf_token"
     ).attributes.value;
 
-    var totpMethod = document.createElement('input');
-    totpMethod.name = 'method';
-    totpMethod.value = 'totp';
+    var totpMethod = document.createElement("input");
+    totpMethod.name = "method";
+    totpMethod.value = "totp";
 
-    var totpInput = document.createElement('input');
-    totpInput.name = 'totp_code';
+    var totpInput = document.createElement("input");
+    totpInput.name = "totp_code";
     totpInput.value = totp;
 
     totpForm.appendChild(csrfInput);
@@ -252,8 +250,8 @@ function Login({ title }) {
             )}
 
             <Input
-              label='Enter TOTP'
-              type={"input" }
+              label="Enter TOTP"
+              type={"input"}
               name={"totp"}
               backgroundColor="white"
               placeholder={"Enter your TOTP"}

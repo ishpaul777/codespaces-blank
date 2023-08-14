@@ -1,4 +1,4 @@
-version: v0.11.1
+version: v1.0.0
 
 dsn: postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
 
@@ -79,6 +79,7 @@ selfservice:
       use: code
       enabled: true
       ui_url: http://127.0.0.1:4455/.factly/kavach/web/auth/verification
+      notify_unknown_recipients: true
 
 
     registration:
@@ -91,6 +92,7 @@ selfservice:
     recovery:
       enabled: true
       ui_url: http://127.0.0.1:4455/.factly/kavach/web/auth/recovery
+      notify_unknown_recipients: true
 
 
 log:

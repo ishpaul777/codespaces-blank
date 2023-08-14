@@ -1,4 +1,4 @@
-version: v0.11.0
+version: v1.0.0
 
 dsn: postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
 
@@ -69,6 +69,7 @@ selfservice:
       use: code
       enabled: true
       ui_url: http://127.0.0.1:4455/.factly/tagore/web/auth/verification
+      notify_unknown_recipients: true
 
     registration:
       lifespan: 10m
@@ -79,6 +80,7 @@ selfservice:
     recovery:
       enabled: true
       ui_url: http://127.0.0.1:4455/.factly/tagore/web/auth/recovery
+      notify_unknown_recipients: true
 
 
 log:

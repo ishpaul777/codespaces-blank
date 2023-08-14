@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   ###########################################################################
   #######                  DB SERVICES                                #######
@@ -17,7 +17,7 @@ services:
     healthcheck:
       interval: 10s
       retries: 10
-      test: "pg_isready -U \"$$POSTGRES_USER\" -d \"kavach\""
+      test: 'pg_isready -U "$$POSTGRES_USER" -d "kavach"'
       timeout: 2s
     networks:
       - tagore
@@ -39,7 +39,6 @@ services:
     networks:
       - tagore
 
-
   tagore-server:
     build:
       context: ./server
@@ -53,7 +52,6 @@ services:
       - tagore-migrate
     networks:
       - tagore
-
 
   tagore-web:
     build:
@@ -111,13 +109,14 @@ services:
     env_file:
       - ./companion/.env
 
- ###########################################################################
+  ###########################################################################
   #######             KRATOS, KETO AND OATHKEEPER                     #######
   ###########################################################################
   kratos-migrate:
     depends_on:
-      - postgres
-    image: oryd/kratos:v0.11.1
+      postgres:
+        condition: service_healthy
+    image: oryd/kratos:v1.0.0
     environment:
       - DSN=postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
     volumes:
@@ -129,12 +128,10 @@ services:
     networks:
       - tagore
 
-
-
   kratos:
     depends_on:
       - kratos-migrate
-    image: oryd/kratos:v0.11.1
+    image: oryd/kratos:v1.0.0
     ports:
       - "4433:4433" # public
       - "4434:4434" # admin
@@ -151,24 +148,23 @@ services:
       - tagore
 
   kratos-tagore:
-      depends_on:
-        - kratos-migrate
-      image: oryd/kratos:v0.11.1
-      ports:
-        - "4440:4433" # public
-        - "4441:4434" # admin
-      environment:
-        - DSN=postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
-        - LOG_LEVEL=trace
-      volumes:
-        - type: bind
-          source: ./ory-services/kratos/tagore
-          target: /etc/config/kratos-tagore
-      command: serve -c /etc/config/kratos-tagore/kratos.yml --dev --watch-courier
-      restart: unless-stopped
-      networks:
-        - tagore
-
+    depends_on:
+      - kratos-migrate
+    image: oryd/kratos:v1.0.0
+    ports:
+      - "4440:4433" # public
+      - "4441:4434" # admin
+    environment:
+      - DSN=postgres://postgres:postgres@postgres:5432/kratos?sslmode=disable
+      - LOG_LEVEL=trace
+    volumes:
+      - type: bind
+        source: ./ory-services/kratos/tagore
+        target: /etc/config/kratos-tagore
+    command: serve -c /etc/config/kratos-tagore/kratos.yml --dev --watch-courier
+    restart: unless-stopped
+    networks:
+      - tagore
 
   keto-migrate:
     image: oryd/keto:v0.9.0-alpha.0
@@ -185,8 +181,6 @@ services:
     restart: on-failure
     networks:
       - tagore
-
-
 
   keto:
     depends_on:
@@ -206,7 +200,6 @@ services:
     networks:
       - tagore
 
-
   oathkeeper:
     image: oryd/oathkeeper:latest-alpine
     depends_on:
@@ -224,7 +217,6 @@ services:
     restart: on-failure
     networks:
       - tagore
-
 
   ###########################################################################
   #######             KAVACH                                          #######
@@ -277,7 +269,6 @@ services:
     networks:
       - tagore
 
-
   kavach-migrate:
     depends_on:
       - postgres
@@ -319,10 +310,14 @@ services:
       - KAVACH_DYNAMIC_EMAIL_ENABLED=true
       - KAVACH_BUCKET_NAME=login.factly.in
       - KAVACH_MASTER_KEY=master_key
-    entrypoint: ["/bin/sh", "-c", "/app/kavach-server migrate && /app/kavach-server create-super-org"]
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "/app/kavach-server migrate && /app/kavach-server create-super-org",
+      ]
     networks:
       - tagore
-
 
   kavach-web:
     image: factly/kavach-web:0.31.0-dev
@@ -336,7 +331,6 @@ services:
     networks:
       - tagore
 
-
   ###########################################################################
   #######             SMTP SERVICES                                 #######
   ###########################################################################
@@ -348,8 +342,6 @@ services:
     networks:
       - tagore
 
-
-  
   ###########################################################################
   #######             MESSAGING BROKER                                 #######
   ###########################################################################
