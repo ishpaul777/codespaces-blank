@@ -19,6 +19,13 @@ export const Workflow = () => {
       image: Factcheck,
       link: "/workflows/fact-check",
     },
+    {
+      title: "Write a social media compaign",
+      description:
+        "Our Social Media Post Writer Bot is your one-stop solution for creating engaging social media posts that are sure to grab eyeballs.",
+      image: Factcheck,
+      link: "/workflows/social-media",
+    },
   ];
 
   return (

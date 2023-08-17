@@ -2,9 +2,9 @@ package generative_model
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -15,6 +15,7 @@ import (
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/helper"
+	"github.com/tmc/langchaingo/llms/anthropic"
 )
 
 type AnthropicAdapter struct {
@@ -83,53 +84,85 @@ func (a *AnthropicAdapter) GenerateResponse(input *GenerateChatResponse) ([]mode
 		return nil, ErrIncorrectAnthropicModel
 	}
 
-	request := anthropicChatRequest{
-		Stream:       false,
-		Model:        input.Model,
-		Temperature:  input.Temperature,
-		PromptString: generateRequestText(input.Messages),
-		MaxTokens:    2000,
-	}
-	requestBody, err := json.Marshal(request)
+	// optionModel is the option related to model for anthropic
+	optionModel := anthropic.WithModel(input.Model)
+	// optionToken is the option related to token for antropic
+	optionToken := anthropic.WithToken(a.API_KEY)
+
+	llm, err := anthropic.New(optionModel, optionToken)
 	if err != nil {
 		return nil, err
 	}
 
-	requestURL := a.API_URL + "/v1/complete"
-	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
-	if err != nil {
-		return nil, err
-	}
+	prompt := generateRequestText(input.Messages)
 
-	req.Header.Add("x-api-key", a.API_KEY)
+	ctx := context.Background()
 
-	resp, err := a.Client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		errorResponse := make(map[string]interface{})
-		_ = json.NewDecoder(resp.Body).Decode(&errorResponse)
-		fmt.Println(errorResponse)
-		return nil, errors.New("anthropic api returned status code " + resp.Status)
-	}
-
-	var response anthropicChatResponse
-	err = json.NewDecoder(resp.Body).Decode(&response)
+	completion, err := llm.Call(ctx, prompt)
 	if err != nil {
 		return nil, err
 	}
 
 	latestMessage := models.Message{
 		Role:    "assistant",
-		Content: response.Completion,
+		Content: completion,
 	}
 
 	input.Messages = append(input.Messages, latestMessage)
+	// request := anthropicChatRequest{
+	// 	Stream:       false,
+	// 	Model:        input.Model,
+	// 	Temperature:  input.Temperature,
+	// 	PromptString: generateRequestText(input.Messages),
+	// 	MaxTokens:    2000,
+	// }
+	// requestBody, err := json.Marshal(request)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// requestURL := a.API_URL + "/v1/complete"
+	// req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// req.Header.Add("x-api-key", a.API_KEY)
+
+	// resp, err := a.Client.Do(req)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// defer resp.Body.Close()
+	// if resp.StatusCode != http.StatusOK {
+	// 	errorResponse := make(map[string]interface{})
+	// 	_ = json.NewDecoder(resp.Body).Decode(&errorResponse)
+	// 	return nil, errors.New("anthropic api returned status code " + resp.Status)
+	// }
+
+	// var response anthropicChatResponse
+	// err = json.NewDecoder(resp.Body).Decode(&response)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// latestMessage := models.Message{
+	// 	Role:    "assistant",
+	// 	Content: response.Completion,
+	// }
+
+	// input.Messages = append(input.Messages, latestMessage)
 
 	return input.Messages, nil
+}
+
+func (a *AnthropicAdapter) GenerateTextUsingChatModel(input *InputForGenerateTextUsingChatModel) (interface{}, string, error) {
+	return nil, "", nil
+}
+
+func (a *AnthropicAdapter) GenerateTextUsingChatModelStream(input *InputForGenerateTextUsingChatModelStream) {
+
 }
 
 func (a *AnthropicAdapter) GenerateStreamingResponse(input *GenerateChatResponseStream) {
@@ -230,18 +263,18 @@ func (a *AnthropicAdapter) GenerateStreamingResponse(input *GenerateChatResponse
 }
 
 func generateRequestText(messages []models.Message) string {
-	requestString := ``
+	var requestString string
 	for _, message := range messages {
 		if message.Role == "user" {
-			requestString += `\n\nHuman: ` + message.Content
+			requestString += "\n\nHuman:" + message.Content
 		}
 
 		if message.Role == "assistant" {
-			requestString += `\n\nAssistant: ` + message.Content
+			requestString += "\n\nAssistant:" + message.Content
 		}
 	}
 
-	requestString += (`. ` + messages[0].Content + ` \n\nAssistant: `)
+	requestString += ". " + messages[0].Content + " \n\nAssistant: "
 
 	return requestString
 }

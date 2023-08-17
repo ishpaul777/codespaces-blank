@@ -10,14 +10,14 @@ import (
 )
 
 type PersonaService interface {
-	CreateNewPersona(userID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error)
+	CreateNewPersona(input *models.InputForCreatePersona) (*models.Persona, error)
 	DeletePersonaByID(userID, personaID uint) error
 	GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
 	GetPersonaByID(userID uint, personaID uint) (*models.Persona, error)
 	UpdatePersonaByID(userID uint, personaID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error)
 	GetAllDefaultPersonas() ([]models.Persona, error)
 	// PersonaChat Methods
-	ChatWithPersonaStream(userID, personaID uint, personaChatID *uint, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error)
+	ChatWithPersonaStream(input *models.InputForPersonaChatStream)
 	GetAllPersonaChatByUserID(userID, personaID uint, pagination helper.Pagination) ([]models.PersonaChat, uint, error)
 	GetPersonaChatByID(userID, personaID, chatID uint) (*models.PersonaChat, error)
 	DeletePersonaChatByID(userID, personaID, chatID uint) error
@@ -35,8 +35,8 @@ func NewPersonaService(personaRepository repositories.PersonaRepository, pubsubC
 	}
 }
 
-func (s *personaService) CreateNewPersona(userID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error) {
-	return s.personaRepository.CreatePersona(userID, name, description, prompt, avatar, model, visibility, is_default)
+func (s *personaService) CreateNewPersona(input *models.InputForCreatePersona) (*models.Persona, error) {
+	return s.personaRepository.CreatePersona(input)
 }
 
 func (s *personaService) GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error) {
@@ -71,35 +71,35 @@ func (s *personaService) GetAllDefaultPersonas() ([]models.Persona, error) {
 	return s.personaRepository.GetAllDefaultPersonas()
 }
 
-func (s *personaService) ChatWithPersonaStream(userID, personaID uint, personaChatID *uint, additionalInstructions string, messages []models.Message, dataChan chan<- string, errChan chan<- error) {
-	selectPersona, err := s.GetPersonaByID(userID, personaID)
+func (s *personaService) ChatWithPersonaStream(input *models.InputForPersonaChatStream) {
+	selectPersona, err := s.GetPersonaByID(input.UserID, input.PersonaID)
 	if err != nil {
-		errChan <- err
+		input.ErrChan <- err
 		return
 	}
 
 	if selectPersona == nil {
-		errChan <- custom_errors.ErrNotFound
+		input.ErrChan <- custom_errors.ErrNotFound
 		return
 	}
 
 	generativeModel := generative_model.NewChatGenerativeModel(selectPersona.Provider)
 	err = generativeModel.LoadConfig()
 	if err != nil {
-		errChan <- err
+		input.ErrChan <- err
 		return
 	}
 
-	if personaChatID == nil {
+	if input.PersonaChatID == nil {
 		newMessages := []models.Message{}
 		newMessages = append(newMessages, models.Message{
-			Content: selectPersona.Prompt + "\n additional instructions - " + additionalInstructions + " Don't mention the addition instruction in your response.",
+			Content: selectPersona.Prompt + "\n additional instructions - " + input.AdditionalInstructions + " Don't mention the addition instruction in your response.",
 			Role:    "system",
 		})
 
-		newMessages = append(newMessages, messages...)
-		generativeModel.GenerateStreamingResponseForPersona(userID, personaID, personaChatID, selectPersona.Model, newMessages, s.personaRepository, dataChan, errChan, s.pubsub)
+		newMessages = append(newMessages, input.Messages...)
+		generativeModel.GenerateStreamingResponseForPersona(input.UserID, input.PersonaID, input.PersonaChatID, selectPersona.Model, newMessages, s.personaRepository, input.DataChan, input.ErrChan, s.pubsub)
 	} else {
-		generativeModel.GenerateStreamingResponseForPersona(userID, personaID, personaChatID, selectPersona.Model, messages, s.personaRepository, dataChan, errChan, s.pubsub)
+		generativeModel.GenerateStreamingResponseForPersona(input.UserID, input.PersonaID, input.PersonaChatID, selectPersona.Model, input.Messages, s.personaRepository, input.DataChan, input.ErrChan, s.pubsub)
 	}
 }

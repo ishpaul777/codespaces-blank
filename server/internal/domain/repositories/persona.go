@@ -8,7 +8,7 @@ import (
 )
 
 type PersonaRepository interface {
-	CreatePersona(userID uint, name, description, prompt, avatar, model string, visibility *models.VISIBILITY, is_default *bool) (*models.Persona, error)
+	CreatePersona(input *models.InputForCreatePersona) (*models.Persona, error)
 	DeletePersonaByID(userID, personaID uint) error
 	GetAllPersonas(userID uint, pagination helper.Pagination) ([]models.Persona, uint, error)
 	GetPersonaByID(userID, personaID uint) (*models.Persona, error)

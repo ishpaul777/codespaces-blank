@@ -74,7 +74,7 @@ type TextGenerativeModel interface {
 	GenerateTextUsingChatModel(input *InputForGenerateTextUsingChatModel) (interface{}, string, error)
 	GenerateTextUsingTextModelStream(input *InputForGenerateTextUsingTextModelStream)
 	GenerateTextUsingChatModelStream(input *InputForGenerateTextUsingChatModelStream)
-	EditText(input string, instruction string) (interface{}, error)
+	// EditText(input string, instruction string) (interface{}, error)
 }
 
 type ImageGenerativeModel interface {
@@ -96,6 +96,8 @@ type ChatGenerativeModel interface {
 
 func NewTextGenerativeModel(provider string) TextGenerativeModel {
 	switch provider {
+	// case "anthropic":
+	// 	return NewAnthropicAdapter()
 	default:
 		return NewOpenAIAdapter()
 	}

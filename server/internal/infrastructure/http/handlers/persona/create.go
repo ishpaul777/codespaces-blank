@@ -30,6 +30,14 @@ func (h *httpHandler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orgID, err := helper.GetUserID(r)
+
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
+		return
+	}
+
 	requestBody := &createPersonaRequest{}
 	err = json.NewDecoder(r.Body).Decode(requestBody)
 	if err != nil {
@@ -38,7 +46,18 @@ func (h *httpHandler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	persona, err := h.personaService.CreateNewPersona(userID, requestBody.Name, requestBody.Description, requestBody.Prompt, requestBody.Avatar, requestBody.Model, requestBody.Visibility, requestBody.IsDefault)
+	inputs := &models.InputForCreatePersona{
+		UserID:      userID,
+		OrgID:       orgID,
+		Model:       requestBody.Model,
+		Name:        requestBody.Name,
+		Description: requestBody.Description,
+		Prompt:      requestBody.Prompt,
+		Visbility:   requestBody.Visibility,
+		IsDefault:   requestBody.IsDefault,
+		Avatar:      requestBody.Avatar,
+	}
+	persona, err := h.personaService.CreateNewPersona(inputs)
 	if err != nil {
 		h.logger.Error("error creating persona")
 		if err == custom_errors.ErrNameExists {

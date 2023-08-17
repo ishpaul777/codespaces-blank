@@ -1,6 +1,8 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type VISIBILITY string
 
@@ -38,6 +40,30 @@ type PersonaChat struct {
 	Messages json.RawMessage `json:"messages" gorm:"type:jsonb"`
 	// Usage stores the usage of the chat
 	Usage json.RawMessage `json:"usage" gorm:"type:jsonb"`
+}
+
+type InputForCreatePersona struct {
+	UserID      uint
+	OrgID       uint
+	Model       string
+	Name        string
+	Description string
+	Prompt      string
+	Visbility   *VISIBILITY
+	IsDefault   *bool
+	Avatar      string
+}
+
+type InputForPersonaChatStream struct {
+	// Base model contains the basic timestamps and id
+	UserID                 uint
+	OrgID                  uint
+	PersonaID              uint
+	PersonaChatID          *uint
+	AdditionalInstructions string
+	Messages               []Message
+	DataChan               chan<- string
+	ErrChan                chan<- error
 }
 
 /*

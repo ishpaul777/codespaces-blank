@@ -71,4 +71,15 @@ const successToast = (message) => {
   });
 };
 
+export const getToastClassNameFromType = (type) => {
+  switch (type) {
+    case "error":
+      return "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]";
+    case "success":
+      return "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]";
+    default:
+      return "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]";
+  }
+};
+
 export { errorToast, successToast };

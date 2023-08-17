@@ -15,6 +15,7 @@ import (
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/persona"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompt_templates"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/prompts"
+	scraperHandler "github.com/factly/tagore/server/internal/infrastructure/http/handlers/scraper"
 	"github.com/factly/tagore/server/internal/infrastructure/http/handlers/usage"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -87,6 +88,8 @@ func RunHTTPServer(app *application.App) {
 
 	usageService := services.NewUsageService(usageRepository)
 
+	scraperService := services.NewScraperService(cfg.Scraper.URL, cfg.Scraper.Token)
+
 	prompts.InitRoutes(router, promptService, logger)
 	documents.InitRoutes(router, documentService, logger)
 	images.InitRoutes(router, imageService, logger)
@@ -94,7 +97,7 @@ func RunHTTPServer(app *application.App) {
 	prompt_templates.InitRoutes(router, promptTemplateService, logger)
 	persona.InitRoutes(router, personaService, logger)
 	usage.InitRoutes(router, usageService, logger)
-
+	scraperHandler.InitRoutes(router, logger, scraperService)
 	go func() {
 		pubsub := app.GetPubSub()
 		pubsub.Subscribe("tagore.usage", func(data []byte) {

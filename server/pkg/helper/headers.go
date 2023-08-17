@@ -13,3 +13,13 @@ func GetUserID(req *http.Request) (uint, error) {
 	}
 	return uint(uID), nil
 }
+
+func GetOrgID(req *http.Request) (uint, error) {
+	orgID := req.Header.Get("X-Org")
+	oID, err := strconv.Atoi(orgID)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint(oID), err
+}

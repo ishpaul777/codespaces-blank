@@ -12,7 +12,11 @@ import { SSE } from "sse.js";
 
 import { Link } from "react-router-dom";
 import { generateUUID } from "../../util/uuid";
-import { errorToast, successToast } from "../../util/toasts";
+import {
+  errorToast,
+  getToastClassNameFromType,
+  successToast,
+} from "../../util/toasts";
 import { ClipLoader } from "react-spinners";
 import { ToastContainer } from "react-toastify";
 import { Input } from "../../components/inputs/Input";
@@ -375,15 +379,7 @@ export default function BlogPostWorkflow() {
   return (
     <div className="w-full h-screen flex dark:bg-background-secondary-alt">
       <ToastContainer
-        toastClassName={({ type }) =>
-          type === "error"
-            ? "w-[340px] border-l-[12px] border-[#DA3125] rounded-md shadow-lg bg-[#FFF]"
-            : type === "success"
-            ? "w-[340px] border-l-[12px] border-[#03C04A] rounded-md shadow-lg bg-[#FFF]"
-            : type === "warning"
-            ? "w-[340px] border-l-[12px] border-[#EA8700] rounded-md shadow-lg bg-[#FFF]"
-            : ""
-        }
+        toastClassName={({ type }) => getToastClassNameFromType(type)}
         className="space-y-4  "
       />
       {loading ? (

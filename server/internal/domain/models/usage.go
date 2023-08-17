@@ -11,6 +11,7 @@ const (
 type Usage struct {
 	Base
 	UserID         uint      `gorm:"column:user_id;not null" json:"user_id"`
+	OrgID          uint      `gorm:"column:org_id;not null;" json:"org_id"`
 	TotalTokens    uint      `gorm:"column:total_tokens;not null" json:"total_tokens"`
 	PromptTokens   uint      `gorm:"column:prompt_tokens;not null" json:"prompt_tokens"`
 	ResponseTokens uint      `gorm:"column:response_tokens;not null" json:"response_tokens"`

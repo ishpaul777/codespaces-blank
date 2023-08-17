@@ -15,7 +15,8 @@ type GenerateTextResponse struct {
 type InputForGenerateTextResponse struct {
 	Provider               string `json:"provider"`
 	Model                  string `json:"model"`
-	UserID                 uint   `json:"user_id"`
+	UserID                 uint   `json:"-"`
+	OrgID                  uint   `json:"-"`
 	Input                  string `json:"input"`
 	GenerateFor            string `json:"generate_for"`
 	AdditionalInstructions string `json:"additional_instructions"`

@@ -29,6 +29,7 @@ import Authentication from "../pages/settings/authentication";
 import { VerifyEmail } from "../pages/verifyEmail";
 import { Verification } from "../pages/auth/verification";
 import { ForgotPassword } from "../pages/auth/forgotPassword";
+import SocialMedia from "../pages/workflow/social-media";
 
 export const routes = [
   {
@@ -135,6 +136,10 @@ export const routes = [
   {
     path: "/workflows/fact-check",
     element: <FactcheckWorkflow />,
+  },
+  {
+    path: "/workflows/social-media",
+    element: <SocialMedia />,
   },
   {
     path: "/workflows/blogpost",

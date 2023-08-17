@@ -27,6 +27,14 @@ func (h *httpHandler) createChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orgID, err := helper.GetUserID(r)
+
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
+		return
+	}
+
 	pID := helper.GetPathParamByName(r, "persona_id")
 	personaID, err := helper.StringToInt(pID)
 	if err != nil {
@@ -65,7 +73,18 @@ func (h *httpHandler) createChat(w http.ResponseWriter, r *http.Request) {
 			errChan = nil
 		}()
 
-		go h.personaService.ChatWithPersonaStream(userID, uint(personaID), chatReq.ChatID, chatReq.AdditionalInstructions, chatReq.Messages, msgChan, errChan)
+		input := &models.InputForPersonaChatStream{
+			UserID:                 userID,
+			OrgID:                  orgID,
+			PersonaID:              uint(personaID),
+			PersonaChatID:          chatReq.ChatID,
+			AdditionalInstructions: chatReq.AdditionalInstructions,
+			Messages:               chatReq.Messages,
+			DataChan:               msgChan,
+			ErrChan:                errChan,
+		}
+
+		go h.personaService.ChatWithPersonaStream(input)
 
 		for {
 			select {

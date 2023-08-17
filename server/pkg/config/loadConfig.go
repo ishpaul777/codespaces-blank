@@ -15,6 +15,7 @@ type Config struct {
 	Database DatabaseConfig
 	Logger   LoggerConfig
 	PubSub   PubSubConfig
+	Scraper  ScraperConfig
 }
 
 type ServerConfig struct {
@@ -37,6 +38,11 @@ type LoggerConfig struct {
 type PubSubConfig struct {
 	Provider string
 	URL      string
+}
+
+type ScraperConfig struct {
+	Token string
+	URL   string
 }
 
 func New() IConfigService {
@@ -120,6 +126,18 @@ func (config Config) LoadConfig() (*Config, error) {
 		log.Fatal("PUBSUB_URL config not set")
 	}
 
+	if viper.IsSet("SCRAPER_API_URL") {
+		c.Scraper.URL = viper.GetString("SCRAPER_API_URL")
+	} else {
+		log.Fatal("SCRAPER_API_URL config is not set")
+	}
+
+	if viper.IsSet("SCRAPER_API_KEY") {
+		c.Scraper.Token = viper.GetString("SCRAPER_API_KEY")
+	} else {
+		log.Fatal("SCRAPER_API_URL config is not set")
+
+	}
 	log.Println("configuration loaded successfully")
 	return c, nil
 }
