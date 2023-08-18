@@ -1,20 +1,18 @@
 package generative_model
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
 	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/helper"
+	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/anthropic"
 )
 
@@ -32,17 +30,17 @@ func NewAnthropicAdapter() *AnthropicAdapter {
 	return &AnthropicAdapter{}
 }
 
-type anthropicChatRequest struct {
-	PromptString string  `json:"prompt"`
-	Model        string  `json:"model"`
-	Temperature  float32 `json:"temperature"`
-	Stream       bool    `json:"stream"`
-	MaxTokens    int32   `json:"max_tokens_to_sample"`
-}
+// type anthropicChatRequest struct {
+// 	PromptString string  `json:"prompt"`
+// 	Model        string  `json:"model"`
+// 	Temperature  float32 `json:"temperature"`
+// 	Stream       bool    `json:"stream"`
+// 	MaxTokens    int32   `json:"max_tokens_to_sample"`
+// }
 
-type anthropicChatResponse struct {
-	Completion string `json:"completion"`
-}
+// type anthropicChatResponse struct {
+// 	Completion string `json:"completion"`
+// }
 
 var anthropicDataFile = "./modelData/anthropic.json"
 
@@ -98,7 +96,7 @@ func (a *AnthropicAdapter) GenerateResponse(input *GenerateChatResponse) ([]mode
 
 	ctx := context.Background()
 
-	completion, err := llm.Call(ctx, prompt)
+	completion, err := llm.Call(ctx, prompt, llms.WithTemperature(float64(input.Temperature)))
 	if err != nil {
 		return nil, err
 	}
@@ -109,56 +107,124 @@ func (a *AnthropicAdapter) GenerateResponse(input *GenerateChatResponse) ([]mode
 	}
 
 	input.Messages = append(input.Messages, latestMessage)
-	// request := anthropicChatRequest{
-	// 	Stream:       false,
-	// 	Model:        input.Model,
-	// 	Temperature:  input.Temperature,
-	// 	PromptString: generateRequestText(input.Messages),
-	// 	MaxTokens:    2000,
-	// }
-	// requestBody, err := json.Marshal(request)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// requestURL := a.API_URL + "/v1/complete"
-	// req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// req.Header.Add("x-api-key", a.API_KEY)
-
-	// resp, err := a.Client.Do(req)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// defer resp.Body.Close()
-	// if resp.StatusCode != http.StatusOK {
-	// 	errorResponse := make(map[string]interface{})
-	// 	_ = json.NewDecoder(resp.Body).Decode(&errorResponse)
-	// 	return nil, errors.New("anthropic api returned status code " + resp.Status)
-	// }
-
-	// var response anthropicChatResponse
-	// err = json.NewDecoder(resp.Body).Decode(&response)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// latestMessage := models.Message{
-	// 	Role:    "assistant",
-	// 	Content: response.Completion,
-	// }
-
-	// input.Messages = append(input.Messages, latestMessage)
 
 	return input.Messages, nil
 }
 
+func (a *AnthropicAdapter) GenerateTextUsingTextModel(input *InputForGenerateTextUsingTextModel) (interface{}, string, error) {
+	if !validateAnthropicModel(input.Model) {
+		return nil, "", ErrIncorrectAnthropicModel
+	}
+
+	// optionModel is the option related to model for anthropic
+	optionModel := anthropic.WithModel(input.Model)
+	// optionToken is the option related to token for antropic
+	optionToken := anthropic.WithToken(a.API_KEY)
+
+	llm, err := anthropic.New(optionModel, optionToken)
+	if err != nil {
+		return nil, "", err
+	}
+
+	prompt := "\n\nHuman: " + input.Prompt + ". \n\nAssistant: "
+
+	ctx := context.Background()
+
+	completion, err := llm.Call(ctx, prompt, llms.WithMaxLength(int(input.MaxTokens)))
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	return completion, "stop", nil
+}
+
 func (a *AnthropicAdapter) GenerateTextUsingChatModel(input *InputForGenerateTextUsingChatModel) (interface{}, string, error) {
-	return nil, "", nil
+	if !validateAnthropicModel(input.Model) {
+		return nil, "", ErrIncorrectAnthropicModel
+	}
+
+	// optionModel is the option related to model for anthropic
+	optionModel := anthropic.WithModel(input.Model)
+	// optionToken is the option related to token for antropic
+	optionToken := anthropic.WithToken(a.API_KEY)
+
+	llm, err := anthropic.New(optionModel, optionToken)
+	if err != nil {
+		return nil, "", err
+	}
+
+	prompt := "\n\nHuman: " + input.Prompt + ". " + input.AdditionalInstructions + ". \n\nAssistant: "
+
+	ctx := context.Background()
+
+	completion, err := llm.Call(ctx, prompt, llms.WithMaxLength(int(input.MaxTokens)))
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	return completion, "stop", nil
+}
+
+func (a *AnthropicAdapter) GenerateTextUsingTextModelStream(input *InputForGenerateTextUsingTextModelStream) {
+	if !validateAnthropicModel(input.Model) {
+		input.ErrChan <- ErrIncorrectAnthropicModel
+		return
+	}
+
+	// optionModel is the option related to model for anthropic
+	optionModel := anthropic.WithModel(input.Model)
+	// optionToken is the option related to token for antropic
+	optionToken := anthropic.WithToken(a.API_KEY)
+
+	llm, err := anthropic.New(optionModel, optionToken)
+	if err != nil {
+		input.ErrChan <- err
+		return
+	}
+
+	prompt := "\n\nHuman: " + input.Prompt + ". \n\nAssistant: "
+
+	ctx := context.Background()
+	responseMap := models.GenerateTextResponse{
+		Output:       "",
+		FinishReason: "",
+	}
+
+	streamingFunc := func(ctx context.Context, chunk []byte) error {
+		responseMap.Output += string(chunk)
+		responseMap.FinishReason = "finish"
+		return nil
+	}
+
+	_, err = llm.Call(ctx,
+		prompt,
+		llms.WithMaxLength(int(input.MaxTokens)),
+		llms.WithStreamingFunc(streamingFunc),
+	)
+
+	if err != nil {
+		input.ErrChan <- err
+		return
+	}
+
+	payload := map[string]interface{}{
+		"input":    input.Prompt,
+		"model":    input.Model,
+		"provider": "anthropic",
+		"output":   responseMap.Output,
+	}
+
+	request := models.RequestUsage{
+		UserID:  input.UserID,
+		Type:    "generate-text",
+		Payload: payload,
+	}
+
+	byteData, _ := json.Marshal(request)
+	input.PubsubClient.Publish("tagore.usage", byteData)
+	input.ErrChan <- errors.New("end of file")
 }
 
 func (a *AnthropicAdapter) GenerateTextUsingChatModelStream(input *InputForGenerateTextUsingChatModelStream) {
@@ -171,95 +237,79 @@ func (a *AnthropicAdapter) GenerateStreamingResponse(input *GenerateChatResponse
 		return
 	}
 
-	request := anthropicChatRequest{
-		Stream:       true,
-		Model:        input.Model,
-		Temperature:  input.Temperature,
-		PromptString: generateRequestText(input.Messages),
-		MaxTokens:    2000,
-	}
+	// optionModel is the option related to model for anthropic
+	optionModel := anthropic.WithModel(input.Model)
+	// optionToken is the option related to token for antropic
+	optionToken := anthropic.WithToken(a.API_KEY)
 
-	requestBody, err := json.Marshal(request)
+	llm, err := anthropic.New(optionModel, optionToken)
 	if err != nil {
 		input.ErrChan <- err
 		return
 	}
 
-	requestURL := a.API_URL + "/v1/complete"
-	req, err := http.NewRequest("POST", requestURL, bytes.NewBuffer(requestBody))
-	if err != nil {
-		input.ErrChan <- err
-		return
-	}
-	req.Header.Set("Cache-Control", "no-cache")
-	req.Header.Set("Accept", "text/event-stream")
-	req.Header.Set("Connection", "keep-alive")
-	req.Header.Add("x-api-key", a.API_KEY)
+	prompt := generateRequestText(input.Messages)
 
-	resp, err := a.Client.Do(req)
-	if err != nil {
-		input.ErrChan <- err
-		return
-	}
+	ctx := context.Background()
 
-	if resp.StatusCode != http.StatusOK {
-		errorResponse := make(map[string]interface{})
-		_ = json.NewDecoder(resp.Body).Decode(&errorResponse)
+	latestMsg := models.Message{}
+	latestMsg.Role = "assistant"
 
-		input.ErrChan <- errors.New("anthropic api returned status code " + resp.Status)
-		return
-	}
-
-	defer resp.Body.Close()
-
-	latestMessage := models.Message{
-		Role: "assistant",
-	}
-	input.Messages = append(input.Messages, latestMessage)
-	// chat is the chat object which will be streamed
+	input.Messages = append(input.Messages, latestMsg)
 	chat := &models.Chat{}
-	for {
-		data := make([]byte, 1024)
-		_, err := resp.Body.Read(data)
-		if errors.Is(err, io.EOF) {
-			_, dbErr := input.ChatRepo.SaveChat("Chat Title", input.UserID, input.ChatID, input.Model, input.Messages)
-			if dbErr != nil {
-				input.ErrChan <- dbErr
-				return
-			}
-		}
 
+	streamingFunc := func(ctx context.Context, chunk []byte) error {
+		input.Messages[len(input.Messages)-1].Content += string(chunk)
+		msgStream, err := helper.ConvertToJSONB(input.Messages)
 		if err != nil {
-			input.ErrChan <- err
-			return
+			return err
 		}
 
-		jsonData := strings.Replace(string(data), "data: ", "", 1)
-		jsonData = strings.ReplaceAll(jsonData, "\x00", "")
-		if jsonData != "[Done]" {
-			eachResponse := anthropicChatResponse{}
-			err = json.Unmarshal([]byte(jsonData), &eachResponse)
-			if err != nil {
-				input.ErrChan <- err
-				return
-			}
-			input.Messages[len(input.Messages)-1].Content = eachResponse.Completion
-			msgStream, err := helper.ConvertToJSONB(input.Messages[1:])
-			if err != nil {
-				input.ErrChan <- err
-				return
-			}
-			chat.Messages = msgStream
+		chat.Messages = msgStream
 
-			byteStream, err := json.Marshal(chat)
-			if err != nil {
-				input.ErrChan <- err
-				return
-			}
-			input.DataChan <- string(byteStream)
+		byteStream, err := json.Marshal(chat)
+		if err != nil {
+			return err
 		}
+
+		input.DataChan <- string(byteStream)
+		return nil
 	}
-	// generateRequestText(messages)
+
+	_, err = llm.Call(ctx, prompt, llms.WithTemperature(float64(input.Temperature)), llms.WithStreamingFunc(streamingFunc))
+	if err != nil {
+		input.ErrChan <- err
+		return
+	}
+
+	chat, err = input.ChatRepo.SaveChat("this is title anthropic", input.UserID, input.ChatID, input.Model, input.Messages)
+	if err != nil {
+		input.ErrChan <- err
+		return
+	}
+
+	byteStream, err := json.Marshal(chat)
+	if err != nil {
+		input.ErrChan <- err
+		return
+	}
+	input.DataChan <- string(byteStream)
+	usagePayload := map[string]interface{}{
+		"model":    input.Model,
+		"provider": "anthropic",
+		"chat":     chat,
+	}
+
+	request := models.RequestUsage{
+		UserID:  input.UserID,
+		Type:    "generate-chat",
+		Payload: usagePayload,
+	}
+
+	byteData, _ := json.Marshal(request)
+
+	input.PubsubClient.Publish("tagore.usage", byteData)
+	input.ErrChan <- errors.New("end of file")
 }
 
 func generateRequestText(messages []models.Message) string {
