@@ -88,8 +88,8 @@ func (h *httpHandler) getChatCollectionByID(w http.ResponseWriter, r *http.Reque
 		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid chatCollectionID", http.StatusBadRequest)))
 		return
 	}
-	response := &models.ChatCollection{}
-	response, err = h.chatService.GetChatCollectionByID(uint(chatColID))
+
+	response, err := h.chatService.GetChatCollectionByID(uint(chatColID))
 	if err != nil {
 		h.logger.Error("error getting all chats", "error", err.Error())
 		if err == custom_errors.ErrNotFound {

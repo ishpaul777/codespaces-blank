@@ -10,7 +10,6 @@ import (
 
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
-	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	httpGoogle "google.golang.org/api/transport/http"
 )
 
@@ -186,6 +185,6 @@ func (g *GoogleAdapter) GenerateStreamingResponse(data *GenerateChatResponseStre
 
 }
 
-func (g *GoogleAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
+func (g *GoogleAdapter) GenerateStreamingResponseForPersona(input *models.PersonaChatStream, personaRepo repositories.PersonaRepository) {
 
 }

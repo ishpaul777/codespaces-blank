@@ -98,8 +98,31 @@ func (s *personaService) ChatWithPersonaStream(input *models.InputForPersonaChat
 		})
 
 		newMessages = append(newMessages, input.Messages...)
-		generativeModel.GenerateStreamingResponseForPersona(input.UserID, input.PersonaID, input.PersonaChatID, selectPersona.Model, newMessages, s.personaRepository, input.DataChan, input.ErrChan, s.pubsub)
+
+		data := &models.PersonaChatStream{
+			UserID:       input.UserID,
+			OrgID:        input.OrgID,
+			PersonaID:    input.PersonaID,
+			Messages:     newMessages,
+			Model:        selectPersona.Model,
+			ChatID:       input.PersonaChatID,
+			DataChan:     input.DataChan,
+			ErrChan:      input.ErrChan,
+			PubsubClient: s.pubsub,
+		}
+		generativeModel.GenerateStreamingResponseForPersona(data, s.personaRepository)
 	} else {
-		generativeModel.GenerateStreamingResponseForPersona(input.UserID, input.PersonaID, input.PersonaChatID, selectPersona.Model, input.Messages, s.personaRepository, input.DataChan, input.ErrChan, s.pubsub)
+		data := &models.PersonaChatStream{
+			UserID:       input.UserID,
+			OrgID:        input.OrgID,
+			PersonaID:    input.PersonaID,
+			Messages:     input.Messages,
+			Model:        selectPersona.Model,
+			ChatID:       input.PersonaChatID,
+			DataChan:     input.DataChan,
+			ErrChan:      input.ErrChan,
+			PubsubClient: s.pubsub,
+		}
+		generativeModel.GenerateStreamingResponseForPersona(data, s.personaRepository)
 	}
 }

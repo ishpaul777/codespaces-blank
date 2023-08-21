@@ -32,6 +32,13 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	orgID, err := helper.GetUserID(r)
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-org header", http.StatusUnauthorized)))
+		return
+	}
+
 	var requestBody chatRequestBody
 	err = json.NewDecoder(r.Body).Decode(&requestBody)
 	if err != nil {
@@ -66,6 +73,7 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 		input := models.GenerateResponseForChatStream{
 			GenerateResponseforChat: models.GenerateResponseforChat{
 				UserID:                 userID,
+				OrgID:                  orgID,
 				ChatID:                 requestBody.ChatID,
 				Provider:               requestBody.Provider,
 				Model:                  requestBody.Model,
@@ -105,6 +113,7 @@ func (h *httpHandler) createChatResponse(w http.ResponseWriter, r *http.Request)
 	} else {
 		input := models.GenerateResponseforChat{
 			UserID:                 userID,
+			OrgID:                  orgID,
 			ChatID:                 requestBody.ChatID,
 			Provider:               requestBody.Provider,
 			Model:                  requestBody.Model,

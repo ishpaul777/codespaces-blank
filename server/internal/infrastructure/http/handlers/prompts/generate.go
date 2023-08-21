@@ -26,10 +26,18 @@ type generateRequest struct {
 func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 	uID, err := helper.GetUserID(r)
 	if err != nil {
-		h.logger.Error("error converting user id to int", "error", err.Error())
+		h.logger.Error("error getting X-User header", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
 		return
 	}
+
+	orgID, err := helper.GetUserID(r)
+	if err != nil {
+		h.logger.Error("error getting X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		return
+	}
+
 	requestBody := &generateRequest{}
 	err = json.NewDecoder(r.Body).Decode(requestBody)
 	if err != nil {
@@ -64,6 +72,7 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 			InputForGenerateTextResponse: models.InputForGenerateTextResponse{
 				Provider:               requestBody.Provider,
 				Model:                  requestBody.Model,
+				OrgID:                  orgID,
 				UserID:                 uID,
 				Input:                  requestBody.InputPrompt,
 				GenerateFor:            requestBody.GenerateFor,
@@ -101,6 +110,7 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 		input := &models.InputForGenerateTextResponse{
 			Provider:               requestBody.Provider,
 			Model:                  requestBody.Model,
+			OrgID:                  orgID,
 			UserID:                 uID,
 			Input:                  requestBody.InputPrompt,
 			GenerateFor:            requestBody.GenerateFor,

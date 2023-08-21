@@ -10,7 +10,6 @@ import (
 
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
-	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/anthropic"
@@ -388,6 +387,6 @@ func generateRequestText(messages []models.Message) string {
 	return requestString
 }
 
-func (a *AnthropicAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
+func (a *AnthropicAdapter) GenerateStreamingResponseForPersona(input *models.PersonaChatStream, personaRepo repositories.PersonaRepository) {
 
 }

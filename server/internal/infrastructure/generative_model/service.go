@@ -22,7 +22,7 @@ type (
 	}
 
 	GenerateChatResponseStream struct {
-		OrgID uint
+		OrgID        uint
 		UserID       uint
 		ChatID       *uint
 		Model        string
@@ -92,7 +92,9 @@ type ChatGenerativeModel interface {
 	GenerateResponse(input *GenerateChatResponse) ([]models.Message, error)
 	// GenerateStreamingResponse(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository, pubsubClient pubsub.PubSub)
 	GenerateStreamingResponse(data *GenerateChatResponseStream)
-	GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub)
+	GenerateStreamingResponseForPersona(input *models.PersonaChatStream, personaRepo repositories.PersonaRepository)
+
+	// GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub)
 	GenerateChatTitle(message models.Message) (string, error)
 	// GenerateStreamingResponseUsingSSE(userID uint, chatID *uint, model string, temperature float32, messages []models.Message, dataChan chan<- string, errChan chan<- error, chatRepo repositories.ChatRepository)
 }

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/factly/tagore/server/internal/domain/models"
@@ -121,6 +122,23 @@ func (p *promptService) GenerateText(input *models.InputForGenerateTextResponse)
 		}
 	}
 
+	payload := map[string]interface{}{
+		"input":    prompt,
+		"model":    input.Model,
+		"provider": input.Provider,
+		"output":   output,
+	}
+
+	request := models.RequestUsage{
+		OrgID:   input.OrgID,
+		UserID:  input.UserID,
+		Type:    "generate-text",
+		Payload: payload,
+	}
+
+	byteData, _ := json.Marshal(request)
+
+	p.pubsubClient.Publish("tagore.usage", byteData)
 	// p.pubsubClient.Publish("tagore.usage",)
 	return &models.GenerateTextResponse{
 		Output:       output.(string),
@@ -154,6 +172,7 @@ func (p *promptService) GenerateTextStream(input *models.InputForGenerateTextRes
 			UserID:                 input.UserID,
 			PubsubClient:           p.pubsubClient,
 			DataChan:               input.DataChan,
+			OrgID:                  input.OrgID,
 			ErrChan:                input.ErrChan,
 		}
 		generativeModel.GenerateTextUsingChatModelStream(inputForChatModel)
@@ -167,6 +186,7 @@ func (p *promptService) GenerateTextStream(input *models.InputForGenerateTextRes
 			PubsubClient: p.pubsubClient,
 			DataChan:     input.DataChan,
 			ErrChan:      input.ErrChan,
+			OrgID:        input.OrgID,
 		}
 
 		generativeModel.GenerateTextUsingTextModelStream(inputForTextModel)

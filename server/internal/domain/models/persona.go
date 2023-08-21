@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+
+	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 )
 
 type VISIBILITY string
@@ -65,6 +67,19 @@ type InputForPersonaChatStream struct {
 	Messages               []Message
 	DataChan               chan<- string
 	ErrChan                chan<- error
+}
+
+type PersonaChatStream struct {
+	UserID    uint
+	OrgID     uint
+	PersonaID uint
+	ChatID    *uint
+	Model     string
+	Messages  []Message
+	DataChan  chan<- string
+	ErrChan   chan<- error
+	// PersonaRepo  repositories.PersonaRepository
+	PubsubClient pubsub.PubSub
 }
 
 /*

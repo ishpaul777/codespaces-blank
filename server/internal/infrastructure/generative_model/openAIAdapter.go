@@ -10,7 +10,6 @@ import (
 	"github.com/factly/tagore/server/internal/domain/constants/prompts"
 	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/internal/domain/repositories"
-	"github.com/factly/tagore/server/internal/infrastructure/pubsub"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/sashabaranov/go-openai"
 )
@@ -440,10 +439,10 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(data *GenerateChatResponseStre
 	}
 }
 
-func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID uint, chatID *uint, model string, messages []models.Message, personaRepo repositories.PersonaRepository, dataChan chan<- string, errChan chan<- error, pubsubClient pubsub.PubSub) {
+func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(input *models.PersonaChatStream, personaRepo repositories.PersonaRepository) {
 	const temperature = 0.9
 	requestMessages := make([]openai.ChatCompletionMessage, 0)
-	for _, message := range messages {
+	for _, message := range input.Messages {
 		requestMessages = append(requestMessages, openai.ChatCompletionMessage{
 			Role:    message.Role,
 			Content: message.Content,
@@ -451,7 +450,7 @@ func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID ui
 	}
 
 	req := openai.ChatCompletionRequest{
-		Model:       model,
+		Model:       input.Model,
 		Messages:    requestMessages,
 		Stream:      true,
 		Temperature: temperature,
@@ -460,96 +459,96 @@ func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID ui
 	ctx := context.Background()
 	stream, err := o.Client.CreateChatCompletionStream(ctx, req)
 	if err != nil {
-		errChan <- err
+		input.ErrChan <- err
 		return
 	}
 
 	latestMessage := models.Message{}
 	latestMessage.Role = "assistant"
 
-	messages = append(messages, latestMessage)
+	input.Messages = append(input.Messages, latestMessage)
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
-			if chatID == nil {
-				personaChat, err := personaRepo.CreatePersonaChat(userID, personaID, messages)
+			if input.ChatID == nil {
+				personaChat, err := personaRepo.CreatePersonaChat(input.UserID, input.PersonaID, input.Messages)
 
 				if err != nil {
-					errChan <- err
+					input.ErrChan <- err
 					return
 				}
 
 				byteStream, err := json.Marshal(personaChat)
 				if err != nil {
-					errChan <- err
+					input.ErrChan <- err
 					return
 				}
 
-				dataChan <- string(byteStream)
-				errChan <- io.EOF
+				input.DataChan <- string(byteStream)
+				input.ErrChan <- io.EOF
 
 				payload := map[string]interface{}{
-					"model":    model,
+					"model":    input.Model,
 					"provider": OPENAI,
 					"chat":     personaChat,
 				}
 
 				request := models.RequestUsage{
-					OrgID:   1,
-					UserID:  userID,
+					OrgID:   input.UserID,
+					UserID:  input.UserID,
 					Type:    "generate-persona-chat",
 					Payload: payload,
 				}
 
 				byteData, _ := json.Marshal(request)
 
-				pubsubClient.Publish("tagore.usage", byteData)
+				input.PubsubClient.Publish("tagore.usage", byteData)
 			} else {
-				personaChat, err := personaRepo.UpdatePersonaChat(userID, personaID, *chatID, messages)
+				personaChat, err := personaRepo.UpdatePersonaChat(input.UserID, input.PersonaID, *input.ChatID, input.Messages)
 				if err != nil {
-					errChan <- err
+					input.ErrChan <- err
 					return
 				}
 
 				byteStream, err := json.Marshal(personaChat)
 				if err != nil {
-					errChan <- err
+					input.ErrChan <- err
 					return
 				}
 
-				dataChan <- string(byteStream)
-				errChan <- io.EOF
+				input.DataChan <- string(byteStream)
+				input.ErrChan <- io.EOF
 
 				payload := map[string]interface{}{
-					"model":    model,
+					"model":    input.Model,
 					"provider": OPENAI,
 					"chat":     personaChat,
 				}
 
 				request := models.RequestUsage{
-					OrgID:   1,
-					UserID:  userID,
+					OrgID:   input.OrgID,
+					UserID:  input.UserID,
 					Type:    "generate-persona-chat",
 					Payload: payload,
 				}
 
 				byteData, _ := json.Marshal(request)
 
-				pubsubClient.Publish("tagore.usage", byteData)
+				input.PubsubClient.Publish("tagore.usage", byteData)
 			}
 			return
 		}
 
 		if err != nil {
-			errChan <- err
+			input.ErrChan <- err
 			return
 		}
 
-		messages[len(messages)-1].Content += response.Choices[0].Delta.Content
+		input.Messages[len(input.Messages)-1].Content += response.Choices[0].Delta.Content
 
-		msgStream, err := helper.ConvertToJSONB(messages)
+		msgStream, err := helper.ConvertToJSONB(input.Messages)
 		if err != nil {
-			errChan <- err
+			input.ErrChan <- err
 			return
 		}
 
@@ -559,10 +558,10 @@ func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID ui
 
 		byteStream, err := json.Marshal(personaChat)
 		if err != nil {
-			errChan <- err
+			input.ErrChan <- err
 			return
 		}
 
-		dataChan <- string(byteStream)
+		input.DataChan <- string(byteStream)
 	}
 }
