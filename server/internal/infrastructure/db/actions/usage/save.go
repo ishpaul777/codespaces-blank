@@ -8,6 +8,7 @@ import (
 func (p *PGUsageRepository) SaveGenerateUsage(userID, orgID uint, inputToken, outputToken int, model, provider string, typeUsedFor models.UsageType) error {
 	newUsage := &models.Usage{
 		UserID:         userID,
+		OrgID:          orgID,
 		PromptTokens:   uint(inputToken),
 		ResponseTokens: uint(outputToken),
 		TotalTokens:    uint(inputToken + outputToken),
