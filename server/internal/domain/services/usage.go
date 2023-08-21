@@ -10,10 +10,10 @@ import (
 )
 
 type UsageService interface {
-	SaveGenerateUsage(userID uint, data interface{}) error
-	SaveChatUsage(userID uint, data interface{}) error
-	SavePersonaUsage(userID uint, data interface{}) error
-	GetUsageByUserID(userID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error)
+	SaveGenerateUsage(userID, orgID uint, data interface{}) error
+	SaveChatUsage(userID, orgID uint, data interface{}) error
+	SavePersonaUsage(userID, orgID uint, data interface{}) error
+	GetUsageByUserID(userID, orgID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error)
 }
 
 type usageService struct {
@@ -24,7 +24,7 @@ func NewUsageService(usageRepository repositories.UsageRepository) UsageService 
 	return &usageService{usageRepository: usageRepository}
 }
 
-func (u *usageService) SaveGenerateUsage(userID uint, data interface{}) error {
+func (u *usageService) SaveGenerateUsage(userID, orgID uint, data interface{}) error {
 	input := data.(map[string]interface{})["input"].(string)
 	model := data.(map[string]interface{})["model"].(string)
 	provider := data.(map[string]interface{})["provider"].(string)
@@ -39,10 +39,10 @@ func (u *usageService) SaveGenerateUsage(userID uint, data interface{}) error {
 		inputTokens = len(strings.Split(match[1], " "))
 	}
 
-	return u.usageRepository.SaveGenerateUsage(userID, inputTokens, outputToken, model, provider, "generate")
+	return u.usageRepository.SaveGenerateUsage(userID, orgID, inputTokens, outputToken, model, provider, "generate")
 }
 
-func (u *usageService) SaveChatUsage(userID uint, data interface{}) error {
+func (u *usageService) SaveChatUsage(userID, orgID uint, data interface{}) error {
 	model := data.(map[string]interface{})["model"].(string)
 	provider := data.(map[string]interface{})["provider"].(string)
 
@@ -85,15 +85,15 @@ func (u *usageService) SaveChatUsage(userID uint, data interface{}) error {
 		}
 	}
 
-	err = u.usageRepository.SaveGenerateUsage(userID, lastUsedInputToken, lastUsedOutputToken, model, provider, "chat")
+	err = u.usageRepository.SaveGenerateUsage(userID, orgID, lastUsedInputToken, lastUsedOutputToken, model, provider, "chat")
 	if err != nil {
 		return err
 	}
 
-	return u.usageRepository.SaveChatUsage(userID, chat.ID, inputToken, outputToken, model, provider)
+	return u.usageRepository.SaveChatUsage(userID, orgID, chat.ID, inputToken, outputToken, model, provider)
 }
 
-func (u *usageService) SavePersonaUsage(userID uint, data interface{}) error {
+func (u *usageService) SavePersonaUsage(userID, orgID uint, data interface{}) error {
 	model := data.(map[string]interface{})["model"].(string)
 	provider := data.(map[string]interface{})["provider"].(string)
 
@@ -136,15 +136,15 @@ func (u *usageService) SavePersonaUsage(userID uint, data interface{}) error {
 		}
 	}
 
-	err = u.usageRepository.SaveGenerateUsage(userID, lastUsedInputToken, lastUsedOutputToken, model, provider, "persona")
+	err = u.usageRepository.SaveGenerateUsage(userID, orgID, lastUsedInputToken, lastUsedOutputToken, model, provider, "persona")
 	if err != nil {
 		return err
 	}
 
-	return u.usageRepository.SavePersonaUsage(userID, chat.ID, inputToken, outputToken, model, provider)
+	return u.usageRepository.SavePersonaUsage(userID, orgID, chat.ID, inputToken, outputToken, model, provider)
 
 }
 
-func (u *usageService) GetUsageByUserID(userID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error) {
-	return u.usageRepository.GetUsageByUserID(userID, filters)
+func (u *usageService) GetUsageByUserID(userID, orgID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error) {
+	return u.usageRepository.GetUsageByUserID(userID, orgID, filters)
 }

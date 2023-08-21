@@ -7,10 +7,10 @@ import (
 )
 
 type UsageRepository interface {
-	SaveGenerateUsage(userID uint, inputToken, outputToken int, model, provider string, typeUsedFor models.UsageType) error
-	SaveChatUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error
-	SavePersonaUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error
-	GetUsageByUserID(userID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error)
+	SaveGenerateUsage(userID, orgID uint, inputToken, outputToken int, model, provider string, typeUsedFor models.UsageType) error
+	SaveChatUsage(userID, orgID uint, chatID uint, inputToken, outputToken int, model, provider string) error
+	SavePersonaUsage(userID, orgID uint, chatID uint, inputToken, outputToken int, model, provider string) error
+	GetUsageByUserID(userID, orgID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error)
 }
 
 func NewUsageRepository(database db.IDatabaseService) (UsageRepository, error) {

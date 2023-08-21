@@ -9,7 +9,7 @@ import (
 	"github.com/factly/tagore/server/pkg/helper"
 )
 
-func (p *PGUsageRepository) GetUsageByUserID(userID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error) {
+func (p *PGUsageRepository) GetUsageByUserID(userID, orgID uint, filters models.GetUsageFilters) ([]models.GetUsageResponse, error) {
 	var usages []models.GetUsageResponse
 
 	if filters.TargetMonth == "" {

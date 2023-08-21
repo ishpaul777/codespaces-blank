@@ -217,6 +217,7 @@ func (a *AnthropicAdapter) GenerateTextUsingTextModelStream(input *InputForGener
 	}
 
 	request := models.RequestUsage{
+		OrgID:   input.OrgID,
 		UserID:  input.UserID,
 		Type:    "generate-text",
 		Payload: payload,
@@ -277,6 +278,7 @@ func (a *AnthropicAdapter) GenerateTextUsingChatModelStream(input *InputForGener
 	}
 
 	request := models.RequestUsage{
+		OrgID:   input.OrgID,
 		UserID:  input.UserID,
 		Type:    "generate-text",
 		Payload: payload,
@@ -357,6 +359,7 @@ func (a *AnthropicAdapter) GenerateStreamingResponse(input *GenerateChatResponse
 	}
 
 	request := models.RequestUsage{
+		OrgID:   input.OrgID,
 		UserID:  input.UserID,
 		Type:    "generate-chat",
 		Payload: usagePayload,

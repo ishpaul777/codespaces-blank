@@ -22,6 +22,7 @@ type (
 	}
 
 	GenerateChatResponseStream struct {
+		OrgID uint
 		UserID       uint
 		ChatID       *uint
 		Model        string
@@ -47,6 +48,7 @@ type (
 	}
 
 	InputForGenerateTextUsingTextModelStream struct {
+		OrgID        uint
 		UserID       uint
 		Model        string
 		Prompt       string
@@ -57,6 +59,7 @@ type (
 	}
 
 	InputForGenerateTextUsingChatModelStream struct {
+		OrgID                  uint
 		UserID                 uint
 		Model                  string
 		Prompt                 string

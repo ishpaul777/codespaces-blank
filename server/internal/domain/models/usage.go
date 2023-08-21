@@ -21,6 +21,7 @@ type Usage struct {
 }
 
 type RequestUsage struct {
+	OrgID   uint
 	UserID  uint
 	Type    string      `json:"type"`
 	Payload interface{} `json:"payload"`

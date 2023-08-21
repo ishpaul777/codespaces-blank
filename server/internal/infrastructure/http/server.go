@@ -105,19 +105,19 @@ func RunHTTPServer(app *application.App) {
 			json.Unmarshal(data, &usageData)
 			switch usageData.Type {
 			case "generate-text":
-				err := usageService.SaveGenerateUsage(usageData.UserID, usageData.Payload)
+				err := usageService.SaveGenerateUsage(usageData.UserID, usageData.OrgID, usageData.Payload)
 				if err != nil {
 					logger.Error("error in saving the generate-text user details", "error", err.Error())
 				}
 
 			case "generate-chat":
-				err := usageService.SaveChatUsage(usageData.UserID, usageData.Payload)
+				err := usageService.SaveChatUsage(usageData.UserID, usageData.OrgID, usageData.Payload)
 				if err != nil {
 					logger.Error("error in saving the generate-chat user details", "error", err.Error())
 				}
 
 			case "generate-persona-chat":
-				err := usageService.SavePersonaUsage(usageData.UserID, usageData.Payload)
+				err := usageService.SavePersonaUsage(usageData.UserID, usageData.OrgID, usageData.Payload)
 				if err != nil {
 					logger.Error("error in saving the generate-persona user details", "error", err.Error())
 				}

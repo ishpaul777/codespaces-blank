@@ -17,6 +17,13 @@ func (h *httpHandler) getUsage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orgID, err := helper.GetOrgID(r)
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
+		return
+	}
+
 	// fetching filters from the request
 	filters := new(models.GetUsageFilters)
 	filters.TargetMonth = r.URL.Query().Get("target_month")
@@ -25,7 +32,7 @@ func (h *httpHandler) getUsage(w http.ResponseWriter, r *http.Request) {
 	filters.Provider = r.URL.Query().Get("provider")
 	filters.UsageType = models.StatisticType(r.URL.Query().Get("usage_type"))
 
-	usage, err := h.usageService.GetUsageByUserID(uID, *filters)
+	usage, err := h.usageService.GetUsageByUserID(uID, orgID, *filters)
 	if err != nil {
 		h.logger.Error("error getting usage", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.DBError()))

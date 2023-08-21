@@ -13,7 +13,6 @@ type PubSub interface {
 	Subscribe(topic string, callback func(data []byte)) error
 	// Close closes the connection
 	Close()
-	
 }
 
 // ErrInvalidPubSubProvider is the error returned when an invalid provider is passed

@@ -153,6 +153,7 @@ func (o *OpenAIAdapter) GenerateTextUsingTextModelStream(input *InputForGenerate
 			}
 
 			request := models.RequestUsage{
+				OrgID:   input.OrgID,
 				UserID:  input.UserID,
 				Type:    "generate-text",
 				Payload: payload,
@@ -225,6 +226,7 @@ func (o *OpenAIAdapter) GenerateTextUsingChatModelStream(input *InputForGenerate
 			}
 
 			request := models.RequestUsage{
+				OrgID:   input.OrgID,
 				UserID:  input.UserID,
 				Type:    "generate-text",
 				Payload: payload,
@@ -402,6 +404,7 @@ func (o *OpenAIAdapter) GenerateStreamingResponse(data *GenerateChatResponseStre
 			}
 
 			request := models.RequestUsage{
+				OrgID:   data.OrgID,
 				UserID:  data.UserID,
 				Type:    "generate-chat",
 				Payload: usagePayload,
@@ -492,6 +495,7 @@ func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID ui
 				}
 
 				request := models.RequestUsage{
+					OrgID:   1,
 					UserID:  userID,
 					Type:    "generate-persona-chat",
 					Payload: payload,
@@ -523,6 +527,7 @@ func (o *OpenAIAdapter) GenerateStreamingResponseForPersona(userID, personaID ui
 				}
 
 				request := models.RequestUsage{
+					OrgID:   1,
 					UserID:  userID,
 					Type:    "generate-persona-chat",
 					Payload: payload,

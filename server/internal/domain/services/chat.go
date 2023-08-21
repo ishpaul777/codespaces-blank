@@ -142,6 +142,7 @@ func (c *chatService) GenerateResponse(input models.GenerateResponseforChat) (*m
 	}
 
 	usage := models.RequestUsage{
+		OrgID:   input.OrgID,
 		UserID:  input.UserID,
 		Type:    "generate-chat",
 		Payload: payload,

@@ -5,7 +5,7 @@ import (
 	"github.com/factly/tagore/server/pkg/helper"
 )
 
-func (p *PGUsageRepository) SaveGenerateUsage(userID uint, inputToken, outputToken int, model, provider string, typeUsedFor models.UsageType) error {
+func (p *PGUsageRepository) SaveGenerateUsage(userID, orgID uint, inputToken, outputToken int, model, provider string, typeUsedFor models.UsageType) error {
 	newUsage := &models.Usage{
 		UserID:         userID,
 		PromptTokens:   uint(inputToken),
@@ -23,7 +23,7 @@ func (p *PGUsageRepository) SaveGenerateUsage(userID uint, inputToken, outputTok
 	return nil
 }
 
-func (p *PGUsageRepository) SaveChatUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error {
+func (p *PGUsageRepository) SaveChatUsage(userID, orgID uint, chatID uint, inputToken, outputToken int, model, provider string) error {
 	chatUsage := models.EachChatUsage{
 		ResponseTokens: uint(outputToken),
 		PromptTokens:   uint(inputToken),
@@ -48,7 +48,7 @@ func (p *PGUsageRepository) SaveChatUsage(userID uint, chatID uint, inputToken, 
 	return nil
 }
 
-func (p *PGUsageRepository) SavePersonaUsage(userID uint, chatID uint, inputToken, outputToken int, model, provider string) error {
+func (p *PGUsageRepository) SavePersonaUsage(userID, orgID uint, chatID uint, inputToken, outputToken int, model, provider string) error {
 	chatUsage := models.EachChatUsage{
 		ResponseTokens: uint(outputToken),
 		PromptTokens:   uint(inputToken),
