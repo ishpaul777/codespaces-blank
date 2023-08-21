@@ -140,7 +140,7 @@ function Usage() {
           <SearchableInput
             label={"Provider"}
             placeholder={"Search Provider"}
-            listOptions={["openai"]}
+            listOptions={["openai", "anthropic"]}
             onChange={(value) => {
               setQuery({
                 ...query,
@@ -152,7 +152,7 @@ function Usage() {
           <SearchableInput
             label={"Model"}
             placeholder={"Search Model"}
-            listOptions={["gpt-3.5-turbo", "gpt-4"]}
+            listOptions={["gpt-3.5-turbo", "gpt-4", "claude-2"]}
             onChange={(value) => {
               setQuery({
                 ...query,

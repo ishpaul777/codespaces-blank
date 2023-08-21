@@ -13,6 +13,7 @@ import { TiFlowMerge } from "react-icons/ti";
 import { BsChatLeftText } from "react-icons/bs";
 import { BiLogOutCircle } from "react-icons/bi";
 import { FiSettings } from "react-icons/fi";
+import logo from "../../assets/FactlyLogotext.svg";
 
 export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   const [openMenu, setOpenMenu] = useState(false);
@@ -135,10 +136,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
               isMobileScreen ? "w-[80vw] z-50" : "w-full"
             } p-5 pt-8 bg-background-sidebar h-screen flex flex-col dark:bg-background-sidebar-alt`}
           >
-            <div className={`flex gap-x-2 items-center justify-center w-fit`}>
+            <div className={`flex gap-x-2 items-center justify-center w-full`}>
               <img
-                src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
-                className="cursor-pointer w-3/4"
+                src={logo}
+                className="cursor-pointer w-full h-[48px]"
                 alt="logo"
               />
             </div>

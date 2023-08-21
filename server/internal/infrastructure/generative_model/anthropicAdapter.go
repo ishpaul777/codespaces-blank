@@ -228,7 +228,63 @@ func (a *AnthropicAdapter) GenerateTextUsingTextModelStream(input *InputForGener
 }
 
 func (a *AnthropicAdapter) GenerateTextUsingChatModelStream(input *InputForGenerateTextUsingChatModelStream) {
+	if !validateAnthropicModel(input.Model) {
+		input.ErrChan <- ErrIncorrectAnthropicModel
+		return
+	}
 
+	// optionModel is the option related to model for anthropic
+	optionModel := anthropic.WithModel(input.Model)
+	// optionToken is the option related to token for antropic
+	optionToken := anthropic.WithToken(a.API_KEY)
+
+	llm, err := anthropic.New(optionModel, optionToken)
+	if err != nil {
+		input.ErrChan <- err
+		return
+	}
+
+	prompt := "\n\nHuman: " + input.Prompt + " " + input.AdditionalInstructions + ". \n\nAssistant: "
+
+	ctx := context.Background()
+	responseMap := models.GenerateTextResponse{
+		Output:       "",
+		FinishReason: "",
+	}
+
+	streamingFunc := func(ctx context.Context, chunk []byte) error {
+		responseMap.Output += string(chunk)
+		responseMap.FinishReason = "finish"
+		return nil
+	}
+
+	_, err = llm.Call(ctx,
+		prompt,
+		llms.WithMaxLength(int(input.MaxTokens)),
+		llms.WithStreamingFunc(streamingFunc),
+	)
+
+	if err != nil {
+		input.ErrChan <- err
+		return
+	}
+
+	payload := map[string]interface{}{
+		"input":    input.Prompt,
+		"model":    input.Model,
+		"provider": "anthropic",
+		"output":   responseMap.Output,
+	}
+
+	request := models.RequestUsage{
+		UserID:  input.UserID,
+		Type:    "generate-text",
+		Payload: payload,
+	}
+
+	byteData, _ := json.Marshal(request)
+	input.PubsubClient.Publish("tagore.usage", byteData)
+	input.ErrChan <- errors.New("end of file")
 }
 
 func (a *AnthropicAdapter) GenerateStreamingResponse(input *GenerateChatResponseStream) {

@@ -5,6 +5,8 @@ import "encoding/json"
 // Chat is a database model for type chat
 type Chat struct {
 	Base
+	// OrgID for usage
+	OrgID uint `json:"org_id" gorm:"column:org_id"`
 	// Title is the title of the chat
 	Title string `json:"title" gorm:"column:title;DEFAULT 'new title';not null;"`
 	// Messages stores the chat history in the json format
@@ -43,6 +45,7 @@ type Message struct {
 
 type GenerateResponseforChat struct {
 	UserID                 uint      `json:"user_id"`
+	OrgID                  uint      `json:"org_id"`
 	ChatID                 *uint     `json:"chat_id"`
 	Provider               string    `json:"provider"`
 	Model                  string    `json:"model"`
@@ -54,6 +57,6 @@ type GenerateResponseforChat struct {
 
 type GenerateResponseForChatStream struct {
 	GenerateResponseforChat
-	DataChan               chan<- string
-	ErrChan                chan<- error
+	DataChan chan<- string
+	ErrChan  chan<- error
 }

@@ -8,6 +8,8 @@ import MenuIcon from "../MenuIcon";
 import useDarkMode from "../../hooks/useDarkMode";
 import "react-toastify/dist/ReactToastify.css";
 
+import logo from "../../assets/FactlyLogotext.svg";
+
 export default function Layout() {
   const { isMobileScreen } = useWindowSize();
   const [sideBarOpen, setSidebarOpen] = useState(false);
@@ -23,7 +25,7 @@ export default function Layout() {
         {isMobileScreen && (
           <nav className="w-screen flex justify-between items-end fixed top-0 bg-[#DCE4E7] dark:bg-background-sidebar-alt px-8 pb-4 pt-10 z-30">
             <img
-              src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
+              src={logo}
               className="cursor-pointer w-[123px] h-[32px]"
               alt="logo"
             />

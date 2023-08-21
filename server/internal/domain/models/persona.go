@@ -16,6 +16,7 @@ var (
 
 type Persona struct {
 	Base
+	OrgID       uint       `gorm:"org_id" json:"org_id"`
 	Name        string     `gorm:"column:name" json:"name"`
 	Slug        string     `gorm:"column:slug" json:"slug"`
 	Description string     `gorm:"column:description" json:"description"`

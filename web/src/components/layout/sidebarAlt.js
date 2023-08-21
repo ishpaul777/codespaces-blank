@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { errorToast } from "../../util/toasts";
 import { getProfile } from "../../actions/profile";
+import logo from "../../assets/FactlyLogotext.svg";
 
 export function SidebarAlt() {
   const dispatch = useDispatch();
@@ -109,11 +110,13 @@ export function SidebarAlt() {
     >
       <div>
         <div className={`flex gap-x-2 items-center justify-center w-fit`}>
-          <img
-            src="https://images.factly.in/login/applications/logos/factly.png?rs:fill/h:60"
-            className="cursor-pointer w-3/4"
-            alt="logo"
-          />
+          <div className={`flex gap-x-2 items-center justify-center w-full`}>
+            <img
+              src={logo}
+              className="cursor-pointer w-full h-[48px]"
+              alt="logo"
+            />
+          </div>
         </div>
 
         <ul

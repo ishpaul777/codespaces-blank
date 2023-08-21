@@ -99,10 +99,19 @@ export default function SocialMedia() {
             requestBody.additional_instructions =
               "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text. The content should be generated in ENGLISH(UK)";
             let prompt = ContentPrompt;
-            prompt = prompt.replace("Specify the number of samples you want", nOfOutput);
-            prompt = prompt.replace("Specify the platforms you want the posts to be tailored for", selectedSocialMedia);
-            prompt = prompt.replace("Insert your content here", `title - ${content?.objects[0]?.title} \ndataInBrief - ${content?.objects[0]?.text}`);
-            if(stream){
+            prompt = prompt.replace(
+              "Specify the number of samples you want",
+              nOfOutput
+            );
+            prompt = prompt.replace(
+              "Specify the platforms you want the posts to be tailored for",
+              selectedSocialMedia
+            );
+            prompt = prompt.replace(
+              "Insert your content here",
+              `title - ${content?.objects[0]?.title} \ndataInBrief - ${content?.objects[0]?.text}`
+            );
+            if (stream) {
               setFormLoading(true);
               requestBody.stream = true;
               requestBody.model = "gpt-4";
@@ -145,7 +154,7 @@ export default function SocialMedia() {
               setFormLoading(true);
               requestBody.stream = false;
               requestBody.input = prompt;
-              requestBody.model = 'gpt-3.5-turbo';
+              requestBody.model = "gpt-3.5-turbo";
               const response = await generateTextFromPrompt(requestBody);
               let output = response?.output?.replace(/\n|\t|(?<=>)\s*/g, "");
               setEditorData((prevState) => {
@@ -157,7 +166,6 @@ export default function SocialMedia() {
               });
               setFormLoading(false);
             }
-
           }}
           loading={formLoading}
         />
