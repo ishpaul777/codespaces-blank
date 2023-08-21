@@ -24,11 +24,11 @@ func (h *httpHandler) getAllDocuments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	orgID, err := helper.GetOrgID(r)
-	if err != nil {
-		h.logger.Error("error in parsing X-Org header", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
-		return
-	}
+	// if err != nil {
+	// 	h.logger.Error("error in parsing X-Org header", "error", err.Error())
+	// 	errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
+	// 	return
+	// }
 
 	pagination, err := helper.GetPagination(r)
 	if err != nil {
