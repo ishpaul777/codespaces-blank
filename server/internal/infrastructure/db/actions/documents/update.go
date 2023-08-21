@@ -7,9 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func (p *PGDocumentRepository) UpdateDocumentByID(userID uint, documentID uint, title string, description string) (*models.Document, error) {
+func (p *PGDocumentRepository) UpdateDocumentByID(req *models.UpdateDocumentReq) (*models.Document, error) {
 	var count int64
-	err := p.client.Model(&models.Document{}).Where(&models.Document{Title: title}).Not("id = ?", documentID).Count(&count).Error
+	err := p.client.Model(&models.Document{}).Where(&models.Document{Title: req.Title}).Not("id = ?", req.DocumentID).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
@@ -17,22 +17,22 @@ func (p *PGDocumentRepository) UpdateDocumentByID(userID uint, documentID uint, 
 		return nil, custom_errors.ErrNameExists
 	}
 	updateMap := map[string]interface{}{}
-	if title != "" {
-		updateMap["title"] = title
-		updateMap["slug"] = slugx.Make(title)
+	if req.Title != "" {
+		updateMap["title"] = req.Title
+		updateMap["slug"] = slugx.Make(req.Title)
 	}
 
-	if description != "" {
-		updateMap["description"] = description
+	if req.Description != "" {
+		updateMap["description"] = req.Description
 	}
 
-	err = p.client.Model(&models.Document{}).Where("created_by_id = ? AND id = ?", userID, documentID).Updates(&updateMap).Error
+	err = p.client.Model(&models.Document{}).Where("created_by_id = ? AND id = ?", req.UserID, req.DocumentID).Updates(&updateMap).Error
 	if err != nil {
 		return nil, err
 	}
 
 	document := &models.Document{}
-	err = p.client.Model(&models.Document{}).Where("created_by_id = ? AND id = ?", userID, documentID).First(&document).Error
+	err = p.client.Model(&models.Document{}).Where("created_by_id = ? AND id = ?", req.UserID, req.DocumentID).First(&document).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, custom_errors.ErrNotFound

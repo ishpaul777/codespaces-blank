@@ -30,9 +30,15 @@ func (h *httpHandler) getAllDocuments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	input := &models.GetAllDocumentReq{
+		UserID:     userID,
+		OrgID:      1,
+		Pagination: *pagination,
+	}
+
 	response := &responseGetAllDocuments{}
 
-	response.Documents, response.Count, err = h.documentService.GetAllDocuments(userID, *pagination)
+	response.Documents, response.Count, err = h.documentService.GetAllDocuments(input)
 	if err != nil {
 		h.logger.Error("error getting all documents", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))

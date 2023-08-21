@@ -6,10 +6,10 @@ import (
 	"github.com/factly/x/slugx"
 )
 
-func (p *PGDocumentRepository) CreateDocument(userID uint, title, description string) (*models.Document, error) {
+func (p *PGDocumentRepository) CreateDocument(req *models.CreateDocumentReq) (*models.Document, error) {
 
 	var count int64
-	err := p.client.Model(&models.Document{}).Where(&models.Document{Title: title}).Count(&count).Error
+	err := p.client.Model(&models.Document{}).Where(&models.Document{Title: req.Title}).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
@@ -17,16 +17,16 @@ func (p *PGDocumentRepository) CreateDocument(userID uint, title, description st
 		return nil, custom_errors.ErrNameExists
 	}
 
-	slug := slugx.Make(title)
+	slug := slugx.Make(req.Title)
 
 	users := []models.User{}
-	users = append(users, models.User{ID: userID})
+	users = append(users, models.User{ID: req.UserID})
 	newDocument := &models.Document{
 		Base: models.Base{
-			CreatedByID: userID,
+			CreatedByID: req.UserID,
 		},
-		Title:       title,
-		Description: description,
+		Title:       req.Title,
+		Description: req.Description,
 		Slug:        slug,
 		Authors:     users,
 	}

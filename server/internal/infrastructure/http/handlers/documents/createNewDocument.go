@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/factly/tagore/server/internal/domain/constants/custom_errors"
+	"github.com/factly/tagore/server/internal/domain/models"
 	"github.com/factly/tagore/server/pkg/helper"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/renderx"
@@ -31,7 +32,13 @@ func (h *httpHandler) createNewDocument(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	document, err := h.documentService.CreateNewDocument(userID, requestBody.Title, requestBody.Description)
+	input := &models.CreateDocumentReq{
+		Title:       requestBody.Title,
+		Description: requestBody.Description,
+		UserID:      userID,
+		OrgID:       1,
+	}
+	document, err := h.documentService.CreateNewDocument(input)
 	if err != nil {
 		h.logger.Error("error creating new document", "error", err.Error())
 		if err == custom_errors.ErrNameExists {
