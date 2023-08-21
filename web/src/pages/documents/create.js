@@ -4,7 +4,6 @@ import InfoIcon from "../../assets/icons/info-icon.svg";
 import Clear from "../../assets/icons/clear.svg";
 import Share from "../../assets/icons/share.svg";
 import Tick from "../../assets/icons/tick.svg";
-import { ScooterCore } from "@factly/scooter-core";
 // import { IoShareSocialOutline } from "react-icons/io5";
 // import { MdDeleteOutline } from "react-icons/md";
 import { DocActionButton } from "../../components/buttons/DocActionButton";
@@ -24,8 +23,10 @@ import MenuIcon from "../../components/MenuIcon";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import useDarkMode from "../../hooks/useDarkMode";
 import { BiArrowBack } from "react-icons/bi";
+import { Editor } from "../../components/editor";
+import { withOrg } from "../../components/organisation/withOrg";
 
-export default function Document() {
+function Document({ selectedOrg }) {
   const [searchParams] = useSearchParams();
 
   const [prompt, setPrompt] = useState("");
@@ -113,7 +114,7 @@ export default function Document() {
               errorToast("error in updating document");
             });
         } else {
-          createDocument(requestBody)
+          createDocument(requestBody, selectedOrg)
             .then((response) => {
               navigate(`/documents/create?id=${response?.id}&isEdit=true`);
               successToast("document created successfully");
@@ -144,6 +145,7 @@ export default function Document() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Org": selectedOrg,
         },
         withCredentials: true,
         payload: JSON.stringify({
@@ -528,13 +530,9 @@ export default function Document() {
               darkMode && "bg-background-sidebar-alt"
             }`}
           >
-            <ScooterCore
-              placeholder="Write your content here. Press / for commands and /generate for AI commands"
-              className="bg-white dark:bg-background-sidebar-alt dark:text-white text-black-50"
+            <Editor
               editorInstance={(editor) => setEditor(editor)}
               initialValue={editorData}
-              heightStrategy="flexible"
-              menuType="bubble"
               onChange={(change) => {
                 setEditorData(change?.html);
               }}
@@ -782,3 +780,5 @@ export default function Document() {
     </div>
   );
 }
+
+export default withOrg(Document);

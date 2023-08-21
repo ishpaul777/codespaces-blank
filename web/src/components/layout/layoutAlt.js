@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-import { SidebarAlt } from "./sidebarAlt";
+import SidebarAlt from "./sidebarAlt";
 import { ToastContainer } from "react-toastify";
 import useDarkMode from "../../hooks/useDarkMode";
 

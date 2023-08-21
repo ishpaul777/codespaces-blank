@@ -4,7 +4,7 @@ export const getUsageByUser = ({
   provider,
   type,
   usage_type,
-  org_id
+  org_id,
 }) => {
   // query parameters:
   //  - target_month: the month and year to get usage for

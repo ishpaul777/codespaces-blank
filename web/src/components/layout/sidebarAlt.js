@@ -10,6 +10,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { errorToast } from "../../util/toasts";
 import { getProfile } from "../../actions/profile";
 import logo from "../../assets/FactlyLogotext.svg";
+import { withOrg } from "../organisation/withOrg";
 
 export function SidebarAlt() {
   const dispatch = useDispatch();
@@ -196,3 +197,5 @@ export function SidebarAlt() {
     </div>
   );
 }
+
+export default withOrg(SidebarAlt);

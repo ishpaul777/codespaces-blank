@@ -109,7 +109,7 @@ export default function SocialMedia() {
             );
             prompt = prompt.replace(
               "Insert your content here",
-              `title - ${content?.objects[0]?.title} \ndataInBrief - ${content?.objects[0]?.text}`
+              `title - ${content}`
             );
             if (stream) {
               setFormLoading(true);

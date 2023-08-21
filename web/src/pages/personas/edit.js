@@ -42,7 +42,6 @@ export default function EditPersona() {
     setLoading(true);
     getPersonaByID(id)
       .then((response) => {
-        console.log(response);
         const { avatar, description, name, prompt, visibility } = response;
         setRequestBody({
           name: {
@@ -68,7 +67,6 @@ export default function EditPersona() {
         });
       })
       .catch((e) => {
-        console.log(e);
         errorToast("Unable to fetch persona. Please try again.");
       })
       .finally(() => {

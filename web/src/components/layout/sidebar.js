@@ -14,8 +14,12 @@ import { BsChatLeftText } from "react-icons/bs";
 import { BiLogOutCircle } from "react-icons/bi";
 import { FiSettings } from "react-icons/fi";
 import logo from "../../assets/FactlyLogotext.svg";
+import { getOrganisationsFromKavach } from "../../actions/organisation";
+import { useDispatch } from "react-redux";
+import { withOrg } from "../organisation/withOrg";
 
 export function Sidebar({ sideBarOpen, setSidebarOpen }) {
+  const dispatch = useDispatch();
   const [openMenu, setOpenMenu] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const { isMobileScreen } = useWindowSize();
@@ -118,6 +122,21 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
       fontSize: "1rem",
     },
   };
+
+  const fetchOrganisationsFromKavach = async () => {
+    const response = await getOrganisationsFromKavach();
+    dispatch({
+      type: "ADD_ORGS",
+      payload: response?.map((org) => ({
+        ...org?.organisation,
+        role: org?.permission?.role,
+      })),
+    });
+  };
+
+  useEffect(() => {
+    fetchOrganisationsFromKavach();
+  }, []);
 
   return (
     <div
@@ -229,3 +248,5 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
     </div>
   );
 }
+
+export default withOrg(Sidebar);

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Sidebar } from "./sidebar";
+import Sidebar from "./sidebar";
 
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";

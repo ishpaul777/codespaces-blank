@@ -29,10 +29,10 @@ function RetrieveContent({ handleSubmit = () => {} }) {
       label: "Custom Text",
       value: "Custom Text",
     },
-    {
-      label: "Tagore Document",
-      value: "Tagore Document",
-    },
+    // {
+    //   label: "Tagore Document",
+    //   value: "Tagore Document",
+    // },
     {
       label: "Fetch from a URL",
       value: "Fetch from a URL",
@@ -41,6 +41,19 @@ function RetrieveContent({ handleSubmit = () => {} }) {
 
   const validateForm = () => {
     let error = false;
+    if (formValues.contentSource.value === "Custom Text") {
+      if (formValues.contextData.value === "") {
+        setFormValues({
+          ...formValues,
+          contextData: {
+            value: formValues.contextData.value,
+            error: "This field is required",
+          },
+        });
+        error = true;
+      }
+    }
+
     if (formValues.contentSource.value === "Tagore Document") {
     }
 
@@ -63,24 +76,27 @@ function RetrieveContent({ handleSubmit = () => {} }) {
     if (validateForm()) {
       return;
     }
-    setLoading(true);
-    getDataFromURL(formValues.urlData.value)
-      .then((data) => {
-        handleSubmit(data);
-        setFormValues({
-          ...formValues,
-          contextData: {
-            value: data,
-            error: "",
-          },
+
+    
+    if (formValues.contentSource.value === "Custom Text") {
+      handleSubmit(formValues.contextData.value);
+    }
+
+    if (formValues.contentSource.value === "Tagore Document") {
+      setLoading(true);
+      getDataFromURL(formValues.urlData.value)
+        .then((data) => {
+          handleSubmit(
+            `title - ${data.objects[0]?.title} \ndataInBrief - ${data?.objects[0]?.text}`
+          );
+        })
+        .catch((e) => {
+          errorToast(e?.message);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-      })
-      .catch((e) => {
-        errorToast(e?.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    }
   };
 
   return (
@@ -88,7 +104,6 @@ function RetrieveContent({ handleSubmit = () => {} }) {
       <SelectInput
         label="Content Source"
         onChange={(value) => {
-          console.log(value);
           setFormValues({
             ...formValues,
             contentSource: {
@@ -104,7 +119,9 @@ function RetrieveContent({ handleSubmit = () => {} }) {
       {formValues.contentSource.value === "Custom Text" && (
         <Input
           label="Custom Text"
-          onChange={(value) => {
+          error={formValues.contextData.error}
+          onChange={(e) => {
+            let value = e.target.value;
             if (value) {
               setFormValues({
                 ...formValues,

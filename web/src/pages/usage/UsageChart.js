@@ -24,7 +24,6 @@ export default function UsageChart({ usageData, type }) {
               tick={
                 // set the ticks to be every 5th element
                 (tickProps) => {
-                  console.log(tickProps);
                   const { x, y, payload } = tickProps;
                   const { index, value } = payload;
                   const isFourthTick = index % 4 === 0;
