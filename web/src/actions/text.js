@@ -1,4 +1,4 @@
-export async function getDocuments(orgID, limit, page, search_query) {
+export async function getDocuments(limit, page, search_query, orgID) {
   const response = await fetch(
     `${window.REACT_APP_TAGORE_API_URL}/documents?` +
       new URLSearchParams({
@@ -25,7 +25,7 @@ export async function getDocuments(orgID, limit, page, search_query) {
   }
 }
 
-export const generateTextFromPrompt = async (orgID, requestBody) => {
+export const generateTextFromPrompt = async (requestBody, orgID) => {
   const response = await fetch(
     `${window.REACT_APP_TAGORE_API_URL}/prompts/generate`,
     {
@@ -48,7 +48,7 @@ export const generateTextFromPrompt = async (orgID, requestBody) => {
   }
 };
 
-export const createDocument = async (orgID ,requestBody) => {
+export const createDocument = async (requestBody, orgID) => {
   const response = await fetch(`${window.REACT_APP_TAGORE_API_URL}/documents`, {
     headers: {
       "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export const createDocument = async (orgID ,requestBody) => {
   }
 };
 
-export const getDocumentByID = async (orgID, documentID) => {
+export const getDocumentByID = async (documentID, orgID) => {
   const response = await fetch(
     `${window.REACT_APP_TAGORE_API_URL}/documents/${documentID}`,
     {
@@ -90,7 +90,7 @@ export const getDocumentByID = async (orgID, documentID) => {
   }
 };
 
-export const updateDocument = async (orgID ,documentID, requestBody) => {
+export const updateDocument = async (documentID, requestBody, orgID) => {
   const response = await fetch(
     `${window.REACT_APP_TAGORE_API_URL}/documents/${documentID}`,
     {
