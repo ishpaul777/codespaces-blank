@@ -24,6 +24,13 @@ func (h *httpHandler) updateDocumentByID(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	orgID, err := helper.GetOrgID(r)
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
+		return
+	}
+
 	dID := helper.GetPathParamByName(r, "document_id")
 	documentID, err := helper.StringToInt(dID)
 	if err != nil {
@@ -45,7 +52,7 @@ func (h *httpHandler) updateDocumentByID(w http.ResponseWriter, r *http.Request)
 		Description: updateReq.Description,
 		UserID:      userID,
 		DocumentID:  uint(documentID),
-		OrgID:       1,
+		OrgID:       orgID,
 	}
 
 	updatedDocument, err := h.documentService.UpdateDocumentByID(input)

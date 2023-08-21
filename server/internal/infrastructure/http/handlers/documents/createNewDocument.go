@@ -24,6 +24,13 @@ func (h *httpHandler) createNewDocument(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	orgID, err := helper.GetOrgID(r)
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
+		return
+	}
+
 	requestBody := &createDocument{}
 	err = json.NewDecoder(r.Body).Decode(requestBody)
 	if err != nil {
@@ -36,7 +43,7 @@ func (h *httpHandler) createNewDocument(w http.ResponseWriter, r *http.Request) 
 		Title:       requestBody.Title,
 		Description: requestBody.Description,
 		UserID:      userID,
-		OrgID:       1,
+		OrgID:       orgID,
 	}
 	document, err := h.documentService.CreateNewDocument(input)
 	if err != nil {

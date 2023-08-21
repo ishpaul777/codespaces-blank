@@ -23,6 +23,13 @@ func (h *httpHandler) getAllDocuments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orgID, err := helper.GetOrgID(r)
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
+		return
+	}
+
 	pagination, err := helper.GetPagination(r)
 	if err != nil {
 		h.logger.Error("error in parsing pagination", "error", err.Error())
@@ -32,7 +39,7 @@ func (h *httpHandler) getAllDocuments(w http.ResponseWriter, r *http.Request) {
 
 	input := &models.GetAllDocumentReq{
 		UserID:     userID,
-		OrgID:      1,
+		OrgID:      orgID,
 		Pagination: *pagination,
 	}
 
