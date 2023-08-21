@@ -15,6 +15,14 @@ export const SocialMediaSelection = ({ handleSubmit, loading }) => {
       name: "Twitter",
       checked: false,
     },
+    {
+      name: "LinkedIn",
+      checked: false,
+    },
+    {
+      name: "Youtube",
+      checked: false,
+    }
   ]);
 
   const outputLength = [1, 2, 3, 4, 5];
