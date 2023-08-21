@@ -20,7 +20,7 @@ func (h *httpHandler) getUsage(w http.ResponseWriter, r *http.Request) {
 	orgID, err := helper.GetOrgID(r)
 	if err != nil {
 		h.logger.Error("error in parsing X-Org header", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
 		return
 	}
 

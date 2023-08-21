@@ -65,11 +65,12 @@ export const createDocument = async (requestBody) => {
   }
 };
 
-export const getDocumentByID = async (documentID) => {
+export const getDocumentByID = async (orgID, documentID) => {
   const response = await fetch(
     `${window.REACT_APP_TAGORE_API_URL}/documents/${documentID}`,
     {
       headers: {
+        "X-Org": orgID,
         "Content-Type": "application/json",
       },
       method: "GET",
