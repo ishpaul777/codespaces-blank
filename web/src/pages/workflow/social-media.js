@@ -125,7 +125,7 @@ function SocialMedia({ selectedOrg }) {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "X-Org": selectedOrg,
+                    "X-Organisation": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -298,7 +298,7 @@ function SocialMedia({ selectedOrg }) {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
-                        "X-Org": selectedOrg,
+                        "X-Organisation": selectedOrg,
                       },
                       withCredentials: true,
                       payload: JSON.stringify({

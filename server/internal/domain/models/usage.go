@@ -34,12 +34,20 @@ const (
 	StatisticTypeMonthly StatisticType = "cumulative"
 )
 
+type View string
+
+var ADMIN_VIEW View = "admin"
+var USER_VIEW View = "user"
+
 type GetUsageFilters struct {
 	TargetMonth string        `json:"target_month"`
 	Type        string        `json:"type"`
 	Model       string        `json:"model"`
 	Provider    string        `json:"provider"`
 	UsageType   StatisticType `json:"usage_type"`
+	IsAdmin     bool          `json:"is_admin"`
+	View        View          `json:"view"`
+	OtherUserID uint          `json:"other_user_id"`
 }
 
 type GetUsageResponse struct {

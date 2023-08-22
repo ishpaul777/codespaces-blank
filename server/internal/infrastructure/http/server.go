@@ -103,6 +103,7 @@ func RunHTTPServer(app *application.App) {
 		pubsub.Subscribe("tagore.usage", func(data []byte) {
 			usageData := models.RequestUsage{}
 			json.Unmarshal(data, &usageData)
+			fmt.Println("this is usage data orgID", usageData.OrgID, usageData.UserID)
 			switch usageData.Type {
 			case "generate-text":
 				err := usageService.SaveGenerateUsage(usageData.UserID, usageData.OrgID, usageData.Payload)

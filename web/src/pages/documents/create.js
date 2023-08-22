@@ -23,10 +23,11 @@ import MenuIcon from "../../components/MenuIcon";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import useDarkMode from "../../hooks/useDarkMode";
 import { BiArrowBack } from "react-icons/bi";
-import { Editor } from "../../components/editor";
 import { withOrg } from "../../components/organisation/withOrg";
+import { ScooterCore } from "@factly/scooter-core";
 
 function Document({ selectedOrg }) {
+  console.log({ selectedOrg });
   const [searchParams] = useSearchParams();
 
   const [prompt, setPrompt] = useState("");
@@ -84,7 +85,6 @@ function Document({ selectedOrg }) {
   const onNameChange = (value) => {
     setDocumentName(value);
   };
-
   const [sseClient, setSseClient] = useState(null);
 
   const actionList = [
@@ -137,7 +137,10 @@ function Document({ selectedOrg }) {
     if (language) {
       inputPrompt += ` It should be in ${language}.`;
     }
-
+    console.log({ selectedOrg });
+    if (selectedOrg === -1) {
+      return;
+    }
     setLoading(true);
     let source = new SSE(
       window.REACT_APP_TAGORE_API_URL + "/prompts/generate",
@@ -145,7 +148,7 @@ function Document({ selectedOrg }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Org": selectedOrg,
+          "X-Organisation": selectedOrg,
         },
         withCredentials: true,
         payload: JSON.stringify({
@@ -256,6 +259,8 @@ function Document({ selectedOrg }) {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  useEffect(() => {}, [selectedOrg]);
 
   return (
     // container for new/edit document page
@@ -530,7 +535,12 @@ function Document({ selectedOrg }) {
               darkMode && "bg-background-sidebar-alt"
             }`}
           >
-            <Editor
+            <ScooterCore
+              key={`scooter-core ${selectedOrg}`}
+              placeholder="Write your content here. Press / for commands and /generate for AI commands"
+              className="bg-white dark:bg-background-sidebar-alt dark:text-white text-black-50"
+              heightStrategy="flexible"
+              menuType="bubble"
               editorInstance={(editor) => setEditor(editor)}
               initialValue={editorData}
               onChange={(change) => {
@@ -545,6 +555,7 @@ function Document({ selectedOrg }) {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
+                        "X-Organisation": selectedOrg,
                       },
                       withCredentials: true,
                       payload: JSON.stringify({
@@ -581,6 +592,9 @@ function Document({ selectedOrg }) {
                 },
               }}
             />
+            {/* <Editor
+
+            /> */}
           </div>
         </div>
       </div>

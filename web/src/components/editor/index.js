@@ -7,11 +7,6 @@ export function Editor({
   tagoreConfig,
   onChange,
 }) {
-  const { selectedOrgID } = useSelector(({ organisations }) => {
-    return {
-      selectedOrgID: organisations?.selectedOrg,
-    };
-  });
   return (
     <ScooterCore
       placeholder="Write your content here. Press / for commands and /generate for AI commands"

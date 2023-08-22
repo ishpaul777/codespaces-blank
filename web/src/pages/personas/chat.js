@@ -252,7 +252,7 @@ const PersonaChat = ({ selectedOrg }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Org": selectedOrg,
+          "X-Organisation": selectedOrg,
         },
         withCredentials: true,
       }
@@ -296,7 +296,7 @@ const PersonaChat = ({ selectedOrg }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Org": selectedOrg,
+          "X-Organisation": selectedOrg,
         },
         withCredentials: true,
       }
@@ -385,7 +385,7 @@ const PersonaChat = ({ selectedOrg }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Org": selectedOrg,
+          "X-Organisation": selectedOrg,
         },
         withCredentials: true,
       }

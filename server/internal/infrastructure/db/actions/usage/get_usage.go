@@ -41,6 +41,14 @@ func (p *PGUsageRepository) GetUsageByUserID(userID, orgID uint, filters models.
 
 	query = query.Where("DATE_PART('year', created_at) = ? AND DATE_PART('month', created_at) = ?", yearAndMonth[0], yearAndMonth[1])
 
+	if !filters.IsAdmin || filters.View == models.USER_VIEW {
+		query = query.Where("user_id = ? and org_id = ?", userID, orgID)
+	} else if filters.OtherUserID != 0 && filters.View == models.ADMIN_VIEW {
+		query = query.Where("user_id = ? and org_id = ?", filters.OtherUserID, orgID)
+	} else {
+		query = query.Where("org_id = ?", orgID)
+	}
+
 	err := query.Group("DATE_TRUNC('day', created_at)").Scan(&usages).Error
 
 	if err != nil {

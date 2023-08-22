@@ -5,6 +5,8 @@ export const getUsage = ({
   type,
   usage_type,
   org_id,
+  is_admin,
+  view,
 }) => {
   // query parameters:
   //  - target_month: the month and year to get usage for
@@ -19,12 +21,14 @@ export const getUsage = ({
         provider,
         type,
         usage_type,
+        is_admin,
+        view,
       }),
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "X-Org": org_id,
+        "X-Organisation": org_id,
       },
       credentials: "include",
     }

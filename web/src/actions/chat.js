@@ -3,7 +3,7 @@ export async function getChatResponse(requestBody, orgID) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Org": orgID,
+      "X-Organisation": orgID,
     },
     credentials: "include",
     body: JSON.stringify(requestBody),

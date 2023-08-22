@@ -9,7 +9,7 @@ export async function getDocuments(limit, page, search_query, orgID) {
     {
       headers: {
         "Content-Type": "application/json",
-        "X-Org": orgID,
+        "X-Organisation": orgID,
       },
       method: "GET",
       credentials: "include",
@@ -31,7 +31,7 @@ export const generateTextFromPrompt = async (requestBody, orgID) => {
     {
       headers: {
         "Content-Type": "application/json",
-        "X-Org": orgID,
+        "X-Organisation": orgID,
       },
       method: "POST",
       body: JSON.stringify(requestBody),
@@ -52,7 +52,7 @@ export const createDocument = async (requestBody, orgID) => {
   const response = await fetch(`${window.REACT_APP_TAGORE_API_URL}/documents`, {
     headers: {
       "Content-Type": "application/json",
-      "X-Org": orgID,
+      "X-Organisation": orgID,
     },
     method: "POST",
     body: JSON.stringify(requestBody),
@@ -73,7 +73,7 @@ export const getDocumentByID = async (documentID, orgID) => {
     `${window.REACT_APP_TAGORE_API_URL}/documents/${documentID}`,
     {
       headers: {
-        "X-Org": orgID,
+        "X-Organisation": orgID,
         "Content-Type": "application/json",
       },
       method: "GET",
@@ -96,7 +96,7 @@ export const updateDocument = async (documentID, requestBody, orgID) => {
     {
       headers: {
         "Content-Type": "application/json",
-        "X-Org": orgID,
+        "X-Organisation": orgID,
       },
       method: "PUT",
       body: JSON.stringify(requestBody),

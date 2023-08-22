@@ -273,7 +273,7 @@ function ChatPage({ selectedOrg }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Org": selectedOrg,
+          "X-Organisation": selectedOrg,
         },
         withCredentials: true,
       }
@@ -408,7 +408,7 @@ function ChatPage({ selectedOrg }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-Org": selectedOrg,
+            "X-Organisation": selectedOrg,
           },
           withCredentials: true,
         }
@@ -473,7 +473,7 @@ function ChatPage({ selectedOrg }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-Org": selectedOrg,
+            "X-Organisation": selectedOrg,
           },
           withCredentials: true,
         }

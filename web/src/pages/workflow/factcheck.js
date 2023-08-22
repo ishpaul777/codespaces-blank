@@ -57,7 +57,7 @@ function FactcheckWorkflow({ selectedOrg }) {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "X-Org": selectedOrg,
+                    "X-Organisation": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -161,7 +161,7 @@ function FactcheckWorkflow({ selectedOrg }) {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "X-Org": selectedOrg,
+                    "X-Organisation": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -238,7 +238,7 @@ function FactcheckWorkflow({ selectedOrg }) {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "X-Org": selectedOrg,
+                    "X-Organisation": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -460,7 +460,7 @@ function FactcheckWorkflow({ selectedOrg }) {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
-                        "X-Org": selectedOrg,
+                        "X-Organisation": selectedOrg,
                       },
                       withCredentials: true,
                       payload: JSON.stringify({

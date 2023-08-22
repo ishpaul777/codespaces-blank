@@ -15,7 +15,7 @@ func GetUserID(req *http.Request) (uint, error) {
 }
 
 func GetOrgID(req *http.Request) (uint, error) {
-	orgID := req.Header.Get("X-Org")
+	orgID := req.Header.Get("X-Organisation")
 	oID, err := strconv.Atoi(orgID)
 	if err != nil {
 		return 0, err

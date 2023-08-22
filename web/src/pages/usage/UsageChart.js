@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AreaChart,
   BarChart,
@@ -13,6 +13,16 @@ import {
 } from "recharts";
 
 export default function UsageChart({ usageData, type }) {
+  const [max, setMax] = useState(0);
+  useEffect(() => {
+    if (usageData.length > 0) {
+      const tempMax = Math.max(...usageData.map((item) => item.total_tokens));
+      if (tempMax > max) {
+        setMax(Math.floor(tempMax * 1.2));
+      }
+    }
+  }, usageData);
+
   return (
     <div className="w-full">
       <ResponsiveContainer width="100%" height={400}>
@@ -45,6 +55,7 @@ export default function UsageChart({ usageData, type }) {
                 angle: -90,
                 position: "insideLeft",
               }}
+              domain={[0, max]}
             />
             <Tooltip />
             <Legend />
@@ -86,6 +97,7 @@ export default function UsageChart({ usageData, type }) {
                 angle: -90,
                 position: "insideLeft",
               }}
+              domain={[0, max]}
             />
             <Tooltip />
             <Legend />

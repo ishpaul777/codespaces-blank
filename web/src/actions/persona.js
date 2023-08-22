@@ -78,7 +78,7 @@ export async function createPersona(requestBody, orgID) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Org": orgID,
+      "X-Organisation": orgID,
     },
     body: JSON.stringify(requestBody),
     credentials: "include",

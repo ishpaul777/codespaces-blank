@@ -93,7 +93,7 @@ function BlogPostWorkflow({ selectedOrg }) {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "X-Org": selectedOrg,
+                    "X-Organisation": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -203,7 +203,7 @@ function BlogPostWorkflow({ selectedOrg }) {
                             method: "POST",
                             headers: {
                               "Content-Type": "application/json",
-                              "X-Org": selectedOrg,
+                              "X-Organisation": selectedOrg,
                             },
                             withCredentials: true,
                           }
@@ -299,7 +299,7 @@ function BlogPostWorkflow({ selectedOrg }) {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "X-Org": selectedOrg,
+                    "X-Organisation": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -529,7 +529,7 @@ function BlogPostWorkflow({ selectedOrg }) {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
-                        "X-Org": selectedOrg,
+                        "X-Organisation": selectedOrg,
                       },
                       withCredentials: true,
                       payload: JSON.stringify({

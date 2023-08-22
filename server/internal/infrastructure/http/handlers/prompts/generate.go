@@ -31,7 +31,7 @@ func (h *httpHandler) generateText(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orgID, err := helper.GetUserID(r)
+	orgID, err := helper.GetOrgID(r)
 	if err != nil {
 		h.logger.Error("error getting X-Org header", "error", err.Error())
 		errorx.Render(w, errorx.Parser(errorx.DecodeError()))

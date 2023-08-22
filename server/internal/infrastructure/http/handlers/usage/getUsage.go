@@ -31,6 +31,19 @@ func (h *httpHandler) getUsage(w http.ResponseWriter, r *http.Request) {
 	filters.Model = r.URL.Query().Get("model")
 	filters.Provider = r.URL.Query().Get("provider")
 	filters.UsageType = models.StatisticType(r.URL.Query().Get("usage_type"))
+	filters.IsAdmin = r.URL.Query().Get("is_admin") == "true"
+	filters.View = models.View(r.URL.Query().Get("view"))
+
+	otherUserIDstr := r.URL.Query().Get("other_user_id")
+	if otherUserIDstr != "" {
+		otherUserID, err := helper.StringToInt(otherUserIDstr)
+		if err != nil {
+			h.logger.Error("error converting other user id to int", "error", err.Error())
+			errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+			return
+		}
+		filters.OtherUserID = uint(otherUserID)
+	}
 
 	usage, err := h.usageService.GetUsageByUserID(uID, orgID, *filters)
 	if err != nil {
