@@ -17,3 +17,15 @@ export const getFileName = (value) => {
   const fileName = maker(value.split(".").slice(0, -1).join("."));
   return `${fileName}.${fileExt}`;
 };
+
+
+export function getInitials(input) {
+  const words = input?.split(" "); // Split input into words
+  let initials = "";
+
+  for (const word of words) {
+      initials += word[0]; // Add the first character of each word to initials
+  }
+
+  return initials.toUpperCase();
+}

@@ -15,8 +15,9 @@ import { BiLogOutCircle } from "react-icons/bi";
 import { FiSettings } from "react-icons/fi";
 import logo from "../../assets/FactlyLogotext.svg";
 import { getOrganisationsFromKavach } from "../../actions/organisation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { withOrg } from "../organisation/withOrg";
+import { getInitials } from "../../util/sluger";
 
 export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   const dispatch = useDispatch();
@@ -25,6 +26,16 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   const { isMobileScreen } = useWindowSize();
   const { darkMode } = useDarkMode();
 
+  const { organisation } = useSelector(({ organisations }) => {
+    let org = organisations?.details?.find(
+      (org) => org?.id === organisations?.selectedOrg
+    );
+    return {
+      organisation: org,
+    };
+  });
+
+  console.log(organisation);
   const menuOptions = [
     {
       name: "Dashboard",
@@ -224,11 +235,12 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
               >
                 <div className="flex flex-row gap-4 items-center">
                   <div className={`bg-red-400 p-2 rounded-full text-white`}>
-                    {" "}
-                    FM{" "}
-                  </div>
+                    {organisation?.title ? getInitials(organisation?.title) : '--'}
+                  </div>  
                   <span className="dark:text-white">
-                    {getOrgName("Factly Media and Research")}
+                    {organisation?.title
+                      ? getOrgName(organisation?.title)
+                      : "----"}
                   </span>
                 </div>
                 <img src={Arrow} />

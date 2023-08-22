@@ -86,7 +86,7 @@ function Usage() {
   };
 
   useEffect(() => {
-    if(selectedOrgID !== -1) {
+    if (selectedOrgID !== -1) {
       fetchUsageData();
     }
   }, [query, isAdmin, selectedOrgID]);
