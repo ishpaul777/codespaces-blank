@@ -1,7 +1,7 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./sidebar";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";
 import MenuIcon from "../MenuIcon";
@@ -9,8 +9,9 @@ import useDarkMode from "../../hooks/useDarkMode";
 import "react-toastify/dist/ReactToastify.css";
 
 import logo from "../../assets/FactlyLogotext.svg";
+import { withOrg } from "../organisation/withOrg";
 
-export default function Layout() {
+function Layout({ selectedOrg }) {
   const { isMobileScreen } = useWindowSize();
   const [sideBarOpen, setSidebarOpen] = useState(false);
   const { darkMode } = useDarkMode();
@@ -58,3 +59,5 @@ export default function Layout() {
     </div>
   );
 }
+
+export default withOrg(Layout);

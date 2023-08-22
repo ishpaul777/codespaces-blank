@@ -210,7 +210,6 @@ export default function EditPersona() {
         navigate("/personas");
       })
       .catch((err) => {
-        console.log(err);
         errorToast("Unable to save persona");
       });
   };

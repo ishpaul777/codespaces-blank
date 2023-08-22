@@ -30,6 +30,7 @@ import { VerifyEmail } from "../pages/verifyEmail";
 import { Verification } from "../pages/auth/verification";
 import { ForgotPassword } from "../pages/auth/forgotPassword";
 import SocialMedia from "../pages/workflow/social-media";
+import Organisation from "../pages/organisation/organisation";
 
 export const routes = [
   {
@@ -170,5 +171,10 @@ export const routes = [
         element: <ForgotPassword title="Forgot Password" />,
       },
     ],
+  },
+
+  {
+    path: "/createOrg",
+    element: <Organisation />,
   },
 ];

@@ -3,8 +3,9 @@ import { Outlet } from "react-router-dom";
 import SidebarAlt from "./sidebarAlt";
 import { ToastContainer } from "react-toastify";
 import useDarkMode from "../../hooks/useDarkMode";
+import { withOrg } from "../organisation/withOrg";
 
-export default function LayoutAlt() {
+function LayoutAlt() {
   const { darkMode } = useDarkMode();
   return (
     <div className="flex flex-row h-screen w-full">
@@ -31,3 +32,5 @@ export default function LayoutAlt() {
     </div>
   );
 }
+
+export default withOrg(LayoutAlt);

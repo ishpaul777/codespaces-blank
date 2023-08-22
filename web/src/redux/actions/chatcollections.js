@@ -1,3 +1,5 @@
+import { errorToast } from "../../util/toasts";
+
 const createCollection = (collection) => async (dispatch) => {
   return fetch(`${window.REACT_APP_TAGORE_API_URL}/chat_collections`, {
     method: "POST",
@@ -110,7 +112,7 @@ const addChatToCollection =
         });
       })
       .catch((error) => {
-        console.log(error);
+        errorToast(error?.message);
       });
   };
 

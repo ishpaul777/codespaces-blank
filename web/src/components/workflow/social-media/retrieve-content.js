@@ -93,7 +93,10 @@ function RetrieveContent({ handleSubmit = () => {}, org }) {
       return;
     }
 
-    if (formValues.contentSource.value === "Custom Text" || formValues.contentSource.value === "Document") {
+    if (
+      formValues.contentSource.value === "Custom Text" ||
+      formValues.contentSource.value === "Document"
+    ) {
       handleSubmit(formValues.contextData.value);
     }
 
@@ -210,7 +213,7 @@ function RetrieveContent({ handleSubmit = () => {}, org }) {
       )}
       {formValues.contentSource.value === "Document" && (
         <SearchableInput
-          placeholder={'Search for a document'}
+          placeholder={"Search for a document"}
           label="Select Document"
           initialValue={formValues.docTitle.value}
           error={formValues.docTitle.error}

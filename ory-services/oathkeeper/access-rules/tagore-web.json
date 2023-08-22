@@ -33,7 +33,7 @@
       "url": "http://tagore-web:3000"
     },
     "match": {
-      "url": "http://127.0.0.1:4455/.factly/tagore/web</|/documents|/documents/create|/personas|/personas/create|/personas/\\d+/edit|/personas/\\d+/chat|/personas/factly/sach/chat|/playground|/compare|/workflows|/workflows/fact-check|/workflows/blogpost|/workflows/social-media|/history|/usage|/profile|/org|/org/members|/org/members/invite|/profile/invitations|/passwords|/chats/dashboard|>",
+      "url": "http://127.0.0.1:4455/.factly/tagore/web</|/documents|/documents/create|/personas|/personas/create|/personas/\\d+/edit|/personas/\\d+/chat|/personas/factly/sach/chat|/playground|/compare|/workflows|/workflows/fact-check|/workflows/blogpost|/workflows/social-media|/history|/usage|/profile|/org|/org/members|/org/members/invite|/profile/invitations|/passwords|/chats/dashboard|/createOrg>",
       "methods": [
         "GET",
         "POST",

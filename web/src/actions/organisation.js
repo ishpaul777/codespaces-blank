@@ -76,3 +76,27 @@ export const sendInvites = (orgId, data, return_to) => {
       throw error;
     });
 };
+
+export const createOrganisation = (data) => {
+  return fetch(`${window.REACT_APP_KAVACH_SERVER_URL}/organisations`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Credentials: "include",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (response.status === 201 || response.status === 200) {
+        return response.json();
+      } else {
+        throw response;
+      }
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};

@@ -198,4 +198,4 @@ export function SidebarAlt() {
   );
 }
 
-export default withOrg(SidebarAlt);
+export default SidebarAlt;

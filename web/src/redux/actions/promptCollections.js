@@ -55,7 +55,7 @@ const deletePromptCollection = (promptCollectionId) => async (dispatch) => {
       });
     })
     .catch((error) => {
-      console.log(error);
+      errorToast(error?.message);
     });
 };
 
@@ -84,7 +84,7 @@ const getAllPromptCollections = () => async (dispatch) => {
       });
     })
     .catch((error) => {
-      console.log(error);
+      errorToast(error?.message);
     });
 };
 
@@ -149,7 +149,7 @@ const removePromptFromCollection = (promptId, prompts) => async (dispatch) => {
       });
     })
     .catch((error) => {
-      console.log(error);
+      errorToast(error?.message);
     });
 };
 

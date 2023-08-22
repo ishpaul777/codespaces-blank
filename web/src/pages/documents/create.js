@@ -27,7 +27,6 @@ import { withOrg } from "../../components/organisation/withOrg";
 import { ScooterCore } from "@factly/scooter-core";
 
 function Document({ selectedOrg }) {
-  console.log({ selectedOrg });
   const [searchParams] = useSearchParams();
 
   const [prompt, setPrompt] = useState("");
@@ -137,7 +136,6 @@ function Document({ selectedOrg }) {
     if (language) {
       inputPrompt += ` It should be in ${language}.`;
     }
-    console.log({ selectedOrg });
     if (selectedOrg === -1) {
       return;
     }

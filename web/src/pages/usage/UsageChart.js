@@ -21,7 +21,7 @@ export default function UsageChart({ usageData, type }) {
         setMax(Math.floor(tempMax * 1.2));
       }
     }
-  }, usageData);
+  }, [usageData]);
 
   const handleBarClick = (e) => {
     console.log(e);

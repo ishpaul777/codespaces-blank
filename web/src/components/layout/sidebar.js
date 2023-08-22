@@ -35,7 +35,6 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
     };
   });
 
-  console.log(organisation);
   const menuOptions = [
     {
       name: "Dashboard",
@@ -263,4 +262,4 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
   );
 }
 
-export default withOrg(Sidebar);
+export default Sidebar;
