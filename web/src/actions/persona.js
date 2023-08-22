@@ -73,11 +73,12 @@ export async function deletePersonaChatByID(personaID, chatID) {
 // createPersona function is used to create a persona
 // it sends http request to the server and validates and returns the response
 // parameters: name, description, avatar, prompt, visibility
-export async function createPersona(requestBody) {
+export async function createPersona(requestBody, orgID) {
   return fetch(PERSONA_API, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-Org": orgID,
     },
     body: JSON.stringify(requestBody),
     credentials: "include",

@@ -5,8 +5,15 @@ import { createPersona } from "../../actions/persona";
 import { errorToast, successToast } from "../../util/toasts";
 import { useNavigate } from "react-router-dom";
 import PersonaForm from "./personaForm";
+import { useSelector } from "react-redux";
 
 export default function CreatePersona() {
+  const { selectedOrgID } = useSelector(({ organisations }) => {
+    return {
+      selectedOrgID: organisations?.selectedOrg,
+    };
+  });
+
   const [open, setOpen] = useState(false);
   const [genOpen, setGenOpen] = useState(false);
 
@@ -165,7 +172,7 @@ export default function CreatePersona() {
       avatar: requestBody.avatar.value,
     };
 
-    createPersona(reqBody)
+    createPersona(reqBody, selectedOrgID)
       .then((res) => {
         successToast("Persona created successfully");
         navigate("/personas/" + res.id + "/chat", {

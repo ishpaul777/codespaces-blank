@@ -10,7 +10,9 @@ import { errorToast, successToast } from "../../util/toasts";
 import { getKratosSessionDetails } from "../../actions/kratos";
 import useWindowSize from "../../hooks/useWindowSize";
 import useDarkMode from "../../hooks/useDarkMode";
-export default function DocumentPage() {
+import { withOrg } from "../../components/organisation/withOrg";
+
+function DocumentPage({ selectedOrg }) {
   const { darkMode } = useDarkMode();
   const [documentPageData, setDocumentPageData] = useState({
     count: 0,
@@ -44,7 +46,12 @@ export default function DocumentPage() {
   ];
 
   const fetchDocuments = async () => {
-    getDocuments(pagination.limit, pagination.page, pagination.search_query)
+    getDocuments(
+      pagination.limit,
+      pagination.page,
+      pagination.search_query,
+      selectedOrg
+    )
       .then((response) => {
         setDocumentPageData({
           count: response.count,
@@ -334,3 +341,5 @@ export default function DocumentPage() {
     </div>
   );
 }
+
+export default withOrg(DocumentPage);

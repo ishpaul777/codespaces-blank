@@ -106,7 +106,7 @@ function Document({ selectedOrg }) {
         };
 
         if (id && isEdit) {
-          updateDocument(id, requestBody)
+          updateDocument(id, requestBody, selectedOrg)
             .then(() => {
               successToast("document updated successfully");
             })
@@ -230,7 +230,7 @@ function Document({ selectedOrg }) {
 
   useEffect(() => {
     if (id && isEdit) {
-      getDocumentByID(id)
+      getDocumentByID(id, selectedOrg)
         .then((response) => {
           setDocumentName(response?.title);
           setPromptData(response?.description);
@@ -573,7 +573,10 @@ function Document({ selectedOrg }) {
                       "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text. The content should be generated in ENGLISH(UK)",
                   };
 
-                  const response = await generateTextFromPrompt(requestBody);
+                  const response = await generateTextFromPrompt(
+                    requestBody,
+                    selectedOrg
+                  );
                   return response;
                 },
               }}

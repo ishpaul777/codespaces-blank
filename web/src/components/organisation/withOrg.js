@@ -3,6 +3,11 @@ import { getOrganisationsFromKavach } from "../../actions/organisation";
 import { useEffect } from "react";
 
 export const withOrg = (Component) => (props) => {
+  const { selectedOrgID } = useSelector(({ organisations }) => {
+    return {
+      selectedOrgID: organisations?.selectedOrg,
+    };
+  });
   const dispatch = useDispatch();
   const fetchOrganisationsFromKavach = async () => {
     const response = await getOrganisationsFromKavach();
@@ -18,12 +23,6 @@ export const withOrg = (Component) => (props) => {
   useEffect(() => {
     fetchOrganisationsFromKavach();
   }, []);
-
-  const { selectedOrgID } = useSelector(({ organisations }) => {
-    return {
-      selectedOrgID: organisations?.selectedOrg,
-    };
-  });
 
   return <Component {...props} selectedOrg={selectedOrgID} />;
 };

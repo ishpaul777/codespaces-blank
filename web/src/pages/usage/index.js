@@ -2,13 +2,20 @@ import React, { useEffect, useState } from "react";
 import UsageChart from "./UsageChart";
 import useWindowSize from "../../hooks/useWindowSize";
 import MonthAndYearSelector from "../../components/date/month-and-year-selector";
-import { getUsageByUser } from "../../actions/usage";
+import { getUsage } from "../../actions/usage";
 import moment from "moment";
 import { SearchableInput } from "../../components/inputs/searchableInput";
+import { useSelector } from "react-redux";
 
 function Usage() {
   // isMobileScreen is true if the screen width is less than 640px
   const { isMobileScreen } = useWindowSize();
+
+  const { selectedOrgID } = useSelector(({ organisations }) => {
+    return {
+      selectedOrgID: organisations?.selectedOrg,
+    };
+  });
 
   const tableHeader = [
     {
@@ -48,12 +55,13 @@ function Usage() {
   });
 
   const fetchUsageData = async () => {
-    const response = await getUsageByUser({
+    const response = await getUsage({
       target_month: query.date,
       model: query.model,
       provider: query.provider,
       type: query.type,
       usage_type: query.usage_type,
+      org_id: selectedOrgID,
     });
 
     setUsageData(response);

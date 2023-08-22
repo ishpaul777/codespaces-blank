@@ -14,7 +14,7 @@ import (
 type createPersonaRequest struct {
 	Name        string             `json:"name"`
 	Description string             `json:"description"`
-	Avatar      string             `json:"avatar"`
+	Avatar      string         	    `json:"avatar"`
 	Prompt      string             `json:"prompt"`
 	Visibility  *models.VISIBILITY `json:"visibility,omitempty"`
 	Model       string             `json:"model,omitempty"`
@@ -31,11 +31,11 @@ func (h *httpHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	orgID, err := helper.GetOrgID(r)
-	// if err != nil {
-	// 	h.logger.Error("error in parsing X-Org header", "error", err.Error())
-	// 	errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
-	// 	return
-	// }
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
+		return
+	}
 
 	requestBody := &createPersonaRequest{}
 	err = json.NewDecoder(r.Body).Decode(requestBody)

@@ -10,7 +10,8 @@ const orgReducer = (state = initialState, action) => {
       return {
         ...state,
         details: action.payload,
-        selectedOrg: action.payload[0]?.id,
+        selectedOrg:
+          state.selectedOrg === -1 ? action.payload[0]?.id : state.selectedOrg,
       };
 
     case "SELECT_ORG":

@@ -23,6 +23,13 @@ func (h *httpHandler) list(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// _, err = helper.GetOrgID(r)
+	// if err != nil {
+	// 	h.logger.Error("error in parsing X-Org header", "error", err.Error())
+	// 	errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
+	// 	return
+	// }
+
 	pagination, err := helper.GetPagination(r)
 	if err != nil {
 		h.logger.Error("error in parsing pagination", "error", err.Error())

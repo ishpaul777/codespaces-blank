@@ -190,6 +190,7 @@ func (c *chatService) GenerateStreamingResponse(input models.GenerateResponseFor
 		generateRequest := &generative_model.GenerateChatResponseStream{
 			UserID:       input.UserID,
 			ChatID:       input.ChatID,
+			OrgID:        input.OrgID,
 			Model:        input.Model,
 			Temperature:  input.Temperature,
 			Messages:     newMessage,
@@ -209,6 +210,7 @@ func (c *chatService) GenerateStreamingResponse(input models.GenerateResponseFor
 			Temperature:  input.Temperature,
 			Messages:     input.Messages,
 			DataChan:     input.DataChan,
+			OrgID:        input.OrgID,
 			ErrChan:      input.ErrChan,
 			ChatRepo:     c.chatRepository,
 			PubsubClient: c.pubsubClient,

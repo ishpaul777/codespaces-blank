@@ -22,7 +22,7 @@ export const SocialMediaSelection = ({ handleSubmit, loading }) => {
     {
       name: "Youtube",
       checked: false,
-    }
+    },
   ]);
 
   const outputLength = [1, 2, 3, 4, 5];

@@ -14,8 +14,9 @@ import PromptBar from "./PromptBar";
 import SideBar from "./sidebar.js";
 import ChatBar from "./chatbar.js";
 import useDarkMode from "../../hooks/useDarkMode";
+import { withOrg } from "../../components/organisation/withOrg";
 
-export default function ChatPage() {
+function ChatPage({ selectedOrg }) {
   const navigate = useNavigate();
   const { darkMode } = useDarkMode();
   const [stream, setStream] = useState(true);
@@ -213,7 +214,7 @@ export default function ChatPage() {
     setChat(newMessages);
     setCurrentPrompt("");
 
-    getChatResponse(requestBody)
+    getChatResponse(requestBody, selectedOrg)
       .then((data) => {
         if (!chatID) {
           setChatID(data.id);
@@ -272,6 +273,7 @@ export default function ChatPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Org": selectedOrg,
         },
         withCredentials: true,
       }
@@ -406,6 +408,7 @@ export default function ChatPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-Org": selectedOrg,
           },
           withCredentials: true,
         }
@@ -429,7 +432,7 @@ export default function ChatPage() {
 
       source.stream();
     } else {
-      getChatResponse(requestBody)
+      getChatResponse(requestBody, selectedOrg)
         .then((data) => {
           if (!chatID) {
             setChatID(data.id);
@@ -470,6 +473,7 @@ export default function ChatPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-Org": selectedOrg,
           },
           withCredentials: true,
         }
@@ -494,7 +498,7 @@ export default function ChatPage() {
       source.stream();
     } else {
       requestBody.stream = false;
-      getChatResponse(requestBody)
+      getChatResponse(requestBody, selectedOrg)
         .then((data) => {
           if (!chatID) {
             setChatID(data.id);
@@ -623,3 +627,5 @@ export default function ChatPage() {
     </div>
   );
 }
+
+export default withOrg(ChatPage);

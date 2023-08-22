@@ -21,8 +21,9 @@ import RetrieveContent from "../../components/workflow/social-media/retrieve-con
 import { WorkFlowComponent } from "../../components/workflow/each-workflow-component";
 import { SocialMediaSelection } from "../../components/workflow/social-media/social-media";
 import { ContentPrompt } from "../../constants/socialMedia";
+import { withOrg } from "../../components/organisation/withOrg";
 
-export default function SocialMedia() {
+function SocialMedia({ selectedOrg }) {
   // editor instance for the workflow
   const [editor, setEditor] = useState(null);
 
@@ -46,7 +47,7 @@ export default function SocialMedia() {
         title: title,
         description: "",
       };
-      createDocument(requestBody)
+      createDocument(requestBody, selectedOrg)
         .then((response) => {
           setDocDetails({
             id: response.id,
@@ -124,6 +125,7 @@ export default function SocialMedia() {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    "X-Org": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -155,7 +157,10 @@ export default function SocialMedia() {
               requestBody.stream = false;
               requestBody.input = prompt;
               requestBody.model = "gpt-3.5-turbo";
-              const response = await generateTextFromPrompt(requestBody);
+              const response = await generateTextFromPrompt(
+                requestBody,
+                selectedOrg
+              );
               let output = response?.output?.replace(/\n|\t|(?<=>)\s*/g, "");
               setEditorData((prevState) => {
                 editor?.commands.setContent(prevState + output);
@@ -293,6 +298,7 @@ export default function SocialMedia() {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
+                        "X-Org": selectedOrg,
                       },
                       withCredentials: true,
                       payload: JSON.stringify({
@@ -321,7 +327,10 @@ export default function SocialMedia() {
                       "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text. The content should be generated in ENGLISH(UK)",
                   };
 
-                  const response = await generateTextFromPrompt(requestBody);
+                  const response = await generateTextFromPrompt(
+                    requestBody,
+                    selectedOrg
+                  );
                   return response;
                 },
               }}
@@ -332,3 +341,5 @@ export default function SocialMedia() {
     </div>
   );
 }
+
+export default withOrg(SocialMedia);

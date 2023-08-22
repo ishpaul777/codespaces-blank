@@ -25,11 +25,11 @@ func (h *httpHandler) updateDocumentByID(w http.ResponseWriter, r *http.Request)
 	}
 
 	orgID, err := helper.GetOrgID(r)
-	// if err != nil {
-	// 	h.logger.Error("error in parsing X-Org header", "error", err.Error())
-	// 	errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
-	// 	return
-	// }
+	if err != nil {
+		h.logger.Error("error in parsing X-Org header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
+		return
+	}
 
 	dID := helper.GetPathParamByName(r, "document_id")
 	documentID, err := helper.StringToInt(dID)

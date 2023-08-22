@@ -25,8 +25,9 @@ import { Introduction } from "../../components/workflow/blogpost/introduction";
 import { Outline } from "../../components/workflow/blogpost/outline";
 import { Conclusion } from "../../components/workflow/blogpost/conclusion";
 import { ParagraphGenerator } from "../../components/workflow/blogpost/paragraph_generator";
+import { withOrg } from "../../components/organisation/withOrg";
 
-export default function BlogPostWorkflow() {
+function BlogPostWorkflow({ selectedOrg }) {
   // editor instance for the workflow
   const [editor, setEditor] = useState(null);
 
@@ -92,6 +93,7 @@ export default function BlogPostWorkflow() {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    "X-Org": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -131,7 +133,10 @@ export default function BlogPostWorkflow() {
               setFormLoading(true);
               requestBody.stream = false;
               requestBody.model = "gpt-3.5-turbo";
-              const response = await generateTextFromPrompt(requestBody);
+              const response = await generateTextFromPrompt(
+                requestBody,
+                selectedOrg
+              );
               let output = response?.output?.replace(/\n|\t|(?<=>)\s*/g, "");
 
               setEditorData((prevState) => {
@@ -198,6 +203,7 @@ export default function BlogPostWorkflow() {
                             method: "POST",
                             headers: {
                               "Content-Type": "application/json",
+                              "X-Org": selectedOrg,
                             },
                             withCredentials: true,
                           }
@@ -229,7 +235,8 @@ export default function BlogPostWorkflow() {
                         requestBody.stream = false;
                         requestBody.model = "gpt-3.5-turbo";
                         const response = await generateTextFromPrompt(
-                          requestBody
+                          requestBody,
+                          selectedOrg
                         );
                         const responseHTML = response.output?.replace(
                           /\n|\t|(?<=>)\s*/g,
@@ -292,6 +299,7 @@ export default function BlogPostWorkflow() {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    "X-Org": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -322,7 +330,10 @@ export default function BlogPostWorkflow() {
               setFormLoading(true);
               requestBody.stream = false;
               requestBody.model = "gpt-3.5-turbo";
-              const response = await generateTextFromPrompt(requestBody);
+              const response = await generateTextFromPrompt(
+                requestBody,
+                selectedOrg
+              );
               let output = response?.output?.replace(/\n|\t|(?<=>)\s*/g, "");
 
               setEditorData((prevState) => {
@@ -358,7 +369,7 @@ export default function BlogPostWorkflow() {
         title: title,
         description: "",
       };
-      createDocument(requestBody)
+      createDocument(requestBody, selectedOrg)
         .then((response) => {
           setDocDetails({
             id: response.id,
@@ -518,6 +529,7 @@ export default function BlogPostWorkflow() {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
+                        "X-Org": selectedOrg,
                       },
                       withCredentials: true,
                       payload: JSON.stringify({
@@ -546,7 +558,10 @@ export default function BlogPostWorkflow() {
                       "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text. The content should be generated in ENGLISH(UK)",
                   };
 
-                  const response = await generateTextFromPrompt(requestBody);
+                  const response = await generateTextFromPrompt(
+                    requestBody,
+                    selectedOrg
+                  );
                   return response;
                 },
               }}
@@ -557,3 +572,5 @@ export default function BlogPostWorkflow() {
     </div>
   );
 }
+
+export default withOrg(BlogPostWorkflow);

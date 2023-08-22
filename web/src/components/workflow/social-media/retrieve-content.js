@@ -77,12 +77,11 @@ function RetrieveContent({ handleSubmit = () => {} }) {
       return;
     }
 
-    
     if (formValues.contentSource.value === "Custom Text") {
       handleSubmit(formValues.contextData.value);
     }
 
-    if (formValues.contentSource.value === "Tagore Document") {
+    if (formValues.contentSource.value === "Fetch from a URL") {
       setLoading(true);
       getDataFromURL(formValues.urlData.value)
         .then((data) => {

@@ -1,8 +1,9 @@
-export async function getChatResponse(requestBody) {
+export async function getChatResponse(requestBody, orgID) {
   return fetch(`${window.REACT_APP_TAGORE_API_URL}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-Org": orgID,
     },
     credentials: "include",
     body: JSON.stringify(requestBody),

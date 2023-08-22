@@ -18,8 +18,9 @@ import { errorToast, successToast } from "../../util/toasts";
 import { ClipLoader } from "react-spinners";
 import { ToastContainer } from "react-toastify";
 import { Input } from "../../components/inputs/Input";
+import { withOrg } from "../../components/organisation/withOrg";
 
-export default function FactcheckWorkflow() {
+function FactcheckWorkflow({ selectedOrg }) {
   // editor instance for the workflow
   const [editor, setEditor] = useState(null);
 
@@ -56,6 +57,7 @@ export default function FactcheckWorkflow() {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    "X-Org": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -91,7 +93,8 @@ export default function FactcheckWorkflow() {
               request.requestBody.model = "gpt-3.5-turbo";
 
               const response = await generateTextFromPrompt(
-                request.requestBody
+                request.requestBody,
+                selectedOrg
               );
               editor?.commands?.insertContent(response?.output);
               if (activeState !== workflowProcess.length - 1) {
@@ -158,6 +161,7 @@ export default function FactcheckWorkflow() {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    "X-Org": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -191,7 +195,7 @@ export default function FactcheckWorkflow() {
               setFormLoading(true);
               requestData.stream = false;
               requestData.model = "gpt-3.5-turbo";
-              generateTextFromPrompt(requestData)
+              generateTextFromPrompt(requestData, selectedOrg)
                 .then((response) => {
                   editor?.commands?.insertContent(response?.output);
                   if (activeState !== workflowProcess.length - 1) {
@@ -204,7 +208,7 @@ export default function FactcheckWorkflow() {
                   }
                 })
                 .catch((error) => {
-                  console.log(error);
+                  errorToast(error?.message);
                 })
                 .finally(() => {
                   setFormLoading(false);
@@ -234,6 +238,7 @@ export default function FactcheckWorkflow() {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    "X-Org": selectedOrg,
                   },
                   withCredentials: true,
                 }
@@ -267,7 +272,7 @@ export default function FactcheckWorkflow() {
               setFormLoading(true);
               request.stream = false;
               request.model = "gpt-3.5-turbo";
-              generateTextFromPrompt(request)
+              generateTextFromPrompt(request, selectedOrg)
                 .then((response) => {
                   editor?.commands?.insertContent(response?.output);
                   if (activeState !== workflowProcess.length - 1) {
@@ -309,7 +314,7 @@ export default function FactcheckWorkflow() {
         title: title,
         description: "",
       };
-      createDocument(requestBody)
+      createDocument(requestBody, selectedOrg)
         .then((response) => {
           setDocDetails({
             id: response.id,
@@ -455,6 +460,7 @@ export default function FactcheckWorkflow() {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
+                        "X-Org": selectedOrg,
                       },
                       withCredentials: true,
                       payload: JSON.stringify({
@@ -483,7 +489,10 @@ export default function FactcheckWorkflow() {
                       "The generated text should be valid html body tags(IMPORTANT). Avoid other tags like <html>, <body>. avoid using newlines in the generated text. The content should be generated in ENGLISH(UK)",
                   };
 
-                  const response = await generateTextFromPrompt(requestBody);
+                  const response = await generateTextFromPrompt(
+                    requestBody,
+                    selectedOrg
+                  );
                   return response;
                 },
               }}
@@ -494,3 +503,5 @@ export default function FactcheckWorkflow() {
     </div>
   );
 }
+
+export default withOrg(FactcheckWorkflow);

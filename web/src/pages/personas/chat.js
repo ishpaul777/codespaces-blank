@@ -18,7 +18,7 @@ import {
   // MdOutlineCreateNewFolder,
   MdKeyboardBackspace,
 } from "react-icons/md";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   deletePersonaChatByID,
   getPersonaByID,
@@ -28,7 +28,9 @@ import { errorToast, successToast } from "../../util/toasts";
 import CentralLoading from "../../components/loader/centralLoading";
 import { GrStop } from "react-icons/gr";
 import { IoReloadOutline } from "react-icons/io5";
-export const PersonaChat = () => {
+import { withOrg } from "../../components/organisation/withOrg";
+
+const PersonaChat = ({ selectedOrg }) => {
   const navigate = useNavigate();
   // constants for styling the chat page
   const styles = {
@@ -250,6 +252,7 @@ export const PersonaChat = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Org": selectedOrg,
         },
         withCredentials: true,
       }
@@ -293,6 +296,7 @@ export const PersonaChat = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Org": selectedOrg,
         },
         withCredentials: true,
       }
@@ -381,6 +385,7 @@ export const PersonaChat = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Org": selectedOrg,
         },
         withCredentials: true,
       }
@@ -700,3 +705,5 @@ export const PersonaChat = () => {
     </div>
   );
 };
+
+export default withOrg(PersonaChat);

@@ -1,4 +1,4 @@
-export const getUsageByUser = ({
+export const getUsage = ({
   target_month,
   model,
   provider,
