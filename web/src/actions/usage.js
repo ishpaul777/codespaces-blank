@@ -24,7 +24,7 @@ export const getUsage = ({
         usage_type,
         is_admin,
         view,
-        other_user_id
+        other_user_id,
       }),
     {
       method: "GET",

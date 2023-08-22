@@ -65,8 +65,8 @@ function Usage() {
     view: "admin",
     other_user_id: {
       id: 0,
-      email: ""
-    }
+      email: "",
+    },
   });
 
   const fetchUsageData = async () => {
@@ -79,20 +79,21 @@ function Usage() {
       org_id: selectedOrgID,
       is_admin: isAdmin,
       view: query.view,
-      other_user_id: query.other_user_id.id
+      other_user_id: query.other_user_id.id,
     });
 
     setUsageData(response);
   };
 
   useEffect(() => {
-    fetchUsageData();
-  }, [query, isAdmin]);
+    if(selectedOrgID !== -1) {
+      fetchUsageData();
+    }
+  }, [query, isAdmin, selectedOrgID]);
 
   const styles = {
     statsButton: `px-4 py-2`,
   };
-
 
   return (
     <div className="mx-10 my-16 flex flex-col gap-6">
@@ -189,24 +190,24 @@ function Usage() {
           </div>
         </div>
         <div className="flex w-full items-center gap-4">
-          <SearchableInput
-            label={'User'}
-            placeholder={'Search User'}
-            listOptions={users?.map((user) => user?.user?.email)}
-            initialValue={query.other_user_id.email}
-            onChange={(value) => {
-              let user = users?.find((user) => user?.user?.email === value);
-              setQuery({
-                ...query,
-                other_user_id: {
-                  id: user?.user?.id,
-                  email: value
-                }
-              });
-            }}
-          >
-
-          </SearchableInput>
+          {isAdmin && (
+            <SearchableInput
+              label={"User"}
+              placeholder={"Search User"}
+              listOptions={users?.map((user) => user?.user?.email)}
+              initialValue={query.other_user_id.email}
+              onChange={(value) => {
+                let user = users?.find((user) => user?.user?.email === value);
+                setQuery({
+                  ...query,
+                  other_user_id: {
+                    id: user?.user?.id,
+                    email: value,
+                  },
+                });
+              }}
+            ></SearchableInput>
+          )}
           <SearchableInput
             label={"Used for"}
             placeholder={"Search"}

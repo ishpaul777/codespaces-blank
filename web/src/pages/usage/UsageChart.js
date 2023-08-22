@@ -23,11 +23,14 @@ export default function UsageChart({ usageData, type }) {
     }
   }, usageData);
 
+  const handleBarClick = (e) => {
+    console.log(e);
+  };
   return (
     <div className="w-full">
       <ResponsiveContainer width="100%" height={400}>
         {type === "daily" ? (
-          <BarChart data={usageData}>
+          <BarChart data={usageData} onClick={(e) => handleBarClick(e)}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="date"
