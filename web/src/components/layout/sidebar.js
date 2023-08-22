@@ -235,8 +235,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
               >
                 <div className="flex flex-row gap-4 items-center">
                   <div className={`bg-red-400 p-2 rounded-full text-white`}>
-                    {organisation?.title ? getInitials(organisation?.title) : '--'}
-                  </div>  
+                    {organisation?.title
+                      ? getInitials(organisation?.title)
+                      : "--"}
+                  </div>
                   <span className="dark:text-white">
                     {organisation?.title
                       ? getOrgName(organisation?.title)

@@ -50,9 +50,26 @@ type GetUsageFilters struct {
 	OtherUserID uint          `json:"other_user_id"`
 }
 
+type GetUsageDateFilters struct {
+	TargetDate  string        `json:"target_date"`
+	Type        string        `json:"type"`
+	Model       string        `json:"model"`
+	Provider    string        `json:"provider"`
+	UsageType   StatisticType `json:"usage_type"`
+	IsAdmin     bool          `json:"is_admin"`
+	View        View          `json:"view"`
+	OtherUserID uint          `json:"other_user_id"`
+}
+
 type GetUsageResponse struct {
 	TotalTokens    uint   `json:"total_tokens" gorm:"column:total_tokens"`
 	PromptTokens   uint   `json:"prompt_tokens" gorm:"column:prompt_tokens"`
 	ResponseTokens uint   `json:"response_tokens" gorm:"column:response_tokens"`
 	Date           string `json:"date" gorm:"column:date"`
+}
+
+type GetUsageDateResponse struct {
+	GenerateRequests uint          `json:"generate_requests"`
+	Chats            []Chat        `json:"chats"`
+	PersonaChats     []PersonaChat `json:"persona_chats"`
 }

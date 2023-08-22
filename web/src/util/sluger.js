@@ -18,13 +18,12 @@ export const getFileName = (value) => {
   return `${fileName}.${fileExt}`;
 };
 
-
 export function getInitials(input) {
   const words = input?.split(" "); // Split input into words
   let initials = "";
 
   for (const word of words) {
-      initials += word[0]; // Add the first character of each word to initials
+    initials += word[0]; // Add the first character of each word to initials
   }
 
   return initials.toUpperCase();

@@ -64,7 +64,7 @@ export function Select({
             >
               GPT-4
             </button>
-            <button
+            {/* <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
                 selectedValue.toUpperCase() === "CHAT-BISON@001"
                   ? "bg-gray-200"
@@ -73,7 +73,7 @@ export function Select({
               onClick={() => handleOptionClick("chat-bison@001")}
             >
               Chat Bison(Google)
-            </button>
+            </button> */}
             <button
               className={`w-full py-2 px-3 text-left hover:bg-gray-200 ${
                 selectedValue.toUpperCase() === "Claude 2" ? "bg-gray-200" : ""
