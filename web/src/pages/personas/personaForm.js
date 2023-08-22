@@ -169,7 +169,7 @@ function PersonaForm({
             <div className="w-full flex gap-3 items-center py-7 border-b border-b-[#EAECF0] dark:border-[#555]">
               {!requestBody.avatar.value ? (
                 <div className="flex gap-5 items-center sm:flex-row flex-col sm:justify-between justify-center w-full">
-                  <button
+                  {/* <button
                     onClick={(e) => {
                       e.preventDefault();
                       setGenOpen(true);
@@ -178,7 +178,7 @@ function PersonaForm({
                   >
                     Generate Avatar
                   </button>
-                  <span className="text-[#667085] dark:text-gray-100">or</span>
+                  <span className="text-[#667085] dark:text-gray-100">or</span> */}
                   <input
                     onClick={(e) => {
                       e.preventDefault();
