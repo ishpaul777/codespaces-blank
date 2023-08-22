@@ -35,7 +35,7 @@ function Layout({ selectedOrg }) {
             </div>
           </nav>
         )}
-        <Sidebar sideBarOpen={sideBarOpen} setSidebarOpen={setSidebarOpen} />
+        <Sidebar selectedOrg={selectedOrg} sideBarOpen={sideBarOpen} setSidebarOpen={setSidebarOpen} />
       </div>
       <main
         className={`${

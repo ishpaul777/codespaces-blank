@@ -15,13 +15,10 @@ export const withOrg = (Component) => (props) => {
 
   const fetchOrganisationsFromKavach = async () => {
     const response = await getOrganisationsFromKavach();
-
     if (response?.length === 0) {
       navigate("/createOrg");
     }
-    // if(true) {
-    //   navigate('/createOrg');
-    // }
+
     dispatch({
       type: "ADD_ORGS",
       payload: response?.map((org) => ({

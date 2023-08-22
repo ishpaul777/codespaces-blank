@@ -16,10 +16,9 @@ import { FiSettings } from "react-icons/fi";
 import logo from "../../assets/FactlyLogotext.svg";
 import { getOrganisationsFromKavach } from "../../actions/organisation";
 import { useDispatch, useSelector } from "react-redux";
-import { withOrg } from "../organisation/withOrg";
 import { getInitials } from "../../util/sluger";
 
-export function Sidebar({ sideBarOpen, setSidebarOpen }) {
+export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
   const dispatch = useDispatch();
   const [openMenu, setOpenMenu] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -28,7 +27,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
 
   const { organisation } = useSelector(({ organisations }) => {
     let org = organisations?.details?.find(
-      (org) => org?.id === organisations?.selectedOrg
+      (org) => org?.id === selectedOrg
     );
     return {
       organisation: org,
@@ -157,6 +156,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen }) {
             : "w-0"
           : "w-full"
       } `}
+      key={'sidebar' + selectedOrg}
     >
       {(!isMobileScreen || sideBarOpen) && (
         <>

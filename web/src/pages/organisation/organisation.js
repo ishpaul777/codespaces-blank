@@ -5,9 +5,12 @@ import tagoreAILogo from "../../assets/FactlyLogotext.svg";
 import { createOrganisation } from "../../actions/organisation";
 import { useNavigate } from "react-router-dom";
 import { errorToast, successToast } from "../../util/toasts";
+import { ClipLoader } from "react-spinners";
 
 export default function Organisation() {
   const navigate =  useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     name: {
       value: "",
@@ -43,6 +46,7 @@ export default function Organisation() {
   const handleFormSubmit = () => {
     if (validateForm()) return;
 
+    setLoading(true);
     const payload = {
       title: form.name.value,
       slug: form.slug.value,
@@ -58,6 +62,9 @@ export default function Organisation() {
     })
     .catch((error) => {
       errorToast("Unable to create organisation ", error?.message);
+    })
+    .finally(() => {
+      setLoading(false);
     })
   };
 
@@ -171,7 +178,9 @@ export default function Organisation() {
               className="text-white bg-black rounded-md py-2"
               onClick={handleFormSubmit}
             >
-              Save
+             {
+                loading ? <ClipLoader color={"white"} loading={true} size={'16px'} /> : "Create Organisation"
+             }
             </button>
           </div>
         </div>

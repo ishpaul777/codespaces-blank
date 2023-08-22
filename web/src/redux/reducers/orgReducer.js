@@ -6,12 +6,22 @@ const initialState = {
 const orgReducer = (state = initialState, action) => {
   switch (action.type) {
     case "ADD_ORGS":
+      console.log(state)
+
+      console.log({
+        payload: action?.payload
+      })
+
+      console.log({
+        selectedOrg: state.selectedOrg 
+      })
+
       // Add new org to state
       return {
         ...state,
         details: action.payload,
         selectedOrg:
-          state.selectedOrg === -1 ? action.payload[0]?.id : state.selectedOrg,
+          (state.selectedOrg === -1 || state?.selectedOrg === undefined) ? action.payload[0]?.id : state.selectedOrg,
       };
 
     case "SELECT_ORG":
