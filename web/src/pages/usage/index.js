@@ -11,14 +11,19 @@ function Usage() {
   // isMobileScreen is true if the screen width is less than 640px
   const { isMobileScreen } = useWindowSize();
 
-  const { selectedOrgID, isAdmin } = useSelector(({ organisations }) => {
+  const { selectedOrgID, isAdmin, users } = useSelector(({ organisations }) => {
     let isAdmin =
       organisations?.details?.find(
         (organisation) => organisation?.id === organisations?.selectedOrg
       )?.role === "owner";
+
+    let users = organisations?.details?.find(
+      (organisation) => organisation?.id === organisations?.selectedOrg
+    )?.organisation_users;
     return {
       selectedOrgID: organisations?.selectedOrg,
       isAdmin,
+      users,
     };
   });
 
@@ -58,6 +63,10 @@ function Usage() {
     type: "",
     usage_type: "daily",
     view: "admin",
+    other_user_id: {
+      id: 0,
+      email: ""
+    }
   });
 
   const fetchUsageData = async () => {
@@ -70,6 +79,7 @@ function Usage() {
       org_id: selectedOrgID,
       is_admin: isAdmin,
       view: query.view,
+      other_user_id: query.other_user_id.id
     });
 
     setUsageData(response);
@@ -82,6 +92,8 @@ function Usage() {
   const styles = {
     statsButton: `px-4 py-2`,
   };
+
+
   return (
     <div className="mx-10 my-16 flex flex-col gap-6">
       {/* page header */}
@@ -177,6 +189,24 @@ function Usage() {
           </div>
         </div>
         <div className="flex w-full items-center gap-4">
+          <SearchableInput
+            label={'User'}
+            placeholder={'Search User'}
+            listOptions={users?.map((user) => user?.user?.email)}
+            initialValue={query.other_user_id.email}
+            onChange={(value) => {
+              let user = users?.find((user) => user?.user?.email === value);
+              setQuery({
+                ...query,
+                other_user_id: {
+                  id: user?.user?.id,
+                  email: value
+                }
+              });
+            }}
+          >
+
+          </SearchableInput>
           <SearchableInput
             label={"Used for"}
             placeholder={"Search"}

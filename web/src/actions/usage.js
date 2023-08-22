@@ -7,6 +7,7 @@ export const getUsage = ({
   org_id,
   is_admin,
   view,
+  other_user_id,
 }) => {
   // query parameters:
   //  - target_month: the month and year to get usage for
@@ -23,6 +24,7 @@ export const getUsage = ({
         usage_type,
         is_admin,
         view,
+        other_user_id
       }),
     {
       method: "GET",
