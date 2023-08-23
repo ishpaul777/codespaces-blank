@@ -38,32 +38,32 @@ function SocialMedia({ selectedOrg }) {
   const [editorData, setEditorData] = useState(``);
 
   const [loading, setLoading] = useState(false);
-  // useEffect(() => {
-  //   if (!docDetails.isFileCreated) {
-  //     setLoading(true);
-  //     let title = "Untitled-" + generateUUID(8);
+  useEffect(() => {
+    if (!docDetails.isFileCreated) {
+      setLoading(true);
+      let title = "Untitled-" + generateUUID(8);
 
-  //     let requestBody = {
-  //       title: title,
-  //       description: "",
-  //     };
-  //     createDocument(requestBody, selectedOrg)
-  //       .then((response) => {
-  //         setDocDetails({
-  //           id: response.id,
-  //           title: response.title,
-  //           isFileCreated: true,
-  //         });
-  //         successToast("document created successfully");
-  //       })
-  //       .catch((err) => {
-  //         errorToast("error in creating document");
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   }
-  // }, []);
+      let requestBody = {
+        title: title,
+        description: "",
+      };
+      createDocument(requestBody, selectedOrg)
+        .then((response) => {
+          setDocDetails({
+            id: response.id,
+            title: response.title,
+            isFileCreated: true,
+          });
+          successToast("document created successfully");
+        })
+        .catch((err) => {
+          errorToast("error in creating document");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, []);
 
   const stream = true;
   const [formLoading, setFormLoading] = useState(false);
