@@ -3,8 +3,8 @@ export const updateProfile = (data) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Credentials: "include",
     },
+    credentials: "include",
     body: JSON.stringify(data),
   })
     .then((response) => {
@@ -27,8 +27,8 @@ export const getProfile = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Credentials: "include",
     },
+    credentials: "include",
   })
     .then((response) => {
       if (response.status === 200) {
@@ -50,8 +50,8 @@ export const getInvitations = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Credentials: "include",
     },
+    credentials: "include",
   })
     .then((response) => {
       if (response.status === 200) {
@@ -75,8 +75,8 @@ export const acceptInvitation = (inviteId, data) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Credentials: "include",
       },
+      credentials: "include",
       body: JSON.stringify(data),
     }
   )
@@ -102,8 +102,8 @@ export const rejectInvitation = (inviteId) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Credentials: "include",
       },
+      credentials: "include",
     }
   )
     .then((response) => {

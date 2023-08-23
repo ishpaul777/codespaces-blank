@@ -3,8 +3,8 @@ export const getOrganisationsFromKavach = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Credentials: "include",
     },
+    credentials: "include",
   })
     .then((response) => {
       if (response.status === 200) {
@@ -26,8 +26,8 @@ export const updateOrganisation = (orgId, data) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Credentials: "include",
     },
+    credentials: "include",
     body: JSON.stringify(data),
   })
     .then((response) => {
@@ -55,8 +55,8 @@ export const sendInvites = (orgId, data, return_to) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Credentials: "include",
       },
+      credentials: "include",
       body: JSON.stringify({
         users: data,
       }),
@@ -82,8 +82,8 @@ export const createOrganisation = (data) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Credentials: "include",
     },
+    credentials: "include",
     body: JSON.stringify(data),
   })
     .then((response) => {
