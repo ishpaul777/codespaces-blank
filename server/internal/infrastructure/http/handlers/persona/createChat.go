@@ -29,8 +29,8 @@ func (h *httpHandler) createChat(w http.ResponseWriter, r *http.Request) {
 
 	orgID, err := helper.GetUserID(r)
 	if err != nil {
-		h.logger.Error("error in parsing X-Org header", "error", err.Error())
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Org header", http.StatusUnauthorized)))
+		h.logger.Error("error in parsing X-Organisation header", "error", err.Error())
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-Organisation header", http.StatusUnauthorized)))
 		return
 	}
 

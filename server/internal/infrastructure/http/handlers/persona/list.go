@@ -25,7 +25,7 @@ func (h *httpHandler) list(w http.ResponseWriter, r *http.Request) {
 
 	// _, err = helper.GetOrgID(r)
 	// if err != nil {
-	// 	h.logger.Error("error in parsing X-Org header", "error", err.Error())
+	// 	h.logger.Error("error in parsing X-Organisation header", "error", err.Error())
 	// 	errorx.Render(w, errorx.Parser(errorx.GetMessage("invalid X-User header", http.StatusUnauthorized)))
 	// 	return
 	// }
