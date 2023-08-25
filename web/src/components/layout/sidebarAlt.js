@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useDarkMode from "../../hooks/useDarkMode";
 import { AiOutlineBarChart } from "react-icons/ai";
-import { BiArrowBack } from "react-icons/bi";
 import { FiSettings, FiUser, FiUsers } from "react-icons/fi";
 import { getOrganisationsFromKavach } from "../../actions/organisation";
 import { useDispatch } from "react-redux";
@@ -10,7 +9,9 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { errorToast } from "../../util/toasts";
 import { getProfile } from "../../actions/profile";
 import logo from "../../assets/FactlyLogotext.svg";
+import { BiLogOutCircle, BiArrowBack } from "react-icons/bi";
 import { withOrg } from "../organisation/withOrg";
+import { logout } from "../../actions/kratos";
 
 export function SidebarAlt() {
   const dispatch = useDispatch();
@@ -65,6 +66,29 @@ export function SidebarAlt() {
       ],
     },
   ];
+  const handleLogout = () => {
+    logout()
+      .then((res) => {
+        window.location.href = res.logout_url;
+      })
+      .catch(() => {
+        errorToast("error logging out");
+      });
+  };
+
+  const footerOptions = [
+    {
+      name: "Go back",
+      Icon: BiArrowBack,
+      onClick: () => { navigate("/"); }
+    },
+    {
+      name: "Log out",
+      Icon: BiLogOutCircle,
+      onClick: handleLogout
+    }
+  ]
+
 
   const style = {
     color: "#6e6e81",
@@ -105,9 +129,8 @@ export function SidebarAlt() {
   }, []);
   return (
     <div
-      className={`flex flex-col p-5 pt-8 w-1/6 h-full ${
-        darkMode ? "bg-background-sidebar-alt" : "bg-background-sidebar"
-      } justify-between`}
+      className={`flex flex-col p-5 pt-8 w-1/6 h-full ${darkMode ? "bg-background-sidebar-alt" : "bg-background-sidebar"
+        } justify-between`}
     >
       <div>
         <div className={`flex gap-x-2 items-center justify-center w-fit`}>
@@ -138,15 +161,13 @@ export function SidebarAlt() {
                           key={index}
                           className={`flex flex-col justify-between text-base font-normal text-black items-center px-4 py-2 cursor-pointer rounded-lg
                           ${colorTab !== index && "hover:bg-button-primary"}
-                          ${
-                            colorTab === index &&
+                          ${colorTab === index &&
                             (darkMode
                               ? "bg-button-primary-alt"
                               : "hover:bg-button-primary")
-                          }
-                          mt-2 ${
-                            darkMode && "text-white hover:bg-button-primary-alt"
-                          }`}
+                            }
+                          mt-2 ${darkMode && "text-white hover:bg-button-primary-alt"
+                            }`}
                         >
                           <div className="flex justify-between w-[12vw] ">
                             <div
@@ -165,9 +186,8 @@ export function SidebarAlt() {
                                 }
                               />
                               <h3
-                                className={`${
-                                  isSelected ? "text-black" : "text-[#6e6e81]"
-                                }`}
+                                className={`${isSelected ? "text-black" : "text-[#6e6e81]"
+                                  }`}
                               >
                                 {menu.name}
                               </h3>
@@ -183,16 +203,19 @@ export function SidebarAlt() {
           })}
         </ul>
       </div>
-      <div
-        className={`mb-2 flex flex-row gap-2 items-center justify-center w-full gap-x-2.5 ${
-          darkMode && "bg-button-primary-alt"
+      <div>
+      {
+        footerOptions.map((option, index) => (
+          <div
+          className={`mb-2 flex flex-row gap-2 items-center justify-center w-full gap-x-2.5 ${darkMode && "bg-button-primary-alt"
         } rounded p-3 dark:text-white cursor-pointer`}
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        <BiArrowBack size={"16px"} />
-        <span className="text-base">Go back</span>
+        onClick={option.onClick}
+        >
+            <option.Icon size={"16px"} />
+            <span className="text-base">{option.name}</span>
+          </div>
+        ))
+      }
       </div>
     </div>
   );

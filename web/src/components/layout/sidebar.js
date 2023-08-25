@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Arrow from "../../assets/icons/arrow.svg";
 import { AiOutlineMenuUnfold, AiOutlineRobot } from "react-icons/ai";
-import { logout } from "../../actions/kratos";
-import { errorToast } from "../../util/toasts";
 import useDarkMode from "../../hooks/useDarkMode";
 import useWindowSize from "../../hooks/useWindowSize";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
@@ -11,7 +9,7 @@ import { HiOutlineDocumentDuplicate } from "react-icons/hi";
 import { IoImagesOutline } from "react-icons/io5";
 import { TiFlowMerge } from "react-icons/ti";
 import { BsChatLeftText } from "react-icons/bs";
-import { BiLogOutCircle } from "react-icons/bi";
+import OrgAvatar from "../organisation/avatar";
 import { FiSettings } from "react-icons/fi";
 import logo from "../../assets/FactlyLogotext.svg";
 import { getOrganisationsFromKavach } from "../../actions/organisation";
@@ -25,12 +23,13 @@ export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
   const { isMobileScreen } = useWindowSize();
   const { darkMode } = useDarkMode();
 
-  const { organisation } = useSelector(({ organisations }) => {
+  const { organisation, organisationList } = useSelector(({ organisations }) => {
     let org = organisations?.details?.find(
       (org) => org?.id === selectedOrg
     );
     return {
       organisation: org,
+      organisationList: organisations?.details,
     };
   });
 
@@ -66,29 +65,21 @@ export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
       linkTo: "/chats/dashboard",
     },
   ];
+  let navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout()
-      .then((res) => {
-        window.location.href = res.logout_url;
-      })
-      .catch(() => {
-        errorToast("error logging out");
-      });
-  };
+  const orgList = organisationList?.map((org) => ({
+    name: org?.title,
+    icon: () => <OrgAvatar initials={organisation?.title ? getInitials(organisation?.title) : "--"} />,
+    onClick: () => {},
+  }));
 
   const manageProfileOptions = [
     {
       name: "Settings",
-      icon: FiSettings,
-      linkTo: "/org",
+      icon: () =>  <FiSettings size={styles.manageicons.fontSize} color={styles.icons.color} className="ml-1" />,
+      onClick: () => { navigate("/org") },
     },
-    {
-      name: "Logout",
-      icon: BiLogOutCircle,
-      linkTo: "/",
-      onClick: handleLogout,
-    },
+    ...orgList,
   ];
 
   // getOrgName trims down the organisation name and adds a ellipsis to the end of it if it's length is greater than MAX_ORG_NAME_LENGTH
@@ -149,21 +140,19 @@ export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
 
   return (
     <div
-      className={`${
-        isMobileScreen
+      className={`${isMobileScreen
           ? sideBarOpen
             ? "w-[100vw] fixed right-0 top-0 z-50 flex flex-row-reverse duration-300"
             : "w-0"
           : "w-full"
-      } `}
+        } `}
       key={'sidebar' + selectedOrg}
     >
       {(!isMobileScreen || sideBarOpen) && (
         <>
           <div
-            className={`${
-              isMobileScreen ? "w-[80vw] z-50" : "w-full"
-            } p-5 pt-8 bg-background-sidebar h-screen flex flex-col dark:bg-background-sidebar-alt`}
+            className={`${isMobileScreen ? "w-[80vw] z-50" : "w-full"
+              } p-5 pt-8 bg-background-sidebar h-screen flex flex-col dark:bg-background-sidebar-alt`}
           >
             <div className={`flex gap-x-2 items-center justify-center w-full`}>
               <img
@@ -179,11 +168,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
                   <li
                     key={index}
                     className={`text-base font-normal text-black flex items-center justify-start pr-4 pl-4 pt-2 pb-2 cursor-pointer rounded-lg
-                ${
-                  activeTab !== index
-                    ? "dark:hover:bg-button-primary-alt hover:bg-button-primary"
-                    : "dark:bg-button-primary-alt bg-button-primary"
-                }
+                ${activeTab !== index
+                        ? "dark:hover:bg-button-primary-alt hover:bg-button-primary"
+                        : "dark:bg-button-primary-alt bg-button-primary"
+                      }
                 mt-2 dark:text-white`}
                     onClick={() => setActiveTab(index)}
                   >
@@ -205,7 +193,10 @@ export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
                   className={`flex flex-col gap-2 bg-white dark:bg-background-secondary-alt p-2 rounded-lg`}
                 >
                   {manageProfileOptions.map((option, index) => (
-                    <Link to={option.linkTo} key={index}>
+                    <div
+                      onClick={option?.onClick}
+                      key={index}
+                    >
                       <li
                         className={`flex flex-row items-center gap-4 p-2 rounded hover:bg-button-primary dark:hover:bg-background-sidebar-alt cursor-pointer dark:text-white`}
                         onClick={() => {
@@ -214,30 +205,22 @@ export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
                           }
                         }}
                       >
-                        <option.icon
-                          size={styles.manageicons.fontSize}
-                          color={styles.icons.color}
-                        />
+                        <option.icon/>
                         <h3 className="text-base"> {option.name} </h3>
                       </li>
-                    </Link>
+                    </div>
                   ))}
                 </ul>
               )}
               {/* <DarkMode /> */}
               {/* manage profile button */}
               <button
-                className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${
-                  darkMode && "bg-button-primary-alt"
-                } rounded pr-4 pl-4 pt-2 pb-2`}
+                className={`mb-2 flex flex-row justify-between items-center w-full gap-x-2.5 bg-button-primary ${darkMode && "bg-button-primary-alt"
+                  } rounded pr-4 pl-4 pt-2 pb-2`}
                 onClick={() => setOpenMenu((prevState) => !prevState)}
               >
                 <div className="flex flex-row gap-4 items-center">
-                  <div className={`bg-red-400 p-2 rounded-full text-white`}>
-                    {organisation?.title
-                      ? getInitials(organisation?.title)
-                      : "--"}
-                  </div>
+                  <OrgAvatar initials={organisation?.title ? getInitials(organisation?.title) : "--"} />
                   <span className="dark:text-white">
                     {organisation?.title
                       ? getOrgName(organisation?.title)
