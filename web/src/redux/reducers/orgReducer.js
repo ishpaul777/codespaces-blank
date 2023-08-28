@@ -17,6 +17,7 @@ const orgReducer = (state = initialState, action) => {
 
     case "SELECT_ORG":
       // Select org
+      console.log("SELECT_ORG", action.payload);
       return {
         ...state,
         selectedOrg: action.payload,

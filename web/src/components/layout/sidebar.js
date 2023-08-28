@@ -70,7 +70,7 @@ export function Sidebar({ sideBarOpen, setSidebarOpen, selectedOrg }) {
   const orgList = organisationList?.map((org) => ({
     name: org?.title,
     icon: () => <OrgAvatar initials={organisation?.title ? getInitials(organisation?.title) : "--"} />,
-    onClick: () => {},
+    onClick: () => {dispatch({ type: "SELECT_ORG", payload: org.id });},
   }));
 
   const manageProfileOptions = [
